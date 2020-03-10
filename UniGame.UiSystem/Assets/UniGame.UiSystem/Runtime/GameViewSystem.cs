@@ -6,6 +6,7 @@
     using UniCore.Runtime.DataFlow;
     using UniCore.Runtime.DataFlow.Interfaces;
     using UniCore.Runtime.Rx.Extensions;
+    using UniRx;
     using UniRx.Async;
     using UnityEngine;
 
@@ -78,6 +79,57 @@
                 if(viewController.Close(view))
                     break;
             }
+        }
+        
+        
+        /// <summary>
+        /// Open new view element
+        /// </summary>
+        /// <param name="viewModel">target element model data</param>
+        /// <param name="skinTag">target element skin</param>
+        /// <returns>created view element</returns>
+        public async UniTask<T> CreateView<T>(IViewModel viewModel,string skinTag = "") 
+            where T : Component, IView
+        {
+            
+            var view = await viewFactory.Create<T>(skinTag);
+
+            //initialize view with model data
+            InitializeView(view, viewModel);
+
+            //update view properties
+            OnViewOpen(view);
+            
+            return view;
+
+        }
+        
+                
+        private T InitializeView<T>(T view, IViewModel viewModel)
+            where T : Component, IView
+        {
+            // Комментарии от кэпа по всему классу - не нужны
+
+            //initialize view with model data
+            view.Initialize(viewModel,this);
+            
+            //bind disposable to View lifeTime
+            var viewLifeTime = view.LifeTime;
+            
+            //close view 
+            viewLifeTime.AddCleanUpAction(() => Close(view));
+
+            //handle all view visibility changes
+            view.IsActive.
+                Subscribe(x => OnVisibilityChanged(view,x)).
+                AddTo(viewLifeTime);
+            
+            return view;
+        }
+
+        private void OnVisibilityChanged(IView view,bool visibility)
+        {
+            //todo
         }
         
     }

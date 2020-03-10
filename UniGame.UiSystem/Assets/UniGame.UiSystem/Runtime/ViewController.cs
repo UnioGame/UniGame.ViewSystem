@@ -150,28 +150,7 @@
         {
             OnVisibilityStatusChanged();
         }
-        
-        private T InitializeView<T>(T view, IViewModel viewModel)
-            where T : Component, IView
-        {
-            // Комментарии от кэпа по всему классу - не нужны
 
-            //initialize view with model data
-            view.Initialize(viewModel,elementFactory);
-            
-            //bind disposable to View lifeTime
-            var viewLifeTime = view.LifeTime;
-            
-            viewLifeTime.AddCleanUpAction(() => Close(view));
-
-            //handle all view visibility changes
-            view.IsActive.
-                Subscribe(x => visibilityChanged.Execute()).
-                AddTo(viewLifeTime);
-            
-            return view;
-        }
-        
    
         private TView Select<TView>() where TView : Object, IView
         {
