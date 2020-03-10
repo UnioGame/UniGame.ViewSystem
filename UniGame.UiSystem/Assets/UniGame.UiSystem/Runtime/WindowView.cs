@@ -13,7 +13,7 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         where TWindowModel : class, IViewModel
     {
         #region inspector
-        // очень неудобно читать со всеми ifdef
+        // РѕС‡РµРЅСЊ РЅРµСѓРґРѕР±РЅРѕ С‡РёС‚Р°С‚СЊ СЃРѕ РІСЃРµРјРё ifdef
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Required]
 #endif
@@ -44,8 +44,8 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         
         protected sealed override void OnInitialize(TWindowModel model, ILifeTime lifeTime)
         {
-            // дублируется код из ViewController
-            // так же флаг дублирует флаг из VM 
+            // РґСѓР±Р»РёСЂСѓРµС‚СЃСЏ РєРѕРґ РёР· ViewController
+            // С‚Р°Рє Р¶Рµ С„Р»Р°Рі РґСѓР±Р»РёСЂСѓРµС‚ С„Р»Р°Рі РёР· VM 
             IsActive.
                 Where(x => x).
                 Subscribe(x => canvasGroup.SetState(visibleState)).
@@ -64,10 +64,10 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
             
         }
         
-        // Зачем метод в window, если есть onWindowInitialize?
+        // Р—Р°С‡РµРј РјРµС‚РѕРґ РІ window, РµСЃР»Рё РµСЃС‚СЊ onWindowInitialize?
         protected virtual void OnAwake() { }
     
-        // приватный Awake лекго не заметить и определить в классе ниже по иерархии
+        // РїСЂРёРІР°С‚РЅС‹Р№ Awake Р»РµРєРіРѕ РЅРµ Р·Р°РјРµС‚РёС‚СЊ Рё РѕРїСЂРµРґРµР»РёС‚СЊ РІ РєР»Р°СЃСЃРµ РЅРёР¶Рµ РїРѕ РёРµСЂР°СЂС…РёРё
         private void Awake()
         {
             canvasGroup = canvasGroup == null ? GetComponent<CanvasGroup>() : canvasGroup;

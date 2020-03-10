@@ -5,8 +5,7 @@
     using UnityEngine;
     using Object = UnityEngine.Object;
 
-    // Из названия не очевидно назначение может стоит использовать что то вроде ViewStackController
-    public interface IViewController : IDisposable
+    public interface IViewStackController : IDisposable
     {
         UniTask<T> Open<T>(IViewModel viewModel,string skinTag = "") where T :Component, IView;
         

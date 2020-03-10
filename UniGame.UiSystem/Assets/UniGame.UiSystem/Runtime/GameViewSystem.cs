@@ -28,7 +28,7 @@
         
         private IViewFactory viewFactory;
 
-        private List<IViewController> viewControllers = new List<IViewController>();
+        private List<IViewStackController> viewControllers = new List<IViewStackController>();
         
         #endregion
 

@@ -31,21 +31,35 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
 
         public ILifeTime LifeTime => gameViewSystem.LifeTime;
 
-        // подобные определения очень плохо читаются лучше выделять тело даже если вызовы просто делегируются
         public UniTask<T> Open<T>(IViewModel viewModel, string skinTag = "")
-            where T : Component, IView => gameViewSystem.Open<T>(viewModel, skinTag);
+            where T : Component, IView
+        {
+            return gameViewSystem.Open<T>(viewModel, skinTag); 
+        }
 
         public UniTask<T> OpenWindow<T>(IViewModel viewModel, string skinTag = "")
-            where T : Component, IView => gameViewSystem.OpenWindow<T>(viewModel, skinTag);
+            where T : Component, IView
+        {
+            return gameViewSystem.OpenWindow<T>(viewModel, skinTag);
+        }
 
         public UniTask<T> OpenScreen<T>(IViewModel viewModel, string skinTag = "")
-            where T : Component, IView => gameViewSystem.OpenScreen<T>(viewModel, skinTag);
+            where T : Component, IView
+        {
+            return gameViewSystem.OpenScreen<T>(viewModel, skinTag);
+        }
 
         public bool CloseWindow<T>()
-            where T : Component, IView => gameViewSystem.CloseWindow<T>();
+            where T : Component, IView
+        {
+            return gameViewSystem.CloseWindow<T>();
+        }
 
         public bool CloseScreen<T>()
-            where T : Component, IView => gameViewSystem.CloseScreen<T>();
+            where T : Component, IView
+        {
+            return gameViewSystem.CloseScreen<T>();
+        }
         
         public void Dispose() => gameViewSystem.Dispose();
         

@@ -23,10 +23,9 @@ namespace UniGreenModules.UniGame.UiSystem.Examples.ListViews.Views
         {
             var items = model.ListItems;
             
-            this.
-                Bind(items.ObserveAdd(), x => CreateItem(x.Value)).
-                Bind(items.ObserveRemove(), x => RemoveItem(x.Index)).
-                Bind(addItem.onClick.AsObservable(), model.Add);
+            BindTo(items.ObserveAdd(), x => CreateItem(x.Value)).
+            BindTo(items.ObserveRemove(), x => RemoveItem(x.Index)).
+            BindTo(addItem.onClick.AsObservable(),x => model.Add.Execute());
         }
 
         private async UniTask<DemoItemView> CreateItem(DemoItemViewModel itemModel)

@@ -2,6 +2,7 @@
 {
     using System;
     using Abstracts;
+    using Extensions;
     using UniCore.Runtime.DataFlow;
     using UniCore.Runtime.DataFlow.Interfaces;
     using UniCore.Runtime.ProfilerTools;
@@ -17,19 +18,19 @@
         private IViewElementFactory viewFactory;
         
         /// <summary>
-        /// view model context
-        /// </summary>
-        // Это не контекст, это View Model. Во всех остальных местах контекст означет IContext или что то подобное
-        // может возникнуть путаница
-        protected TViewModel context;
-        
-        /// <summary>
         /// ui element visibility status
         /// </summary>
         protected BoolReactiveProperty visibility = new BoolReactiveProperty(false);
 
+        /// <summary>
+        /// model container
+        /// </summary>
+        private ReactiveProperty<TViewModel> viewModel = new ReactiveProperty<TViewModel>();
+        
         #region public properties
 
+        public IReadOnlyReactiveProperty<TViewModel> Model => viewModel;
+        
         /// <summary>
         /// Is View Active
         /// </summary>
@@ -52,8 +53,8 @@
             lifeTimeDefinition.Release();
 
             //save model as context data
-            if (model is TViewModel viewModel) {
-                context = viewModel;
+            if (model is TViewModel modelData) {
+                this.viewModel.Value = modelData;
             }
             else {
                 throw  new ArgumentException($"VIEW: {name} wrong model type. Target type {typeof(TViewModel).Name} : model Type {model?.GetType().Name}");
@@ -71,7 +72,7 @@
             LifeTime.AddCleanUpAction(() => viewFactory = null);
 
             //custom initialization
-            OnInitialize(context,LifeTime);
+            OnInitialize(modelData,LifeTime);
 
         }
 
@@ -90,14 +91,18 @@
         /// </summary>
         public void Close() => lifeTimeDefinition.Terminate();
 
-        
+        /// <summary>
+        /// bind source stream to view action
+        /// with View LifeTime context
+        /// </summary>
+        public UiView<TViewModel> BindTo<T>(IObservable<T> source, Action<T> action) => this.Bind(source, action);
+
         #endregion
+
 
         /// <summary>
         /// custom initialization methods
         /// </summary>
-        /// <param name="model"></param>
-        /// <param name="lifeTime"></param>
         // и вью модель и лайф тайм сохраняются в доступные из дочерних классов поля, зачем передавать их в это метод
         protected virtual void OnInitialize(TViewModel model, ILifeTime lifeTime) { }
 

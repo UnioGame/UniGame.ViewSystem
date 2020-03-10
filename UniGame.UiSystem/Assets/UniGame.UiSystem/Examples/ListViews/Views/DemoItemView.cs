@@ -22,13 +22,12 @@ namespace UniGreenModules.UniGame.UiSystem.Examples.ListViews.Views
         
         protected override void OnInitialize(DemoItemViewModel model, ILifeTime lifeTime)
         {
-            this.
-                Bind(model.Armor, x => armor.text = x.ToStringFromCache()).
-                Bind(model.Damage, x => damage.text = x.ToStringFromCache()).
-                Bind(model.Level, x => level.text = x.ToStringFromCache()).
-                Bind(model.Icon, x => icon.sprite = x).
-                Bind(buyButton.onClick.AsObservable(), model.Sell).
-                Bind(removeButton.onClick.AsObservable(), model.Remove);
+            BindTo(model.Armor, x => armor.text = x.ToStringFromCache()).
+            BindTo(model.Damage, x => damage.text = x.ToStringFromCache()).
+            BindTo(model.Level, x => level.text = x.ToStringFromCache()).
+            BindTo(model.Icon, x => icon.sprite = x).
+            BindTo(buyButton.onClick.AsObservable(),x => model.Sell.Execute()).
+            BindTo(removeButton.onClick.AsObservable(),x => model.Remove.Execute());
         }
     }
 }

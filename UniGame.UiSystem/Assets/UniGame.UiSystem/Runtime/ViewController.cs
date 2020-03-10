@@ -20,7 +20,7 @@
     // так как это фабрика, которая понятия не имеет что и кому отдает
     // соответственно происходяшие при вызове методов close<T> Hide<T> и прочее
     // не очевидно даже вызывающей стороне
-    public class ViewController : IViewController
+    public class ViewController : IViewStackController
     {
         private readonly IViewFactory viewFactory;
         private readonly IViewElementFactory elementFactory;
@@ -169,17 +169,6 @@
                 Subscribe(x => visibilityChanged.Execute()).
                 AddTo(viewLifeTime);
             
-            //update view active state by base view model data
-            viewModel.IsActive.
-                Where(x => x).
-                Subscribe(x => view.Show()).
-                AddTo(view.LifeTime);
-            
-            viewModel.IsActive.
-                Where(x => !x).
-                Subscribe(x => view.Hide()).
-                AddTo(view.LifeTime);
-
             return view;
         }
         
