@@ -1,14 +1,13 @@
-﻿namespace UniGreenModules.UniGame.UiSystem.Runtime
+﻿using System;
+
+namespace UniGreenModules.UniGame.UiSystem.Runtime
 {
     using System.Collections.Generic;
     using System.Linq;
     using Abstracts;
-    using Core.Runtime.Rx;
-    using Taktika.Addressables.Reactive;
     using UniCore.Runtime.DataFlow;
     using UniCore.Runtime.ObjectPool.Runtime;
     using UniCore.Runtime.ObjectPool.Runtime.Extensions;
-    using UniCore.Runtime.ProfilerTools;
     using UniCore.Runtime.Rx.Extensions;
     using UniRx;
     using UniRx.Async;
@@ -20,11 +19,8 @@
     // так как это фабрика, которая понятия не имеет что и кому отдает
     // соответственно происходяшие при вызове методов close<T> Hide<T> и прочее
     // не очевидно даже вызывающей стороне
-    public class ViewController : IViewStackController
+    public class ViewStackController : IViewStackController
     {
-        private readonly IViewFactory viewFactory;
-        private readonly IViewElementFactory elementFactory;
-
         private List<IView> views = new List<IView>();
 
         private LifeTimeDefinition lifeTime = new LifeTimeDefinition();
@@ -33,11 +29,8 @@
         
         #region constructor
         
-        public ViewController(IViewFactory viewFactory,IViewElementFactory elementFactory)
+        public ViewStackController()
         {
-            this.viewFactory = viewFactory;
-            this.elementFactory = elementFactory;
-
             visibilityChanged.
                 ThrottleFrame(1).
                 Subscribe(x => VisibilityStatusChanged()).
@@ -50,58 +43,38 @@
 
         public void Dispose() => lifeTime.Terminate();
 
+        public bool Contains(IView view) => views.Contains(view);
+
         /// <summary>
-        /// Open new view element
+        /// add view to controller
         /// </summary>
-        /// <param name="viewModel">target element model data</param>
-        /// <param name="skinTag">target element skin</param>
-        /// <returns>created view element</returns>
-        public async UniTask<T> Open<T>(IViewModel viewModel,string skinTag = "") 
-            where T : Component, IView
+        public void Add<TView>(TView view) where TView : Component, IView
         {
-            
-            var view = await viewFactory.Create<T>(skinTag);
-            
             //register view
             views.Add(view);
-            
-            //initialize view with model data
-            InitializeView(view, viewModel);
 
             //update view properties
-            OnViewOpen(view);
-            
-            return view;
-
+            OnViewAdded(view);
         }
 
-        public bool Hide<T>() where T : Component, IView
+        public void Hide<T>() where T : Component, IView
         {
-            var view = Select<T>();
-            view?.Hide();
-            return view != null;
+            FirstViewAction<T>(x => x.Hide());
         }
 
         public void HideAll<T>() where T : Component, IView
         {
-            foreach (var view in views) {
-                if(view is T targetView)
-                    targetView.Hide();
-            }
+            AllViewsAction<T>(x => true,y => y.Hide());
         }
         
         public void HideAll()
         {
-            foreach (var view in views) {
-                view.Hide();
-            }
+            AllViewsAction<IView>(x => true,x => x.Hide());
         }
 
-        public bool Close<T>() where T : Component, IView
+        public void Close<T>() where T : Component, IView
         {
-            var view = Select<T>();
-            view?.Close();
-            return view!=null;
+            FirstViewAction<T>(x => x.Close());
         }
 
         public void CloseAll()
@@ -151,10 +124,27 @@
             OnVisibilityStatusChanged();
         }
 
-   
-        private TView Select<TView>() where TView : Object, IView
+
+        private void AllViewsAction<TView>(Func<TView,bool> predicate,Action<TView> action) 
+            where TView : IView
         {
-            return views.FirstOrDefault(x => typeof(TView) == x.GetType()) as TView;
+            for (var i = 0; i < views.Count; i++)
+            {
+                var view = views[i];
+                if ((view is TView targetView) && 
+                    predicate(targetView))
+                {
+                    action(targetView);
+                }
+            }
+        }
+        
+        private void FirstViewAction<TView>(Action<TView> action) 
+            where TView : Object, IView
+        {
+            var view = views.FirstOrDefault(x => x is TView) as TView;
+            if(view) 
+                action(view);
         }
 
         /// <summary>
@@ -174,14 +164,14 @@
             views.Add(view);
 
             //custom view method call
-            OnViewOpen(view);
+            OnViewAdded(view);
             
             return view;
         }
         
         protected virtual void OnBeforeClose<T>(T view) where T : Component, IView {}
 
-        protected virtual void OnViewOpen<T>(T view) where T : Component, IView {}
+        protected virtual void OnViewAdded<T>(T view) where T : Component, IView {}
 
         protected virtual void OnVisibilityStatusChanged() { }
     }

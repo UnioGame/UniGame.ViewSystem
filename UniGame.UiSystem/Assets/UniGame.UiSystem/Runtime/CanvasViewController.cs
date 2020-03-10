@@ -4,7 +4,7 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
 {
     using Abstracts;
 
-    public class CanvasViewController : ViewController
+    public class CanvasViewController : ViewStackController
     {
         private readonly Canvas canvas;
 
@@ -20,7 +20,7 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         
         #endregion
 
-        protected override void OnViewOpen<T>(T view)
+        protected override void OnViewAdded<T>(T view)
         {
             view.transform.SetParent(canvas.transform);
         }

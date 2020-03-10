@@ -17,15 +17,9 @@
 
         private LifeTimeDefinition lifeTimeDefinition = new LifeTimeDefinition();
         
-        // контролеры отдельных канвасов имеют слишком много не нужного, предлагаю разделить
-        // логику factory и логику управления стэком
-        // чтобы elements controller стал фабрикой через которую все элементы создаются,
-        // а в контроллеры скринов и окон после создания дергаются add или register и вся
-        // логика show/hide/suspend etc. управляется этими контроллерами
-        // это упростит структуру классов и уберёт наследование между контроллерами
         private CanvasViewController windowsController;
         private CanvasViewController screensController;
-        private ViewController elementsController;
+        private ViewStackController elementsController;
         
         private IViewFactory viewFactory;
 
@@ -39,7 +33,12 @@
             
             windowsController  = new CanvasViewController(windowsCanvas,viewFactory,this).AddTo(LifeTime);
             screensController  = new CanvasViewController(screenCanvas,viewFactory,this).AddTo(LifeTime);
-            elementsController = new ViewController(viewFactory,this).AddTo(LifeTime);
+            elementsController = new ViewStackController(viewFactory,this).AddTo(LifeTime);
+            
+            viewControllers.Add(windowsController);
+            viewControllers.Add(screensController);
+            viewControllers.Add(elementsController);
+            
         }
         
         public ILifeTime LifeTime => lifeTimeDefinition.LifeTime;
@@ -49,17 +48,17 @@
         // open по смыслу - create
         public async UniTask<T> Open<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
         {
-            return await elementsController.Open<T>(viewModel,skinTag);
+            return await CreateView<T>(elementsController,viewModel,skinTag);
         }
 
         public async UniTask<T> OpenWindow<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
         {
-            return await windowsController.Open<T>(viewModel,skinTag);
+            return await CreateView<T>(windowsController,viewModel,skinTag);
         }
 
         public async UniTask<T> OpenScreen<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
         {
-            return await screensController.Open<T>(viewModel,skinTag);
+            return await CreateView<T>(screensController,viewModel,skinTag);
         }
 
         public bool CloseWindow<T>() where T : Component, IView
@@ -80,15 +79,19 @@
                     break;
             }
         }
-        
-        
+
+
         /// <summary>
         /// Open new view element
         /// </summary>
+        /// <param name="controller">layout controller</param>
         /// <param name="viewModel">target element model data</param>
         /// <param name="skinTag">target element skin</param>
         /// <returns>created view element</returns>
-        public async UniTask<T> CreateView<T>(IViewModel viewModel,string skinTag = "") 
+        public async UniTask<T> CreateView<T>(
+            IViewStackController controller,
+            IViewModel viewModel,
+            string skinTag = "") 
             where T : Component, IView
         {
             
@@ -98,7 +101,7 @@
             InitializeView(view, viewModel);
 
             //update view properties
-            OnViewOpen(view);
+            controller.Add(view);
             
             return view;
 
@@ -119,18 +122,8 @@
             //close view 
             viewLifeTime.AddCleanUpAction(() => Close(view));
 
-            //handle all view visibility changes
-            view.IsActive.
-                Subscribe(x => OnVisibilityChanged(view,x)).
-                AddTo(viewLifeTime);
-            
             return view;
         }
 
-        private void OnVisibilityChanged(IView view,bool visibility)
-        {
-            //todo
-        }
-        
     }
 }

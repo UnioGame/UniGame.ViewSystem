@@ -30,7 +30,7 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
             //if loading failed release resource immediately
             // почему логи от nameof(ViewController) хотя по факты это ViewFactory
             if (asset == null) {
-                GameLog.LogError($"{nameof(ViewController)} View of Type {typeof(T).Name} not loaded");
+                GameLog.LogError($"{nameof(ViewStackController)} View of Type {typeof(T).Name} not loaded");
                 disposable.Dispose();
                 return null;
             }
