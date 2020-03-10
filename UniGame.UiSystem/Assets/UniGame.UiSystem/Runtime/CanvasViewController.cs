@@ -2,18 +2,13 @@
 
 namespace UniGreenModules.UniGame.UiSystem.Runtime
 {
-    using Abstracts;
-
     public class CanvasViewController : ViewStackController
     {
         private readonly Canvas canvas;
 
         #region constructor
         
-        public CanvasViewController(
-            Canvas canvas,
-            IViewFactory viewFactory,
-            IViewElementFactory elementFactory) : base(viewFactory,elementFactory)
+        public CanvasViewController(Canvas canvas) 
         {
             this.canvas = canvas;
         }

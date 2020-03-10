@@ -31,36 +31,24 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
 
         public ILifeTime LifeTime => gameViewSystem.LifeTime;
 
-        public UniTask<T> Open<T>(IViewModel viewModel, string skinTag = "")
+        public UniTask<T> Create<T>(IViewModel viewModel, string skinTag = "")
             where T : Component, IView
         {
-            return gameViewSystem.Open<T>(viewModel, skinTag); 
+            return gameViewSystem.Create<T>(viewModel, skinTag); 
         }
 
-        public UniTask<T> OpenWindow<T>(IViewModel viewModel, string skinTag = "")
+        public UniTask<T> CreateWindow<T>(IViewModel viewModel, string skinTag = "")
             where T : Component, IView
         {
-            return gameViewSystem.OpenWindow<T>(viewModel, skinTag);
+            return gameViewSystem.CreateWindow<T>(viewModel, skinTag);
         }
 
-        public UniTask<T> OpenScreen<T>(IViewModel viewModel, string skinTag = "")
+        public UniTask<T> CreateScreen<T>(IViewModel viewModel, string skinTag = "")
             where T : Component, IView
         {
-            return gameViewSystem.OpenScreen<T>(viewModel, skinTag);
+            return gameViewSystem.CreateScreen<T>(viewModel, skinTag);
         }
 
-        public bool CloseWindow<T>()
-            where T : Component, IView
-        {
-            return gameViewSystem.CloseWindow<T>();
-        }
-
-        public bool CloseScreen<T>()
-            where T : Component, IView
-        {
-            return gameViewSystem.CloseScreen<T>();
-        }
-        
         public void Dispose() => gameViewSystem.Dispose();
         
         #endregion
@@ -68,7 +56,8 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         private void Awake()
         {
             settings.Initialize();
-            gameViewSystem = new GameViewSystem(settings.UIResourceProvider,windowsCanvas,screenCanvas);
+            var factory = new ViewFactory(settings.UIResourceProvider);
+            gameViewSystem = new GameViewSystem(factory,windowsCanvas,screenCanvas);
         }
 
         private void OnDestroy()

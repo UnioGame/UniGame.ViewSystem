@@ -6,7 +6,6 @@
     using UniCore.Runtime.DataFlow;
     using UniCore.Runtime.DataFlow.Interfaces;
     using UniCore.Runtime.Rx.Extensions;
-    using UniRx;
     using UniRx.Async;
     using UnityEngine;
 
@@ -27,57 +26,49 @@
         
         #endregion
 
-        public GameViewSystem(IViewResourceProvider resourceProvider, Canvas windowsCanvas, Canvas screenCanvas)
+        public GameViewSystem(IViewFactory viewFactory, Canvas windowsCanvas, Canvas screenCanvas)
         {
-            viewFactory = new ViewFactory(resourceProvider);
+            this.viewFactory = viewFactory;
             
-            windowsController  = new CanvasViewController(windowsCanvas,viewFactory,this).AddTo(LifeTime);
-            screensController  = new CanvasViewController(screenCanvas,viewFactory,this).AddTo(LifeTime);
-            elementsController = new ViewStackController(viewFactory,this).AddTo(LifeTime);
+            windowsController  = new CanvasViewController(windowsCanvas).AddTo(LifeTime);
+            screensController  = new CanvasViewController(screenCanvas).AddTo(LifeTime);
+            elementsController = new ViewStackController().AddTo(LifeTime);
             
             viewControllers.Add(windowsController);
             viewControllers.Add(screensController);
             viewControllers.Add(elementsController);
-            
         }
         
         public ILifeTime LifeTime => lifeTimeDefinition.LifeTime;
         
+        /// <summary>
+        /// terminate game view system lifetime
+        /// </summary>
         public void Dispose() => lifeTimeDefinition.Terminate();
 
-        // open по смыслу - create
-        public async UniTask<T> Open<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
+        public async UniTask<T> Create<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
         {
             return await CreateView<T>(elementsController,viewModel,skinTag);
         }
 
-        public async UniTask<T> OpenWindow<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
+        public async UniTask<T> CreateWindow<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
         {
             return await CreateView<T>(windowsController,viewModel,skinTag);
         }
 
-        public async UniTask<T> OpenScreen<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
+        public async UniTask<T> CreateScreen<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
         {
             return await CreateView<T>(screensController,viewModel,skinTag);
         }
 
-        public bool CloseWindow<T>() where T : Component, IView
-        {
-            return windowsController.Close<T>();
-        }
-
-        public bool CloseScreen<T>() where T : Component, IView
-        {
-            return screensController.Close<T>();
-        }
-
-
-        private void Close<TView>(TView view) where TView : Component, IView
+        private void Destroy<TView>(TView view) where TView : Component, IView
         {
             foreach (var viewController in viewControllers) {
-                if(viewController.Close(view))
+                if(viewController.Remove(view))
                     break;
             }
+            //TODO move to pool
+            UnityEngine.Object.Destroy(view.gameObject);
         }
 
 
@@ -120,7 +111,7 @@
             var viewLifeTime = view.LifeTime;
             
             //close view 
-            viewLifeTime.AddCleanUpAction(() => Close(view));
+            viewLifeTime.AddCleanUpAction(() => Destroy(view));
 
             return view;
         }

@@ -57,13 +57,13 @@ namespace UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.Scripts
             var uiViewManager = windowManager.uiViewManager;
             switch (type) {
                 case DemoUiType.Element:
-                    view = await uiViewManager.Open<DemoWindowView>(new ViewModelBase(),skin);
+                    view = await uiViewManager.Create<DemoWindowView>(new ViewModelBase(),skin);
                     break;
                 case DemoUiType.Screen:
-                    view = await uiViewManager.OpenScreen<DemoScreenView>(new ViewModelBase(),skin);
+                    view = await uiViewManager.CreateScreen<DemoScreenView>(new ViewModelBase(),skin);
                     break;
                 case DemoUiType.Window:
-                    view = await uiViewManager.OpenWindow<DemoWindowView>(new ViewModelBase(),skin);
+                    view = await uiViewManager.CreateWindow<DemoWindowView>(new ViewModelBase(),skin);
                     break;
             }
 

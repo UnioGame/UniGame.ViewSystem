@@ -3,7 +3,6 @@ using UniGreenModules.UniGame.UiSystem.Runtime;
 
 namespace UniGreenModules.UniGame.UiSystem.Examples.ListViews.Views
 {
-    using Runtime.Extensions;
     using TMPro;
     using UniCore.Runtime.DataFlow.Interfaces;
     using UniCore.Runtime.Utils;

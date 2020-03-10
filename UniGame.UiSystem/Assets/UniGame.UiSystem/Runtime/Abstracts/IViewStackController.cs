@@ -9,6 +9,8 @@
         
         void Add<TView>(TView view) where TView :Component, IView;
 
+        bool Remove<T>(T view) where T : Component, IView;
+        
         void Hide<T>() where T :Component, IView;
 
         void HideAll();
@@ -18,8 +20,6 @@
         void Close<T>() where T :Component, IView;
         
         void CloseAll();
-
-        bool Close<T>(T view) where T : Component, IView;
 
     }
 }

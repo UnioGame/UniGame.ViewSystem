@@ -6,7 +6,6 @@ using UnityEngine;
 namespace UniGreenModules.UniGame.UiSystem.Examples.ListViews.Views
 {
     using System.Collections.Generic;
-    using Runtime.Extensions;
     using UniRx;
     using UniRx.Async;
     using UnityEngine.UI;
@@ -30,7 +29,7 @@ namespace UniGreenModules.UniGame.UiSystem.Examples.ListViews.Views
 
         private async UniTask<DemoItemView> CreateItem(DemoItemViewModel itemModel)
         {
-            var view = await ViewFactory.Open<DemoItemView>(itemModel);
+            var view = await ViewFactory.Create<DemoItemView>(itemModel);
             view.transform.SetParent(itemsParent);
             itemViews.Add(view);
             LayoutRebuilder.MarkLayoutForRebuild(itemsParent);
