@@ -4,6 +4,8 @@
     using UniRx.Async;
     using UnityEngine;
 
+    // Имя интерфейса не соответствует его методам
+    // Судя по методам это не просто фабрика а ещё и объект управляющий открываемыми вьюшками
     public interface IViewElementFactory
     {
         UniTask<T> Open<T>(IViewModel viewModel,string skinTag = "") 

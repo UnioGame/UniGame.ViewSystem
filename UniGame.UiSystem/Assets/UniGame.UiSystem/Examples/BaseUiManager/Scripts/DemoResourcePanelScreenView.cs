@@ -12,6 +12,8 @@
 
         protected override void OnWindowInitialize(DemoResourceUiViewModel model, ILifeTime lifeTime)
         {
+            // в методе bind первый параметр view, а вызывается у модели
+            // хотя очевидно нужно подвязать подписку к вьюшному lifeTime
             model.Bind(model.Gold, x => goldValue.text = x.ToStringFromCache());
         }
     }

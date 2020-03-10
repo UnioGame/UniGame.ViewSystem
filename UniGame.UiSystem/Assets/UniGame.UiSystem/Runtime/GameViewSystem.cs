@@ -16,6 +16,12 @@
 
         private LifeTimeDefinition lifeTimeDefinition = new LifeTimeDefinition();
         
+        // контролеры отдельных канвасов имеют слишком много не нужного, предлагаю разделить
+        // логику factory и логику управления стэком
+        // чтобы elements controller стал фабрикой через которую все элементы создаются,
+        // а в контроллеры скринов и окон после создания дергаются add или register и вся
+        // логика show/hide/suspend etc. управляется этими контроллерами
+        // это упростит структуру классов и уберёт наследование между контроллерами
         private CanvasViewController windowsController;
         private CanvasViewController screensController;
         private ViewController elementsController;
@@ -39,6 +45,7 @@
         
         public void Dispose() => lifeTimeDefinition.Terminate();
 
+        // open по смыслу - create
         public async UniTask<T> Open<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
         {
             return await elementsController.Open<T>(viewModel,skinTag);

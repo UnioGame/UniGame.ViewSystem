@@ -19,6 +19,8 @@
         /// <summary>
         /// view model context
         /// </summary>
+        // Это не контекст, это View Model. Во всех остальных местах контекст означет IContext или что то подобное
+        // может возникнуть путаница
         protected TViewModel context;
         
         /// <summary>
@@ -96,6 +98,7 @@
         /// </summary>
         /// <param name="model"></param>
         /// <param name="lifeTime"></param>
+        // и вью модель и лайф тайм сохраняются в доступные из дочерних классов поля, зачем передавать их в это метод
         protected virtual void OnInitialize(TViewModel model, ILifeTime lifeTime) { }
 
         private void OnDestroy()

@@ -7,6 +7,7 @@
     using UniRx.Async;
     using UnityEngine;
 
+
     public interface IViewResourceProvider
     {
         /// <summary>
@@ -40,6 +41,10 @@
             bool strongMatching = true) 
             where TView : Object;
 
+        // в интерфейсе объединены методы получения View и регистрации
+        // хотя к регистрации доступ должен быть только у определенного набора классов
+        // возможно имеет смысл убрать Register из интерфейса,
+        // а оставить его только реализациям в местах их сборки
         void RegisterViews(IReadOnlyList<UiViewDescription> items);
     }
 }

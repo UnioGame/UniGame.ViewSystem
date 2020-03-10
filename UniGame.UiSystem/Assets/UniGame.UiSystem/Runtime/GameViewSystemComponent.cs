@@ -31,6 +31,7 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
 
         public ILifeTime LifeTime => gameViewSystem.LifeTime;
 
+        // подобные определения очень плохо читаются лучше выделять тело даже если вызовы просто делегируются
         public UniTask<T> Open<T>(IViewModel viewModel, string skinTag = "")
             where T : Component, IView => gameViewSystem.Open<T>(viewModel, skinTag);
 

@@ -15,6 +15,11 @@
     using UnityEngine;
     using Object = UnityEngine.Object;
 
+    // Если этот класс предназначен только для выдачи вьюшек запросившему
+    // то у него должен быть только метод Open
+    // так как это фабрика, которая понятия не имеет что и кому отдает
+    // соответственно происходяшие при вызове методов close<T> Hide<T> и прочее
+    // не очевидно даже вызывающей стороне
     public class ViewController : IViewController
     {
         private readonly IViewFactory viewFactory;
@@ -149,7 +154,8 @@
         private T InitializeView<T>(T view, IViewModel viewModel)
             where T : Component, IView
         {
-                        
+            // Комментарии от кэпа по всему классу - не нужны
+
             //initialize view with model data
             view.Initialize(viewModel,elementFactory);
             

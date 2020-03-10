@@ -30,6 +30,8 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime.Extensions
                 Subscribe(x => target.Execute(x));
         }
         
+        // не хватает ограничений на TSource чтобы бинды были применимы только к View,
+        // а то можно легко биндить не то не от того по неправильному LifeTime
         public static TSource Bind<TSource,T>(
             this TSource view,
             IObservable<T> source, 

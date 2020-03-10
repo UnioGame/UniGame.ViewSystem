@@ -7,6 +7,7 @@
     {
         IReadOnlyReactiveProperty<bool> IsActive { get; }
 
+        // Вместо IViewElementFactory хочется передавать IContent с рестришкном на IViewService
         void Initialize(IViewModel vm,IViewElementFactory viewFactory);
         
         void Close();
