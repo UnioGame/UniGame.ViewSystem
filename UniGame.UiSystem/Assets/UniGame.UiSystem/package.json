@@ -1,0 +1,18 @@
+{
+  "name": "com.unigame.uisystem",
+  "author": "Mefodei",
+  "displayName": "UniGame UI System",
+  "description": "Ui system for Unity",
+  "unity": "2019.2",
+  "version": "1.0.7",
+  "keywords": [],
+  "dependencies": {
+    "com.unigame.neuecc.unirx": "7.1.1",
+    "com.unigame.neuecc.unirx.async": "1.2.0",
+    "com.unigame.unicore": "1.5.11",
+    "com.unigame.uniroutine": "1.5.28",
+    "com.unigame.addressablestools": "1.2.13",
+    "com.unity.addressables": "1.6.2",
+    "com.unity.textmeshpro": "2.0.1"
+  }
+}
