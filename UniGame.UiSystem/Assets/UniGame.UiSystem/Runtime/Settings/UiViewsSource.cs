@@ -4,7 +4,7 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime.Settings
     using Sirenix.OdinInspector;
     using UnityEngine;
 
-    [CreateAssetMenu(menuName = "Taktika/Ui/UiViewSource", fileName = "UiViewSource")]
+    [CreateAssetMenu(menuName = "UniGame/UiSystem/UiViewSource", fileName = "UiViewSource")]
     public class UiViewsSource : ScriptableObject
     {
         public string sourceName;

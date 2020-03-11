@@ -8,7 +8,7 @@
     {
         private static UiAssemblyBuilder settingsBuilder = new UiAssemblyBuilder();
         
-        [MenuItem(itemName:"UniGame/UI System/Refresh UI Views")]
+        [MenuItem(itemName:"UniGame/UI System/Rebuild UI Settings")]
         public static void RefreshUiSettings()
         {
 
@@ -27,7 +27,7 @@
             settingsBuilder.Build(source);
         }
 
-        [MenuItem(itemName:"Assets/Rebuild UI Source")]
+        [MenuItem(itemName:"Assets/Rebuild UI Settings")]
         public static void RebuildSelected()
         {
             Build(Selection.activeObject as UiViewsSource);
