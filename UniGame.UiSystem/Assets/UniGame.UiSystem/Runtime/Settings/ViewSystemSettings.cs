@@ -14,7 +14,7 @@
     using UniRx.Async;
     using UnityEngine;
 
-    [CreateAssetMenu(menuName = "Taktika/Ui/ViewSystemSettings", fileName = "ViewSystemSettings")]
+    [CreateAssetMenu(menuName = "UniGame/UiSystem/UiSystemSettings", fileName = "ViewSystemSettings")]
     public class ViewSystemSettings : UiViewsSource, IViewSystemSettings
     {
         [SerializeField]

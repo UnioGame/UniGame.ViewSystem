@@ -1,5 +1,7 @@
 namespace UniGreenModules.UniGame.UiSystem.Runtime
 {
+    using System;
+    using System.Diagnostics;
     using Abstracts;
     using UniCore.Runtime.Rx.Extensions;
     using UniRx;
@@ -61,5 +63,17 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
                 GetComponent<CanvasGroup>() : 
                 canvasGroup;
         }
+        
+#region editor only     
+        
+        [Conditional("UNITY_EDITOR")]
+        protected void OnValidate()
+        {
+            canvasGroup = canvasGroup == null ? 
+                GetComponent<CanvasGroup>() : 
+                canvasGroup;
+        }
+        
+#endregion
     }
 }
