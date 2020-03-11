@@ -14,7 +14,7 @@
     using UniRx.Async;
     using UnityEngine;
 
-    [CreateAssetMenu(menuName = "Taktika/Ui/ViewSystemSettings", fileName = "ViewSystemSettings")]
+    [CreateAssetMenu(menuName = "UniGame/UiSystem/UiSystemSettings", fileName = "ViewSystemSettings")]
     public class ViewSystemSettings : UiViewsSource, IViewSystemSettings
     {
         [SerializeField]
@@ -22,14 +22,14 @@
         [DrawWithUnity]
         private List<UiViewsSourceReference> sources = new List<UiViewsSourceReference>();
 
-        private                 LifeTimeDefinition    lifeTimeDefinition;
-        private                 IViewResourceProvider uiResourceProvider;
-        [NonSerialized] private bool                  isInitialized;
+        private                 LifeTimeDefinition lifeTimeDefinition;
+        private                 UiResourceProvider uiResourceProvider;
+        [NonSerialized] private bool               isInitialized;
 
         public void Dispose() => lifeTimeDefinition?.Terminate();
 
         public IViewResourceProvider UIResourceProvider => uiResourceProvider;
-        
+
         public void Initialize()
         {
             if (isInitialized) return;
@@ -49,15 +49,17 @@
         {
             //load ui views async
             foreach (var reference in sources) {
-                reference.
-                    ToObservable().
-                    Catch<UiViewsSource, Exception>(
-                        x => {
-                            GameLog.LogError($"UiManagerSettings Load Ui Source failed {reference.AssetGUID}");
-                            GameLog.LogError(x);
-                            return Observable.Empty<UiViewsSource>();}).
+                reference.ToObservable().Catch<UiViewsSource, Exception>(
+                    x => {
+                        GameLog.LogError($"UiManagerSettings Load Ui Source failed {reference.AssetGUID}");
+                        GameLog.LogError(x);
+                        return Observable.Empty<UiViewsSource>();
+                    }).
                     Where(x => x != null).
-                    Do(x => uiResourceProvider.RegisterViews(x.uiViews)).Subscribe().AddTo(lifeTime);
+                    Do(
+                        x => uiResourceProvider.RegisterViews(x.uiViews)).
+                    Subscribe().
+                    AddTo(lifeTime);
             }
         }
 

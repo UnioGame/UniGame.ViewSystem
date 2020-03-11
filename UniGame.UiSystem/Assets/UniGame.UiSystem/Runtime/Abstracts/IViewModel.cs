@@ -6,7 +6,6 @@
 
     public interface IViewModel: IDisposable, ILifeTimeContext
     {
-        IReadOnlyReactiveProperty<bool> IsActive { get; }
-        
+
     }
 }

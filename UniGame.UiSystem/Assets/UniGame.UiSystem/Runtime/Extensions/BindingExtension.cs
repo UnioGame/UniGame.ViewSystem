@@ -7,7 +7,7 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime.Extensions
     using UniCore.Runtime.Interfaces;
     using UniCore.Runtime.Rx.Extensions;
 
-    public static class ViewBindExtension
+    public static class BindingExtension
     {
         public static IDisposable Bind<T>(
             this IObservable<T> source, 

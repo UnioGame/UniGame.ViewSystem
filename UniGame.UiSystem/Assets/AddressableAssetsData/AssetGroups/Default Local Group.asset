@@ -49,18 +49,48 @@ MonoBehaviour:
     m_SerializedLabels: []
     m_mainAssetType: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  - m_GUID: 272d087cd752bc0489f2cddc163fc853
+    m_Address: Assets/UniGame.UiSystem/Examples/ConcurrentViewLoading/Windows/WindowView
+      3.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: 
   - m_GUID: 28cda470d6401fe479675ef9ac62e039
     m_Address: Assets/UniGame.UiSystem/Examples/BaseUiManager/LobbyUiSource.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_mainAssetType: UniGreenModules.UniGame.UiSystem.Runtime.Settings.UiViewsSource,
       unigame.uisystem.runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  - m_GUID: 2e0f2059b1d4d5543bec5f3e0d89b88c
+    m_Address: Assets/UniGame.UiSystem/Examples/ConcurrentViewLoading/Windows/WindowView
+      9.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: 
+  - m_GUID: 36fa392cf44823e48be4cc979370052d
+    m_Address: Assets/UniGame.UiSystem/Examples/ConcurrentViewLoading/Windows/WindowView
+      8.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: 
+  - m_GUID: 4af6b6888c0f3964188adfffb2fbfddc
+    m_Address: Assets/UniGame.UiSystem/Examples/ConcurrentViewLoading/Windows/WindowView
+      6.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: 
   - m_GUID: 5c5cd9d26f1f7ac479c12e997568f976
     m_Address: Assets/UniGame.UiSystem/Examples/BaseUiManager/GameplayUiSource.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_mainAssetType: UniGreenModules.UniGame.UiSystem.Runtime.Settings.UiViewsSource,
       unigame.uisystem.runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  - m_GUID: 76c01dd1393e6ed46975b7898c26832e
+    m_Address: Assets/UniGame.UiSystem/Examples/ConcurrentViewLoading/Windows/WindowView
+      1.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: 
   - m_GUID: 93704f579627b454aa477d7b12e175d8
     m_Address: Assets/UniGame.UiSystem/Examples/BaseUiManager/Screens/Skin1/ScreemView
       Variant.prefab
@@ -75,6 +105,12 @@ MonoBehaviour:
     m_SerializedLabels: []
     m_mainAssetType: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  - m_GUID: bb2ec1ae15ea7534ca3b9cd0216c8d4f
+    m_Address: Assets/UniGame.UiSystem/Examples/ConcurrentViewLoading/Windows/WindowView
+      7.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: 
   - m_GUID: bb67fb2ee27614545b652d7c12865add
     m_Address: Assets/UniGame.UiSystem/Examples/BaseUiManager/Screens/Skin3/ScreemView
       Variant.prefab
@@ -82,6 +118,18 @@ MonoBehaviour:
     m_SerializedLabels: []
     m_mainAssetType: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  - m_GUID: c24fbcd58d96ae54f9932f83b6666651
+    m_Address: Assets/UniGame.UiSystem/Examples/ConcurrentViewLoading/Windows/WindowView
+      2.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: 
+  - m_GUID: c4ee89812a09ca84ea4162d486cef964
+    m_Address: Assets/UniGame.UiSystem/Examples/ConcurrentViewLoading/Windows/WindowView
+      4.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: 
   - m_GUID: d2f40bec47d9f2e4fbd8c6ae6db19ae6
     m_Address: Assets/UniGame.UiSystem/Examples/BaseUiManager/Windows/Skins/Skin1/WindowViewBlue
       Variant.prefab
@@ -95,6 +143,12 @@ MonoBehaviour:
     m_SerializedLabels: []
     m_mainAssetType: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  - m_GUID: f00fdcf76913ee04bb64eba31285d529
+    m_Address: Assets/UniGame.UiSystem/Examples/ConcurrentViewLoading/Windows/WindowView
+      5.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: 
   - m_GUID: f8d7ab623219d3a4095e0137a803a2c2
     m_Address: Assets/UniGame.UiSystem/Examples/ListViews/Assets/ListViewItem.prefab
     m_ReadOnly: 0

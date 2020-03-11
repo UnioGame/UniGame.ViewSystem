@@ -29,7 +29,7 @@ namespace UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager
         {
             switch (type) {
                 case DemoUiType.Element:
-                    uiViewManager.Open<DemoWindowView>(new ViewModelBase(),tag);
+                    uiViewManager.Create<DemoWindowView>(new ViewModelBase(),tag);
                     break;
                 case DemoUiType.Screen:
                     uiViewManager.OpenScreen<DemoScreenView>(new ViewModelBase(),tag);

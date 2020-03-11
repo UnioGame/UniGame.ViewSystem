@@ -1,12 +1,10 @@
-﻿using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
-using UniGreenModules.UniGame.UiSystem.Examples.ListViews.ViewModels;
+﻿using UniGreenModules.UniGame.UiSystem.Examples.ListViews.ViewModels;
 using UniGreenModules.UniGame.UiSystem.Runtime;
 using UnityEngine;
 
 namespace UniGreenModules.UniGame.UiSystem.Examples.ListViews.Views
 {
     using System.Collections.Generic;
-    using Runtime.Extensions;
     using UniRx;
     using UniRx.Async;
     using UnityEngine.UI;
@@ -19,19 +17,18 @@ namespace UniGreenModules.UniGame.UiSystem.Examples.ListViews.Views
         
         public List<DemoItemView> itemViews = new List<DemoItemView>();
 
-        protected override void OnWindowInitialize(DemoListViewModel model, ILifeTime lifeTime)
+        protected override void OnWindowInitialize(DemoListViewModel model)
         {
             var items = model.ListItems;
             
-            this.
-                Bind(items.ObserveAdd(), x => CreateItem(x.Value)).
-                Bind(items.ObserveRemove(), x => RemoveItem(x.Index)).
-                Bind(addItem.onClick.AsObservable(), model.Add);
+            BindTo(items.ObserveAdd(), x => CreateItem(x.Value)).
+            BindTo(items.ObserveRemove(), x => RemoveItem(x.Index)).
+            BindTo(addItem.onClick.AsObservable(),x => model.Add.Execute());
         }
 
         private async UniTask<DemoItemView> CreateItem(DemoItemViewModel itemModel)
         {
-            var view = await ViewFactory.Open<DemoItemView>(itemModel);
+            var view = await ViewFactory.Create<DemoItemView>(itemModel);
             view.transform.SetParent(itemsParent);
             itemViews.Add(view);
             LayoutRebuilder.MarkLayoutForRebuild(itemsParent);

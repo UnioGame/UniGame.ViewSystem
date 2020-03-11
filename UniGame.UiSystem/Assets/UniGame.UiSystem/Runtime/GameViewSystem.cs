@@ -18,60 +18,100 @@
         
         private CanvasViewController windowsController;
         private CanvasViewController screensController;
-        private ViewController elementsController;
+        private ViewStackController elementsController;
         
         private IViewFactory viewFactory;
 
-        private List<IViewController> viewControllers = new List<IViewController>();
+        private List<IViewStackController> viewControllers = new List<IViewStackController>();
         
         #endregion
 
-        public GameViewSystem(IViewResourceProvider resourceProvider, Canvas windowsCanvas, Canvas screenCanvas)
+        public GameViewSystem(IViewFactory viewFactory, Canvas windowsCanvas, Canvas screenCanvas)
         {
-            viewFactory = new ViewFactory(resourceProvider);
+            this.viewFactory = viewFactory;
             
-            windowsController  = new CanvasViewController(windowsCanvas,viewFactory,this).AddTo(LifeTime);
-            screensController  = new CanvasViewController(screenCanvas,viewFactory,this).AddTo(LifeTime);
-            elementsController = new ViewController(viewFactory,this).AddTo(LifeTime);
+            windowsController  = new CanvasViewController(windowsCanvas).AddTo(LifeTime);
+            screensController  = new CanvasViewController(screenCanvas).AddTo(LifeTime);
+            
+            viewControllers.Add(windowsController);
+            viewControllers.Add(screensController);
+            viewControllers.Add(elementsController);
         }
         
         public ILifeTime LifeTime => lifeTimeDefinition.LifeTime;
         
+        /// <summary>
+        /// terminate game view system lifetime
+        /// </summary>
         public void Dispose() => lifeTimeDefinition.Terminate();
 
-        public async UniTask<T> Open<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
+        public async UniTask<T> Create<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
         {
-            return await elementsController.Open<T>(viewModel,skinTag);
+            return await CreateView<T>(viewModel,skinTag);
         }
 
         public async UniTask<T> OpenWindow<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
         {
-            return await windowsController.Open<T>(viewModel,skinTag);
+            var view = await CreateView<T>(viewModel,skinTag);
+            //add created view to target controller
+            screensController.Add(view);
+            
+            return view;
         }
 
         public async UniTask<T> OpenScreen<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
         {
-            return await screensController.Open<T>(viewModel,skinTag);
+            var view = await CreateView<T>(viewModel,skinTag);
+            
+            //add created view to target controller
+            screensController.Add(view);
+
+            return view;
         }
 
-        public bool CloseWindow<T>() where T : Component, IView
+        
+        /// <summary>
+        /// create new view element
+        /// </summary>
+        /// <param name="viewModel">target element model data</param>
+        /// <param name="skinTag">target element skin</param>
+        /// <returns>created view element</returns>
+        public async UniTask<T> CreateView<T>(
+            IViewModel viewModel,
+            string skinTag = "") 
+            where T : Component, IView
         {
-            return windowsController.Close<T>();
-        }
+            var view = await viewFactory.Create<T>(skinTag);
 
-        public bool CloseScreen<T>() where T : Component, IView
-        {
-            return screensController.Close<T>();
-        }
+            InitializeView(view, viewModel);
 
+            return view;
 
-        private void Close<TView>(TView view) where TView : Component, IView
-        {
-            foreach (var viewController in viewControllers) {
-                if(viewController.Close(view))
-                    break;
-            }
         }
         
+        /// <summary>
+        /// Initialize View with model data
+        /// </summary>
+        private T InitializeView<T>(T view, IViewModel viewModel)
+            where T : Component, IView
+        {
+
+            view.Initialize(viewModel,this);
+            //destroy view when lifetime  terminated
+            var viewLifeTime = view.LifeTime;
+            viewLifeTime.AddCleanUpAction(() => Destroy(view));
+
+            return view;
+        }
+
+        private void Destroy<TView>(TView view) where TView : Component, IView
+        {
+            foreach (var viewController in viewControllers) {
+                if(viewController.Remove(view))
+                    break;
+            }
+            //TODO move to pool
+            UnityEngine.Object.Destroy(view.gameObject);
+        }
     }
 }

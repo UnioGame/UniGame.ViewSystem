@@ -7,6 +7,7 @@
     using UniRx.Async;
     using UnityEngine;
 
+
     public interface IViewResourceProvider
     {
         /// <summary>
@@ -39,7 +40,6 @@
             string skinTag,
             bool strongMatching = true) 
             where TView : Object;
-
-        void RegisterViews(IReadOnlyList<UiViewDescription> items);
+        
     }
 }

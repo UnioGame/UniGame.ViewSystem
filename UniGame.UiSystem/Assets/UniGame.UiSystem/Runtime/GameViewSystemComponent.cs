@@ -31,21 +31,24 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
 
         public ILifeTime LifeTime => gameViewSystem.LifeTime;
 
-        public UniTask<T> Open<T>(IViewModel viewModel, string skinTag = "")
-            where T : Component, IView => gameViewSystem.Open<T>(viewModel, skinTag);
+        public UniTask<T> Create<T>(IViewModel viewModel, string skinTag = "")
+            where T : Component, IView
+        {
+            return gameViewSystem.Create<T>(viewModel, skinTag); 
+        }
 
         public UniTask<T> OpenWindow<T>(IViewModel viewModel, string skinTag = "")
-            where T : Component, IView => gameViewSystem.OpenWindow<T>(viewModel, skinTag);
+            where T : Component, IView
+        {
+            return gameViewSystem.OpenWindow<T>(viewModel, skinTag);
+        }
 
         public UniTask<T> OpenScreen<T>(IViewModel viewModel, string skinTag = "")
-            where T : Component, IView => gameViewSystem.OpenScreen<T>(viewModel, skinTag);
+            where T : Component, IView
+        {
+            return gameViewSystem.OpenScreen<T>(viewModel, skinTag);
+        }
 
-        public bool CloseWindow<T>()
-            where T : Component, IView => gameViewSystem.CloseWindow<T>();
-
-        public bool CloseScreen<T>()
-            where T : Component, IView => gameViewSystem.CloseScreen<T>();
-        
         public void Dispose() => gameViewSystem.Dispose();
         
         #endregion
@@ -53,7 +56,8 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         private void Awake()
         {
             settings.Initialize();
-            gameViewSystem = new GameViewSystem(settings.UIResourceProvider,windowsCanvas,screenCanvas);
+            var factory = new ViewFactory(settings.UIResourceProvider);
+            gameViewSystem = new GameViewSystem(factory,windowsCanvas,screenCanvas);
         }
 
         private void OnDestroy()

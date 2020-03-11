@@ -28,8 +28,9 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
             var disposable = result.disposable;
             
             //if loading failed release resource immediately
+            // почему логи от nameof(ViewController) хотя по факты это ViewFactory
             if (asset == null) {
-                GameLog.LogError($"{nameof(ViewController)} View of Type {typeof(T).Name} not loaded");
+                GameLog.LogError($"{nameof(ViewStackController)} View of Type {typeof(T).Name} not loaded");
                 disposable.Dispose();
                 return null;
             }
@@ -43,6 +44,7 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
 
         }
         
+        // virtual который никто не переопределяет
         protected virtual TView Create<TView>(TView asset) where TView : Component, IView
         {
             //create instance of view

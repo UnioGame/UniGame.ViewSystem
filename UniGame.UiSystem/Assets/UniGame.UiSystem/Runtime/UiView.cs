@@ -1,7 +1,11 @@
-﻿namespace UniGreenModules.UniGame.UiSystem.Runtime
+﻿using System.Collections;
+using UniGreenModules.UniRoutine.Runtime;
+
+namespace UniGreenModules.UniGame.UiSystem.Runtime
 {
     using System;
     using Abstracts;
+    using Extensions;
     using UniCore.Runtime.DataFlow;
     using UniCore.Runtime.DataFlow.Interfaces;
     using UniCore.Runtime.ProfilerTools;
@@ -17,17 +21,19 @@
         private IViewElementFactory viewFactory;
         
         /// <summary>
-        /// view model context
-        /// </summary>
-        protected TViewModel context;
-        
-        /// <summary>
         /// ui element visibility status
         /// </summary>
         protected BoolReactiveProperty visibility = new BoolReactiveProperty(false);
 
+        /// <summary>
+        /// model container
+        /// </summary>
+        private ReactiveProperty<TViewModel> viewModel = new ReactiveProperty<TViewModel>();
+        
         #region public properties
 
+        public IReadOnlyReactiveProperty<TViewModel> Model => viewModel;
+        
         /// <summary>
         /// Is View Active
         /// </summary>
@@ -44,60 +50,89 @@
         
         #region public methods
 
-        public void Initialize(IViewModel model,IViewElementFactory viewFactory)
+        public void Initialize(IViewModel model,IViewElementFactory factory)
         {
             //restart view lifetime
             lifeTimeDefinition.Release();
 
             //save model as context data
-            if (model is TViewModel viewModel) {
-                context = viewModel;
+            if (model is TViewModel modelData) {
+                this.viewModel.Value = modelData;
             }
             else {
                 throw  new ArgumentException($"VIEW: {name} wrong model type. Target type {typeof(TViewModel).Name} : model Type {model?.GetType().Name}");
             }
             
-            this.viewFactory = viewFactory;
+            this.viewFactory = factory;
 
             //bind model lifetime to local
             var modelLifeTime = model.LifeTime;
-            //terminate if model lifetime ended
             modelLifeTime.AddCleanUpAction(Close);
             
             //terminate model when view closed
             LifeTime.AddDispose(model);
-            LifeTime.AddCleanUpAction(() => viewFactory = null);
+            LifeTime.AddCleanUpAction(() => factory = null);
 
             //custom initialization
-            OnInitialize(context,LifeTime);
+            OnInitialize(modelData);
 
         }
 
         /// <summary>
         /// show active view
         /// </summary>
-        public virtual void Show() => visibility.Value = true;
+        public void Show() => visibility.Value = true;
 
         /// <summary>
         /// hide view without release it
         /// </summary>
-        public virtual void Hide() => visibility.Value = false;
+        public void Hide() => visibility.Value = false;
 
         /// <summary>
         /// end of view lifetime
         /// </summary>
-        public void Close() => lifeTimeDefinition.Terminate();
+        public void Close()
+        {
+            if (lifeTimeDefinition.IsTerminated) return;
+            
+            OnClose().Execute().
+                AddTo(LifeTime);
+        } 
 
-        
+        /// <summary>
+        /// bind source stream to view action
+        /// with View LifeTime context
+        /// </summary>
+        public UiView<TViewModel> BindTo<T>(IObservable<T> source, Action<T> action) => this.Bind(source, action);
+
         #endregion
-
+        
         /// <summary>
         /// custom initialization methods
         /// </summary>
-        /// <param name="model"></param>
-        /// <param name="lifeTime"></param>
-        protected virtual void OnInitialize(TViewModel model, ILifeTime lifeTime) { }
+        protected virtual void OnInitialize(TViewModel model) { }
 
+        /// <summary>
+        /// view closing process
+        /// windows auto terminated on close complete
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerator OnClose()
+        {
+            //wait until user defined closing operation complete
+            yield return OnCloseProgress();
+            
+            lifeTimeDefinition.Terminate();
+        }
+
+        /// <summary>
+        /// close continuation
+        /// </summary>
+        protected virtual IEnumerator OnCloseProgress()
+        {
+            yield break;
+        }
+        
         private void OnDestroy()
         {
             GameLog.Log($"View {name} Destroyed");

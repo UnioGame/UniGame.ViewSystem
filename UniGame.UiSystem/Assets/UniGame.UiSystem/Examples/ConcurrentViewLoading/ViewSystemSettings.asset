@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b71e3508fe8ed7418db94ea23c131b5, type: 3}
+  m_Name: ViewSystemSettings
+  m_EditorClassIdentifier: 
+  sourceName: 
+  addressableGroupName: 
+  uiViewsDefaultFolders:
+  - Assets/UniGame.UiSystem/Examples/ConcurrentViewLoading/Windows
+  uiViewsSkinFolders: []
+  uiViews:
+  - Tag: 
+    Type:
+      fullTypeName: UiSystem.Assets.UniGame.UiSystem.Examples.ConcurrentViewLoading.DemoViewConcurrent1,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    View:
+      m_AssetGUID: 76c01dd1393e6ed46975b7898c26832e
+      m_SubObjectName: 
+  - Tag: 
+    Type:
+      fullTypeName: UiSystem.Assets.UniGame.UiSystem.Examples.ConcurrentViewLoading.DemoViewConcurrent2,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    View:
+      m_AssetGUID: c24fbcd58d96ae54f9932f83b6666651
+      m_SubObjectName: 
+  - Tag: 
+    Type:
+      fullTypeName: UiSystem.Assets.UniGame.UiSystem.Examples.ConcurrentViewLoading.DemoViewConcurrent3,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    View:
+      m_AssetGUID: 272d087cd752bc0489f2cddc163fc853
+      m_SubObjectName: 
+  - Tag: 
+    Type:
+      fullTypeName: UiSystem.Assets.UniGame.UiSystem.Examples.ConcurrentViewLoading.DemoViewConcurrent4,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    View:
+      m_AssetGUID: c4ee89812a09ca84ea4162d486cef964
+      m_SubObjectName: 
+  - Tag: 
+    Type:
+      fullTypeName: UiSystem.Assets.UniGame.UiSystem.Examples.ConcurrentViewLoading.DemoViewConcurrent5,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    View:
+      m_AssetGUID: f00fdcf76913ee04bb64eba31285d529
+      m_SubObjectName: 
+  - Tag: 
+    Type:
+      fullTypeName: UiSystem.Assets.UniGame.UiSystem.Examples.ConcurrentViewLoading.DemoViewConcurrent6,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    View:
+      m_AssetGUID: 4af6b6888c0f3964188adfffb2fbfddc
+      m_SubObjectName: 
+  - Tag: 
+    Type:
+      fullTypeName: UiSystem.Assets.UniGame.UiSystem.Examples.ConcurrentViewLoading.DemoViewConcurrent7,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    View:
+      m_AssetGUID: bb2ec1ae15ea7534ca3b9cd0216c8d4f
+      m_SubObjectName: 
+  - Tag: 
+    Type:
+      fullTypeName: UiSystem.Assets.UniGame.UiSystem.Examples.ConcurrentViewLoading.DemoViewConcurrent8,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    View:
+      m_AssetGUID: 36fa392cf44823e48be4cc979370052d
+      m_SubObjectName: 
+  - Tag: 
+    Type:
+      fullTypeName: UiSystem.Assets.UniGame.UiSystem.Examples.ConcurrentViewLoading.DemoViewConcurrent9,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    View:
+      m_AssetGUID: 2e0f2059b1d4d5543bec5f3e0d89b88c
+      m_SubObjectName: 
+  sources: []
