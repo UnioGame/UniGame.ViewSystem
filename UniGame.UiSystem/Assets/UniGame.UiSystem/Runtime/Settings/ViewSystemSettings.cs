@@ -14,7 +14,6 @@
     using UniRx.Async;
     using UnityEngine;
 
-    // очень неудобно - скрипт и SO с одной и той же иконкой
     [CreateAssetMenu(menuName = "Taktika/Ui/ViewSystemSettings", fileName = "ViewSystemSettings")]
     public class ViewSystemSettings : UiViewsSource, IViewSystemSettings
     {

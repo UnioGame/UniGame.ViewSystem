@@ -1,5 +1,4 @@
-﻿using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
-using UniGreenModules.UniGame.UiSystem.Examples.ListViews.ViewModels;
+﻿using UniGreenModules.UniGame.UiSystem.Examples.ListViews.ViewModels;
 using UniGreenModules.UniGame.UiSystem.Runtime;
 using UnityEngine;
 
@@ -18,7 +17,7 @@ namespace UniGreenModules.UniGame.UiSystem.Examples.ListViews.Views
         
         public List<DemoItemView> itemViews = new List<DemoItemView>();
 
-        protected override void OnWindowInitialize(DemoListViewModel model, ILifeTime lifeTime)
+        protected override void OnWindowInitialize(DemoListViewModel model)
         {
             var items = model.ListItems;
             

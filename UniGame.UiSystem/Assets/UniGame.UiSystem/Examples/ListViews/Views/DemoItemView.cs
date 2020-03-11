@@ -19,7 +19,7 @@ namespace UniGreenModules.UniGame.UiSystem.Examples.ListViews.Views
         public Button buyButton;
         public Button removeButton;
         
-        protected override void OnInitialize(DemoItemViewModel model, ILifeTime lifeTime)
+        protected override void OnInitialize(DemoItemViewModel model)
         {
             BindTo(model.Armor, x => armor.text = x.ToStringFromCache()).
             BindTo(model.Damage, x => damage.text = x.ToStringFromCache()).

@@ -1,7 +1,6 @@
 namespace UniGreenModules.UniGame.UiSystem.Runtime
 {
     using Abstracts;
-    using UniCore.Runtime.DataFlow.Interfaces;
     using UniCore.Runtime.Rx.Extensions;
     using UniRx;
     using UnityEngine;
@@ -13,11 +12,10 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         where TWindowModel : class, IViewModel
     {
         #region inspector
-        // очень неудобно читать со всеми ifdef
+        
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Required]
 #endif
-        
         [SerializeField] protected CanvasGroup canvasGroup;
         
 #if ODIN_INSPECTOR   
@@ -42,36 +40,26 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         
         #endregion
         
-        protected sealed override void OnInitialize(TWindowModel model, ILifeTime lifeTime)
+        protected sealed override void OnInitialize(TWindowModel model)
         {
-            // дублируется код из ViewController
-            // так же флаг дублирует флаг из VM 
-            IsActive.
-                Where(x => x).
+            IsActive.Where(x => x).
                 Subscribe(x => canvasGroup.SetState(visibleState)).
                 AddTo(LifeTime);
             
-            IsActive.
-                Where(x => !x).
+            IsActive.Where(x => !x).
                 Subscribe(x => canvasGroup.SetState(hiddenState)).
                 AddTo(LifeTime);
 
-            OnWindowInitialize(model, lifeTime);
+            OnWindowInitialize(model);
         }
 
-        protected virtual void OnWindowInitialize(TWindowModel model, ILifeTime lifeTime)
+        protected virtual void OnWindowInitialize(TWindowModel model){}
+
+        protected void Awake()
         {
-            
-        }
-        
-        // Зачем метод в window, если есть onWindowInitialize?
-        protected virtual void OnAwake() { }
-    
-        // приватный Awake лекго не заметить и определить в классе ниже по иерархии
-        private void Awake()
-        {
-            canvasGroup = canvasGroup == null ? GetComponent<CanvasGroup>() : canvasGroup;
-            OnAwake();
+            canvasGroup = canvasGroup == null ? 
+                GetComponent<CanvasGroup>() : 
+                canvasGroup;
         }
     }
 }

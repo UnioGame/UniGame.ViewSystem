@@ -64,7 +64,6 @@
 
             //bind model lifetime to local
             var modelLifeTime = model.LifeTime;
-            //terminate if model lifetime ended
             modelLifeTime.AddCleanUpAction(Close);
             
             //terminate model when view closed
@@ -72,7 +71,7 @@
             LifeTime.AddCleanUpAction(() => viewFactory = null);
 
             //custom initialization
-            OnInitialize(modelData,LifeTime);
+            OnInitialize(modelData);
 
         }
 
@@ -103,8 +102,7 @@
         /// <summary>
         /// custom initialization methods
         /// </summary>
-        // и вью модель и лайф тайм сохраняются в доступные из дочерних классов поля, зачем передавать их в это метод
-        protected virtual void OnInitialize(TViewModel model, ILifeTime lifeTime) { }
+        protected virtual void OnInitialize(TViewModel model) { }
 
         private void OnDestroy()
         {
