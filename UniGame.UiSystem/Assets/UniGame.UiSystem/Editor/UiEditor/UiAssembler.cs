@@ -4,11 +4,11 @@
     using UniGreenModules.UniGame.UiSystem.Runtime.Settings;
     using UnityEditor;
 
-    public class UiAssembler 
+    public static class UiAssembler 
     {
         private static UiAssemblyBuilder settingsBuilder = new UiAssemblyBuilder();
         
-        [MenuItem(itemName:"Taktika/UI/Refresh UI Views")]
+        [MenuItem(itemName:"UniGame/UI System/Refresh UI Views")]
         public static void RefreshUiSettings()
         {
 
@@ -20,7 +20,7 @@
             
         }
 
-        public static void Build(UiViewsSource source)
+        public static void Build(this UiViewsSource source)
         {
             if (source == null)
                 return;

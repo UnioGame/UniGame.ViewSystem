@@ -16,7 +16,7 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         [Sirenix.OdinInspector.Required]
         [Sirenix.OdinInspector.InlineEditor]
 #endif
-        public ViewSystemSettings settings;
+        public UiSystemSettings settings;
         
         public Canvas screenCanvas;
 
