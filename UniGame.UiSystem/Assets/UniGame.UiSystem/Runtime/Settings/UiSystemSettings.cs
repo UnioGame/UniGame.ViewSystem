@@ -15,7 +15,7 @@
     using UnityEngine;
 
     [CreateAssetMenu(menuName = "UniGame/UiSystem/UiSystemSettings", fileName = "ViewSystemSettings")]
-    public class ViewSystemSettings : UiViewsSource, IViewSystemSettings
+    public class UiSystemSettings : UiViewsSource, IViewSystemSettings
     {
         [SerializeField]
         [ShowAssetReference]

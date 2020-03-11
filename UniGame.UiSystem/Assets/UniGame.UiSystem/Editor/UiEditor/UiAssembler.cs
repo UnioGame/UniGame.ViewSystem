@@ -4,7 +4,7 @@
     using UniGreenModules.UniGame.UiSystem.Runtime.Settings;
     using UnityEditor;
 
-    public class UiAssembler 
+    public static class UiAssembler 
     {
         private static UiAssemblyBuilder settingsBuilder = new UiAssemblyBuilder();
         
@@ -20,7 +20,7 @@
             
         }
 
-        public static void Build(UiViewsSource source)
+        public static void Build(this UiViewsSource source)
         {
             if (source == null)
                 return;
