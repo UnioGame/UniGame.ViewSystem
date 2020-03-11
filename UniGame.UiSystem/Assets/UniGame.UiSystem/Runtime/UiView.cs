@@ -1,4 +1,7 @@
-﻿namespace UniGreenModules.UniGame.UiSystem.Runtime
+﻿using System.Collections;
+using UniGreenModules.UniRoutine.Runtime;
+
+namespace UniGreenModules.UniGame.UiSystem.Runtime
 {
     using System;
     using Abstracts;
@@ -47,7 +50,7 @@
         
         #region public methods
 
-        public void Initialize(IViewModel model,IViewElementFactory viewFactory)
+        public void Initialize(IViewModel model,IViewElementFactory factory)
         {
             //restart view lifetime
             lifeTimeDefinition.Release();
@@ -60,7 +63,7 @@
                 throw  new ArgumentException($"VIEW: {name} wrong model type. Target type {typeof(TViewModel).Name} : model Type {model?.GetType().Name}");
             }
             
-            this.viewFactory = viewFactory;
+            this.viewFactory = factory;
 
             //bind model lifetime to local
             var modelLifeTime = model.LifeTime;
@@ -68,7 +71,7 @@
             
             //terminate model when view closed
             LifeTime.AddDispose(model);
-            LifeTime.AddCleanUpAction(() => viewFactory = null);
+            LifeTime.AddCleanUpAction(() => factory = null);
 
             //custom initialization
             OnInitialize(modelData);
@@ -78,17 +81,23 @@
         /// <summary>
         /// show active view
         /// </summary>
-        public virtual void Show() => visibility.Value = true;
+        public void Show() => visibility.Value = true;
 
         /// <summary>
         /// hide view without release it
         /// </summary>
-        public virtual void Hide() => visibility.Value = false;
+        public void Hide() => visibility.Value = false;
 
         /// <summary>
         /// end of view lifetime
         /// </summary>
-        public void Close() => lifeTimeDefinition.Terminate();
+        public void Close()
+        {
+            if (lifeTimeDefinition.IsTerminated) return;
+            
+            OnClose().Execute().
+                AddTo(LifeTime);
+        } 
 
         /// <summary>
         /// bind source stream to view action
@@ -97,13 +106,33 @@
         public UiView<TViewModel> BindTo<T>(IObservable<T> source, Action<T> action) => this.Bind(source, action);
 
         #endregion
-
-
+        
         /// <summary>
         /// custom initialization methods
         /// </summary>
         protected virtual void OnInitialize(TViewModel model) { }
 
+        /// <summary>
+        /// view closing process
+        /// windows auto terminated on close complete
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerator OnClose()
+        {
+            //wait until user defined closing operation complete
+            yield return OnCloseProgress();
+            
+            lifeTimeDefinition.Terminate();
+        }
+
+        /// <summary>
+        /// close continuation
+        /// </summary>
+        protected virtual IEnumerator OnCloseProgress()
+        {
+            yield break;
+        }
+        
         private void OnDestroy()
         {
             GameLog.Log($"View {name} Destroyed");

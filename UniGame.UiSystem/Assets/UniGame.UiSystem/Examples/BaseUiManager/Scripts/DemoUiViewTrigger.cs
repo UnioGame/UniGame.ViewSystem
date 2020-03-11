@@ -60,10 +60,10 @@ namespace UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.Scripts
                     view = await uiViewManager.Create<DemoWindowView>(new ViewModelBase(),skin);
                     break;
                 case DemoUiType.Screen:
-                    view = await uiViewManager.CreateScreen<DemoScreenView>(new ViewModelBase(),skin);
+                    view = await uiViewManager.OpenScreen<DemoScreenView>(new ViewModelBase(),skin);
                     break;
                 case DemoUiType.Window:
-                    view = await uiViewManager.CreateWindow<DemoWindowView>(new ViewModelBase(),skin);
+                    view = await uiViewManager.OpenWindow<DemoWindowView>(new ViewModelBase(),skin);
                     break;
             }
 

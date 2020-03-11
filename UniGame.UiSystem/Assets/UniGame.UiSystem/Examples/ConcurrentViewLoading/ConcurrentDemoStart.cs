@@ -12,26 +12,26 @@ public class ConcurrentDemoStart : MonoBehaviour
     void Start()
     {
         //async load views as windows
-        viewSystem.CreateWindow<DemoViewConcurrent1>(new ViewModelBase());
-        viewSystem.CreateWindow<DemoViewConcurrent2>(new ViewModelBase());
-        viewSystem.CreateWindow<DemoViewConcurrent3>(new ViewModelBase());
-        viewSystem.CreateWindow<DemoViewConcurrent4>(new ViewModelBase());
-        viewSystem.CreateWindow<DemoViewConcurrent5>(new ViewModelBase());
-        viewSystem.CreateWindow<DemoViewConcurrent6>(new ViewModelBase());
-        viewSystem.CreateWindow<DemoViewConcurrent7>(new ViewModelBase());
-        viewSystem.CreateWindow<DemoViewConcurrent8>(new ViewModelBase());
-        viewSystem.CreateWindow<DemoViewConcurrent9>(new ViewModelBase());
+        viewSystem.OpenWindow<DemoViewConcurrent1>(new ViewModelBase());
+        viewSystem.OpenWindow<DemoViewConcurrent2>(new ViewModelBase());
+        viewSystem.OpenWindow<DemoViewConcurrent3>(new ViewModelBase());
+        viewSystem.OpenWindow<DemoViewConcurrent4>(new ViewModelBase());
+        viewSystem.OpenWindow<DemoViewConcurrent5>(new ViewModelBase());
+        viewSystem.OpenWindow<DemoViewConcurrent6>(new ViewModelBase());
+        viewSystem.OpenWindow<DemoViewConcurrent7>(new ViewModelBase());
+        viewSystem.OpenWindow<DemoViewConcurrent8>(new ViewModelBase());
+        viewSystem.OpenWindow<DemoViewConcurrent9>(new ViewModelBase());
         
         //async load views as screens
-        viewSystem.CreateScreen<DemoViewConcurrent1>(new ViewModelBase());
-        viewSystem.CreateScreen<DemoViewConcurrent2>(new ViewModelBase());
-        viewSystem.CreateScreen<DemoViewConcurrent3>(new ViewModelBase());
-        viewSystem.CreateScreen<DemoViewConcurrent4>(new ViewModelBase());
-        viewSystem.CreateScreen<DemoViewConcurrent5>(new ViewModelBase());
-        viewSystem.CreateScreen<DemoViewConcurrent6>(new ViewModelBase());
-        viewSystem.CreateScreen<DemoViewConcurrent7>(new ViewModelBase());
-        viewSystem.CreateScreen<DemoViewConcurrent8>(new ViewModelBase());
-        viewSystem.CreateScreen<DemoViewConcurrent9>(new ViewModelBase());
+        viewSystem.OpenScreen<DemoViewConcurrent1>(new ViewModelBase());
+        viewSystem.OpenScreen<DemoViewConcurrent2>(new ViewModelBase());
+        viewSystem.OpenScreen<DemoViewConcurrent3>(new ViewModelBase());
+        viewSystem.OpenScreen<DemoViewConcurrent4>(new ViewModelBase());
+        viewSystem.OpenScreen<DemoViewConcurrent5>(new ViewModelBase());
+        viewSystem.OpenScreen<DemoViewConcurrent6>(new ViewModelBase());
+        viewSystem.OpenScreen<DemoViewConcurrent7>(new ViewModelBase());
+        viewSystem.OpenScreen<DemoViewConcurrent8>(new ViewModelBase());
+        viewSystem.OpenScreen<DemoViewConcurrent9>(new ViewModelBase());
     }
 
 }

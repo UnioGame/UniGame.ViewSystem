@@ -37,16 +37,16 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
             return gameViewSystem.Create<T>(viewModel, skinTag); 
         }
 
-        public UniTask<T> CreateWindow<T>(IViewModel viewModel, string skinTag = "")
+        public UniTask<T> OpenWindow<T>(IViewModel viewModel, string skinTag = "")
             where T : Component, IView
         {
-            return gameViewSystem.CreateWindow<T>(viewModel, skinTag);
+            return gameViewSystem.OpenWindow<T>(viewModel, skinTag);
         }
 
-        public UniTask<T> CreateScreen<T>(IViewModel viewModel, string skinTag = "")
+        public UniTask<T> OpenScreen<T>(IViewModel viewModel, string skinTag = "")
             where T : Component, IView
         {
-            return gameViewSystem.CreateScreen<T>(viewModel, skinTag);
+            return gameViewSystem.OpenScreen<T>(viewModel, skinTag);
         }
 
         public void Dispose() => gameViewSystem.Dispose();

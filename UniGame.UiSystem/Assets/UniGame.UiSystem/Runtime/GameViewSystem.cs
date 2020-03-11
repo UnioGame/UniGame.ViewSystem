@@ -32,7 +32,6 @@
             
             windowsController  = new CanvasViewController(windowsCanvas).AddTo(LifeTime);
             screensController  = new CanvasViewController(screenCanvas).AddTo(LifeTime);
-            elementsController = new ViewStackController().AddTo(LifeTime);
             
             viewControllers.Add(windowsController);
             viewControllers.Add(screensController);
@@ -48,29 +47,36 @@
 
         public async UniTask<T> Create<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
         {
-            return await CreateView<T>(elementsController,viewModel,skinTag);
+            return await CreateView<T>(viewModel,skinTag);
         }
 
-        public async UniTask<T> CreateWindow<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
+        public async UniTask<T> OpenWindow<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
         {
-            return await CreateView<T>(windowsController,viewModel,skinTag);
+            var view = await CreateView<T>(viewModel,skinTag);
+            //add created view to target controller
+            screensController.Add(view);
+            
+            return view;
         }
 
-        public async UniTask<T> CreateScreen<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
+        public async UniTask<T> OpenScreen<T>(IViewModel viewModel,string skinTag = "") where T : Component, IView
         {
-            return await CreateView<T>(screensController,viewModel,skinTag);
+            var view = await CreateView<T>(viewModel,skinTag);
+            
+            //add created view to target controller
+            screensController.Add(view);
+
+            return view;
         }
 
         
         /// <summary>
         /// create new view element
         /// </summary>
-        /// <param name="controller">layout controller</param>
         /// <param name="viewModel">target element model data</param>
         /// <param name="skinTag">target element skin</param>
         /// <returns>created view element</returns>
         public async UniTask<T> CreateView<T>(
-            IViewStackController controller,
             IViewModel viewModel,
             string skinTag = "") 
             where T : Component, IView
@@ -79,9 +85,6 @@
 
             InitializeView(view, viewModel);
 
-            //add created view to target controller
-            controller.Add(view);
-            
             return view;
 
         }

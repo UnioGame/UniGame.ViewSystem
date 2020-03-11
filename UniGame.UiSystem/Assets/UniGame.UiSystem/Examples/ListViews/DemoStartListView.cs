@@ -28,8 +28,8 @@ namespace UniGreenModules.UniGame.UiSystem.Examples.ListViews
         // Start is called before the first frame update
         private async void Start()
         {
-            var view = await viewSystem.CreateScreen<DemoListView>(listModel);
-            var resourcePanel = await viewSystem.CreateScreen<DemoResourcePanelScreenView>(resourceModel);
+            var view = await viewSystem.OpenScreen<DemoListView>(listModel);
+            var resourcePanel = await viewSystem.OpenScreen<DemoResourcePanelScreenView>(resourceModel);
 
             listModel.AddTo(this);
             resourceModel.AddTo(this);

@@ -32,10 +32,10 @@ namespace UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager
                     uiViewManager.Create<DemoWindowView>(new ViewModelBase(),tag);
                     break;
                 case DemoUiType.Screen:
-                    uiViewManager.CreateScreen<DemoScreenView>(new ViewModelBase(),tag);
+                    uiViewManager.OpenScreen<DemoScreenView>(new ViewModelBase(),tag);
                     break;
                 case DemoUiType.Window:
-                    uiViewManager.CreateWindow<DemoWindowView>(new ViewModelBase(),tag);
+                    uiViewManager.OpenWindow<DemoWindowView>(new ViewModelBase(),tag);
                     break;
             }
         }
