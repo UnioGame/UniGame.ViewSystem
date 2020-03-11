@@ -8,7 +8,7 @@
     {
         private static UiAssemblyBuilder settingsBuilder = new UiAssemblyBuilder();
         
-        [MenuItem(itemName:"Taktika/UI/Refresh UI Views")]
+        [MenuItem(itemName:"UniGame/UI System/Refresh UI Views")]
         public static void RefreshUiSettings()
         {
 

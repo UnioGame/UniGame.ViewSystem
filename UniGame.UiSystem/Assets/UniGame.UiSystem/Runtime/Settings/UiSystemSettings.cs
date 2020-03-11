@@ -14,7 +14,7 @@
     using UniRx.Async;
     using UnityEngine;
 
-    [CreateAssetMenu(menuName = "UniGame/UiSystem/UiSystemSettings", fileName = "ViewSystemSettings")]
+    [CreateAssetMenu(menuName = "UniGame/UiSystem/UiSystemSettings", fileName = "UiSystemSettings")]
     public class UiSystemSettings : UiViewsSource, IViewSystemSettings
     {
         [SerializeField]

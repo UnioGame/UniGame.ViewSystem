@@ -10,6 +10,9 @@ using UnityEditor;
 
 namespace UniGame.UiSystem.Editor.PostProcessors
 {
+    using UniGreenModules.UniCore.Runtime.ProfilerTools;
+    using UnityEngine;
+
     public class UpdateSystemSettingsProcessor : AssetPostprocessor
     {
         private static Dictionary<UiViewsSource,List<string>> uiSystemSettings = new Dictionary<UiViewsSource,List<string>>(8);
@@ -19,22 +22,16 @@ namespace UniGame.UiSystem.Editor.PostProcessors
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
             BuildSettingsData();
+
+            var items = importedAssets.
+                Concat(deletedAssets).
+                Concat(movedAssets);
             
-            foreach (string assetPath in importedAssets)
-            {
-                Validate(assetPath);
-            }
-            
-            foreach (string assetPath in deletedAssets)
+            foreach (var assetPath in items)
             {
                 Validate(assetPath);
             }
 
-            foreach (var assetPath in movedAssets)
-            {
-                Validate(assetPath);
-            }
-            
             Rebuild();
         }
 
@@ -44,6 +41,7 @@ namespace UniGame.UiSystem.Editor.PostProcessors
             {
                 uiViewsSource.Build();
                 EditorUtility.SetDirty(uiViewsSource);
+                GameLog.Log($"Rebuild Ui View Settings: {uiViewsSource.name} {uiViewsSource.GetType().Name}");
             }
         }
 
@@ -61,7 +59,8 @@ namespace UniGame.UiSystem.Editor.PostProcessors
             uiSystemSettings.Clear();
             settingsToRebuild.Clear();
             
-            var settings = AssetEditorTools.GetAssets<UiViewsSource>();
+            var settings = AssetEditorTools.
+                GetAssets<UiViewsSource>();
 
             foreach (var uiViewsSource in settings)
             {
