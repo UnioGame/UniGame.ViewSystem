@@ -13,17 +13,24 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime.Settings
     [Serializable]
     public class UiViewDescription
     {
+            
+#if ODIN_INSPECTOR
         [GUIColor(g:1.0f, r: 1.0f, b:0.5f)]
+#endif
         [Space(2)]
         public string Tag = string.Empty;
-        
-        [Space(2)]
+      
+#if ODIN_INSPECTOR
         [DrawWithUnity]
+#endif
+        [Space(2)]
         [STypeFilter(typeof(IView), nameof(SType.fullTypeName))]
         public SType Type;
 
-        [Space(2)]
+#if ODIN_INSPECTOR
         [DrawWithUnity]
+#endif
+        [Space(2)]
         [ShowAssetReference]
         public AssetReferenceGameObject View;
 
