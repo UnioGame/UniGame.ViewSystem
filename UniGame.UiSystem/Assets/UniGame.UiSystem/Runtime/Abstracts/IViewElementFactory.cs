@@ -8,11 +8,5 @@
     {
         UniTask<T> Create<T>(IViewModel viewModel, string skinTag = "", Transform parent = null) 
             where T :Component, IView;
-
-        UniTask<T> OpenWindow<T>(IViewModel viewModel,string skinTag = "") 
-            where T :Component, IView;
-
-        UniTask<T> OpenScreen<T>(IViewModel viewModel,string skinTag = "") 
-            where T :Component, IView;
     }
 }

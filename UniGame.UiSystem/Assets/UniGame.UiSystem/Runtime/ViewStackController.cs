@@ -16,7 +16,11 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         private List<IView> views = new List<IView>();
 
         private LifeTimeDefinition lifeTime = new LifeTimeDefinition();
-        
+
+
+        public Transform Layout { get; protected set; }
+
+
         #region public methods
 
         public void Dispose() => lifeTime.Terminate();

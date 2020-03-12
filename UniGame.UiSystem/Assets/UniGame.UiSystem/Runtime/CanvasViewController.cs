@@ -6,20 +6,25 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
     {
         private readonly Canvas canvas;
 
-        public Canvas Canvas => canvas;
-        
         #region constructor
         
         public CanvasViewController(Canvas canvas) 
         {
             this.canvas = canvas;
+            Layout = canvas?.transform;
         }
-        
+
         #endregion
+
+        public Canvas Canvas => canvas;
+
 
         protected override void OnViewAdded<T>(T view)
         {
-            view.transform.SetParent(canvas.transform);
+            if (view.transform.parent == Layout)
+                return;
+
+            view.transform.SetParent(Layout);
         }
     }
 }

@@ -21,6 +21,8 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         public Canvas screenCanvas;
 
         public Canvas windowsCanvas;
+
+        public Canvas overlayCanvas;
         
         #endregion
 
@@ -49,6 +51,12 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
             return gameViewSystem.OpenScreen<T>(viewModel, skinTag);
         }
 
+        public UniTask<T> OpenOverlay<T>(IViewModel viewModel, string skinTag = "") 
+            where T : Component, IView
+        {
+            return gameViewSystem.OpenOverlay<T>(viewModel, skinTag);
+        }
+
         public void Dispose() => gameViewSystem.Dispose();
         
         #endregion
@@ -57,12 +65,9 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         {
             settings.Initialize();
             var factory = new ViewFactory(settings.UIResourceProvider);
-            gameViewSystem = new GameViewSystem(factory,windowsCanvas,screenCanvas);
+            gameViewSystem = new GameViewSystem(factory,windowsCanvas,screenCanvas, overlayCanvas);
         }
 
-        private void OnDestroy()
-        {
-            Dispose();
-        }
+        private void OnDestroy() => Dispose();
     }
 }

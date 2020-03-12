@@ -5,6 +5,8 @@
 
     public interface IViewStackController : IDisposable
     {
+        Transform Layout { get; }
+
         bool Contains(IView view);
         
         void Add<TView>(TView view) where TView :Component, IView;
