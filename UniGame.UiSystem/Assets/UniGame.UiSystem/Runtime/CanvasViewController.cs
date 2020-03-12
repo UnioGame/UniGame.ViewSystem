@@ -6,6 +6,8 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
     {
         private readonly Canvas canvas;
 
+        public Canvas Canvas => canvas;
+        
         #region constructor
         
         public CanvasViewController(Canvas canvas) 

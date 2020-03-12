@@ -16,7 +16,7 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
             resourceProvider = viewResourceProvider;
         }
 
-        public async UniTask<T> Create<T>(string skinTag = "") 
+        public async UniTask<T> Create<T>(string skinTag = "", Transform parent = null) 
             where T : Component, IView
         {
             //load View resource
@@ -36,7 +36,7 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
             }
 
             //create view instance
-            var view = Create(asset);
+            var view = Create(asset, parent);
             //bind resource lifetime to view
             view.LifeTime.AddDispose(disposable);
 
@@ -45,11 +45,11 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         }
         
         // virtual который никто не переопределяет
-        protected virtual TView Create<TView>(TView asset) where TView : Component, IView
+        protected virtual TView Create<TView>(TView asset, Transform parent = null) where TView : Component, IView
         {
             //create instance of view
             var view = Object.
-                Instantiate(asset.gameObject).
+                Instantiate(asset.gameObject, parent).
                 GetComponent<TView>();
 
             return view;

@@ -44,7 +44,10 @@
         }
 
         #region private methods
-
+        // TO DO
+        // Непонятно загрузились ли нужные ресурсы, появляются неявные связи 
+        // например в лобби нужно в сырсах указывать ещё и сырсы UI
+        // Возможности загрузить через ContextNode нету
         private void DownloadAllAsyncSources(ILifeTime lifeTime)
         {
             //load ui views async

@@ -5,7 +5,7 @@
 
     public interface IViewFactory
     {
-        UniTask<T> Create<T>(string skinTag = "") where T :Component, IView;
+        UniTask<T> Create<T>(string skinTag = "", Transform parent = null) where T :Component, IView;
         
     }
 }

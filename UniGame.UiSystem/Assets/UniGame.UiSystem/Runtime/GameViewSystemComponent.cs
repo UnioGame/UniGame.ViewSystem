@@ -31,7 +31,7 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
 
         public ILifeTime LifeTime => gameViewSystem.LifeTime;
 
-        public UniTask<T> Create<T>(IViewModel viewModel, string skinTag = "")
+        public UniTask<T> Create<T>(IViewModel viewModel, string skinTag = "", Transform parent = null)
             where T : Component, IView
         {
             return gameViewSystem.Create<T>(viewModel, skinTag); 

@@ -32,6 +32,8 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         
         #region public properties
 
+        // TO DO Rename to ViewModel
+        // Так же вызывает сомнения необходимость Vm быть завернутой в ReactiveProperty
         public IReadOnlyReactiveProperty<TViewModel> Model => viewModel;
         
         /// <summary>

@@ -6,7 +6,7 @@
 
     public interface IViewElementFactory
     {
-        UniTask<T> Create<T>(IViewModel viewModel,string skinTag = "") 
+        UniTask<T> Create<T>(IViewModel viewModel, string skinTag = "", Transform parent = null) 
             where T :Component, IView;
 
         UniTask<T> OpenWindow<T>(IViewModel viewModel,string skinTag = "") 
