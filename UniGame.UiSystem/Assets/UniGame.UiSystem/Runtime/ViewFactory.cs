@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-namespace UniGreenModules.UniGame.UiSystem.Runtime
+namespace UniGame.UiSystem.Runtime
 {
-    using Abstracts;
     using Taktika.Addressables.Reactive;
-    using UniCore.Runtime.ProfilerTools;
+    using UniGreenModules.UniCore.Runtime.ProfilerTools;
+    using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
     using UniRx.Async;
 
     public class ViewFactory : IViewFactory
@@ -28,9 +28,8 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
             var disposable = result.disposable;
             
             //if loading failed release resource immediately
-            // почему логи от nameof(ViewController) хотя по факты это ViewFactory
             if (asset == null) {
-                GameLog.LogError($"{nameof(ViewStackController)} View of Type {typeof(T).Name} not loaded");
+                GameLog.LogError($"Factory {this.GetType().Name} View of Type {typeof(T).Name} not loaded");
                 disposable.Dispose();
                 return null;
             }
@@ -44,7 +43,9 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
 
         }
         
-        // virtual который никто не переопределяет
+        /// <summary>
+        /// create view instance
+        /// </summary>
         protected virtual TView Create<TView>(TView asset, Transform parent = null) where TView : Component, IView
         {
             //create instance of view

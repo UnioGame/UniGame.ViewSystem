@@ -15,9 +15,9 @@ namespace UniGame.UiSystem.Editor.PostProcessors
 
     public class UpdateSystemSettingsProcessor : AssetPostprocessor
     {
-        private static Dictionary<UiViewsSource,List<string>> uiSystemSettings = new Dictionary<UiViewsSource,List<string>>(8);
+        private static Dictionary<ViewsSource,List<string>> uiSystemSettings = new Dictionary<ViewsSource,List<string>>(8);
 
-        private static HashSet<UiViewsSource> settingsToRebuild = new HashSet<UiViewsSource>();
+        private static HashSet<ViewsSource> settingsToRebuild = new HashSet<ViewsSource>();
         
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
@@ -60,7 +60,7 @@ namespace UniGame.UiSystem.Editor.PostProcessors
             settingsToRebuild.Clear();
             
             var settings = AssetEditorTools.
-                GetAssets<UiViewsSource>();
+                GetAssets<ViewsSource>();
 
             foreach (var uiViewsSource in settings)
             {

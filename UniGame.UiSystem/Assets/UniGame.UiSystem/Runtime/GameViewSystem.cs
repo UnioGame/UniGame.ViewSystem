@@ -3,9 +3,10 @@
     using System;
     using System.Collections.Generic;
     using Abstracts;
+    using global::UniGame.UiSystem.Runtime.Abstracts;
+    using UniGame.UiSystem.Runtime.Abstracts;
     using UniCore.Runtime.DataFlow;
     using UniCore.Runtime.DataFlow.Interfaces;
-    using UniCore.Runtime.Rx.Extensions;
     using UniRx.Async;
     using UnityEngine;
 
@@ -14,33 +15,28 @@
     {
         #region private fields
 
-        private LifeTimeDefinition lifeTimeDefinition = new LifeTimeDefinition();
+        private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
         
-        private IViewFactory viewFactory;
+        private IViewFactory _viewFactory;
 
-        private Dictionary<ViewType, IViewStackController> viewControllers = new Dictionary<ViewType, IViewStackController>(4);
+        private IDictionary<ViewType, IViewStackController> _viewControllers;
         
         #endregion
 
         public GameViewSystem(
             IViewFactory viewFactory, 
-            Canvas windowsCanvas, 
-            Canvas screenCanvas,
-            Canvas overlayCanvas)
+            IDictionary<ViewType,IViewStackController> layoutMap)
         {
-            this.viewFactory = viewFactory;
-
-            viewControllers[ViewType.Window] = new CanvasViewController(windowsCanvas).AddTo(LifeTime); ;
-            viewControllers[ViewType.Screen] = new CanvasViewController(screenCanvas).AddTo(LifeTime); ;
-            viewControllers[ViewType.Overlay] = new CanvasViewController(overlayCanvas).AddTo(LifeTime); ;
+            this._viewFactory = viewFactory;
+            this._viewControllers = layoutMap;
         }
 
-        public ILifeTime LifeTime => lifeTimeDefinition.LifeTime;
+        public ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
 
         /// <summary>
         /// terminate game view system lifetime
         /// </summary>
-        public void Dispose() => lifeTimeDefinition.Terminate();
+        public void Dispose() => _lifeTimeDefinition.Terminate();
 
         public async UniTask<T> Create<T>(IViewModel viewModel, string skinTag = "", Transform parent = null) where T : Component, IView
         {
@@ -75,7 +71,7 @@
             Transform parent = null)
             where T : Component, IView
         {
-            var view = await viewFactory.Create<T>(skinTag, parent);
+            var view = await _viewFactory.Create<T>(skinTag, parent);
 
             InitializeView(view, viewModel);
 
@@ -93,7 +89,7 @@
             where T : Component, IView
         {
             Transform parent = null;
-            if (viewControllers.TryGetValue(viewType, out var controller)) {
+            if (_viewControllers.TryGetValue(viewType, out var controller)) {
                 parent = controller.Layout;
             }
 
@@ -121,7 +117,7 @@
 
         private void Destroy<TView>(TView view) where TView : Component, IView
         {
-            foreach (var viewController in viewControllers.Values) {
+            foreach (var viewController in _viewControllers.Values) {
                 if(viewController.Remove(view))
                     break;
             }

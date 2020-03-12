@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 
-namespace UniGreenModules.UniGame.UiSystem.Runtime
+namespace UniGame.UiSystem.Runtime
 {
+    using System.Collections.Generic;
     using Abstracts;
-    using Settings;
-    using UniCore.Runtime.DataFlow.Interfaces;
+    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
+    using UniGreenModules.UniGame.UiSystem.Runtime;
+    using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
+    using UniGreenModules.UniGame.UiSystem.Runtime.Settings;
     using UniRx.Async;
 
-    public class GameViewSystemComponent : MonoBehaviour, IGameViewSystem
+    public class GameViewSystemAsset : MonoBehaviour, IGameViewSystem
     {
         
         #region inspector data
@@ -16,14 +19,11 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         [Sirenix.OdinInspector.Required]
         [Sirenix.OdinInspector.InlineEditor]
 #endif
-        public UiSystemSettings settings;
+        public ViewSystemSettings settings;
         
-        public Canvas screenCanvas;
+        [Space]
+        public ViewLayoutMap layoutMap = new ViewLayoutMap();
 
-        public Canvas windowsCanvas;
-
-        public Canvas overlayCanvas;
-        
         #endregion
 
         private IGameViewSystem gameViewSystem;
@@ -64,8 +64,15 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         private void Awake()
         {
             settings.Initialize();
+            
             var factory = new ViewFactory(settings.UIResourceProvider);
-            gameViewSystem = new GameViewSystem(factory,windowsCanvas,screenCanvas, overlayCanvas);
+            var stackMap = new Dictionary<ViewType, IViewStackController>(4);
+            
+            foreach (var item in layoutMap) {
+                stackMap[item.Key] = item.Value;
+            }
+            
+            gameViewSystem = new GameViewSystem(factory,stackMap);
         }
 
         private void OnDestroy() => Dispose();

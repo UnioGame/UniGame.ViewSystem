@@ -1,19 +1,18 @@
-﻿using UniGreenModules.UniGame.UiSystem.Runtime.Settings;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace UniGreenModules.UniGame.UiSystem.Examples.ListViews
+namespace UniGame.UiSystem.Examples.ListViews
 {
-    using BaseUiManager.Scripts;
-    using Runtime;
-    using Runtime.Extensions;
-    using UniCore.Runtime.ProfilerTools;
+    using global::UniGame.UiSystem.Runtime;
+    using UniGreenModules.UniCore.Runtime.ProfilerTools;
+    using UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.Scripts;
+    using UniGreenModules.UniGame.UiSystem.Examples.ListViews.ViewModels;
+    using UniGreenModules.UniGame.UiSystem.Examples.ListViews.Views;
+    using UniGreenModules.UniGame.UiSystem.Runtime.Extensions;
     using UniRx;
-    using ViewModels;
-    using Views;
 
     public class DemoStartListView : MonoBehaviour
     {
-        public GameViewSystemComponent viewSystem;
+        public GameViewSystemAsset viewSystem;
     
         public DemoItemViewModel demoItemViewModel = new DemoItemViewModel();
     

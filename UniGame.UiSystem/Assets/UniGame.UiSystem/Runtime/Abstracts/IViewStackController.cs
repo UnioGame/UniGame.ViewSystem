@@ -1,6 +1,7 @@
-﻿namespace UniGreenModules.UniGame.UiSystem.Runtime.Abstracts
+﻿namespace UniGame.UiSystem.Runtime.Abstracts
 {
     using System;
+    using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
     using UnityEngine;
 
     public interface IViewStackController : IDisposable

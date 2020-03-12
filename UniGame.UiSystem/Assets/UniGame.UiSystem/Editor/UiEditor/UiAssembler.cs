@@ -12,7 +12,7 @@
         public static void RefreshUiSettings()
         {
 
-            var uiSettings = AssetEditorTools.GetAssets<UiViewsSource>();
+            var uiSettings = AssetEditorTools.GetAssets<ViewsSource>();
             
             foreach (var source in uiSettings) {
                 Build(source);
@@ -20,7 +20,7 @@
             
         }
 
-        public static void Build(this UiViewsSource source)
+        public static void Build(this ViewsSource source)
         {
             if (source == null)
                 return;
@@ -30,7 +30,7 @@
         [MenuItem(itemName:"Assets/Rebuild UI Settings")]
         public static void RebuildSelected()
         {
-            Build(Selection.activeObject as UiViewsSource);
+            Build(Selection.activeObject as ViewsSource);
         }
         
     }

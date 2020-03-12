@@ -19,7 +19,7 @@ namespace Taktika.UI.Editor.UiEditor
         private HashSet<IView> proceedViews = new HashSet<IView>();
         private AddressableAssetSettings addressableAssetSettings;
         
-        public void Build(UiViewsSource settings)
+        public void Build(ViewsSource settings)
         {
             addressableAssetSettings = AddressableAssetSettingsDefaultObject.Settings;
             
@@ -48,7 +48,7 @@ namespace Taktika.UI.Editor.UiEditor
             settings?.SetDirty();
         }
 
-        public void Reset(UiViewsSource settings)
+        public void Reset(ViewsSource settings)
         {
             settings.uiViews.Clear();
         }

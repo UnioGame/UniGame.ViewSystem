@@ -1,13 +1,14 @@
 ﻿using System;
 
-namespace UniGreenModules.UniGame.UiSystem.Runtime
+namespace UniGame.UiSystem.Runtime
 {
     using System.Collections.Generic;
     using System.Linq;
     using Abstracts;
-    using UniCore.Runtime.DataFlow;
-    using UniCore.Runtime.ObjectPool.Runtime;
-    using UniCore.Runtime.ObjectPool.Runtime.Extensions;
+    using UniGreenModules.UniCore.Runtime.DataFlow;
+    using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime;
+    using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
+    using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
     using UnityEngine;
     using Object = UnityEngine.Object;
     

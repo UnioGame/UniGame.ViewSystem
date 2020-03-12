@@ -5,7 +5,7 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime.Settings
     using UnityEngine;
 
     [CreateAssetMenu(menuName = "UniGame/UiSystem/UiViewSource", fileName = "UiViewSource")]
-    public class UiViewsSource : ScriptableObject
+    public class ViewsSource : ScriptableObject
     {
         public string sourceName;
 

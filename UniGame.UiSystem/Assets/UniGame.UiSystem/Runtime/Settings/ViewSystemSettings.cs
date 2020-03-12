@@ -14,8 +14,8 @@
     using UniRx.Async;
     using UnityEngine;
 
-    [CreateAssetMenu(menuName = "UniGame/UiSystem/UiSystemSettings", fileName = "UiSystemSettings")]
-    public class UiSystemSettings : UiViewsSource, IViewSystemSettings
+    [CreateAssetMenu(menuName = "UniGame/UiSystem/ViewSystemSettings", fileName = "ViewSystemSettings")]
+    public class ViewSystemSettings : ViewsSource, IViewSystemSettings
     {
         [SerializeField]
         [ShowAssetReference]
@@ -52,11 +52,11 @@
         {
             //load ui views async
             foreach (var reference in sources) {
-                reference.ToObservable().Catch<UiViewsSource, Exception>(
+                reference.ToObservable().Catch<ViewsSource, Exception>(
                     x => {
                         GameLog.LogError($"UiManagerSettings Load Ui Source failed {reference.AssetGUID}");
                         GameLog.LogError(x);
-                        return Observable.Empty<UiViewsSource>();
+                        return Observable.Empty<ViewsSource>();
                     }).
                     Where(x => x != null).
                     Do(

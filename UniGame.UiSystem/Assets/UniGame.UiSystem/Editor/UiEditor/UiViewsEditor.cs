@@ -14,7 +14,7 @@ namespace Taktika.UI.Editor.UiEditor
             base.OnInspectorGUI();
 
             if (GUILayout.Button("rebuild")) {
-                builder.Build(target as UiViewsSource);
+                builder.Build(target as ViewsSource);
             }
         }
     }

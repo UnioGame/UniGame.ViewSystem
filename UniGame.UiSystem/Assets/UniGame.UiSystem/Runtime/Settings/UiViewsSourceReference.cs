@@ -4,7 +4,7 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime.Settings
     using UnityEngine.AddressableAssets;
 
     [Serializable]
-    public class UiViewsSourceReference : AssetReferenceT<UiViewsSource>
+    public class UiViewsSourceReference : AssetReferenceT<ViewsSource>
     {
         public UiViewsSourceReference(string guid) : base(guid) { }
     }
