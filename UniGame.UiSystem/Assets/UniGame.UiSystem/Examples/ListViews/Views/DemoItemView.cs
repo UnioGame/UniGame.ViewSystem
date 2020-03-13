@@ -1,13 +1,12 @@
-﻿using UniGreenModules.UniGame.UiSystem.Examples.ListViews.ViewModels;
-using UniGreenModules.UniGame.UiSystem.Runtime;
+﻿using UniGreenModules.UniGame.UiSystem.Runtime;
 
-namespace UniGreenModules.UniGame.UiSystem.Examples.ListViews.Views
+namespace UniGame.UiSystem.Examples.ListViews.Views
 {
     using TMPro;
-    using UniCore.Runtime.DataFlow.Interfaces;
-    using UniCore.Runtime.Utils;
+    using UniGreenModules.UniCore.Runtime.Utils;
     using UniRx;
     using UnityEngine.UI;
+    using ViewModels;
 
     public class DemoItemView : UiView<DemoItemViewModel>
     {

@@ -1,5 +1,4 @@
-﻿using UniGreenModules.UniGame.UiSystem.Runtime;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager
 {

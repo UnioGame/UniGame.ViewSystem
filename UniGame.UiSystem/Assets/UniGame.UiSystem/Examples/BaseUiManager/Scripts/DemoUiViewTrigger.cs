@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.Scripts
 {
-    using Runtime;
+    using global::UniGame.UiSystem.Runtime;
     using Runtime.Abstracts;
     using UniRx;
     using UniRx.Async;

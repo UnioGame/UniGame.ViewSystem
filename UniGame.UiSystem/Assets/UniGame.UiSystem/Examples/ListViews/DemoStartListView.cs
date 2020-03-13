@@ -2,13 +2,13 @@
 
 namespace UniGame.UiSystem.Examples.ListViews
 {
-    using global::UniGame.UiSystem.Runtime;
+    using BaseUiManager.Scripts;
+    using Runtime;
     using UniGreenModules.UniCore.Runtime.ProfilerTools;
-    using UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.Scripts;
-    using UniGreenModules.UniGame.UiSystem.Examples.ListViews.ViewModels;
-    using UniGreenModules.UniGame.UiSystem.Examples.ListViews.Views;
     using UniGreenModules.UniGame.UiSystem.Runtime.Extensions;
     using UniRx;
+    using ViewModels;
+    using Views;
 
     public class DemoStartListView : MonoBehaviour
     {

@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.Scripts
+﻿namespace UniGame.UiSystem.Examples.BaseUiManager.Scripts
 {
     using Runtime;
     using UniRx;

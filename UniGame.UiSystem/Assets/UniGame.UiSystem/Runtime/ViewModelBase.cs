@@ -1,8 +1,8 @@
-﻿namespace UniGreenModules.UniGame.UiSystem.Runtime
+﻿namespace UniGame.UiSystem.Runtime
 {
-    using Abstracts;
-    using UniCore.Runtime.DataFlow;
-    using UniCore.Runtime.DataFlow.Interfaces;
+    using UniGreenModules.UniCore.Runtime.DataFlow;
+    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
+    using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
     using UniRx;
 
     public class ViewModelBase : IViewModel

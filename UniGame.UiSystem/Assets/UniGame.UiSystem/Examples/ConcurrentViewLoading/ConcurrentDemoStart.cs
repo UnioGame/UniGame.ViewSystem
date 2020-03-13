@@ -1,6 +1,5 @@
 ﻿using UiSystem.Assets.UniGame.UiSystem.Examples.ConcurrentViewLoading;
 using UniGame.UiSystem.Runtime;
-using UniGreenModules.UniGame.UiSystem.Runtime;
 using UnityEngine;
 
 namespace UniGame.UiSystem.Examples.ConcurrentViewLoading

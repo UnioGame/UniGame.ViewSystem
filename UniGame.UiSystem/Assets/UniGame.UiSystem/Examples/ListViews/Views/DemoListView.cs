@@ -1,13 +1,13 @@
-﻿using UniGreenModules.UniGame.UiSystem.Examples.ListViews.ViewModels;
-using UniGreenModules.UniGame.UiSystem.Runtime;
+﻿using UniGreenModules.UniGame.UiSystem.Runtime;
 using UnityEngine;
 
-namespace UniGreenModules.UniGame.UiSystem.Examples.ListViews.Views
+namespace UniGame.UiSystem.Examples.ListViews.Views
 {
     using System.Collections.Generic;
     using UniRx;
     using UniRx.Async;
     using UnityEngine.UI;
+    using ViewModels;
 
     public class DemoListView : WindowView<DemoListViewModel>
     {

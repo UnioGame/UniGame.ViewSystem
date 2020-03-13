@@ -1,8 +1,8 @@
-﻿namespace UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.Scripts
+﻿namespace UniGame.UiSystem.Examples.BaseUiManager.Scripts
 {
-    using Runtime;
     using TMPro;
-    using UniCore.Runtime.Utils;
+    using UniGreenModules.UniCore.Runtime.Utils;
+    using UniGreenModules.UniGame.UiSystem.Runtime;
 
     public class DemoResourcePanelScreenView : WindowView<DemoResourceUiViewModel>
     {

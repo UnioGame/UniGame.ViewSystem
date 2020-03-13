@@ -2,6 +2,10 @@
 
 namespace UniGame.UiSystem.Runtime
 {
+    using UniGreenModules.UniCore.Runtime.Rx.Extensions;
+    using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
+    using UniRx;
+
     public class CanvasViewController : ViewStackController
     {
         private readonly Canvas canvas;
@@ -21,10 +25,17 @@ namespace UniGame.UiSystem.Runtime
 
         protected override void OnViewAdded<T>(T view)
         {
+            var viewLifetime = view.LifeTime;
+            view.IsActive.
+                Where(x => x).
+                Subscribe(x => view.transform.SetAsLastSibling()).
+                AddTo(viewLifetime);
+            
             if (view.transform.parent == Layout)
                 return;
 
             view.transform.SetParent(Layout);
         }
+        
     }
 }
