@@ -6,23 +6,20 @@
 
     public interface IViewStackController : IDisposable
     {
+        IObservable<IView> StackTopChanged { get; }
+
         Transform Layout { get; }
 
         bool Contains(IView view);
         
         void Add<TView>(TView view) where TView :Component, IView;
 
-        bool Remove<T>(T view) where T : Component, IView;
-        
-        void Hide<T>() where T :Component, IView;
+        TView Get<TView>() where TView : Component, IView;
 
-        void HideAll();
+        //bool Remove<T>(T view) where T : Component, IView;
 
-        void HideAll<T>() where T : Component, IView;
-        
-        void Close<T>() where T :Component, IView;
-        
+        //void Close<T>() where T :Component, IView;
+
         void CloseAll();
-
     }
 }

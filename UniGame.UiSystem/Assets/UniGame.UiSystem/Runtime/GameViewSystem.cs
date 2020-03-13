@@ -7,6 +7,9 @@
     using UniGame.UiSystem.Runtime.Abstracts;
     using UniCore.Runtime.DataFlow;
     using UniCore.Runtime.DataFlow.Interfaces;
+    using UniCore.Runtime.Rx.Extensions;
+    using UniRoutine.Runtime.Extension;
+    using UniRx;
     using UniRx.Async;
     using UnityEngine;
 
@@ -16,19 +19,23 @@
         #region private fields
 
         private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
-        
+
         private IViewFactory _viewFactory;
 
         private IDictionary<ViewType, IViewStackController> _viewControllers;
-        
+
         #endregion
 
         public GameViewSystem(
-            IViewFactory viewFactory, 
-            IDictionary<ViewType,IViewStackController> layoutMap)
+            IViewFactory viewFactory,
+            IDictionary<ViewType, IViewStackController> layoutMap)
         {
             this._viewFactory = viewFactory;
             this._viewControllers = layoutMap;
+            _viewControllers[ViewType.Screen]
+                .StackTopChanged
+                .Subscribe((view) => _viewControllers[ViewType.Window].CloseAll())
+                .AddTo(LifeTime);
         }
 
         public ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
@@ -56,6 +63,17 @@
         public async UniTask<T> OpenOverlay<T>(IViewModel viewModel, string skinTag = "") where T : Component, IView
         {
             return await OpenView<T>(viewModel, ViewType.Overlay, skinTag);
+        }
+
+        public T Get<T>() where T : Component, IView
+        {
+            foreach (var controller in _viewControllers.Values)
+            {
+                var v = controller.Get<T>();
+                if (v != null)
+                    return v;
+            }
+            return null;
         }
 
 
@@ -89,7 +107,8 @@
             where T : Component, IView
         {
             Transform parent = null;
-            if (_viewControllers.TryGetValue(viewType, out var controller)) {
+            if (_viewControllers.TryGetValue(viewType, out var controller))
+            {
                 parent = controller.Layout;
             }
 
@@ -100,11 +119,11 @@
             return view;
         }
 
-            /// <summary>
-            /// Initialize View with model data
-            /// </summary>
-            private T InitializeView<T>(T view, IViewModel viewModel)
-            where T : Component, IView
+        /// <summary>
+        /// Initialize View with model data
+        /// </summary>
+        private T InitializeView<T>(T view, IViewModel viewModel)
+        where T : Component, IView
         {
 
             view.Initialize(viewModel, this);
@@ -117,9 +136,10 @@
 
         private void Destroy<TView>(TView view) where TView : Component, IView
         {
-            foreach (var viewController in _viewControllers.Values) {
-                if(viewController.Remove(view))
-                    break;
+            foreach (var viewController in _viewControllers.Values)
+            {
+                //if(viewController.Remove(view))
+                //    break;
             }
             //TODO move to pool
             UnityEngine.Object.Destroy(view.gameObject);

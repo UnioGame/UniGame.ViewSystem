@@ -19,9 +19,16 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         public IViewStackController StackController => stackController.Value;
 
+        public IObservable<IView> StackTopChanged => stackController.Value.StackTopChanged;
+        
         public Transform Layout => StackController.Layout;
 
         #region public methods
+
+        public ViewsStackControllerAsset()
+        {
+            stackController = new Lazy<IViewStackController>(Create);
+        }
 
         public void Dispose() => StackController.Dispose();
 
@@ -32,29 +39,9 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
             StackController.Add(view);
         }
 
-        public bool Remove<T>(T view) where T : Component, IView
+        public TView Get<TView>() where TView : Component, IView
         {
-            return StackController.Remove(view);
-        }
-
-        public void Hide<T>() where T : Component, IView
-        {
-            StackController.Hide<T>();
-        }
-
-        public void HideAll()
-        {
-            StackController.HideAll();
-        }
-
-        public void HideAll<T>() where T : Component, IView
-        {
-            StackController.HideAll<T>();
-        }
-
-        public void Close<T>() where T : Component, IView
-        {
-            StackController.Close<T>();
+            return StackController.Get<TView>();
         }
 
         public void CloseAll()
@@ -62,6 +49,16 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
             StackController.CloseAll();
         }
 
+        //public bool Remove<T>(T view) where T : Component, IView
+        //{
+        //    return StackController.Remove(view);
+        //}
+
+        //public void Close<T>() where T : Component, IView
+        //{
+        //    StackController.Close<T>();
+        //}
+        
         #endregion
 
 
@@ -69,14 +66,9 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         protected virtual IViewStackController Create()
         {
-            return new CanvasViewController(layoutCanvas);
+            return new ScreenViewStackController(layoutCanvas.transform);
         }
-
-        protected void Awake()
-        {
-            stackController = new Lazy<IViewStackController>(Create);
-        }
-
+        
         #endregion
     }
 }

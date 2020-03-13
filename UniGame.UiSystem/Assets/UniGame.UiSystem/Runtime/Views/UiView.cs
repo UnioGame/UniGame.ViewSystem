@@ -83,12 +83,12 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         /// <summary>
         /// show active view
         /// </summary>
-        public void Show() => visibility.Value = true;
+        public virtual void Show() => visibility.Value = true;
 
         /// <summary>
         /// hide view without release it
         /// </summary>
-        public void Hide() => visibility.Value = false;
+        public virtual void Hide() => visibility.Value = false;
 
         /// <summary>
         /// end of view lifetime
