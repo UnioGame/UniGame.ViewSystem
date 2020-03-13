@@ -1,8 +1,7 @@
-﻿namespace UniGreenModules.UniGame.UiSystem.Runtime.Abstracts
+﻿namespace UniGame.UiSystem.Runtime.Abstracts
 {
     using System;
-    using UniCore.Runtime.Interfaces;
-    using UniRx;
+    using UniGreenModules.UniCore.Runtime.Interfaces;
 
     public interface IViewModel: IDisposable, ILifeTimeContext
     {

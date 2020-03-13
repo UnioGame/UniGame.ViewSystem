@@ -1,10 +1,7 @@
-﻿namespace UniGreenModules.UniGame.UiSystem.Runtime.Abstracts
+﻿namespace UniGame.UiSystem.Runtime.Abstracts
 {
     using System.Collections.Generic;
-    using Settings;
     using Taktika.Addressables.Reactive;
-    using UniCore.Runtime.DataFlow.Interfaces;
-    using UniRx.Async;
     using UnityEngine;
 
 

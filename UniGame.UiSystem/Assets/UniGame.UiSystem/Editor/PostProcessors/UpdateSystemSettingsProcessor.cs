@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.Utilities;
-using Taktika.UI.Editor.UiEditor;
 using UniGreenModules.UniCore.EditorTools.Editor.AssetOperations;
-using UniGreenModules.UniCore.EditorTools.Editor.Utility;
-using UniGreenModules.UniGame.UiSystem.Runtime.Settings;
 using UnityEditor;
 
 namespace UniGame.UiSystem.Editor.PostProcessors
 {
+    using Runtime.Settings;
+    using UI.Editor.UiEdito;
     using UniGreenModules.UniCore.Runtime.ProfilerTools;
-    using UnityEngine;
 
     public class UpdateSystemSettingsProcessor : AssetPostprocessor
     {

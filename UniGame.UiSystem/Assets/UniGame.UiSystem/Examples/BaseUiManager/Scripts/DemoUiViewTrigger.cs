@@ -2,10 +2,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.Scripts
+namespace UniGame.UiSystem.Examples.BaseUiManager.Scripts
 {
-    using global::UniGame.UiSystem.Runtime;
+    using Runtime;
     using Runtime.Abstracts;
+    using Runtime.Abstracts;
+    using UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager;
     using UniRx;
     using UniRx.Async;
 

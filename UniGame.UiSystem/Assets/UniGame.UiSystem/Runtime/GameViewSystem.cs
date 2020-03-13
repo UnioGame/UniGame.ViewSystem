@@ -1,34 +1,42 @@
-﻿namespace UniGreenModules.UniGame.UiSystem.Runtime
+﻿namespace UniGame.UiSystem.Runtime
 {
     using System;
     using System.Collections.Generic;
     using Abstracts;
-    using global::UniGame.UiSystem.Runtime.Abstracts;
-    using UniGame.UiSystem.Runtime.Abstracts;
-    using UniCore.Runtime.DataFlow;
-    using UniCore.Runtime.DataFlow.Interfaces;
+    using UniGreenModules.UniCore.Runtime.DataFlow;
+    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
+    using UniGreenModules.UniCore.Runtime.Rx.Extensions;
+    using UniGreenModules.UniGame.UiSystem.Runtime;
+    using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
+    using UniRx;
     using UniRx.Async;
     using UnityEngine;
+    using UnityEngine.SceneManagement;
 
     [Serializable]
     public class GameViewSystem : IGameViewSystem
     {
         #region private fields
 
+
         private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
         
-        private IViewFactory _viewFactory;
+        private readonly IViewFactory _viewFactory;
+        private readonly IViewLayoutContainer _viewLayouts;
+        private readonly IViewSceneTransitionController _sceneTransitionController;
 
-        private IDictionary<ViewType, IViewStackController> _viewControllers;
-        
         #endregion
 
         public GameViewSystem(
-            IViewFactory viewFactory, 
-            IDictionary<ViewType,IViewStackController> layoutMap)
+            IViewFactory viewFactory,
+            IViewLayoutContainer viewLayouts,
+            IViewSceneTransitionController sceneTransitionController)
         {
-            this._viewFactory = viewFactory;
-            this._viewControllers = layoutMap;
+            _viewFactory = viewFactory;
+            _viewLayouts = viewLayouts;
+            _sceneTransitionController = sceneTransitionController;
+
+            BindSceneActions();
         }
 
         public ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
@@ -37,6 +45,8 @@
         /// terminate game view system lifetime
         /// </summary>
         public void Dispose() => _lifeTimeDefinition.Terminate();
+
+        #region ui system api
 
         public async UniTask<T> Create<T>(IViewModel viewModel, string skinTag = "", Transform parent = null) where T : Component, IView
         {
@@ -58,6 +68,18 @@
             return await OpenView<T>(viewModel, ViewType.Overlay, skinTag);
         }
 
+        #endregion
+
+        #region layout container api
+
+        public IReadOnlyViewLayoutController this[ViewType type] => _viewLayouts[type];
+
+        public IEnumerable<IViewLayoutController> Controllers => _viewLayouts.Controllers;
+
+        public IViewLayoutController GetViewController(ViewType type) => _viewLayouts.GetViewController(type);
+
+
+        #endregion
 
         /// <summary>
         /// create new view element
@@ -79,6 +101,8 @@
 
         }
 
+        #region private methods
+
         /// <summary>
         /// create view on target controller
         /// </summary>
@@ -88,14 +112,12 @@
             string skinTag = "")
             where T : Component, IView
         {
-            Transform parent = null;
-            if (_viewControllers.TryGetValue(viewType, out var controller)) {
-                parent = controller.Layout;
-            }
+            var layout = _viewLayouts.GetViewController(viewType);
+            var parent = layout.Layout;
 
             var view = await CreateView<T>(viewModel, skinTag, parent);
 
-            controller?.Add(view);
+            layout?.Add(view);
 
             return view;
         }
@@ -117,12 +139,36 @@
 
         private void Destroy<TView>(TView view) where TView : Component, IView
         {
-            foreach (var viewController in _viewControllers.Values) {
+            foreach (var viewController in _viewLayouts.Controllers) {
                 if(viewController.Remove(view))
                     break;
             }
             //TODO move to pool
             UnityEngine.Object.Destroy(view.gameObject);
         }
-    }
+
+
+        private void BindSceneActions()
+        {
+            Observable.FromEvent(
+                    x => SceneManager.activeSceneChanged += _sceneTransitionController.OnSceneActivate,
+                    x => SceneManager.activeSceneChanged -= _sceneTransitionController.OnSceneActivate).
+                Subscribe().
+                AddTo(LifeTime);
+
+            Observable.FromEvent(
+                    x => SceneManager.sceneLoaded += _sceneTransitionController.OnSceneLoaded,
+                    x => SceneManager.sceneLoaded -= _sceneTransitionController.OnSceneLoaded).
+                Subscribe().
+                AddTo(LifeTime);
+
+            Observable.FromEvent(
+                    x => SceneManager.sceneUnloaded += _sceneTransitionController.OnSceneUnloaded,
+                    x => SceneManager.sceneUnloaded -= _sceneTransitionController.OnSceneUnloaded).
+                Subscribe().
+                AddTo(LifeTime);
+        }
+
+        #endregion
+ }
 }

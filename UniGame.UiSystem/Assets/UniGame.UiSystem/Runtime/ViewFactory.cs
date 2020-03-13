@@ -2,6 +2,7 @@
 
 namespace UniGame.UiSystem.Runtime
 {
+    using Abstracts;
     using Taktika.Addressables.Reactive;
     using UniGreenModules.UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;

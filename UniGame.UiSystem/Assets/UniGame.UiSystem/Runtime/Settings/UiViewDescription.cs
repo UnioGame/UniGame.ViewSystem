@@ -1,12 +1,10 @@
-namespace UniGreenModules.UniGame.UiSystem.Runtime.Settings
+namespace UniGame.UiSystem.Runtime.Settings
 {
     using System;
     using Abstracts;
-    using AddressableTools.Runtime.Attributes;
-    using Core.Runtime.SerializableType;
-    using Core.Runtime.SerializableType.Attributes;
-    using Sirenix.OdinInspector;
-    using Taktika.GameRuntime.Types;
+    using UniGreenModules.UniGame.AddressableTools.Runtime.Attributes;
+    using UniGreenModules.UniGame.Core.Runtime.SerializableType;
+    using UniGreenModules.UniGame.Core.Runtime.SerializableType.Attributes;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
 
@@ -15,20 +13,20 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime.Settings
     {
             
 #if ODIN_INSPECTOR
-        [GUIColor(g:1.0f, r: 1.0f, b:0.5f)]
+        [Sirenix.OdinInspector.GUIColor(g:1.0f, r: 1.0f, b:0.5f)]
 #endif
         [Space(2)]
         public string Tag = string.Empty;
       
 #if ODIN_INSPECTOR
-        [DrawWithUnity]
+        [Sirenix.OdinInspector.DrawWithUnity]
 #endif
         [Space(2)]
         [STypeFilter(typeof(IView), nameof(SType.fullTypeName))]
         public SType Type;
 
 #if ODIN_INSPECTOR
-        [DrawWithUnity]
+        [Sirenix.OdinInspector.DrawWithUnity]
 #endif
         [Space(2)]
         [ShowAssetReference]

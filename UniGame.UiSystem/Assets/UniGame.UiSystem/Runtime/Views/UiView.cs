@@ -1,14 +1,14 @@
 ﻿using System.Collections;
 using UniGreenModules.UniRoutine.Runtime;
 
-namespace UniGreenModules.UniGame.UiSystem.Runtime
+namespace UniGame.UiSystem.Runtime
 {
     using System;
     using Abstracts;
-    using Extensions;
-    using UniCore.Runtime.DataFlow;
-    using UniCore.Runtime.DataFlow.Interfaces;
-    using UniCore.Runtime.ProfilerTools;
+    using UniGreenModules.UniCore.Runtime.DataFlow;
+    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
+    using UniGreenModules.UniCore.Runtime.ProfilerTools;
+    using UniGreenModules.UniGame.UiSystem.Runtime.Extensions;
     using UniRx;
     using UnityEngine;
 

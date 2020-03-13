@@ -1,5 +1,6 @@
 ﻿namespace UniGame.UiSystem.Examples.BaseUiManager.Scripts
 {
+    using Runtime;
     using TMPro;
     using UniGreenModules.UniCore.Runtime.Utils;
     using UniGreenModules.UniGame.UiSystem.Runtime;

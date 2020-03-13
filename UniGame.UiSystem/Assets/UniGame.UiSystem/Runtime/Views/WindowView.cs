@@ -1,12 +1,11 @@
-namespace UniGreenModules.UniGame.UiSystem.Runtime
+namespace UniGame.UiSystem.Runtime
 {
-    using System;
     using System.Diagnostics;
     using Abstracts;
-    using UniCore.Runtime.Rx.Extensions;
+    using UniGreenModules.UniCore.Runtime.Rx.Extensions;
+    using UniGreenModules.UniUiSystem.Runtime.Utils;
     using UniRx;
     using UnityEngine;
-    using UniUiSystem.Runtime.Utils;
 
     [RequireComponent(typeof(CanvasGroup))]
     public class WindowView<TWindowModel> : 

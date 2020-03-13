@@ -1,5 +1,6 @@
 ﻿namespace UniGreenModules.UniGame.UiSystem.Runtime.Abstracts
 {
+    using global::UniGame.UiSystem.Runtime.Abstracts;
     using UniRx.Async;
     using UnityEngine;
 

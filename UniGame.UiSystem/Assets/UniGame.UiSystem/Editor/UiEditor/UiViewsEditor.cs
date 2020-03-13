@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 
-namespace Taktika.UI.Editor.UiEditor
+namespace UniGame.UiSystem.UI.Editor.UiEditor
 {
-    using UniGreenModules.UniGame.UiSystem.Runtime.Settings;
+    using Runtime.Settings;
+    using UniGame.UiSystem.Editor.UiEditor;
     using UnityEditor;
 
     public class UiViewsEditor : Editor

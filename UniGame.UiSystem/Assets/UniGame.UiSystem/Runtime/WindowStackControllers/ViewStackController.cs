@@ -12,7 +12,7 @@ namespace UniGame.UiSystem.Runtime
     using UnityEngine;
     using Object = UnityEngine.Object;
     
-    public class ViewStackController : IViewStackController
+    public class ViewStackController : IViewLayoutController
     {
         private List<IView> views = new List<IView>();
 

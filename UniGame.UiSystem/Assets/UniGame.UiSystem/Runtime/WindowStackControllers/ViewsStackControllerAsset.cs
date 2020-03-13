@@ -7,7 +7,7 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
     using UniGreenModules.UniGame.UiSystem.Runtime;
     using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
 
-    public class ViewsStackControllerAsset : MonoBehaviour, IViewStackController
+    public class ViewsStackControllerAsset : MonoBehaviour, IViewLayoutController
     {
         #region inspector
 
@@ -15,9 +15,9 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         #endregion
 
-        private Lazy<IViewStackController> stackController;
+        private Lazy<IViewLayoutController> stackController;
 
-        public IViewStackController StackController => stackController.Value;
+        public IViewLayoutController StackController => stackController.Value;
 
         public Transform Layout => StackController.Layout;
 
@@ -67,14 +67,14 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         #region private methods
 
-        protected virtual IViewStackController Create()
+        protected virtual IViewLayoutController Create()
         {
             return new CanvasViewController(layoutCanvas);
         }
 
         protected void Awake()
         {
-            stackController = new Lazy<IViewStackController>(Create);
+            stackController = new Lazy<IViewLayoutController>(Create);
         }
 
         #endregion

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UniGreenModules.UniGame.UiSystem.Runtime
+namespace UniGame.UiSystem.Runtime
 {
     using System;
     using System.Collections.Generic;
@@ -8,9 +8,8 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
     using Abstracts;
     using Settings;
     using Taktika.Addressables.Reactive;
-    using UniCore.Runtime.ObjectPool.Runtime;
-    using UniCore.Runtime.ObjectPool.Runtime.Extensions;
-    using UniCore.Runtime.ProfilerTools;
+    using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime;
+    using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
     using Object = UnityEngine.Object;
 
     public class UiResourceProvider : IViewResourceProvider

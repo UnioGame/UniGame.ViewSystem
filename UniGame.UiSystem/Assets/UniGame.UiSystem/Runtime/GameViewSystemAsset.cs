@@ -4,10 +4,9 @@ namespace UniGame.UiSystem.Runtime
 {
     using System.Collections.Generic;
     using Abstracts;
+    using Settings;
     using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
     using UniGreenModules.UniGame.UiSystem.Runtime;
-    using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
-    using UniGreenModules.UniGame.UiSystem.Runtime.Settings;
     using UniRx.Async;
 
     public class GameViewSystemAsset : MonoBehaviour, IGameViewSystem
@@ -27,7 +26,7 @@ namespace UniGame.UiSystem.Runtime
         #endregion
 
         private IGameViewSystem gameViewSystem;
-        
+
         #region view system api
 
 
@@ -57,6 +56,12 @@ namespace UniGame.UiSystem.Runtime
             return gameViewSystem.OpenOverlay<T>(viewModel, skinTag);
         }
 
+        public IEnumerable<IViewLayoutController> Controllers => gameViewSystem.Controllers;
+        
+        public IReadOnlyViewLayoutController this[ViewType type] => gameViewSystem[type];
+
+        public IViewLayoutController GetViewController(ViewType type) => gameViewSystem.GetViewController(type);
+
         public void Dispose() => gameViewSystem.Dispose();
         
         #endregion
@@ -66,15 +71,18 @@ namespace UniGame.UiSystem.Runtime
             settings.Initialize();
             
             var factory = new ViewFactory(settings.UIResourceProvider);
-            var stackMap = new Dictionary<ViewType, IViewStackController>(4);
-            
+            var stackMap = new Dictionary<ViewType, IViewLayoutController>(4);
             foreach (var item in layoutMap) {
                 stackMap[item.Key] = item.Value;
             }
             
-            gameViewSystem = new GameViewSystem(factory,stackMap);
+            var viewLayoutContainer = new ViewStackLayoutsContainer(stackMap);
+            var sceneFlowController = new ViewSceneFlowController(viewLayoutContainer);
+
+            gameViewSystem = new GameViewSystem(factory, viewLayoutContainer, sceneFlowController);
         }
 
         private void OnDestroy() => Dispose();
+
     }
 }

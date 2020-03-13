@@ -1,7 +1,6 @@
-namespace UniGreenModules.UniGame.UiSystem.Runtime.Settings
+namespace UniGame.UiSystem.Runtime.Settings
 {
     using System.Collections.Generic;
-    using Sirenix.OdinInspector;
     using UnityEngine;
 
     [CreateAssetMenu(menuName = "UniGame/UiSystem/UiViewSource", fileName = "UiViewSource")]
@@ -16,13 +15,13 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime.Settings
         [Space]
         [Header("Default views")]
 #if ODIN_INSPECTOR
-        [FolderPath]
+        [Sirenix.OdinInspector.FolderPath]
 #endif
         public List<string> uiViewsDefaultFolders = new List<string>();
 
         [Header("Skins folder")]
 #if ODIN_INSPECTOR
-        [FolderPath]
+        [Sirenix.OdinInspector.FolderPath]
 #endif
         public List<string> uiViewsSkinFolders = new List<string>();
 
