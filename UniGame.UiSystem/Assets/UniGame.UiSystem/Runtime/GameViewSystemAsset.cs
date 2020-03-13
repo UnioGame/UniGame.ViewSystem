@@ -57,6 +57,11 @@ namespace UniGame.UiSystem.Runtime
             return gameViewSystem.OpenOverlay<T>(viewModel, skinTag);
         }
 
+        public void CloseAll()
+        {
+            gameViewSystem.CloseAll();
+        }
+
         public void Dispose() => gameViewSystem.Dispose();
         
         #endregion

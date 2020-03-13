@@ -58,6 +58,11 @@
             return await OpenView<T>(viewModel, ViewType.Overlay, skinTag);
         }
 
+        public void CloseAll()
+        {
+            _viewControllers[ViewType.Screen].CloseAll();
+            _viewControllers[ViewType.Window].CloseAll();
+        }
 
         /// <summary>
         /// create new view element

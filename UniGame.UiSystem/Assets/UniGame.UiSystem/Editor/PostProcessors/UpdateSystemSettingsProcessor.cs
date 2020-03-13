@@ -41,8 +41,9 @@ namespace UniGame.UiSystem.Editor.PostProcessors
             {
                 uiViewsSource.Build();
                 EditorUtility.SetDirty(uiViewsSource);
-                GameLog.Log($"Rebuild Ui View Settings: {uiViewsSource.name} {uiViewsSource.GetType().Name}");
             }
+            
+            GameLog.Log($"Rebuild Ui View Settings",Color.blue);
         }
 
         private static void Validate(string assetPath)
