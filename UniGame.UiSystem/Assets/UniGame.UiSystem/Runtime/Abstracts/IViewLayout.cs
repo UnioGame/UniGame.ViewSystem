@@ -10,7 +10,7 @@
     {
         Transform Layout { get; }
 
-        void Add<TView>(TView view) where TView :Component, IView;
+        void Push<TView>(TView view) where TView :Component, IView;
 
         bool Remove<T>(T view) where T : Component, IView;
         

@@ -12,37 +12,36 @@
     using UniRx;
     using UnityEngine;
 
-    public class ScreenViewStackController : 
-        IViewStackController<ITrackableView>, IDisposable, ILifeTimeContext, IViewStackController
+    public class ScreenViewStackLayout : IDisposable, ILifeTimeContext, IViewLayout
     {
-        private LifeTimeDefinition lifeTimeDefinition;
+        private LifeTimeDefinition _lifeTimeDefinition;
 
-        private List<ITrackableView> _viewStack;
+        private List<IView> _viewStack;
 
         private ReactiveCommand<IView> topChanged;
 
         public IObservable<IView> StackTopChanged => topChanged;
 
-        public ILifeTime LifeTime => lifeTimeDefinition.LifeTime;
+        public ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
 
         public Transform Layout { get; private set; }
 
-        public ScreenViewStackController(Transform layout)
+        public ScreenViewStackLayout(Transform layout)
         {
-            lifeTimeDefinition = ClassPool.Spawn<LifeTimeDefinition>();
+            _lifeTimeDefinition = ClassPool.Spawn<LifeTimeDefinition>();
             topChanged         = new ReactiveCommand<IView>();
-            topChanged.AddTo(lifeTimeDefinition.LifeTime);
-            _viewStack  = new List<ITrackableView>();
+            topChanged.AddTo(_lifeTimeDefinition.LifeTime);
+            _viewStack  = new List<IView>();
             this.Layout = layout;
         }
 
-        public void Push(ITrackableView view)
+        public void Push(IView view)
         {
             // HACK
             //(view as Component).transform.SetParent(Layout);
 
-            view.OnShow.Subscribe(OnViewShow).AddTo(LifeTime);
-            view.OnHide.Subscribe(OnViewHide).AddTo(LifeTime);
+            view.OnShown.Subscribe(OnViewShow).AddTo(LifeTime);
+            view.OnHidden.Subscribe(OnViewHide).AddTo(LifeTime);
             view.OnClosed.Subscribe(OnViewClosed).AddTo(LifeTime);
 
             _viewStack.Add(view);
@@ -69,20 +68,19 @@
 
         public void Dispose()
         {
-            lifeTimeDefinition.Release();
+            _lifeTimeDefinition.Release();
         }
 
-        public bool Contains(IView view) => _viewStack.IndexOf((ITrackableView)view) > 0;
+        public bool Contains(IView view) => _viewStack.IndexOf(view) > 0;
 
-        public void Add<TView>(TView view) where TView : Component, IView
+        public void Push<TView>(TView view) where TView : Component, IView
         {
-            var trackable = view as ITrackableView;
-            if (trackable != null)
-                Push(trackable);
-            trackable.Show();
+            if (view != null)
+                Push(view);
+            view?.Show();
         }
 
-        private void OnViewShow(ITrackableView view)
+        private void OnViewShow(IView view)
         {
             var viewIndex = _viewStack.IndexOf(view);
             if (viewIndex < 0 || viewIndex == _viewStack.Count - 1)
@@ -93,7 +91,7 @@
             NotifyTopChanged();
         }
 
-        private void OnViewHide(ITrackableView view)
+        private void OnViewHide(IView view)
         {
             var viewIndex = _viewStack.IndexOf(view);
             if (viewIndex < 0 || _viewStack.Count <= 1 || viewIndex != _viewStack.Count - 1)
@@ -104,7 +102,7 @@
             NotifyTopChanged();
         }
 
-        private void OnViewClosed(ITrackableView view)
+        private void OnViewClosed(IView view)
         {
             OnViewHide(view);
             _viewStack.Remove(view);

@@ -33,10 +33,34 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         public void Dispose() => StackController.Dispose();
 
         public bool Contains(IView view) => StackController.Contains(view);
-
-        public void Add<TView>(TView view) where TView : Component, IView
+        public void Hide<T>() where T : Component, IView
         {
-            StackController.Add(view);
+            StackController.Hide<T>();
+        }
+
+        public void HideAll()
+        {
+            StackController.HideAll();
+        }
+
+        public void HideAll<T>() where T : Component, IView
+        {
+            StackController.HideAll<T>();
+        }
+
+        public void Close<T>() where T : Component, IView
+        {
+            StackController.Close<T>();
+        }
+
+        public void Push<TView>(TView view) where TView : Component, IView
+        {
+            StackController.Push(view);
+        }
+
+        public bool Remove<T>(T view) where T : Component, IView
+        {
+            return StackController.Remove<T>(view);
         }
 
         public TView Get<TView>() where TView : Component, IView
@@ -44,21 +68,8 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
             return StackController.Get<TView>();
         }
 
-        public void CloseAll()
-        {
-            StackController.CloseAll();
-        }
+        public void CloseAll() => StackController.CloseAll();
 
-        //public bool Remove<T>(T view) where T : Component, IView
-        //{
-        //    return StackController.Remove(view);
-        //}
-
-        //public void Close<T>() where T : Component, IView
-        //{
-        //    StackController.Close<T>();
-        //}
-        
         #endregion
 
 
@@ -66,7 +77,7 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         protected virtual IViewLayout Create()
         {
-            return new ScreenViewStackController(layoutCanvas.transform);
+            return new ScreenViewStackLayout(layoutCanvas.transform);
         }
         
         #endregion

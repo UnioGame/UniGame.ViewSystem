@@ -17,45 +17,45 @@ namespace UniGame.UiSystem.Runtime
         MonoBehaviour, IView
         where TViewModel : class, IViewModel
     {
-
-        private LifeTimeDefinition lifeTimeDefinition = new LifeTimeDefinition();
-        private RecycleReactiveProperty<Unit> closeReactiveValue = new RecycleReactiveProperty<Unit>();
-        private IViewElementFactory viewFactory;
-
+        private IViewElementFactory _viewFactory;
+        private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
+        private RecycleReactiveProperty<IView> _closeReactiveValue = new RecycleReactiveProperty<IView>();
+        
+        private RecycleReactiveProperty<IView> _viewShown = new RecycleReactiveProperty<IView>();
+        private RecycleReactiveProperty<IView> _viewHidden = new RecycleReactiveProperty<IView>();
         /// <summary>
         /// ui element visibility status
         /// </summary>
-        protected BoolRecycleReactiveProperty visibility = new BoolRecycleReactiveProperty();
-
+        private BoolRecycleReactiveProperty _visibility = new BoolRecycleReactiveProperty();
         /// <summary>
         /// model container
         /// </summary>
-        private ReactiveProperty<TViewModel> viewModel = new ReactiveProperty<TViewModel>();
+        private ReactiveProperty<TViewModel> _viewModel = new ReactiveProperty<TViewModel>();
 
         #region public properties
 
-        public TViewModel Model => viewModel.Value;
+        public TViewModel Model => _viewModel.Value;
 
         /// <summary>
         /// Is View Active
         /// </summary>
-        public IReadOnlyReactiveProperty<bool> IsActive => visibility;
+        public IReadOnlyReactiveProperty<bool> IsActive => _visibility;
 
         /// <summary>
         /// View LifeTime
         /// </summary>
-        public ILifeTime LifeTime => lifeTimeDefinition.LifeTime;
+        public ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
 
         /// <summary>
         /// views factor
         /// </summary>
-        public IViewElementFactory ViewFactory => viewFactory;
+        public IViewElementFactory ViewFactory => _viewFactory;
         
-        public IObservable<Unit> OnHidden => visibility.Where(x => !x).AsUnitObservable();
+        public IObservable<IView> OnHidden => _viewHidden;
 
-        public IObservable<Unit> OnShown => visibility.Where(x => x).AsUnitObservable();
+        public IObservable<IView> OnShown => _viewHidden;
 
-        public IObservable<Unit> OnClosed => closeReactiveValue;
+        public IObservable<IView> OnClosed => _closeReactiveValue;
         
         #endregion
 
@@ -64,31 +64,36 @@ namespace UniGame.UiSystem.Runtime
         public void Initialize(IViewModel model, IViewElementFactory factory)
         {
             //restart view lifetime
-            lifeTimeDefinition.Release();
+            _lifeTimeDefinition.Release();
 
             //save model as context data
             if (model is TViewModel modelData)
             {
-                this.viewModel.Value = modelData;
+                this._viewModel.Value = modelData;
             }
             else
             {
                 throw new ArgumentException($"VIEW: {name} wrong model type. Target type {typeof(TViewModel).Name} : model Type {model?.GetType().Name}");
             }
 
-            this.viewFactory = factory;
+            this._viewFactory = factory;
 
             //bind model lifetime to local
             var modelLifeTime = model.LifeTime;
             modelLifeTime.AddCleanUpAction(Close);
 
             //terminate model when view closed
-            lifeTimeDefinition.AddDispose(model);
-            lifeTimeDefinition.AddCleanUpAction(() => factory = null);
-            lifeTimeDefinition.AddCleanUpAction(() => visibility.Release());
-            lifeTimeDefinition.AddCleanUpAction(() => {
-                closeReactiveValue.Value = Unit.Default;
-                closeReactiveValue.Release();
+            _lifeTimeDefinition.AddDispose(model);
+            _lifeTimeDefinition.AddCleanUpAction(() => factory = null);
+            _lifeTimeDefinition.AddCleanUpAction(() => {
+                _visibility.Release();
+                _viewHidden.Release();
+                _viewShown.Release();
+            });
+            //clean up view and notify observers
+            _lifeTimeDefinition.AddCleanUpAction(() => {
+                _closeReactiveValue.Value = this;
+                _closeReactiveValue.Release();
             });
 
             //custom initialization
@@ -99,24 +104,24 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// show active view
         /// </summary>
-        public virtual void Show() => visibility.Value = true;
+        public virtual void Show() => _visibility.Value = true;
 
         /// <summary>
         /// hide view without release it
         /// </summary>
-        public virtual void Hide() => visibility.Value = false;
+        public virtual void Hide() => _visibility.Value = false;
 
         /// <summary>
         /// end of view lifetime
         /// </summary>
         public void Close()
         {
-            if (lifeTimeDefinition.IsTerminated) return;
+            if (_lifeTimeDefinition.IsTerminated) return;
             OnClose().Execute().
                 AddTo(LifeTime);
         }
         
-        public void Destroy() => lifeTimeDefinition.Terminate();
+        public void Destroy() => _lifeTimeDefinition.Terminate();
 
         /// <summary>
         /// bind source stream to view action
@@ -140,7 +145,7 @@ namespace UniGame.UiSystem.Runtime
         {
             //wait until user defined closing operation complete
             yield return OnCloseProgress();
-            lifeTimeDefinition.Terminate();
+            _lifeTimeDefinition.Terminate();
         }
         
         /// <summary>

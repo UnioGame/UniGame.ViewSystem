@@ -8,11 +8,11 @@
     {
         IReadOnlyReactiveProperty<bool> IsActive { get; }
 
-        IObservable<Unit> OnHidden { get; }
+        IObservable<IView> OnHidden { get; }
 
-        IObservable<Unit> OnShown { get; }
+        IObservable<IView> OnShown { get; }
 
-        IObservable<Unit> OnClosed { get; }
+        IObservable<IView> OnClosed { get; }
         
         void Initialize(IViewModel vm,IViewElementFactory viewFactory);
         

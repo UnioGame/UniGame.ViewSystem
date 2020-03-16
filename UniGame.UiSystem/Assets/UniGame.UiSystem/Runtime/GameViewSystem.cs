@@ -143,7 +143,7 @@
 
             var view = await CreateView<T>(viewModel, skinTag, parent);
 
-            layout?.Add(view);
+            layout?.Push(view);
 
             return view;
         }
