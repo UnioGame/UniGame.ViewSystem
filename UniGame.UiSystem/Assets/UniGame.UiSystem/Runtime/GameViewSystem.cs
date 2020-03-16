@@ -20,7 +20,7 @@
 
 
         private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
-        
+
         private readonly IViewFactory _viewFactory;
         private readonly IViewLayoutContainer _viewLayouts;
         private readonly IViewSceneTransitionController _sceneTransitionController;
@@ -37,6 +37,7 @@
             _sceneTransitionController = sceneTransitionController;
 
             BindSceneActions();
+
         }
 
         public ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
@@ -68,16 +69,34 @@
             return await OpenView<T>(viewModel, ViewType.Overlay, skinTag);
         }
 
+        public T Get<T>() where T : Component, IView
+        {
+            foreach (var controller in _viewControllers.Values)
+            {
+                var v = controller.Get<T>();
+                if (v != null)
+                    return v;
+            }
+            return null;
+        }
+
+        public void CloseAll()
+        {
+            Debug.Log("GameViewSystem CloseAll()");
+            _viewControllers[ViewType.Screen].CloseAll();
+            _viewControllers[ViewType.Window].CloseAll();
+        }
+
 
         #endregion
 
         #region layout container api
 
-        public IReadOnlyViewLayoutController this[ViewType type] => _viewLayouts[type];
+        public IReadOnlyViewLayout this[ViewType type] => _viewLayouts[type];
 
-        public IEnumerable<IViewLayoutController> Controllers => _viewLayouts.Controllers;
+        public IEnumerable<IViewLayout> Controllers => _viewLayouts.Controllers;
 
-        public IViewLayoutController GetViewController(ViewType type) => _viewLayouts.GetViewController(type);
+        public IViewLayout GetViewController(ViewType type) => _viewLayouts.GetViewController(type);
 
 
         #endregion
@@ -120,7 +139,7 @@
             where T : Component, IView
         {
             var layout = _viewLayouts.GetViewController(viewType);
-            var parent = layout.Layout;
+            var parent = layout?.Layout;
 
             var view = await CreateView<T>(viewModel, skinTag, parent);
 
@@ -129,11 +148,11 @@
             return view;
         }
 
-            /// <summary>
-            /// Initialize View with model data
-            /// </summary>
-            private T InitializeView<T>(T view, IViewModel viewModel)
-            where T : Component, IView
+        /// <summary>
+        /// Initialize View with model data
+        /// </summary>
+        private T InitializeView<T>(T view, IViewModel viewModel)
+        where T : Component, IView
         {
 
             view.Initialize(viewModel, this);
@@ -149,6 +168,7 @@
             foreach (var viewController in _viewLayouts.Controllers) {
                 if(viewController.Remove(view))
                     break;
+
             }
             //TODO move to pool
             UnityEngine.Object.Destroy(view.gameObject);

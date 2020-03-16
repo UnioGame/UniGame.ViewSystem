@@ -5,11 +5,11 @@
 
     public interface IViewLayoutContainer : IReadOnlyViewLayoutContainer
     {
-        IEnumerable<IViewLayoutController> Controllers { get; }
+        IEnumerable<IViewLayout> Controllers { get; }
 
         /// <summary>
         /// get controller of target view type 
         /// </summary>
-        IViewLayoutController GetViewController(ViewType type);
+        IViewLayout GetViewController(ViewType type);
     }
 }

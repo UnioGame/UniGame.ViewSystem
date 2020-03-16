@@ -4,14 +4,16 @@
     using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
     using UnityEngine;
 
-    public interface IViewLayoutController : 
+    public interface IViewLayout : 
         IDisposable, 
-        IReadOnlyViewLayoutController
+        IReadOnlyViewLayout
     {
         Transform Layout { get; }
 
         void Add<TView>(TView view) where TView :Component, IView;
 
         bool Remove<T>(T view) where T : Component, IView;
+        
+        
     }
 }

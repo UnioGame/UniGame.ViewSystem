@@ -8,34 +8,34 @@ namespace UniGame.UiSystem.Runtime
     using UniGreenModules.UniCore.Runtime.DataFlow;
     using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
     using UniGreenModules.UniCore.Runtime.ProfilerTools;
+    using UniGreenModules.UniGame.Core.Runtime.Rx;
     using UniGreenModules.UniGame.UiSystem.Runtime.Extensions;
     using UniRx;
     using UnityEngine;
 
-    public abstract class UiView<TViewModel> : 
+    public abstract class UiView<TViewModel> :
         MonoBehaviour, IView
         where TViewModel : class, IViewModel
     {
-        
+
         private LifeTimeDefinition lifeTimeDefinition = new LifeTimeDefinition();
+        private RecycleReactiveProperty<Unit> closeReactiveValue = new RecycleReactiveProperty<Unit>();
         private IViewElementFactory viewFactory;
-        
+
         /// <summary>
         /// ui element visibility status
         /// </summary>
-        protected BoolReactiveProperty visibility = new BoolReactiveProperty(false);
+        protected BoolRecycleReactiveProperty visibility = new BoolRecycleReactiveProperty();
 
         /// <summary>
         /// model container
         /// </summary>
         private ReactiveProperty<TViewModel> viewModel = new ReactiveProperty<TViewModel>();
-        
+
         #region public properties
 
-        // TO DO Rename to ViewModel
-        // Так же вызывает сомнения необходимость Vm быть завернутой в ReactiveProperty
-        public IReadOnlyReactiveProperty<TViewModel> Model => viewModel;
-        
+        public TViewModel Model => viewModel.Value;
+
         /// <summary>
         /// Is View Active
         /// </summary>
@@ -46,34 +46,50 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         public ILifeTime LifeTime => lifeTimeDefinition.LifeTime;
 
+        /// <summary>
+        /// views factor
+        /// </summary>
         public IViewElementFactory ViewFactory => viewFactory;
-
-        #endregion
         
+        public IObservable<Unit> OnHidden => visibility.Where(x => !x).AsUnitObservable();
+
+        public IObservable<Unit> OnShown => visibility.Where(x => x).AsUnitObservable();
+
+        public IObservable<Unit> OnClosed => closeReactiveValue;
+        
+        #endregion
+
         #region public methods
 
-        public void Initialize(IViewModel model,IViewElementFactory factory)
+        public void Initialize(IViewModel model, IViewElementFactory factory)
         {
             //restart view lifetime
             lifeTimeDefinition.Release();
 
             //save model as context data
-            if (model is TViewModel modelData) {
+            if (model is TViewModel modelData)
+            {
                 this.viewModel.Value = modelData;
             }
-            else {
-                throw  new ArgumentException($"VIEW: {name} wrong model type. Target type {typeof(TViewModel).Name} : model Type {model?.GetType().Name}");
+            else
+            {
+                throw new ArgumentException($"VIEW: {name} wrong model type. Target type {typeof(TViewModel).Name} : model Type {model?.GetType().Name}");
             }
-            
+
             this.viewFactory = factory;
 
             //bind model lifetime to local
             var modelLifeTime = model.LifeTime;
             modelLifeTime.AddCleanUpAction(Close);
-            
+
             //terminate model when view closed
-            LifeTime.AddDispose(model);
-            LifeTime.AddCleanUpAction(() => factory = null);
+            lifeTimeDefinition.AddDispose(model);
+            lifeTimeDefinition.AddCleanUpAction(() => factory = null);
+            lifeTimeDefinition.AddCleanUpAction(() => visibility.Release());
+            lifeTimeDefinition.AddCleanUpAction(() => {
+                closeReactiveValue.Value = Unit.Default;
+                closeReactiveValue.Release();
+            });
 
             //custom initialization
             OnInitialize(modelData);
@@ -83,12 +99,12 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// show active view
         /// </summary>
-        public void Show() => visibility.Value = true;
+        public virtual void Show() => visibility.Value = true;
 
         /// <summary>
         /// hide view without release it
         /// </summary>
-        public void Hide() => visibility.Value = false;
+        public virtual void Hide() => visibility.Value = false;
 
         /// <summary>
         /// end of view lifetime
@@ -96,11 +112,11 @@ namespace UniGame.UiSystem.Runtime
         public void Close()
         {
             if (lifeTimeDefinition.IsTerminated) return;
-            
-            OnClose().
-                Execute().
+            OnClose().Execute().
                 AddTo(LifeTime);
-        } 
+        }
+        
+        public void Destroy() => lifeTimeDefinition.Terminate();
 
         /// <summary>
         /// bind source stream to view action
@@ -109,7 +125,7 @@ namespace UniGame.UiSystem.Runtime
         public UiView<TViewModel> BindTo<T>(IObservable<T> source, Action<T> action) => this.Bind(source, action);
 
         #endregion
-        
+
         /// <summary>
         /// custom initialization methods
         /// </summary>
@@ -124,14 +140,39 @@ namespace UniGame.UiSystem.Runtime
         {
             //wait until user defined closing operation complete
             yield return OnCloseProgress();
-            
             lifeTimeDefinition.Terminate();
+        }
+        
+        /// <summary>
+        /// hide process
+        /// </summary>
+        private IEnumerator OnHiding()
+        {
+            //wait until user defined closing operation complete
+            yield return OnHidingProgress();
+            
         }
 
         /// <summary>
         /// close continuation
         /// </summary>
         protected virtual IEnumerator OnCloseProgress()
+        {
+            yield break;
+        }
+
+        /// <summary>
+        /// showing continuation
+        /// </summary>
+        protected virtual IEnumerator OnShowProgress()
+        {
+            yield break;
+        }
+        
+        /// <summary>
+        /// hiding continuation
+        /// </summary>
+        protected virtual IEnumerator OnHidingProgress()
         {
             yield break;
         }
@@ -142,7 +183,7 @@ namespace UniGame.UiSystem.Runtime
             Close();
         }
 
-        
-        
+
+
     }
 }

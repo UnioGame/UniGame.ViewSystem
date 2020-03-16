@@ -56,11 +56,17 @@ namespace UniGame.UiSystem.Runtime
             return gameViewSystem.OpenOverlay<T>(viewModel, skinTag);
         }
 
-        public IEnumerable<IViewLayoutController> Controllers => gameViewSystem.Controllers;
-        
-        public IReadOnlyViewLayoutController this[ViewType type] => gameViewSystem[type];
 
-        public IViewLayoutController GetViewController(ViewType type) => gameViewSystem.GetViewController(type);
+        public IEnumerable<IViewLayout> Controllers => gameViewSystem.Controllers;
+        
+        public IReadOnlyViewLayout this[ViewType type] => gameViewSystem[type];
+
+        public IViewLayout GetViewController(ViewType type) => gameViewSystem.GetViewController(type);
+
+        public T Get<T>() where T : Component, IView
+        {
+            return gameViewSystem.Get<T>();
+        }
 
         public void CloseAll()
         {
@@ -76,7 +82,7 @@ namespace UniGame.UiSystem.Runtime
             settings.Initialize();
             
             var factory = new ViewFactory(settings.UIResourceProvider);
-            var stackMap = new Dictionary<ViewType, IViewLayoutController>(4);
+            var stackMap = new Dictionary<ViewType, IViewLayout>(4);
             foreach (var item in layoutMap) {
                 stackMap[item.Key] = item.Value;
             }

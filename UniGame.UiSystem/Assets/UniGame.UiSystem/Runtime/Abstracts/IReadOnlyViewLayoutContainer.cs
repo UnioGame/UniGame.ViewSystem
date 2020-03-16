@@ -7,6 +7,6 @@
         /// <summary>
         /// indexer of view stack controller
         /// </summary>
-        IReadOnlyViewLayoutController this[ViewType type] { get; }
+        IReadOnlyViewLayout this[ViewType type] { get; }
     }
 }

@@ -17,7 +17,8 @@ namespace UniGame.UiSystem.Runtime
         private List<IView> views = new List<IView>();
 
         private LifeTimeDefinition lifeTime = new LifeTimeDefinition();
-
+        
+        public IObservable<IView> StackTopChanged => throw new NotImplementedException();
 
         public Transform Layout { get; protected set; }
 
@@ -39,6 +40,11 @@ namespace UniGame.UiSystem.Runtime
             OnViewAdded(view);
         }
 
+        public TView Get<TView>() where TView : Component, IView
+        {
+            return (TView)views.Find(v => v is TView);
+        }
+
         public void Hide<T>() where T : Component, IView
         {
             FirstViewAction<T>(x => x.Hide());
@@ -46,12 +52,12 @@ namespace UniGame.UiSystem.Runtime
 
         public void HideAll<T>() where T : Component, IView
         {
-            AllViewsAction<T>(x => true,y => y.Hide());
+            AllViewsAction<T>(x => true, y => y.Hide());
         }
-        
+
         public void HideAll()
         {
-            AllViewsAction<IView>(x => true,x => x.Hide());
+            AllViewsAction<IView>(x => true, x => x.Hide());
         }
 
         public void Close<T>() where T : Component, IView
@@ -63,51 +69,52 @@ namespace UniGame.UiSystem.Runtime
         {
             var buffer = ClassPool.Spawn<List<IView>>();
             buffer.AddRange(views);
-            foreach (var view in buffer) {
+            foreach (var view in buffer)
+            {
                 view.Close();
             }
             buffer.DespawnCollection();
         }
-        
+
         public bool Remove<T>(T view) where T : Component, IView
         {
             if (!view)
                 return false;
-            
+
             //custom user action before cleanup view
             OnBeforeClose(view);
 
             //remove view Object
             return views.Remove(view);
         }
-        
+
         #endregion
-        
-        private void AllViewsAction<TView>(Func<TView,bool> predicate,Action<TView> action) 
+
+        private void AllViewsAction<TView>(Func<TView, bool> predicate, Action<TView> action)
             where TView : IView
         {
             for (var i = 0; i < views.Count; i++)
             {
                 var view = views[i];
-                if ((view is TView targetView) && 
+                if ((view is TView targetView) &&
                     predicate(targetView))
                 {
                     action(targetView);
                 }
             }
         }
-        
-        private void FirstViewAction<TView>(Action<TView> action) 
+
+        private void FirstViewAction<TView>(Action<TView> action)
             where TView : Object, IView
         {
             var view = views.FirstOrDefault(x => x is TView) as TView;
-            if(view) 
+            if (view)
                 action(view);
         }
 
-        protected virtual void OnBeforeClose<T>(T view) where T : Component, IView {}
+        protected virtual void OnBeforeClose<T>(T view) where T : Component, IView { }
 
-        protected virtual void OnViewAdded<T>(T view) where T : Component, IView {}
+        protected virtual void OnViewAdded<T>(T view) where T : Component, IView { }
 
     }
 }

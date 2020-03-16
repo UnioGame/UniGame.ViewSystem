@@ -8,12 +8,12 @@ namespace UniGame.UiSystem.Runtime
     public class ViewStackLayoutsContainer : IViewLayoutContainer
     {
 
-        private IDictionary<ViewType, IViewLayoutController> _viewControllers;
+        private IDictionary<ViewType, IViewLayout> _viewControllers;
 
-        private IViewLayoutController _dummyController;
+        private IViewLayout _dummyController;
 
 
-        public ViewStackLayoutsContainer(IDictionary<ViewType, IViewLayoutController> layoutMap)
+        public ViewStackLayoutsContainer(IDictionary<ViewType, IViewLayout> layoutMap)
         {
             _viewControllers = layoutMap;
             //empty object controller
@@ -21,11 +21,11 @@ namespace UniGame.UiSystem.Runtime
         }
 
 
-        public IReadOnlyViewLayoutController this[ViewType type] => GetViewController(type);
+        public IReadOnlyViewLayout this[ViewType type] => GetViewController(type);
 
-        public IEnumerable<IViewLayoutController> Controllers => _viewControllers.Values;
+        public IEnumerable<IViewLayout> Controllers => _viewControllers.Values;
 
-        public IViewLayoutController GetViewController(ViewType type)
+        public IViewLayout GetViewController(ViewType type)
         {
             return _viewControllers.TryGetValue(type, out var controller) ? 
                 controller : 

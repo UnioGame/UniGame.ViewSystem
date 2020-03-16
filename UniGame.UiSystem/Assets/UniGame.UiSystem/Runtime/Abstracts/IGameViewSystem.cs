@@ -22,8 +22,11 @@
 
         UniTask<T> OpenOverlay<T>(IViewModel viewModel, string skinTag = "") where T : Component, IView;
 
-        void CloseAll();
 
+        T Get<T>() where T : Component, IView;
+
+
+        void CloseAll();
     }
 
 }
