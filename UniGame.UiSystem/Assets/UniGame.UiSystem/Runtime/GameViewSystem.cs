@@ -68,6 +68,7 @@
             return await OpenView<T>(viewModel, ViewType.Overlay, skinTag);
         }
 
+
         #endregion
 
         #region layout container api
@@ -80,6 +81,12 @@
 
 
         #endregion
+
+        public void CloseAll()
+        {
+            _viewLayouts[ViewType.Screen].CloseAll();
+            _viewLayouts[ViewType.Window].CloseAll();
+        }
 
         /// <summary>
         /// create new view element

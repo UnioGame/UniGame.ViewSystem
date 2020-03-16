@@ -97,7 +97,8 @@ namespace UniGame.UiSystem.Runtime
         {
             if (lifeTimeDefinition.IsTerminated) return;
             
-            OnClose().Execute().
+            OnClose().
+                Execute().
                 AddTo(LifeTime);
         } 
 

@@ -10,6 +10,7 @@ namespace UniGame.UiSystem.Editor.PostProcessors
     using Runtime.Settings;
     using UI.Editor.UiEdito;
     using UniGreenModules.UniCore.Runtime.ProfilerTools;
+    using UnityEngine;
 
     public class UpdateSystemSettingsProcessor : AssetPostprocessor
     {
@@ -39,8 +40,9 @@ namespace UniGame.UiSystem.Editor.PostProcessors
             {
                 uiViewsSource.Build();
                 EditorUtility.SetDirty(uiViewsSource);
-                GameLog.Log($"Rebuild Ui View Settings: {uiViewsSource.name} {uiViewsSource.GetType().Name}");
             }
+            
+            GameLog.Log($"Rebuild Ui View Settings",Color.blue);
         }
 
         private static void Validate(string assetPath)

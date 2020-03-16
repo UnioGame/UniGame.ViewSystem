@@ -19,8 +19,10 @@
         UniTask<T> OpenScreen<T>(IViewModel viewModel, string skinTag = "")
             where T : Component, IView;
 
-        UniTask<T> OpenOverlay<T>(IViewModel viewModel, string skinTag = "") 
-            where T : Component, IView;
+
+        UniTask<T> OpenOverlay<T>(IViewModel viewModel, string skinTag = "") where T : Component, IView;
+
+        void CloseAll();
 
     }
 

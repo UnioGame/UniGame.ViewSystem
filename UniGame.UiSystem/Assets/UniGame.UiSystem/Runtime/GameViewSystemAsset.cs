@@ -62,6 +62,11 @@ namespace UniGame.UiSystem.Runtime
 
         public IViewLayoutController GetViewController(ViewType type) => gameViewSystem.GetViewController(type);
 
+        public void CloseAll()
+        {
+            gameViewSystem.CloseAll();
+        }
+
         public void Dispose() => gameViewSystem.Dispose();
         
         #endregion
