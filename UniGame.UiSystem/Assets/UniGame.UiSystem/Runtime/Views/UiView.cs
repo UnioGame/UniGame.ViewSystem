@@ -4,6 +4,7 @@ using UniGreenModules.UniRoutine.Runtime;
 namespace UniGreenModules.UniGame.UiSystem.Runtime
 {
     using System;
+    using System.Security.Cryptography;
     using Abstracts;
     using Extensions;
     using UniCore.Runtime.DataFlow;
@@ -12,14 +13,14 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
     using UniRx;
     using UnityEngine;
 
-    public abstract class UiView<TViewModel> : 
+    public abstract class UiView<TViewModel> :
         MonoBehaviour, IView
         where TViewModel : class, IViewModel
     {
-        
+
         private LifeTimeDefinition lifeTimeDefinition = new LifeTimeDefinition();
         private IViewElementFactory viewFactory;
-        
+
         /// <summary>
         /// ui element visibility status
         /// </summary>
@@ -29,13 +30,13 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         /// model container
         /// </summary>
         private ReactiveProperty<TViewModel> viewModel = new ReactiveProperty<TViewModel>();
-        
+
         #region public properties
 
         // TO DO Rename to ViewModel
         // Так же вызывает сомнения необходимость Vm быть завернутой в ReactiveProperty
         public IReadOnlyReactiveProperty<TViewModel> Model => viewModel;
-        
+
         /// <summary>
         /// Is View Active
         /// </summary>
@@ -49,28 +50,30 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         public IViewElementFactory ViewFactory => viewFactory;
 
         #endregion
-        
+
         #region public methods
 
-        public void Initialize(IViewModel model,IViewElementFactory factory)
+        public void Initialize(IViewModel model, IViewElementFactory factory)
         {
             //restart view lifetime
             lifeTimeDefinition.Release();
 
             //save model as context data
-            if (model is TViewModel modelData) {
+            if (model is TViewModel modelData)
+            {
                 this.viewModel.Value = modelData;
             }
-            else {
-                throw  new ArgumentException($"VIEW: {name} wrong model type. Target type {typeof(TViewModel).Name} : model Type {model?.GetType().Name}");
+            else
+            {
+                throw new ArgumentException($"VIEW: {name} wrong model type. Target type {typeof(TViewModel).Name} : model Type {model?.GetType().Name}");
             }
-            
+
             this.viewFactory = factory;
 
             //bind model lifetime to local
             var modelLifeTime = model.LifeTime;
             modelLifeTime.AddCleanUpAction(Close);
-            
+
             //terminate model when view closed
             LifeTime.AddDispose(model);
             LifeTime.AddCleanUpAction(() => factory = null);
@@ -96,10 +99,10 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         public void Close()
         {
             if (lifeTimeDefinition.IsTerminated) return;
-            
+
             OnClose().Execute().
                 AddTo(LifeTime);
-        } 
+        }
 
         /// <summary>
         /// bind source stream to view action
@@ -108,7 +111,7 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         public UiView<TViewModel> BindTo<T>(IObservable<T> source, Action<T> action) => this.Bind(source, action);
 
         #endregion
-        
+
         /// <summary>
         /// custom initialization methods
         /// </summary>
@@ -123,8 +126,15 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         {
             //wait until user defined closing operation complete
             yield return OnCloseProgress();
-            
+
             lifeTimeDefinition.Terminate();
+            if (this != null && this.gameObject != null) {
+#if UNITY_EDITOR
+                DestroyImmediate(this.gameObject);
+#else
+                Destroy(this.gameObject);
+#endif
+            }
         }
 
         /// <summary>
@@ -134,14 +144,14 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         {
             yield break;
         }
-        
+
         private void OnDestroy()
         {
             GameLog.Log($"View {name} Destroyed");
             Close();
         }
 
-        
-        
+
+
     }
 }

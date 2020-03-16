@@ -58,7 +58,12 @@
 
         public void CloseAll()
         {
-            _viewStack.ForEach(v=>v.Close());
+            Debug.Log("View Stack close all");
+            for (var index = _viewStack.Count -1 ; index >= 0; index--) {
+                var view = _viewStack[index];
+                view.Close();
+                _viewStack.RemoveAt(index);
+            }
         }
 
         public void Dispose()

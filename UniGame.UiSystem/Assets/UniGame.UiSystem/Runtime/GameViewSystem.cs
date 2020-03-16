@@ -76,6 +76,13 @@
             return null;
         }
 
+        public void CloseAll()
+        {
+            Debug.Log("GameViewSystem CloseAll()");
+            _viewControllers[ViewType.Screen].CloseAll();
+            _viewControllers[ViewType.Window].CloseAll();
+        }
+
 
         /// <summary>
         /// create new view element

@@ -62,6 +62,11 @@ namespace UniGame.UiSystem.Runtime
             return gameViewSystem.Get<T>();
         }
 
+        public void CloseAll()
+        {
+            gameViewSystem.CloseAll();
+        }
+
         public void Dispose() => gameViewSystem.Dispose();
         
         #endregion
