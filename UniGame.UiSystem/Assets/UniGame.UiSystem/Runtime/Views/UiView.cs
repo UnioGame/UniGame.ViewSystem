@@ -70,7 +70,7 @@ namespace UniGame.UiSystem.Runtime
         
         public IObservable<IView> OnHidden => _viewHidden;
 
-        public IObservable<IView> OnShown => _viewHidden;
+        public IObservable<IView> OnShown => _viewShown;
 
         public IObservable<IView> OnClosed => _closeReactiveValue;
         
@@ -219,8 +219,7 @@ namespace UniGame.UiSystem.Runtime
         private void InitializeHandlers(IViewModel model)
         {
             _isVisible = _visibility.Value;
-            _visibility.
-                Subscribe(x => this._isVisible = x).
+            _visibility.Subscribe(x => this._isVisible = x).
                 AddTo(_lifeTimeDefinition);
 
             _visibility.Where(x => x).
@@ -230,8 +229,6 @@ namespace UniGame.UiSystem.Runtime
             _visibility.Where(x => !x).
                 Subscribe(x => _viewHidden.Value = this).
                 AddTo(_lifeTimeDefinition);
-           
-
         }
 
         private void BindLifeTimeActions(IViewModel model)

@@ -1800,7 +1800,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonTrigger: {fileID: 0}
   text: {fileID: 0}
-  skin: skin1
+  skin: skin2
   type: 2
   windowManager: {fileID: 0}
 --- !u!1 &1531949169
@@ -2072,7 +2072,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonTrigger: {fileID: 0}
   text: {fileID: 0}
-  skin: skin1
+  skin: skin3
   type: 2
   windowManager: {fileID: 0}
 --- !u!1 &1595356738

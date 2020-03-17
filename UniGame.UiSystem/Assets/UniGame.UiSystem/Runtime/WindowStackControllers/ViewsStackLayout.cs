@@ -35,7 +35,6 @@
                 Where(x => x == _activeView).
                 Subscribe(HideView).
                 AddTo(view.LifeTime);
-            
         }
 
         protected override void OnBeforeClose<T>(T view)
