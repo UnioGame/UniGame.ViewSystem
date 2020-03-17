@@ -51,10 +51,10 @@ namespace UniGame.UiSystem.Runtime
                 Subscribe(x => canvasGroup.SetState(hiddenState)).
                 AddTo(LifeTime);
 
-            OnWindowInitialize(model);
+            OnViewInitialize(model);
         }
 
-        protected virtual void OnWindowInitialize(TWindowModel model) {}
+        protected virtual void OnViewInitialize(TWindowModel model) {}
 
         protected void Awake()
         {

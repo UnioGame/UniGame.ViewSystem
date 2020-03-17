@@ -1,10 +1,11 @@
-﻿namespace UniGame.UiSystem.Examples.BaseUiManager.Scripts
+﻿namespace UniGame.UiSystem.Examples.ListViews.Views
 {
+    using BaseUiManager.Scripts;
     using Runtime;
     using TMPro;
     using UniGreenModules.UniCore.Runtime.Utils;
 
-    public class DemoResourcePanelScreenView : WindowView<DemoResourceUiViewModel>
+    public class DemoResourcePanelScreen : WindowView<DemoResourceUiViewModel>
     {
         public TextMeshProUGUI goldValue;
 

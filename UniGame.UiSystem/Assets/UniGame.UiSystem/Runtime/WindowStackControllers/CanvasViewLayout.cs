@@ -3,16 +3,15 @@
 namespace UniGame.UiSystem.Runtime
 {
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
-    using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
     using UniRx;
 
-    public class CanvasViewController : ViewStackController
+    public class CanvasViewLayout : ViewLayout
     {
         private readonly Canvas canvas;
 
         #region constructor
         
-        public CanvasViewController(Canvas canvas) 
+        public CanvasViewLayout(Canvas canvas) 
         {
             this.canvas = canvas;
             Layout = canvas?.transform;

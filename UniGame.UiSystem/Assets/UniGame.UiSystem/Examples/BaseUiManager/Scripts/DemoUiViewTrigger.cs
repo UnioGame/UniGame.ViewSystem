@@ -6,7 +6,6 @@ namespace UniGame.UiSystem.Examples.BaseUiManager.Scripts
 {
     using Runtime;
     using Runtime.Abstracts;
-    using Runtime.Abstracts;
     using UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager;
     using UniRx;
     using UniRx.Async;
@@ -28,6 +27,7 @@ namespace UniGame.UiSystem.Examples.BaseUiManager.Scripts
         {
             buttonTrigger = buttonTrigger ?? GetComponent<Button>();
             text = text ?? GetComponentInChildren<TextMeshProUGUI>();
+            windowManager = windowManager ?? GetComponentInParent<DemoWindowManager>();
             
             buttonTrigger.onClick.
                 AsObservable().

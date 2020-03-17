@@ -3,15 +3,13 @@
     using System;
     using System.Collections.Generic;
     using Abstracts;
+    using Addressables.Reactive;
     using Sirenix.OdinInspector;
-    using Taktika.Addressables.Reactive;
+    using UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniCore.Runtime.DataFlow;
     using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
-    using UniGreenModules.UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
     using UniGreenModules.UniGame.AddressableTools.Runtime.Attributes;
-    using UniGreenModules.UniGame.UiSystem.Runtime;
-    using UniGreenModules.UniGame.UiSystem.Runtime.Settings;
     using UniRx;
     using UnityEngine;
 

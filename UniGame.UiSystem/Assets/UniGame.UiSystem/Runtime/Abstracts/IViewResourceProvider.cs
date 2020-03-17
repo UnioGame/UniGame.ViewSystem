@@ -1,7 +1,7 @@
 ﻿namespace UniGame.UiSystem.Runtime.Abstracts
 {
     using System.Collections.Generic;
-    using Taktika.Addressables.Reactive;
+    using Addressables.Reactive;
     using UnityEngine;
 
 

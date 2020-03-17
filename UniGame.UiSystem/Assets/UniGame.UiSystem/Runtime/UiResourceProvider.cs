@@ -6,8 +6,8 @@ namespace UniGame.UiSystem.Runtime
     using System.Collections.Generic;
     using System.Linq;
     using Abstracts;
+    using Addressables.Reactive;
     using Settings;
-    using Taktika.Addressables.Reactive;
     using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime;
     using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
     using Object = UnityEngine.Object;
@@ -32,7 +32,7 @@ namespace UniGame.UiSystem.Runtime
                      string.Equals(x.Tag,skin,StringComparison.InvariantCultureIgnoreCase));
             
             //return collection to pool
-            items.DespawnCollection();
+            items.Despawn();
 
             if (item == null) {
                 Debug.LogError($"{nameof(UiResourceProvider)} ITEM MISSING skin:{skin} type {typeof(TView).Name}");
@@ -55,7 +55,7 @@ namespace UniGame.UiSystem.Runtime
 
             var items = FindItemsByType(typeof(TView), strongMatching);
             //return collection to pool
-            items.DespawnCollection();
+            items.Despawn();
 
             if (items.Count <= 0) {
                 Debug.LogError($"{nameof(UiResourceProvider)} ITEM MISSING skin:{skinTag} type {typeof(TView).Name}");

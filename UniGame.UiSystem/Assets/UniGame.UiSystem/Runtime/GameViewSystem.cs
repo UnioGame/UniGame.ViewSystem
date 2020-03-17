@@ -18,7 +18,6 @@
     {
         #region private fields
 
-
         private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
 
         private readonly IViewFactory _viewFactory;
@@ -71,7 +70,7 @@
 
         public T Get<T>() where T : Component, IView
         {
-            foreach (var controller in _viewControllers.Values)
+            foreach (var controller in _viewLayouts.Controllers)
             {
                 var v = controller.Get<T>();
                 if (v != null)
@@ -80,14 +79,7 @@
             return null;
         }
 
-        public void CloseAll()
-        {
-            Debug.Log("GameViewSystem CloseAll()");
-            _viewControllers[ViewType.Screen].CloseAll();
-            _viewControllers[ViewType.Window].CloseAll();
-        }
-
-
+        
         #endregion
 
         #region layout container api
@@ -145,6 +137,8 @@
 
             layout?.Push(view);
 
+            view.Show();
+            
             return view;
         }
 
@@ -152,7 +146,7 @@
         /// Initialize View with model data
         /// </summary>
         private T InitializeView<T>(T view, IViewModel viewModel)
-        where T : Component, IView
+            where T : Component, IView
         {
 
             view.Initialize(viewModel, this);
@@ -166,10 +160,11 @@
         private void Destroy<TView>(TView view) where TView : Component, IView
         {
             foreach (var viewController in _viewLayouts.Controllers) {
-                if(viewController.Remove(view))
+                if(viewController.Close(view))
                     break;
 
             }
+            
             //TODO move to pool
             UnityEngine.Object.Destroy(view.gameObject);
         }

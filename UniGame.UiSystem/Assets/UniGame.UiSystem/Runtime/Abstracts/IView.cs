@@ -7,6 +7,9 @@
     public interface IView : ILifeTimeContext
     {
         IReadOnlyReactiveProperty<bool> IsActive { get; }
+        
+        bool IsDestroyed { get; }
+        
 
         IObservable<IView> OnHidden { get; }
 

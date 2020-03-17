@@ -17,7 +17,7 @@ namespace UniGame.UiSystem.Runtime
         {
             _viewControllers = layoutMap;
             //empty object controller
-            _dummyController = new ViewStackController();
+            _dummyController = new ViewLayout();
         }
 
 

@@ -1,13 +1,9 @@
 ﻿namespace UniGame.UiSystem.Runtime.Abstracts
 {
-    using System;
-    using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
     using UnityEngine;
 
     public interface IReadOnlyViewLayout 
     {
-    
-        IObservable<IView> LayoutChanged { get; }
 
         bool Contains(IView view);
         

@@ -9,78 +9,76 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b71e3508fe8ed7418db94ea23c131b5, type: 3}
+  m_Script: {fileID: 11500000, guid: 8fb7e5639c338ff4a9a1cee8f5178231, type: 3}
   m_Name: UiManagerSettings
   m_EditorClassIdentifier: 
   sourceName: 
   addressableGroupName: 
   uiViewsDefaultFolders:
-  - Assets/UniGame.UiSystem/Examples/BaseUiManager/Windows
-  - Assets/UniGame.UiSystem/Examples/BaseUiManager/Screens
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/BaseUiManager/Screens
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/BaseUiManager/Windows
   uiViewsSkinFolders:
-  - Assets/UniGame.UiSystem/Examples/BaseUiManager/Windows/Skins
-  - Assets/UniGame.UiSystem/Examples/BaseUiManager/Screens/Skin1
-  - Assets/UniGame.UiSystem/Examples/BaseUiManager/Screens/Skin2
-  - Assets/UniGame.UiSystem/Examples/BaseUiManager/Screens/Skin3
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/BaseUiManager/Screens/Skin1
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/BaseUiManager/Screens/Skin2
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/BaseUiManager/Screens/Skin3
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/BaseUiManager/Windows/Skins/Skin1
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/BaseUiManager/Windows/Skins/Skin2
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/BaseUiManager/Windows/Skins/Skin3
   uiViews:
   - Tag: Skin1
     Type:
-      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoWindowView,
+      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoScreenView,
         Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     View:
-      m_AssetGUID: d2f40bec47d9f2e4fbd8c6ae6db19ae6
+      m_AssetGUID: 7b492dba94b5c334395cdef64097fffb
       m_SubObjectName: 
   - Tag: Skin2
     Type:
-      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoWindowView,
+      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoScreenView,
         Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     View:
-      m_AssetGUID: 1a1ec1e302e16a145a7cf111f5d99dbe
+      m_AssetGUID: dfabff60446732548aa88aa669f41a01
       m_SubObjectName: 
   - Tag: Skin3
     Type:
-      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoWindowView,
+      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoScreenView,
         Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     View:
-      m_AssetGUID: bab2c1116c6602642b8e3c9136e19ba8
+      m_AssetGUID: bc8663cb7bc22d94d9528365c84b8bdb
       m_SubObjectName: 
   - Tag: Skin1
     Type:
-      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoScreenView,
+      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoWindowView,
         Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     View:
-      m_AssetGUID: 93704f579627b454aa477d7b12e175d8
+      m_AssetGUID: fa8b6f04fe536f747a4a8541abc3b6dc
       m_SubObjectName: 
   - Tag: Skin2
     Type:
-      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoScreenView,
+      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoWindowView,
         Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     View:
-      m_AssetGUID: 268e9b2d623d88b47a9be08267a79a98
+      m_AssetGUID: 12aadc7245988a14fb80511ba28836e0
       m_SubObjectName: 
   - Tag: Skin3
+    Type:
+      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoWindowView,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    View:
+      m_AssetGUID: 357c111d984b1bd40ba741185ef88fc8
+      m_SubObjectName: 
+  - Tag: 
     Type:
       fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoScreenView,
         Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     View:
-      m_AssetGUID: bb67fb2ee27614545b652d7c12865add
+      m_AssetGUID: 53f1cadcc1309cf4b987bfd3bca7930b
       m_SubObjectName: 
   - Tag: 
     Type:
       fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoWindowView,
         Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     View:
-      m_AssetGUID: 1a06a41b9a738234bb8a17e15409398b
+      m_AssetGUID: 329a088191261d949a8beeeec874145d
       m_SubObjectName: 
-  - Tag: 
-    Type:
-      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoScreenView,
-        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    View:
-      m_AssetGUID: 21f498e527f20dd428078555180129b3
-      m_SubObjectName: 
-  sources:
-  - m_AssetGUID: 5c5cd9d26f1f7ac479c12e997568f976
-    m_SubObjectName: 
-  - m_AssetGUID: 28cda470d6401fe479675ef9ac62e039
-    m_SubObjectName: 
+  sources: []

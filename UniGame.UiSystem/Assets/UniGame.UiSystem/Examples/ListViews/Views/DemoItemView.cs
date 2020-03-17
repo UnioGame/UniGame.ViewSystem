@@ -1,6 +1,4 @@
-﻿using UniGreenModules.UniGame.UiSystem.Runtime;
-
-namespace UniGame.UiSystem.Examples.ListViews.Views
+﻿namespace UniGame.UiSystem.Examples.ListViews.Views
 {
     using Runtime;
     using TMPro;

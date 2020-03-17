@@ -4,8 +4,6 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 {
     using System;
     using Abstracts;
-    using UniGreenModules.UniGame.UiSystem.Runtime;
-    using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
 
     public class ViewsLayoutAsset : MonoBehaviour, IViewLayout
     {
@@ -19,8 +17,6 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         public IViewLayout StackController => layout.Value;
 
-        public IObservable<IView> LayoutChanged => layout.Value.LayoutChanged;
-        
         public Transform Layout => StackController.Layout;
 
         #region public methods
@@ -58,9 +54,9 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
             StackController.Push(view);
         }
 
-        public bool Remove<T>(T view) where T : Component, IView
+        public bool Close<T>(T view) where T : Component, IView
         {
-            return StackController.Remove<T>(view);
+            return StackController.Close<T>(view);
         }
 
         public TView Get<TView>() where TView : Component, IView
@@ -77,7 +73,7 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         protected virtual IViewLayout Create()
         {
-            return new ScreenViewStackLayout(layoutCanvas.transform);
+            return new ViewsStackLayout(layoutCanvas.transform);
         }
         
         #endregion

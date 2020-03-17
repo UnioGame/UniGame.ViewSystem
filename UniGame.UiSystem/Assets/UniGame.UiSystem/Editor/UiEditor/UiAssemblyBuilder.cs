@@ -7,6 +7,7 @@ namespace UniGame.UiSystem.Editor.UiEditor
     using System.Linq;
     using Runtime.Abstracts;
     using Runtime.Settings;
+    using UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniCore.EditorTools.Editor.AssetOperations;
     using UniGreenModules.UniCore.Runtime.ProfilerTools;
     using UnityEditor;

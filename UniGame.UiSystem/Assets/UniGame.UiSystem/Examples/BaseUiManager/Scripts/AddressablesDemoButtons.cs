@@ -4,9 +4,9 @@ namespace UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager
 {
     using System.Collections.Generic;
     using AddressableTools.Runtime.Extensions;
-    using Taktika.Addressables.Reactive;
+    using global::UniCore.Runtime.ProfilerTools;
+    using global::UniGame.Addressables.Reactive;
     using UniCore.Runtime.DataFlow;
-    using UniCore.Runtime.ProfilerTools;
     using UniCore.Runtime.Rx.Extensions;
     using UniRx;
     using UnityEngine.AddressableAssets;

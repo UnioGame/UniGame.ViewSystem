@@ -9,34 +9,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b71e3508fe8ed7418db94ea23c131b5, type: 3}
+  m_Script: {fileID: 11500000, guid: 8fb7e5639c338ff4a9a1cee8f5178231, type: 3}
   m_Name: UiManagerSettings
   m_EditorClassIdentifier: 
   sourceName: 
   addressableGroupName: 
   uiViewsDefaultFolders:
-  - Assets/UniGame.UiSystem/Examples/ListViews/Assets
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/ListViews/Assets
   uiViewsSkinFolders: []
   uiViews:
   - Tag: 
     Type:
-      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.ListViews.Views.DemoItemView,
-        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      fullTypeName: UniGame.UiSystem.Examples.ListViews.Views.DemoItemView, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     View:
-      m_AssetGUID: f8d7ab623219d3a4095e0137a803a2c2
+      m_AssetGUID: c640d56d38870e840b6b6b88fec0de84
       m_SubObjectName: 
   - Tag: 
     Type:
-      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.ListViews.Views.DemoListView,
-        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      fullTypeName: UniGame.UiSystem.Examples.ListViews.Views.DemoListView, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     View:
-      m_AssetGUID: 088f0d6896b367d40805c45af0148cb6
+      m_AssetGUID: f5c8b968f52f0f64797f7a45d0c9cc65
       m_SubObjectName: 
   - Tag: 
     Type:
-      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.Scripts.DemoResourcePanelScreenView,
+      fullTypeName: UniGame.UiSystem.Examples.ListViews.Views.DemoResourcePanelScreen,
         Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     View:
-      m_AssetGUID: e8000e6d8589f8e4eaea219f7d1a3e05
+      m_AssetGUID: 85460aba538cc51408687fb5989cc4fe
       m_SubObjectName: 
   sources: []

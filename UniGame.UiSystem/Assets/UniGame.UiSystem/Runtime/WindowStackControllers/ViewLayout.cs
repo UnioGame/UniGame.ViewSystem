@@ -8,41 +8,48 @@ namespace UniGame.UiSystem.Runtime
     using UniGreenModules.UniCore.Runtime.DataFlow;
     using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime;
     using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
-    using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
+    using UniGreenModules.UniCore.Runtime.Rx.Extensions;
+    using UniRx;
     using UnityEngine;
     using Object = UnityEngine.Object;
     
-    public class ViewStackController : IViewLayoutController
+    public class ViewLayout : IViewLayout
     {
-        private List<IView> views = new List<IView>();
+        private ReactiveCollection<IView> _views = new ReactiveCollection<IView>();
+        private LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
 
-        private LifeTimeDefinition lifeTime = new LifeTimeDefinition();
+        protected IReactiveCollection<IView> Views => _views;
         
-        public IObservable<IView> StackTopChanged => throw new NotImplementedException();
-
         public Transform Layout { get; protected set; }
 
 
         #region public methods
 
-        public void Dispose() => lifeTime.Terminate();
+        public void Dispose() => _lifeTime.Terminate();
 
-        public bool Contains(IView view) => views.Contains(view);
+        public bool Contains(IView view) => _views.Contains(view);
 
         /// <summary>
         /// add view to controller
         /// </summary>
-        public void Add<TView>(TView view) where TView : Component, IView
+        public void Push<TView>(TView view) 
+            where TView : Component, IView
         {
-            //register view
-            views.Add(view);
+            if (!_views.Contains(view)) {
+                view.OnClosed.
+                    Subscribe(Remove).
+                    AddTo(view.LifeTime);
+                
+                //register view
+                _views.Add(view);
+            }
             //update view properties
             OnViewAdded(view);
         }
 
         public TView Get<TView>() where TView : Component, IView
         {
-            return (TView)views.Find(v => v is TView);
+            return (TView)_views.FirstOrDefault(v => v is TView);
         }
 
         public void Hide<T>() where T : Component, IView
@@ -68,34 +75,44 @@ namespace UniGame.UiSystem.Runtime
         public void CloseAll()
         {
             var buffer = ClassPool.Spawn<List<IView>>();
-            buffer.AddRange(views);
+            buffer.AddRange(_views);
             foreach (var view in buffer)
             {
                 view.Close();
             }
-            buffer.DespawnCollection();
+            buffer.Despawn();
         }
 
-        public bool Remove<T>(T view) where T : Component, IView
+        public bool Close<T>(T view) where T : Component, IView
         {
-            if (!view)
+            if (!view || !Contains(view))
                 return false;
-
+            
             //custom user action before cleanup view
             OnBeforeClose(view);
+            
+            view.Close();
 
-            //remove view Object
-            return views.Remove(view);
+            return true;
         }
 
         #endregion
 
+        private void Remove(IView view)
+        {
+            if (view == null || !Contains(view))
+                return;
+            
+            //remove view Object
+            _views.Remove(view);
+        }
+        
         private void AllViewsAction<TView>(Func<TView, bool> predicate, Action<TView> action)
             where TView : IView
         {
-            for (var i = 0; i < views.Count; i++)
+            for (var i = 0; i < _views.Count; i++)
             {
-                var view = views[i];
+                var view = _views[i];
                 if ((view is TView targetView) &&
                     predicate(targetView))
                 {
@@ -107,7 +124,7 @@ namespace UniGame.UiSystem.Runtime
         private void FirstViewAction<TView>(Action<TView> action)
             where TView : Object, IView
         {
-            var view = views.FirstOrDefault(x => x is TView) as TView;
+            var view = _views.FirstOrDefault(x => x is TView) as TView;
             if (view)
                 action(view);
         }
