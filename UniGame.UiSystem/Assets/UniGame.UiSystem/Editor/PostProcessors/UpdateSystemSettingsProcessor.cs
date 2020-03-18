@@ -23,9 +23,7 @@ namespace UniGame.UiSystem.Editor.PostProcessors
         {
             BuildSettingsData();
 
-            var items = paths;
-            
-            foreach (var assetPath in items)
+            foreach (var assetPath in paths)
             {
                 Validate(assetPath);
             }
@@ -53,6 +51,9 @@ namespace UniGame.UiSystem.Editor.PostProcessors
 
         private static void Rebuild()
         {
+            if (settingsToRebuild.Count == 0)
+                return;
+            
             foreach (var uiViewsSource in settingsToRebuild)
             {
                 uiViewsSource.Build();
