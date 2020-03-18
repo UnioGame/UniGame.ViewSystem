@@ -30,7 +30,7 @@ PrefabInstance:
     - target: {fileID: 1472365855472033147, guid: 329a088191261d949a8beeeec874145d,
         type: 3}
       propertyPath: m_textInfo.characterCount
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1472365855472033147, guid: 329a088191261d949a8beeeec874145d,
         type: 3}
@@ -211,6 +211,21 @@ PrefabInstance:
         type: 3}
       propertyPath: hideTime
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2702285931985339609, guid: 329a088191261d949a8beeeec874145d,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.9245283
+      objectReference: {fileID: 0}
+    - target: {fileID: 2702285931985339609, guid: 329a088191261d949a8beeeec874145d,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.86444277
+      objectReference: {fileID: 0}
+    - target: {fileID: 2702285931985339609, guid: 329a088191261d949a8beeeec874145d,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.51023495
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 329a088191261d949a8beeeec874145d, type: 3}

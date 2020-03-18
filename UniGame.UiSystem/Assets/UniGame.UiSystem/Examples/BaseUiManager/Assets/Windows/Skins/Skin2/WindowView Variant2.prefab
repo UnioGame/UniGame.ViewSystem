@@ -117,6 +117,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6012136894320345559, guid: fa8b6f04fe536f747a4a8541abc3b6dc,
+        type: 3}
+      propertyPath: m_text
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 9105187265589424092, guid: fa8b6f04fe536f747a4a8541abc3b6dc,
         type: 3}
       propertyPath: m_Color.a
