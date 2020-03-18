@@ -200,7 +200,7 @@ PrefabInstance:
     - target: {fileID: 2702285930410949820, guid: 329a088191261d949a8beeeec874145d,
         type: 3}
       propertyPath: showTime
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2702285930410949820, guid: 329a088191261d949a8beeeec874145d,
         type: 3}
@@ -210,7 +210,7 @@ PrefabInstance:
     - target: {fileID: 2702285930410949820, guid: 329a088191261d949a8beeeec874145d,
         type: 3}
       propertyPath: hideTime
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2702285931985339609, guid: 329a088191261d949a8beeeec874145d,
         type: 3}

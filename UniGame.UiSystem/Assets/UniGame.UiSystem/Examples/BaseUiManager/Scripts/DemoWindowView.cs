@@ -32,14 +32,11 @@
         private IEnumerator PlayFade(ILifeTime progress,float fromAlpha,float toAlpha, float duration)
         {
             animationTween?.Complete();
-
-            var length = toAlpha - fromAlpha;
-            var alpha = canvasGroup.alpha;
-            var animationDuration = length > 0 ? 1 - alpha : alpha;
-            animationDuration *= duration;
+            
+            canvasGroup.alpha = fromAlpha;
             
             animationTween = canvasGroup.
-                DOFade(toAlpha,animationDuration).
+                DOFade(toAlpha,duration).
                 SetEase(Ease.Linear);
 
             while (progress.IsTerminated == false && animationTween.IsPlaying()) {
