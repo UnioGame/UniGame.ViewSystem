@@ -160,10 +160,10 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         private IEnumerator OnHiding()
         {
-            //wait until user defined closing operation complete
-            yield return OnHidingProgress(_progressLifeTime);
             //set view as inactive
             _visibility.Value = false;
+            //wait until user defined closing operation complete
+            yield return OnHidingProgress(_progressLifeTime);
         }
         
         /// <summary>
@@ -171,9 +171,9 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         private IEnumerator OnShow()
         {
-            yield return OnShowProgress(_progressLifeTime);
             //set view as active
             _visibility.Value = true;
+            yield return OnShowProgress(_progressLifeTime);
         }
 
         /// <summary>

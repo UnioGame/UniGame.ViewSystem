@@ -137,8 +137,6 @@
 
             layout?.Push(view);
 
-            view.Show();
-            
             return view;
         }
 

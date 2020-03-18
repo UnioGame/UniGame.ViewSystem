@@ -20,11 +20,10 @@ namespace UniGame.UiSystem.Examples.BaseUiManager.Scripts
     
     public class DemoUiViewActionTrigger : MonoBehaviour
     {
-        public TextMeshProUGUI text;
+        public TextMeshProUGUI status;
 
         public string skin;
         public DemoUiType type;
-        
         public DemoWindowManager windowManager;
 
         public IView view;
@@ -32,7 +31,7 @@ namespace UniGame.UiSystem.Examples.BaseUiManager.Scripts
         // Start is called before the first frame update
         private void Start()
         {
-            text = text ?? GetComponentInChildren<TextMeshProUGUI>();
+            status = status ?? GetComponentInChildren<TextMeshProUGUI>();
             windowManager = windowManager ?? GetComponentInParent<DemoWindowManager>();
             var buttons = GetComponentsInChildren<Button>();
             
@@ -86,5 +85,19 @@ namespace UniGame.UiSystem.Examples.BaseUiManager.Scripts
             return view;
         }
 
+        private void Update()
+        {
+            if (view == null) {
+                status.text = "CLOSED";
+                return;
+            }
+
+            if (view.IsActive.Value) {
+                status.text = "SHOWN";
+            }
+            else {
+                status.text = "HIDDEN";
+            }
+        }
     }
 }

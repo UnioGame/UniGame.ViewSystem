@@ -35,6 +35,8 @@
                 Where(x => x == _activeView).
                 Subscribe(HideView).
                 AddTo(view.LifeTime);
+            
+            ActivateView(view);
         }
 
         protected override void OnBeforeClose<T>(T view)
@@ -67,6 +69,9 @@
             //update top of stack
             _viewsOrder.Remove(view);
             _viewsOrder.Add(view);
+            //show view if it inactive
+            if(view.IsActive.Value == false)
+                view.Show();
         }
 
     }
