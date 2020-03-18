@@ -4,6 +4,8 @@
     using DG.Tweening;
     using Runtime;
     using Runtime.Abstracts;
+    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
+    using UnityEngine;
 
     public class DemoWindowView : WindowView<IViewModel>
     {
@@ -17,27 +19,30 @@
             LifeTime.AddCleanUpAction(() => animationTween?.Complete());
         }
         
-        protected override IEnumerator OnShowProgress()
+        protected override IEnumerator OnShowProgress(ILifeTime progressLifeTime)
         {
-            yield return PlayFade(0, 1, showTime);
+            yield return PlayFade(progressLifeTime,0, 1, showTime);
         }
         
-        protected override IEnumerator OnHidingProgress()
+        protected override IEnumerator OnHidingProgress(ILifeTime progressLifeTime)
         {
-            yield return PlayFade(1, 0, hideTime);
+            yield return PlayFade(progressLifeTime,1, 0, hideTime);
         }
 
-        private IEnumerator PlayFade(float fromAlpha,float toAlpha, float duration)
+        private IEnumerator PlayFade(ILifeTime progress,float fromAlpha,float toAlpha, float duration)
         {
             animationTween?.Complete();
 
-            canvasGroup.alpha = fromAlpha;
+            var length = toAlpha - fromAlpha;
+            var alpha = canvasGroup.alpha;
+            var animationDuration = length > 0 ? 1 - alpha : alpha;
+            animationDuration *= duration;
             
             animationTween = canvasGroup.
-                DOFade(toAlpha,duration).
+                DOFade(toAlpha,animationDuration).
                 SetEase(Ease.Linear);
 
-            while (animationTween.IsPlaying()) {
+            while (progress.IsTerminated == false && animationTween.IsPlaying()) {
                 yield return null;
             }
         }

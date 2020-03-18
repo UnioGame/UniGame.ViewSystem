@@ -151,7 +151,7 @@ namespace UniGame.UiSystem.Runtime
         private IEnumerator OnClose()
         {
             //wait until user defined closing operation complete
-            yield return OnCloseProgress();
+            yield return OnCloseProgress(_progressLifeTime);
             _lifeTimeDefinition.Terminate();
         }
         
@@ -161,7 +161,7 @@ namespace UniGame.UiSystem.Runtime
         private IEnumerator OnHiding()
         {
             //wait until user defined closing operation complete
-            yield return OnHidingProgress();
+            yield return OnHidingProgress(_progressLifeTime);
             //set view as inactive
             _visibility.Value = false;
         }
@@ -171,7 +171,7 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         private IEnumerator OnShow()
         {
-            yield return OnShowProgress();
+            yield return OnShowProgress(_progressLifeTime);
             //set view as active
             _visibility.Value = true;
         }
@@ -180,15 +180,15 @@ namespace UniGame.UiSystem.Runtime
         /// close continuation
         /// use hiding progress by default
         /// </summary>
-        protected virtual IEnumerator OnCloseProgress()
+        protected virtual IEnumerator OnCloseProgress(ILifeTime progressLifeTime)
         {
-            yield return OnHidingProgress();
+            yield return OnHidingProgress(progressLifeTime);
         }
 
         /// <summary>
         /// showing continuation
         /// </summary>
-        protected virtual IEnumerator OnShowProgress()
+        protected virtual IEnumerator OnShowProgress(ILifeTime progressLifeTime)
         {
             yield break;
         }
@@ -196,7 +196,7 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// hiding continuation
         /// </summary>
-        protected virtual IEnumerator OnHidingProgress()
+        protected virtual IEnumerator OnHidingProgress(ILifeTime progressLifeTime)
         {
             yield break;
         }
