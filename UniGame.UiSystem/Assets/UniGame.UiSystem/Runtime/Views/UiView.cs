@@ -27,7 +27,7 @@ namespace UniGame.UiSystem.Runtime
 
         #endregion
         
-        private IViewElementFactory _viewFactory;
+        private IViewProvider _viewLayout;
         private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
         private LifeTimeDefinition _progressLifeTime = new LifeTimeDefinition();
         
@@ -66,7 +66,7 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// views factor
         /// </summary>
-        public IViewElementFactory ViewFactory => _viewFactory;
+        public IViewProvider Layouts => _viewLayout;
         
         public IObservable<IView> OnHidden => _viewHidden;
 
@@ -78,7 +78,7 @@ namespace UniGame.UiSystem.Runtime
 
         #region public methods
 
-        public void Initialize(IViewModel model, IViewElementFactory factory)
+        public void Initialize(IViewModel model, IViewProvider layouts)
         {
             //restart view lifetime
             _lifeTimeDefinition.Release();
@@ -96,7 +96,7 @@ namespace UniGame.UiSystem.Runtime
                 throw new ArgumentException($"VIEW: {name} wrong model type. Target type {typeof(TViewModel).Name} : model Type {model?.GetType().Name}");
             }
 
-            _viewFactory = factory;
+            _viewLayout = layouts;
 
             InitializeHandlers(model);
             BindLifeTimeActions(model);
@@ -242,7 +242,7 @@ namespace UniGame.UiSystem.Runtime
             _lifeTimeDefinition.AddDispose(model);
 
             _lifeTimeDefinition.AddCleanUpAction(() => {
-                _viewFactory = null;
+                _viewLayout = null;
                 _visibility.Release();
                 _viewHidden.Release();
                 _viewShown.Release();

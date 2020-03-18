@@ -200,7 +200,17 @@ PrefabInstance:
     - target: {fileID: 2702285930410949820, guid: 329a088191261d949a8beeeec874145d,
         type: 3}
       propertyPath: showTime
-      value: 2
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2702285930410949820, guid: 329a088191261d949a8beeeec874145d,
+        type: 3}
+      propertyPath: closeTime
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2702285930410949820, guid: 329a088191261d949a8beeeec874145d,
+        type: 3}
+      propertyPath: hideTime
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 329a088191261d949a8beeeec874145d, type: 3}

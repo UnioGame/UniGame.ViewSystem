@@ -13,19 +13,17 @@ namespace UniGame.UiSystem.Editor.PostProcessors
     using UniGreenModules.UniCore.Runtime.ProfilerTools;
     using UnityEngine;
 
-    public class UpdateSystemSettingsProcessor : AssetPostprocessor
+    public class UpdateSystemSettingsProcessor : SaveAssetsProcessor
     {
         private static Dictionary<ViewsSource,List<string>> uiSystemSettings = new Dictionary<ViewsSource,List<string>>(8);
 
         private static HashSet<ViewsSource> settingsToRebuild = new HashSet<ViewsSource>();
         
-        static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
+        static string[] OnWillSaveAssets(string[] paths)
         {
             BuildSettingsData();
 
-            var items = importedAssets.
-                Concat(deletedAssets).
-                Concat(movedAssets);
+            var items = paths;
             
             foreach (var assetPath in items)
             {
@@ -33,7 +31,25 @@ namespace UniGame.UiSystem.Editor.PostProcessors
             }
 
             Rebuild();
+            
+            return paths;
         }
+        
+//        static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
+//        {
+//            BuildSettingsData();
+//
+//            var items = importedAssets.
+//                Concat(deletedAssets).
+//                Concat(movedAssets);
+//            
+//            foreach (var assetPath in items)
+//            {
+//                Validate(assetPath);
+//            }
+//
+//            Rebuild();
+//        }
 
         private static void Rebuild()
         {
@@ -57,12 +73,13 @@ namespace UniGame.UiSystem.Editor.PostProcessors
 
         private static void BuildSettingsData()
         {
-            uiSystemSettings.Clear();
             settingsToRebuild.Clear();
+            if (uiSystemSettings.Count > 0)
+                return;
             
-            var settings = AssetEditorTools.
-                GetAssets<ViewsSource>();
-
+            uiSystemSettings.Clear();
+            
+            var settings = AssetEditorTools.GetAssets<ViewsSource>();
             foreach (var uiViewsSource in settings)
             {
                 var items = new List<string>();

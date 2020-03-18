@@ -28,7 +28,7 @@ namespace UniGame.UiSystem.Examples.ListViews.Views
 
         private async UniTask<DemoItemView> CreateItem(DemoItemViewModel itemModel)
         {
-            var view = await ViewFactory.Create<DemoItemView>(itemModel);
+            var view = await Layouts.Create<DemoItemView>(itemModel);
             view.transform.SetParent(itemsParent);
             itemViews.Add(view);
             LayoutRebuilder.MarkLayoutForRebuild(itemsParent);

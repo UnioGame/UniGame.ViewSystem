@@ -1,41 +1,45 @@
 ﻿namespace UniGame.UiSystem.Examples.BaseUiManager
 {
     using System.Collections;
+    using DG.Tweening;
     using Runtime;
     using Runtime.Abstracts;
-    using UnityEngine;
 
     public class DemoWindowView : WindowView<IViewModel>
     {
-        public float showTime = 2f;
+        public float showTime = 3f;
+        public float hideTime = 3f;
 
-        public float closeTime = 2f;
+        private Tween animationTween;
+
+        protected override void OnViewInitialize(IViewModel view)
+        {
+            LifeTime.AddCleanUpAction(() => animationTween?.Complete());
+        }
         
         protected override IEnumerator OnShowProgress()
         {
-            var time = 0f;
-            
-            while (canvasGroup.alpha > 0) {
-                canvasGroup.alpha =  Mathf.Lerp(0, showTime, time);
-                time              += Time.deltaTime;
-                yield return null;
-            }
-            canvasGroup.alpha = 0;
+            yield return PlayFade(0, 1, showTime);
         }
         
         protected override IEnumerator OnHidingProgress()
         {
-            var time = 0f;
+            yield return PlayFade(1, 0, hideTime);
+        }
+
+        private IEnumerator PlayFade(float fromAlpha,float toAlpha, float duration)
+        {
+            animationTween?.Complete();
+
+            canvasGroup.alpha = fromAlpha;
             
-            while (canvasGroup.alpha > 0) {
-                canvasGroup.alpha = Mathf.Lerp(0, closeTime, time);
-                time += Time.deltaTime;
+            animationTween = canvasGroup.
+                DOFade(toAlpha,duration).
+                SetEase(Ease.Linear);
+
+            while (animationTween.IsPlaying()) {
                 yield return null;
             }
-
-            canvasGroup.alpha = 0;
-            
         }
-        
     }
 }

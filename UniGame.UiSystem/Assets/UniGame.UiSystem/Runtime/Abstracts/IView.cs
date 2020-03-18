@@ -9,7 +9,6 @@
         IReadOnlyReactiveProperty<bool> IsActive { get; }
         
         bool IsDestroyed { get; }
-        
 
         IObservable<IView> OnHidden { get; }
 
@@ -17,7 +16,7 @@
 
         IObservable<IView> OnClosed { get; }
         
-        void Initialize(IViewModel vm,IViewElementFactory viewFactory);
+        void Initialize(IViewModel vm,IViewProvider layouts);
         
         void Close();
 
