@@ -73,7 +73,7 @@ namespace UniGame.UiSystem.Runtime
             gameViewSystem.CloseAll();
         }
 
-        public void Dispose() => gameViewSystem.Dispose();
+        public void Dispose() => gameViewSystem?.Dispose();
         
         #endregion
 
