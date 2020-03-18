@@ -1,14 +1,22 @@
-﻿namespace UniGreenModules.UniGame.UiSystem.Runtime.Abstracts
+﻿namespace UniGame.UiSystem.Runtime.Abstracts
 {
-    using UniCore.Runtime.Interfaces;
+    using System;
+    using UniGreenModules.UniCore.Runtime.Interfaces;
     using UniRx;
 
     public interface IView : ILifeTimeContext
     {
         IReadOnlyReactiveProperty<bool> IsActive { get; }
+        
+        bool IsDestroyed { get; }
 
-        // Вместо IViewElementFactory хочется передавать IContent с рестришкном на IViewService
-        void Initialize(IViewModel vm,IViewElementFactory viewFactory);
+        IObservable<IView> OnHidden { get; }
+
+        IObservable<IView> OnShown { get; }
+
+        IObservable<IView> OnClosed { get; }
+        
+        void Initialize(IViewModel vm,IViewProvider layouts);
         
         void Close();
 

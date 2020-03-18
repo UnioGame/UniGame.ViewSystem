@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniGame.UiSystem.Runtime
+﻿namespace UniGame.UiSystem.Runtime
 {
     using Abstracts;
     using UniRx.Async;

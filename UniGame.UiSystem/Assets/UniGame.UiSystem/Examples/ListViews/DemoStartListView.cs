@@ -4,7 +4,7 @@ namespace UniGame.UiSystem.Examples.ListViews
 {
     using BaseUiManager.Scripts;
     using Runtime;
-    using UniGreenModules.UniCore.Runtime.ProfilerTools;
+    using UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniGame.UiSystem.Runtime.Extensions;
     using UniRx;
     using ViewModels;
@@ -28,7 +28,7 @@ namespace UniGame.UiSystem.Examples.ListViews
         private async void Start()
         {
             var view = await viewSystem.OpenScreen<DemoListView>(listModel);
-            var resourcePanel = await viewSystem.OpenScreen<DemoResourcePanelScreenView>(resourceModel);
+            var resourcePanel = await viewSystem.OpenScreen<DemoResourcePanelScreen>(resourceModel);
 
             listModel.AddTo(this);
             resourceModel.AddTo(this);

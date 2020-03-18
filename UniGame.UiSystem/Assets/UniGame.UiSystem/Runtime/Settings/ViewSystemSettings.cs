@@ -1,17 +1,16 @@
-﻿namespace UniGreenModules.UniGame.UiSystem.Runtime.Settings
+﻿namespace UniGame.UiSystem.Runtime.Settings
 {
     using System;
     using System.Collections.Generic;
     using Abstracts;
-    using AddressableTools.Runtime.Attributes;
+    using Addressables.Reactive;
     using Sirenix.OdinInspector;
-    using Taktika.Addressables.Reactive;
-    using UniCore.Runtime.DataFlow;
-    using UniCore.Runtime.DataFlow.Interfaces;
     using UniCore.Runtime.ProfilerTools;
-    using UniCore.Runtime.Rx.Extensions;
+    using UniGreenModules.UniCore.Runtime.DataFlow;
+    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
+    using UniGreenModules.UniCore.Runtime.Rx.Extensions;
+    using UniGreenModules.UniGame.AddressableTools.Runtime.Attributes;
     using UniRx;
-    using UniRx.Async;
     using UnityEngine;
 
     [CreateAssetMenu(menuName = "UniGame/UiSystem/ViewSystemSettings", fileName = "ViewSystemSettings")]

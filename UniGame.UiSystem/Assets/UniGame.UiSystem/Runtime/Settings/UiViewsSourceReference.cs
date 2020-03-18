@@ -1,4 +1,4 @@
-namespace UniGreenModules.UniGame.UiSystem.Runtime.Settings
+namespace UniGame.UiSystem.Runtime.Settings
 {
     using System;
     using UnityEngine.AddressableAssets;

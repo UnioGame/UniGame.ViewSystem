@@ -1,9 +1,9 @@
-﻿using UniGreenModules.UniGame.UiSystem.Runtime;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace UniGame.UiSystem.Examples.ListViews.Views
 {
     using System.Collections.Generic;
+    using Runtime;
     using UniRx;
     using UniRx.Async;
     using UnityEngine.UI;
@@ -17,10 +17,10 @@ namespace UniGame.UiSystem.Examples.ListViews.Views
         
         public List<DemoItemView> itemViews = new List<DemoItemView>();
 
-        protected override void OnWindowInitialize(DemoListViewModel model)
+        protected override void OnViewInitialize(DemoListViewModel model)
         {
             var items = model.ListItems;
-            
+
             BindTo(items.ObserveAdd(), x => CreateItem(x.Value)).
             BindTo(items.ObserveRemove(), x => RemoveItem(x.Index)).
             BindTo(addItem.onClick.AsObservable(),x => model.Add.Execute());
@@ -28,7 +28,7 @@ namespace UniGame.UiSystem.Examples.ListViews.Views
 
         private async UniTask<DemoItemView> CreateItem(DemoItemViewModel itemModel)
         {
-            var view = await ViewFactory.Create<DemoItemView>(itemModel);
+            var view = await Layouts.Create<DemoItemView>(itemModel);
             view.transform.SetParent(itemsParent);
             itemViews.Add(view);
             LayoutRebuilder.MarkLayoutForRebuild(itemsParent);

@@ -1,7 +1,8 @@
-﻿namespace Taktika.UI.Editor.UiEditor
+﻿namespace UniGame.UiSystem.UI.Editor.UiEdito
 {
+    using Runtime.Settings;
+    using UiSystem.Editor.UiEditor;
     using UniGreenModules.UniCore.EditorTools.Editor.AssetOperations;
-    using UniGreenModules.UniGame.UiSystem.Runtime.Settings;
     using UnityEditor;
 
     public static class UiAssembler 

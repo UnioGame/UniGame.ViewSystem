@@ -1,80 +1,106 @@
 ﻿using System.Collections;
 using UniGreenModules.UniRoutine.Runtime;
 
-namespace UniGreenModules.UniGame.UiSystem.Runtime
+namespace UniGame.UiSystem.Runtime
 {
     using System;
     using Abstracts;
-    using Extensions;
-    using UniCore.Runtime.DataFlow;
-    using UniCore.Runtime.DataFlow.Interfaces;
     using UniCore.Runtime.ProfilerTools;
+    using UniGreenModules.UniCore.Runtime.Attributes;
+    using UniGreenModules.UniCore.Runtime.DataFlow;
+    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
+    using UniGreenModules.UniCore.Runtime.Rx.Extensions;
+    using UniGreenModules.UniGame.Core.Runtime.Rx;
+    using UniGreenModules.UniGame.UiSystem.Runtime.Extensions;
     using UniRx;
     using UnityEngine;
 
-    public abstract class UiView<TViewModel> : 
+    public abstract class UiView<TViewModel> :
         MonoBehaviour, IView
         where TViewModel : class, IViewModel
     {
+        #region inspector
+
+        [ReadOnlyValue]
+        [SerializeField]
+        private bool _isVisible;
+
+        #endregion
         
-        private LifeTimeDefinition lifeTimeDefinition = new LifeTimeDefinition();
-        private IViewElementFactory viewFactory;
+        private IViewProvider _viewLayout;
+        private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
+        private LifeTimeDefinition _progressLifeTime = new LifeTimeDefinition();
+        
+        /// <summary>
+        /// view statuses reactions
+        /// </summary>
+        private RecycleReactiveProperty<IView> _closeReactiveValue = new RecycleReactiveProperty<IView>();
+        private RecycleReactiveProperty<IView> _viewShown = new RecycleReactiveProperty<IView>();
+        private RecycleReactiveProperty<IView> _viewHidden = new RecycleReactiveProperty<IView>();
         
         /// <summary>
         /// ui element visibility status
         /// </summary>
-        protected BoolReactiveProperty visibility = new BoolReactiveProperty(false);
-
+        private BoolRecycleReactiveProperty _visibility = new BoolRecycleReactiveProperty();
         /// <summary>
         /// model container
         /// </summary>
-        private ReactiveProperty<TViewModel> viewModel = new ReactiveProperty<TViewModel>();
-        
+        private ReactiveProperty<TViewModel> _viewModel = new ReactiveProperty<TViewModel>();
+
         #region public properties
 
-        // TO DO Rename to ViewModel
-        // Так же вызывает сомнения необходимость Vm быть завернутой в ReactiveProperty
-        public IReadOnlyReactiveProperty<TViewModel> Model => viewModel;
-        
+        public bool IsDestroyed { get; private set; }
+
+        public TViewModel Model => _viewModel.Value;
+
         /// <summary>
         /// Is View Active
         /// </summary>
-        public IReadOnlyReactiveProperty<bool> IsActive => visibility;
+        public IReadOnlyReactiveProperty<bool> IsActive => _visibility;
 
         /// <summary>
         /// View LifeTime
         /// </summary>
-        public ILifeTime LifeTime => lifeTimeDefinition.LifeTime;
+        public ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
 
-        public IViewElementFactory ViewFactory => viewFactory;
-
-        #endregion
+        /// <summary>
+        /// views factor
+        /// </summary>
+        public IViewProvider Layouts => _viewLayout;
         
+        public IObservable<IView> OnHidden => _viewHidden;
+
+        public IObservable<IView> OnShown => _viewShown;
+
+        public IObservable<IView> OnClosed => _closeReactiveValue;
+        
+        #endregion
+
         #region public methods
 
-        public void Initialize(IViewModel model,IViewElementFactory factory)
+        public void Initialize(IViewModel model, IViewProvider layouts)
         {
             //restart view lifetime
-            lifeTimeDefinition.Release();
+            _lifeTimeDefinition.Release();
+            _progressLifeTime.Release();
+            
+            IsDestroyed = false;
 
             //save model as context data
-            if (model is TViewModel modelData) {
-                this.viewModel.Value = modelData;
+            if (model is TViewModel modelData)
+            {
+                _viewModel.Value = modelData;
             }
-            else {
-                throw  new ArgumentException($"VIEW: {name} wrong model type. Target type {typeof(TViewModel).Name} : model Type {model?.GetType().Name}");
+            else
+            {
+                throw new ArgumentException($"VIEW: {name} wrong model type. Target type {typeof(TViewModel).Name} : model Type {model?.GetType().Name}");
             }
-            
-            this.viewFactory = factory;
 
-            //bind model lifetime to local
-            var modelLifeTime = model.LifeTime;
-            modelLifeTime.AddCleanUpAction(Close);
-            
-            //terminate model when view closed
-            LifeTime.AddDispose(model);
-            LifeTime.AddCleanUpAction(() => factory = null);
+            _viewLayout = layouts;
 
+            InitializeHandlers(model);
+            BindLifeTimeActions(model);
+            
             //custom initialization
             OnInitialize(modelData);
 
@@ -83,32 +109,35 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         /// <summary>
         /// show active view
         /// </summary>
-        public void Show() => visibility.Value = true;
+        public virtual void Show() => StartProgressAction(_progressLifeTime, OnShow);
 
         /// <summary>
         /// hide view without release it
         /// </summary>
-        public void Hide() => visibility.Value = false;
+        public void Hide() => StartProgressAction(_progressLifeTime, OnHiding);
 
         /// <summary>
         /// end of view lifetime
         /// </summary>
-        public void Close()
-        {
-            if (lifeTimeDefinition.IsTerminated) return;
-            
-            OnClose().Execute().
-                AddTo(LifeTime);
-        } 
+        public void Close() => StartProgressAction(_progressLifeTime, OnClose);
+        
+        /// <summary>
+        /// complete view lifetime immediately
+        /// </summary>
+        public void Destroy() => _lifeTimeDefinition.Terminate();
 
         /// <summary>
         /// bind source stream to view action
         /// with View LifeTime context
         /// </summary>
-        public UiView<TViewModel> BindTo<T>(IObservable<T> source, Action<T> action) => this.Bind(source, action);
+        public UiView<TViewModel> BindTo<T>(IObservable<T> source, Action<T> action)
+        {
+            var result = this.Bind(source, action);
+            return result;
+        }
 
         #endregion
-        
+
         /// <summary>
         /// custom initialization methods
         /// </summary>
@@ -122,26 +151,112 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime
         private IEnumerator OnClose()
         {
             //wait until user defined closing operation complete
-            yield return OnCloseProgress();
-            
-            lifeTimeDefinition.Terminate();
+            yield return OnCloseProgress(_progressLifeTime);
+            _lifeTimeDefinition.Terminate();
+        }
+        
+        /// <summary>
+        /// hide process
+        /// </summary>
+        private IEnumerator OnHiding()
+        {
+            //set view as inactive
+            _visibility.Value = false;
+            //wait until user defined closing operation complete
+            yield return OnHidingProgress(_progressLifeTime);
+        }
+        
+        /// <summary>
+        /// hide process
+        /// </summary>
+        private IEnumerator OnShow()
+        {
+            //set view as active
+            _visibility.Value = true;
+            yield return OnShowProgress(_progressLifeTime);
         }
 
         /// <summary>
         /// close continuation
+        /// use hiding progress by default
         /// </summary>
-        protected virtual IEnumerator OnCloseProgress()
+        protected virtual IEnumerator OnCloseProgress(ILifeTime progressLifeTime)
+        {
+            yield return OnHidingProgress(progressLifeTime);
+        }
+
+        /// <summary>
+        /// showing continuation
+        /// </summary>
+        protected virtual IEnumerator OnShowProgress(ILifeTime progressLifeTime)
+        {
+            yield break;
+        }
+        
+        /// <summary>
+        /// hiding continuation
+        /// </summary>
+        protected virtual IEnumerator OnHidingProgress(ILifeTime progressLifeTime)
         {
             yield break;
         }
         
         private void OnDestroy()
         {
-            GameLog.Log($"View {name} Destroyed");
+            GameLog.LogFormat("View {0} Destroyed",name);
             Close();
         }
 
-        
-        
+        private void StartProgressAction(LifeTimeDefinition lifeTime,Func<IEnumerator> action)
+        {
+            if (lifeTime.IsTerminated) return;
+            lifeTime.Release();
+            action().Execute().
+                AddTo(lifeTime);
+        }
+
+
+        private void InitializeHandlers(IViewModel model)
+        {
+            _isVisible = _visibility.Value;
+            _visibility.Subscribe(x => this._isVisible = x).
+                AddTo(_lifeTimeDefinition);
+
+            _visibility.Where(x => x).
+                Subscribe(x => _viewShown.Value = this).
+                AddTo(_lifeTimeDefinition);
+            
+            _visibility.Where(x => !x).
+                Subscribe(x => _viewHidden.Value = this).
+                AddTo(_lifeTimeDefinition);
+        }
+
+        private void BindLifeTimeActions(IViewModel model)
+        {
+             
+            //bind model lifetime to local
+            var modelLifeTime = model.LifeTime;
+            modelLifeTime.AddCleanUpAction(Close);
+            
+            //terminate model when view closed
+            _lifeTimeDefinition.AddDispose(model);
+
+            _lifeTimeDefinition.AddCleanUpAction(() => {
+                _viewLayout = null;
+                _visibility.Release();
+                _viewHidden.Release();
+                _viewShown.Release();
+            });
+
+            _lifeTimeDefinition.AddCleanUpAction(_progressLifeTime.Terminate);
+
+            //clean up view and notify observers
+            _lifeTimeDefinition.AddCleanUpAction(() => {
+                _closeReactiveValue.Value = this;
+                _closeReactiveValue.Release();
+                IsDestroyed = true;
+            });
+        }
+
     }
 }

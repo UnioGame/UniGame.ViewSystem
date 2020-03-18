@@ -4,6 +4,7 @@ namespace UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager
 {
     using AddressableTools.Runtime.Attributes;
     using AddressableTools.Runtime.Extensions;
+    using global::UniGame.UiSystem.Examples.BaseUiManager;
     using global::UniGame.UiSystem.Runtime;
     using UniCore.Runtime.DataFlow;
     using UnityEngine.AddressableAssets;
