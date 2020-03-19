@@ -17,41 +17,24 @@ namespace UniGame.UiSystem.Runtime
     
     public class ViewLayout : IViewLayout
     {
-        private readonly ReactiveCollection<IView> _views = new ReactiveCollection<IView>();
-        private LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
-        
-        // В реактивных property при подписки происходит вызов при наличии значения 
-        // как вариант можно использовать Subject
-        private RecycleReactiveProperty<IView> _onHiddenView = new RecycleReactiveProperty<IView>();
-        private RecycleReactiveProperty<IView> _onShownView = new RecycleReactiveProperty<IView>();
-        // Опечатка
-        private RecycleReactiveProperty<IView> _onClsedView = new RecycleReactiveProperty<IView>();
+        protected readonly ReactiveCollection<IView> _views = new ReactiveCollection<IView>();
+        private readonly LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
 
-        // Отдельное Property не нужно, достаточно readonly protected поля
-        // реактивность коллекции не используется
-        protected IReactiveCollection<IView> Views => _views;
+        private Subject<IView> _onViewHidden = new Subject<IView>();
+        private Subject<IView> _onViewShown = new Subject<IView>();
+        private Subject<IView> _onViewClosed = new Subject<IView>();
+        
+        protected IReadOnlyReactiveCollection<IView> Views => _views;
         
         public Transform Layout { get; protected set; }
-        
-        #region constructor
-
-        public ViewLayout()
-        {
-            _lifeTime.AddCleanUpAction(() => _onHiddenView.Release());
-            _lifeTime.AddCleanUpAction(() => _onShownView.Release());
-            _lifeTime.AddCleanUpAction(() => _onClsedView.Release());
-        }
-        
-        #endregion
-
 
         public ILifeTime LifeTime => _lifeTime;
         
         #region IViewStatus
 
-        public IObservable<IView> OnHidden => _onHiddenView;
-        public IObservable<IView> OnShown => _onShownView;
-        public IObservable<IView> OnClosed => _onClsedView;
+        public IObservable<IView> OnHidden => _onViewHidden;
+        public IObservable<IView> OnShown => _onViewShown;
+        public IObservable<IView> OnClosed => _onViewClosed;
         
         #endregion
 
@@ -65,21 +48,34 @@ namespace UniGame.UiSystem.Runtime
         /// add view to controller
         /// </summary>
         public void Push<TView>(TView view) 
-            where TView : Component, IView
+            where TView :class, IView
         {
             if (_views.Contains(view)) {
                 return;
             }
-            //register new view
+            
             AddView(view);
-            //update view properties
+            
+            //custom user action on new view
             OnViewAdded(view);
         }
 
-        // зачем ограничение Component? Ведь нигде не используется свойство View как компонента
-        public TView Get<TView>() where TView : Component, IView
+        public TView Get<TView>() where TView :class, IView
         {
             return (TView)_views.FirstOrDefault(v => v is TView);
+        }
+        
+        /// <summary>
+        /// select all view of target type into new container
+        /// </summary>
+        public List<TView> GetAll<TView>() where TView :class, IView
+        {
+            var list = this.Spawn<List<TView>>();
+            foreach (var view in _views) {
+                if(view is TView targetView)
+                    list.Add(targetView);
+            }
+            return list;
         }
 
         public void Hide<T>() where T : Component, IView
@@ -97,10 +93,9 @@ namespace UniGame.UiSystem.Runtime
             AllViewsAction<IView>(x => true, x => x.Hide());
         }
 
-        // Почему Silent а не обычный Close
         public void Close<T>() where T : Component, IView
         {
-            FirstViewAction<T>(x => CloseSilent(x));
+            FirstViewAction<T>(x => Close(x));
         }
 
         public void CloseAll()
@@ -117,11 +112,9 @@ namespace UniGame.UiSystem.Runtime
             buffer.Despawn();
         }
 
-        // У метода нет необходимости быть дженериком, достаточно
-        // просто сделать Close(IView t)
-        public bool Close<T>(T view) where T : Component, IView
+        public bool Close(IView view)
         {
-            if (!view || !Contains(view))
+            if (view == null || !Contains(view))
                 return false;
             
             //custom user action before cleanup view
@@ -136,21 +129,21 @@ namespace UniGame.UiSystem.Runtime
 
         #region private methods
 
-        // уровень доступа не соответствует региону
-        public void AddView<TView>(TView view) 
-            where TView : Component, IView
+        
+        protected void AddView<TView>(TView view) 
+            where TView :class, IView
         {
             view.OnClosed.
-                Do(x => _onClsedView.Value = x).
+                Do(x => _onViewClosed.OnNext(x)).
                 Subscribe(x => Remove(x)).
                 AddTo(view.LifeTime);
                 
             view.OnShown.
-                Subscribe(x => _onShownView.Value = x).
+                Subscribe(x => _onViewShown.OnNext(x)).
                 AddTo(view.LifeTime);
                 
             view.OnHidden.
-                Subscribe(x => _onHiddenView.Value = x).
+                Subscribe(x => _onViewHidden.OnNext(x)).
                 AddTo(view.LifeTime);
                 
             Add(view);
@@ -160,8 +153,6 @@ namespace UniGame.UiSystem.Runtime
         {
             if (view == null || !Contains(view))
                 return false;
-            // очевидный комментарий
-            //remove view Object
             return _views.Remove(view);
         }
 
@@ -187,10 +178,9 @@ namespace UniGame.UiSystem.Runtime
         }
 
         private void FirstViewAction<TView>(Action<TView> action)
-            where TView : Object, IView
+            where TView : class,  IView
         {
-            var view = _views.FirstOrDefault(x => x is TView) as TView;
-            if (view)
+            if (_views.FirstOrDefault(x => x is TView) is TView view)
                 action(view);
         }
 
@@ -204,9 +194,15 @@ namespace UniGame.UiSystem.Runtime
                 view.Close();
         }
 
-        protected virtual void OnBeforeClose<T>(T view) where T : Component, IView { }
+        /// <summary>
+        /// user defined actions triggered before any view closed
+        /// </summary>
+        protected virtual void OnBeforeClose(IView view) { }
 
-        protected virtual void OnViewAdded<T>(T view) where T : Component, IView { }
+        /// <summary>
+        /// user defined action on new view added to layout
+        /// </summary>
+        protected virtual void OnViewAdded<T>(T view) where T :class,  IView { }
 
         #endregion
 

@@ -5,15 +5,14 @@
     using UniGreenModules.UniGame.UiSystem.Runtime;
     using UniRx;
 
-    // Single active screen flow controller более отражающее суть происходящего название
-    public class SingleActiveViewFlowController : ViewFlowController
+    public class SingleActiveScreenFlow : ViewFlowController
     {
         private IView _activeView;
 
         protected override void OnActivate(IViewLayoutContainer layouts)
         {
-            var screenController = layouts.GetViewController(ViewType.Screen);
-            var windowController = layouts.GetViewController(ViewType.Window);
+            var screenController = layouts.GetLayout(ViewType.Screen);
+            var windowController = layouts.GetLayout(ViewType.Window);
 
             screenController.OnShown.
                 Subscribe(x => windowController.CloseAll()).

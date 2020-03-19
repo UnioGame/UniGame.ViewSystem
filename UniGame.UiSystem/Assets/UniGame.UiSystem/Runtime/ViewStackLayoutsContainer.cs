@@ -23,7 +23,7 @@ namespace UniGame.UiSystem.Runtime
         }
 
 
-        public IReadOnlyViewLayout this[ViewType type] => GetViewController(type);
+        public IReadOnlyViewLayout this[ViewType type] => GetLayout(type);
 
         
         public TView Get<TView>()  where TView : Component, IView
@@ -39,7 +39,7 @@ namespace UniGame.UiSystem.Runtime
 
         public IEnumerable<IViewLayout> Controllers => _viewControllers.Values;
 
-        public IViewLayout GetViewController(ViewType type)
+        public IViewLayout GetLayout(ViewType type)
         {
             return _viewControllers.TryGetValue(type, out var controller) ? 
                 controller : 

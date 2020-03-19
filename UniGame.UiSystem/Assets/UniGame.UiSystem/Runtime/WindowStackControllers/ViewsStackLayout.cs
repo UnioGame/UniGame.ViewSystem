@@ -1,6 +1,5 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
-    using System.Collections.Generic;
     using System.Linq;
     using Abstracts;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
@@ -12,15 +11,6 @@
         private readonly Transform _root;
 
         private IView _activeView;
-
-        // публичное свойство нигде не используется, и просится быть ReactiveProperty
-        
-        // ничего не потеряв можно убрать отдельное поле сделав private set
-        public IView ActiveView => _activeView;
-
-        // не консистентно расширение логики в наследниках
-        // часть расширяется через protected virtual методы, часть 
-        // через подписку на публичные члены интерфейса
 
         public ViewsStackLayout(Transform layout)
         {
@@ -38,7 +28,7 @@
 
         protected override void OnViewAdded<T>(T view) => ActivateView(view);
 
-        protected override void OnBeforeClose<T>(T view)
+        protected override void OnBeforeClose(IView view)
         {
             if (view == _activeView) {
                 HideView(view);

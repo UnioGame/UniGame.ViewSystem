@@ -2,7 +2,6 @@
 
 namespace UniGame.UiSystem.Runtime
 {
-    using System;
     using System.Collections.Generic;
     using Abstracts;
     using Settings;
@@ -63,7 +62,7 @@ namespace UniGame.UiSystem.Runtime
         
         public IReadOnlyViewLayout this[ViewType type] => ViewSystem[type];
 
-        public IViewLayout GetViewController(ViewType type) => ViewSystem.GetViewController(type);
+        public IViewLayout GetLayout(ViewType type) => ViewSystem.GetLayout(type);
 
         public T Get<T>() where T : Component, IView
         {
@@ -93,7 +92,6 @@ namespace UniGame.UiSystem.Runtime
             
             var viewLayoutContainer = new ViewStackLayoutsContainer(stackMap);
             var sceneFlowController = settings.FlowController;
-            sceneFlowController.Activate(viewLayoutContainer);
 
             return new GameViewSystem(factory, viewLayoutContainer, sceneFlowController);
         }

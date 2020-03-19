@@ -3,6 +3,7 @@
 namespace UniGame.UiSystem.Runtime.WindowStackControllers
 {
     using System;
+    using System.Collections.Generic;
     using Abstracts;
     using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
 
@@ -38,40 +39,25 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         public void Dispose() => LayoutController.Dispose();
 
         public bool Contains(IView view) => LayoutController.Contains(view);
-        
-        public void Hide<T>() where T : Component, IView
-        {
-            LayoutController.Hide<T>();
-        }
 
         public void HideAll()
         {
             LayoutController.HideAll();
         }
 
-        public void HideAll<T>() where T : Component, IView
-        {
-            LayoutController.HideAll<T>();
-        }
-
-        public void Close<T>() where T : Component, IView
-        {
-            LayoutController.Close<T>();
-        }
-
-        public void Push<TView>(TView view) where TView : Component, IView
+        public void Push<TView>(TView view) where TView : class,IView
         {
             LayoutController.Push(view);
         }
 
-        public bool Close<T>(T view) where T : Component, IView
-        {
-            return LayoutController.Close<T>(view);
-        }
-
-        public TView Get<TView>() where TView : Component, IView
+        public TView Get<TView>() where TView : class,IView
         {
             return LayoutController.Get<TView>();
+        }
+
+        public List<TView> GetAll<TView>() where TView : class, IView
+        {
+            return LayoutController.GetAll<TView>();
         }
 
         public void CloseAll() => LayoutController.CloseAll();
