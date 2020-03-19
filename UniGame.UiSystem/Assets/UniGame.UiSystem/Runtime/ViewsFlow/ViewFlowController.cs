@@ -10,7 +10,7 @@
     
     public class ViewFlowController : IViewFlowController
     {
-        private readonly LifeTimeDefinition _lifeTimeDefinition;
+        private readonly LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
         protected IViewLayoutContainer _controllerContainer;
 
         public ILifeTime LifeTime => _lifeTimeDefinition;
