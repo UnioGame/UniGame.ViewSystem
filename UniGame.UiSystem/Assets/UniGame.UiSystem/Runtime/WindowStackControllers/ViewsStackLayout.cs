@@ -13,7 +13,14 @@
 
         private IView _activeView;
 
+        // публичное свойство нигде не используется, и просится быть ReactiveProperty
+        
+        // ничего не потеряв можно убрать отдельное поле сделав private set
         public IView ActiveView => _activeView;
+
+        // не консистентно расширение логики в наследниках
+        // часть расширяется через protected virtual методы, часть 
+        // через подписку на публичные члены интерфейса
 
         public ViewsStackLayout(Transform layout)
         {

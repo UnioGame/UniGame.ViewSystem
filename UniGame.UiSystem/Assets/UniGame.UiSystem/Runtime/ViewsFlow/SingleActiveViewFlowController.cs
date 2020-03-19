@@ -5,6 +5,7 @@
     using UniGreenModules.UniGame.UiSystem.Runtime;
     using UniRx;
 
+    // Single active screen flow controller более отражающее суть происходящего название
     public class SingleActiveViewFlowController : ViewFlowController
     {
         private IView _activeView;

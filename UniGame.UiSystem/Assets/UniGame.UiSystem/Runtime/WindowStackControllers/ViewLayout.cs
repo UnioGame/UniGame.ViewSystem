@@ -17,13 +17,18 @@ namespace UniGame.UiSystem.Runtime
     
     public class ViewLayout : IViewLayout
     {
-        private ReactiveCollection<IView> _views = new ReactiveCollection<IView>();
+        private readonly ReactiveCollection<IView> _views = new ReactiveCollection<IView>();
         private LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
         
+        // В реактивных property при подписки происходит вызов при наличии значения 
+        // как вариант можно использовать Subject
         private RecycleReactiveProperty<IView> _onHiddenView = new RecycleReactiveProperty<IView>();
         private RecycleReactiveProperty<IView> _onShownView = new RecycleReactiveProperty<IView>();
+        // Опечатка
         private RecycleReactiveProperty<IView> _onClsedView = new RecycleReactiveProperty<IView>();
 
+        // Отдельное Property не нужно, достаточно readonly protected поля
+        // реактивность коллекции не используется
         protected IReactiveCollection<IView> Views => _views;
         
         public Transform Layout { get; protected set; }
@@ -71,6 +76,7 @@ namespace UniGame.UiSystem.Runtime
             OnViewAdded(view);
         }
 
+        // зачем ограничение Component? Ведь нигде не используется свойство View как компонента
         public TView Get<TView>() where TView : Component, IView
         {
             return (TView)_views.FirstOrDefault(v => v is TView);
@@ -91,6 +97,7 @@ namespace UniGame.UiSystem.Runtime
             AllViewsAction<IView>(x => true, x => x.Hide());
         }
 
+        // Почему Silent а не обычный Close
         public void Close<T>() where T : Component, IView
         {
             FirstViewAction<T>(x => CloseSilent(x));
@@ -110,6 +117,8 @@ namespace UniGame.UiSystem.Runtime
             buffer.Despawn();
         }
 
+        // У метода нет необходимости быть дженериком, достаточно
+        // просто сделать Close(IView t)
         public bool Close<T>(T view) where T : Component, IView
         {
             if (!view || !Contains(view))
@@ -127,6 +136,7 @@ namespace UniGame.UiSystem.Runtime
 
         #region private methods
 
+        // уровень доступа не соответствует региону
         public void AddView<TView>(TView view) 
             where TView : Component, IView
         {
@@ -150,7 +160,7 @@ namespace UniGame.UiSystem.Runtime
         {
             if (view == null || !Contains(view))
                 return false;
-            
+            // очевидный комментарий
             //remove view Object
             return _views.Remove(view);
         }

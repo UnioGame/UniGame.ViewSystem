@@ -2,6 +2,7 @@
 {
     using System;
 
+    // Хороший интерфейс, дейстивтельно подходит и в Layout и в IView
     public interface IViewStatus
     {
         IObservable<IView> OnHidden { get; }

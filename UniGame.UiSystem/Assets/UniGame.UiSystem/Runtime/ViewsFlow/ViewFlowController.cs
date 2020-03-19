@@ -4,6 +4,9 @@
     using UniGreenModules.UniGame.UiSystem.Runtime;
     using UnityEngine.SceneManagement;
 
+    // из названия класса не очевидно какое поведение он в себе содержит
+    // Я бы сделал его абстрактным с подпиской на все события SceneManagement
+    // а конкретное поведение обрабатывал бы в наследниках
     public class ViewFlowController : IViewFlowController
     {
         protected IViewLayoutContainer _controllerContainer;
