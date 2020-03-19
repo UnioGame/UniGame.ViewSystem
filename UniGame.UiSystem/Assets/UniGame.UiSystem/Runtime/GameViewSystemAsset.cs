@@ -2,6 +2,7 @@
 
 namespace UniGame.UiSystem.Runtime
 {
+    using System;
     using System.Collections.Generic;
     using Abstracts;
     using Settings;
@@ -29,59 +30,62 @@ namespace UniGame.UiSystem.Runtime
 
         #region view system api
 
+        public IGameViewSystem ViewSystem => gameViewSystem ?? (gameViewSystem = Create());
 
-        public ILifeTime LifeTime => gameViewSystem.LifeTime;
+        public ILifeTime LifeTime => ViewSystem.LifeTime;
 
         public UniTask<T> Create<T>(IViewModel viewModel, string skinTag = "", Transform parent = null)
             where T : Component, IView
         {
-            return gameViewSystem.Create<T>(viewModel, skinTag); 
+            return ViewSystem.Create<T>(viewModel, skinTag); 
         }
 
         public UniTask<T> OpenWindow<T>(IViewModel viewModel, string skinTag = "")
             where T : Component, IView
         {
-            return gameViewSystem.OpenWindow<T>(viewModel, skinTag);
+            return ViewSystem.OpenWindow<T>(viewModel, skinTag);
         }
 
         public UniTask<T> OpenScreen<T>(IViewModel viewModel, string skinTag = "")
             where T : Component, IView
         {
-            return gameViewSystem.OpenScreen<T>(viewModel, skinTag);
+            return ViewSystem.OpenScreen<T>(viewModel, skinTag);
         }
 
         public UniTask<T> OpenOverlay<T>(IViewModel viewModel, string skinTag = "") 
             where T : Component, IView
         {
-            return gameViewSystem.OpenOverlay<T>(viewModel, skinTag);
+            return ViewSystem.OpenOverlay<T>(viewModel, skinTag);
         }
 
 
-        public IEnumerable<IViewLayout> Controllers => gameViewSystem.Controllers;
+        public IEnumerable<IViewLayout> Controllers => ViewSystem.Controllers;
         
-        public IReadOnlyViewLayout this[ViewType type] => gameViewSystem[type];
+        public IReadOnlyViewLayout this[ViewType type] => ViewSystem[type];
 
-        public IViewLayout GetViewController(ViewType type) => gameViewSystem.GetViewController(type);
+        public IViewLayout GetViewController(ViewType type) => ViewSystem.GetViewController(type);
 
         public T Get<T>() where T : Component, IView
         {
-            return gameViewSystem.Get<T>();
+            return ViewSystem.Get<T>();
         }
 
         public void CloseAll()
         {
-            gameViewSystem.CloseAll();
+            ViewSystem.CloseAll();
         }
 
-        public void Dispose() => gameViewSystem?.Dispose();
+        public void Dispose() => ViewSystem?.Dispose();
         
         #endregion
 
-        private void Awake()
+        private void OnDestroy() => Dispose();
+
+        private IGameViewSystem Create()
         {
             settings.Initialize();
             
-            var factory = new ViewFactory(settings.UIResourceProvider);
+            var factory  = new ViewFactory(settings.UIResourceProvider);
             var stackMap = new Dictionary<ViewType, IViewLayout>(4);
             foreach (var item in layoutMap) {
                 stackMap[item.Key] = item.Value;
@@ -91,10 +95,7 @@ namespace UniGame.UiSystem.Runtime
             var sceneFlowController = settings.FlowController;
             sceneFlowController.Activate(viewLayoutContainer);
 
-            gameViewSystem = new GameViewSystem(factory, viewLayoutContainer, sceneFlowController);
+            return new GameViewSystem(factory, viewLayoutContainer, sceneFlowController);
         }
-
-        private void OnDestroy() => Dispose();
-
     }
 }
