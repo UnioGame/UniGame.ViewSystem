@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fb7e5639c338ff4a9a1cee8f5178231, type: 3}
+  m_Name: SingleUiManagerSettings
+  m_EditorClassIdentifier: 
+  sourceName: 
+  addressableGroupName: 
+  uiViewsDefaultFolders:
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/SingleViewUiManager/Assets/Screens
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/SingleViewUiManager/Assets/Windows
+  uiViewsSkinFolders:
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/SingleViewUiManager/Assets/Screens/Skin1
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/SingleViewUiManager/Assets/Screens/Skin2
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/SingleViewUiManager/Assets/Screens/Skin3
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/SingleViewUiManager/Assets/Windows/Skins
+  uiViews:
+  - Tag: Skin1
+    Type:
+      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoScreenView,
+        unigame.uisystem.example, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    View:
+      m_AssetGUID: e0b319aa0c6d18246a34855134356850
+      m_SubObjectName: 
+  - Tag: Skin2
+    Type:
+      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoScreenView,
+        unigame.uisystem.example, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    View:
+      m_AssetGUID: 331aa3729f08d904d95da90f56d8b8e2
+      m_SubObjectName: 
+  - Tag: Skin3
+    Type:
+      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoScreenView,
+        unigame.uisystem.example, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    View:
+      m_AssetGUID: 4abca7f3bfb534a4480ee1ae3d125501
+      m_SubObjectName: 
+  - Tag: Skin1
+    Type:
+      fullTypeName: UniGame.UiSystem.Examples.BaseUiManager.DemoWindowView, unigame.uisystem.example,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    View:
+      m_AssetGUID: 9e707f437c419904493577ea914bfdaa
+      m_SubObjectName: 
+  - Tag: Skin2
+    Type:
+      fullTypeName: UniGame.UiSystem.Examples.BaseUiManager.DemoWindowView, unigame.uisystem.example,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    View:
+      m_AssetGUID: 0d6317fed93fc3a42b12e34442259301
+      m_SubObjectName: 
+  - Tag: Skin3
+    Type:
+      fullTypeName: UniGame.UiSystem.Examples.BaseUiManager.DemoWindowView, unigame.uisystem.example,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    View:
+      m_AssetGUID: 2cec917992dba5449b4a406dfdcd7e8a
+      m_SubObjectName: 
+  - Tag: 
+    Type:
+      fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoScreenView,
+        unigame.uisystem.example, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    View:
+      m_AssetGUID: 7a0b6a02e4a39b54fbf752701664f669
+      m_SubObjectName: 
+  - Tag: 
+    Type:
+      fullTypeName: UniGame.UiSystem.Examples.BaseUiManager.DemoWindowView, unigame.uisystem.example,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    View:
+      m_AssetGUID: 3a4fcb012039d074fb6a4a05fc91484a
+      m_SubObjectName: 
+  sources: []
+  layoutFlow: {fileID: 11400000, guid: c22cfe04dc8dc9e43b8b9b36576fab63, type: 2}

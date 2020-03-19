@@ -22,18 +22,18 @@
 
         private readonly IViewFactory _viewFactory;
         private readonly IViewLayoutContainer _viewLayouts;
-        private readonly IViewSceneTransitionController _sceneTransitionController;
+        private readonly IViewFlowController _flowController;
 
         #endregion
 
         public GameViewSystem(
             IViewFactory viewFactory,
             IViewLayoutContainer viewLayouts,
-            IViewSceneTransitionController sceneTransitionController)
+            IViewFlowController flowController)
         {
             _viewFactory = viewFactory;
             _viewLayouts = viewLayouts;
-            _sceneTransitionController = sceneTransitionController;
+            _flowController = flowController;
 
             BindSceneActions();
 
@@ -171,20 +171,20 @@
         private void BindSceneActions()
         {
             Observable.FromEvent(
-                    x => SceneManager.activeSceneChanged += _sceneTransitionController.OnSceneActivate,
-                    x => SceneManager.activeSceneChanged -= _sceneTransitionController.OnSceneActivate).
+                    x => SceneManager.activeSceneChanged += _flowController.OnSceneActivate,
+                    x => SceneManager.activeSceneChanged -= _flowController.OnSceneActivate).
                 Subscribe().
                 AddTo(LifeTime);
 
             Observable.FromEvent(
-                    x => SceneManager.sceneLoaded += _sceneTransitionController.OnSceneLoaded,
-                    x => SceneManager.sceneLoaded -= _sceneTransitionController.OnSceneLoaded).
+                    x => SceneManager.sceneLoaded += _flowController.OnSceneLoaded,
+                    x => SceneManager.sceneLoaded -= _flowController.OnSceneLoaded).
                 Subscribe().
                 AddTo(LifeTime);
 
             Observable.FromEvent(
-                    x => SceneManager.sceneUnloaded += _sceneTransitionController.OnSceneUnloaded,
-                    x => SceneManager.sceneUnloaded -= _sceneTransitionController.OnSceneUnloaded).
+                    x => SceneManager.sceneUnloaded += _flowController.OnSceneUnloaded,
+                    x => SceneManager.sceneUnloaded -= _flowController.OnSceneUnloaded).
                 Subscribe().
                 AddTo(LifeTime);
         }

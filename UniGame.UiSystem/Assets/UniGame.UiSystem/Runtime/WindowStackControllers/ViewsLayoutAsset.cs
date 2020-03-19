@@ -4,6 +4,7 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 {
     using System;
     using Abstracts;
+    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
 
     public class ViewsLayoutAsset : MonoBehaviour, IViewLayout
     {
@@ -15,10 +16,18 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         private Lazy<IViewLayout> layout;
 
-        public IViewLayout StackController => layout.Value;
+        public IViewLayout LayoutController => layout.Value;
 
-        public Transform Layout => StackController.Layout;
+        public Transform Layout => LayoutController.Layout;
 
+        public IObservable<IView> OnHidden => LayoutController.OnHidden;
+        
+        public IObservable<IView> OnShown => LayoutController.OnShown;
+        
+        public IObservable<IView> OnClosed  => LayoutController.OnClosed;
+        
+        public ILifeTime LifeTime => LayoutController.LifeTime;
+        
         #region public methods
 
         public ViewsLayoutAsset()
@@ -26,45 +35,46 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
             layout = new Lazy<IViewLayout>(Create);
         }
 
-        public void Dispose() => StackController.Dispose();
+        public void Dispose() => LayoutController.Dispose();
 
-        public bool Contains(IView view) => StackController.Contains(view);
+        public bool Contains(IView view) => LayoutController.Contains(view);
+        
         public void Hide<T>() where T : Component, IView
         {
-            StackController.Hide<T>();
+            LayoutController.Hide<T>();
         }
 
         public void HideAll()
         {
-            StackController.HideAll();
+            LayoutController.HideAll();
         }
 
         public void HideAll<T>() where T : Component, IView
         {
-            StackController.HideAll<T>();
+            LayoutController.HideAll<T>();
         }
 
         public void Close<T>() where T : Component, IView
         {
-            StackController.Close<T>();
+            LayoutController.Close<T>();
         }
 
         public void Push<TView>(TView view) where TView : Component, IView
         {
-            StackController.Push(view);
+            LayoutController.Push(view);
         }
 
         public bool Close<T>(T view) where T : Component, IView
         {
-            return StackController.Close<T>(view);
+            return LayoutController.Close<T>(view);
         }
 
         public TView Get<TView>() where TView : Component, IView
         {
-            return StackController.Get<TView>();
+            return LayoutController.Get<TView>();
         }
 
-        public void CloseAll() => StackController.CloseAll();
+        public void CloseAll() => LayoutController.CloseAll();
 
         #endregion
 
@@ -75,7 +85,14 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         {
             return new ViewsStackLayout(layoutCanvas.transform);
         }
-        
+
+        protected void OnDestroy()
+        {
+            if(layout.IsValueCreated)
+                layout.Value.Dispose();
+        }
+
         #endregion
+
     }
 }

@@ -1,0 +1,25 @@
+{
+    "name": "unigame.uisystem.example",
+    "references": [
+        "unigame.addressables.tools.runtime",
+        "unigame.uisystem.runtime",
+        "unigame.unicore.runtime",
+        "unigame.uniroutine.runtime",
+        "Unity.TextMeshPro",
+        "UniRx",
+        "UniRx.Async",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "DOTweenPro.Scripts",
+        "DOTween.Modules"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

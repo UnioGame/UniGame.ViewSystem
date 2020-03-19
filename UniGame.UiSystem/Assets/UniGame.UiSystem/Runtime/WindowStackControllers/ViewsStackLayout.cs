@@ -10,39 +10,29 @@
     public class ViewsStackLayout : ViewLayout
     {
         private readonly Transform _root;
-        
+
         private IView _activeView;
-        private List<IView> _viewsOrder = new List<IView>(); 
+
+        public IView ActiveView => _activeView;
 
         public ViewsStackLayout(Transform layout)
         {
             Layout = layout;
+            
+            OnHidden.Where(x => x == _activeView).
+                Subscribe(HideView).
+                AddTo(LifeTime);
+            
+            OnShown.Where(x => x!=_activeView).
+                Subscribe(ActivateView).
+                AddTo(LifeTime);
+            
         }
 
-        public IView ActiveView => _activeView;
-        
-        protected override void OnViewAdded<T>(T view)
-        {
-            if (_viewsOrder.Contains(view))
-                return;
-            
-            view.OnShown.
-                Where(x => x!=_activeView).
-                Subscribe(ActivateView).
-                AddTo(view.LifeTime);
-            
-            view.OnHidden.
-                Where(x => x == _activeView).
-                Subscribe(HideView).
-                AddTo(view.LifeTime);
-            
-            ActivateView(view);
-        }
+        protected override void OnViewAdded<T>(T view) => ActivateView(view);
 
         protected override void OnBeforeClose<T>(T view)
         {
-            _viewsOrder.Remove(view);
-            
             if (view == _activeView) {
                 HideView(view);
             }
@@ -53,7 +43,7 @@
             //mark active view as empty
             _activeView = null;
             
-            var lastView = _viewsOrder.LastOrDefault(x => x != view);
+            var lastView = Views.LastOrDefault(x => x != view);
             //empty view stack or only active
             if (lastView == null) return;
             
@@ -67,8 +57,8 @@
             
             previous?.Hide();
             //update top of stack
-            _viewsOrder.Remove(view);
-            _viewsOrder.Add(view);
+            Remove(view);
+            Add(view);
             //show view if it inactive
             if(view.IsActive.Value == false)
                 view.Show();

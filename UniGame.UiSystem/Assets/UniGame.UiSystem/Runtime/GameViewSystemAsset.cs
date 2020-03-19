@@ -88,7 +88,8 @@ namespace UniGame.UiSystem.Runtime
             }
             
             var viewLayoutContainer = new ViewStackLayoutsContainer(stackMap);
-            var sceneFlowController = new ViewSceneFlowController(viewLayoutContainer);
+            var sceneFlowController = settings.FlowController;
+            sceneFlowController.Activate(viewLayoutContainer);
 
             gameViewSystem = new GameViewSystem(factory, viewLayoutContainer, sceneFlowController);
         }

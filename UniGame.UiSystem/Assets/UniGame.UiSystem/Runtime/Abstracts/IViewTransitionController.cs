@@ -1,9 +1,12 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
+    using Abstracts;
     using UnityEngine.SceneManagement;
 
-    public interface IViewSceneTransitionController
+    public interface IViewFlowController
     {
+        void Activate(IViewLayoutContainer map);
+        
         void OnSceneActivate(Scene current, Scene next);
 
         void OnSceneLoaded(Scene current, LoadSceneMode mode);

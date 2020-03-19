@@ -4,18 +4,12 @@
     using UniGreenModules.UniCore.Runtime.Interfaces;
     using UniRx;
 
-    public interface IView : ILifeTimeContext
+    public interface IView : ILifeTimeContext, IViewStatus
     {
         IReadOnlyReactiveProperty<bool> IsActive { get; }
         
         bool IsDestroyed { get; }
 
-        IObservable<IView> OnHidden { get; }
-
-        IObservable<IView> OnShown { get; }
-
-        IObservable<IView> OnClosed { get; }
-        
         void Initialize(IViewModel vm,IViewProvider layouts);
         
         void Close();
