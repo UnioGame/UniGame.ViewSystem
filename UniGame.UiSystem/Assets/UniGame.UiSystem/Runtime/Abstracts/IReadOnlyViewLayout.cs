@@ -1,23 +1,20 @@
 ﻿namespace UniGame.UiSystem.Runtime.Abstracts
 {
+    using System.Collections.Generic;
+    using UniGreenModules.UniCore.Runtime.Interfaces;
     using UnityEngine;
 
-    public interface IReadOnlyViewLayout 
+    public interface IReadOnlyViewLayout : 
+        ILifeTimeContext,
+        IViewStatus
     {
+        Transform Layout { get; }
 
         bool Contains(IView view);
+ 
+        TView Get<TView>() where TView :class, IView;
         
-        void Hide<T>() where T :Component, IView;
-        
-        void HideAll();
-        
-        void HideAll<T>() where T : Component, IView;
-
-        void Close<T>() where T :Component, IView;
-
-        TView Get<TView>() where TView : Component, IView;
-        
-        void CloseAll();
+        List<TView> GetAll<TView>() where TView : class, IView;
 
     }
 }

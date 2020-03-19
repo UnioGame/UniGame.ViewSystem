@@ -6,15 +6,14 @@
 
     public interface IViewLayout : 
         IDisposable, 
-        IViewStatus,
-        IReadOnlyViewLayout,
-        ILifeTimeContext
+        IReadOnlyViewLayout
     {
-        Transform Layout { get; }
-
-        void Push<TView>(TView view) where TView :Component, IView;
-
-        bool Close<T>(T view) where T : Component, IView;
         
+        void Push<TView>(TView view) where TView :class, IView;
+
+        void HideAll();
+
+        void CloseAll();
+
     }
 }

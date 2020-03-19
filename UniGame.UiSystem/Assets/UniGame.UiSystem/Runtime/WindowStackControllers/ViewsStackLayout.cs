@@ -1,6 +1,5 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
-    using System.Collections.Generic;
     using System.Linq;
     using Abstracts;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
@@ -12,8 +11,6 @@
         private readonly Transform _root;
 
         private IView _activeView;
-
-        public IView ActiveView => _activeView;
 
         public ViewsStackLayout(Transform layout)
         {
@@ -31,7 +28,7 @@
 
         protected override void OnViewAdded<T>(T view) => ActivateView(view);
 
-        protected override void OnBeforeClose<T>(T view)
+        protected override void OnBeforeClose(IView view)
         {
             if (view == _activeView) {
                 HideView(view);

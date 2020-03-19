@@ -1,16 +1,14 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
+    using System;
     using Abstracts;
-    using UnityEngine.SceneManagement;
+    using UniGreenModules.UniCore.Runtime.Interfaces;
 
-    public interface IViewFlowController
+    public interface IViewFlowController : 
+        IDisposable,
+        ILifeTimeContext
     {
         void Activate(IViewLayoutContainer map);
-        
-        void OnSceneActivate(Scene current, Scene next);
 
-        void OnSceneLoaded(Scene current, LoadSceneMode mode);
-
-        void OnSceneUnloaded(Scene current);
     }
 }

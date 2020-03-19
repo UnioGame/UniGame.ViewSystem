@@ -16,8 +16,8 @@ namespace UniGame.UiSystem.Runtime
     using UnityEngine;
 
     public abstract class UiView<TViewModel> :
-        MonoBehaviour, IView
-        where TViewModel : class, IViewModel
+        MonoBehaviour, 
+        IUiView<TViewModel> where TViewModel : class, IViewModel
     {
         #region inspector
 
@@ -201,7 +201,7 @@ namespace UniGame.UiSystem.Runtime
             yield break;
         }
         
-        private void OnDestroy()
+        protected void OnDestroy()
         {
             GameLog.LogFormat("View {0} Destroyed",name);
             Close();

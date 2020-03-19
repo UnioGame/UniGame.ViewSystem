@@ -34,9 +34,8 @@
             _viewFactory = viewFactory;
             _viewLayouts = viewLayouts;
             _flowController = flowController;
-
-            BindSceneActions();
-
+            
+            _flowController.Activate(_viewLayouts);
         }
 
         public ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
@@ -88,15 +87,15 @@
 
         public IEnumerable<IViewLayout> Controllers => _viewLayouts.Controllers;
 
-        public IViewLayout GetViewController(ViewType type) => _viewLayouts.GetViewController(type);
+        public IViewLayout GetLayout(ViewType type) => _viewLayouts.GetLayout(type);
 
 
         #endregion
 
         public void CloseAll()
         {
-            _viewLayouts[ViewType.Screen].CloseAll();
-            _viewLayouts[ViewType.Window].CloseAll();
+            _viewLayouts.GetLayout(ViewType.Screen)?.CloseAll();
+            _viewLayouts.GetLayout(ViewType.Window)?.CloseAll();
         }
 
         /// <summary>
@@ -130,7 +129,7 @@
             string skinTag = "")
             where T : Component, IView
         {
-            var layout = _viewLayouts.GetViewController(viewType);
+            var layout = _viewLayouts.GetLayout(viewType);
             var parent = layout?.Layout;
 
             var view = await CreateView<T>(viewModel, skinTag, parent);
@@ -157,37 +156,11 @@
 
         private void Destroy<TView>(TView view) where TView : Component, IView
         {
-            foreach (var viewController in _viewLayouts.Controllers) {
-                if(viewController.Close(view))
-                    break;
-
-            }
-            
+            view.Close();
             //TODO move to pool
             UnityEngine.Object.Destroy(view.gameObject);
         }
 
-
-        private void BindSceneActions()
-        {
-            Observable.FromEvent(
-                    x => SceneManager.activeSceneChanged += _flowController.OnSceneActivate,
-                    x => SceneManager.activeSceneChanged -= _flowController.OnSceneActivate).
-                Subscribe().
-                AddTo(LifeTime);
-
-            Observable.FromEvent(
-                    x => SceneManager.sceneLoaded += _flowController.OnSceneLoaded,
-                    x => SceneManager.sceneLoaded -= _flowController.OnSceneLoaded).
-                Subscribe().
-                AddTo(LifeTime);
-
-            Observable.FromEvent(
-                    x => SceneManager.sceneUnloaded += _flowController.OnSceneUnloaded,
-                    x => SceneManager.sceneUnloaded -= _flowController.OnSceneUnloaded).
-                Subscribe().
-                AddTo(LifeTime);
-        }
 
         #endregion
  }

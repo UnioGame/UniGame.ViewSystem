@@ -10,6 +10,6 @@
         /// <summary>
         /// get controller of target view type 
         /// </summary>
-        IViewLayout GetViewController(ViewType type);
+        IViewLayout GetLayout(ViewType type);
     }
 }
