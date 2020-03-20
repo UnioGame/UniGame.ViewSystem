@@ -16,6 +16,10 @@
         {
             Layout = layout;
             
+            OnClosed.Where(x => x == _activeView).
+                Subscribe(HideView).
+                AddTo(LifeTime);
+            
             OnHidden.Where(x => x == _activeView).
                 Subscribe(HideView).
                 AddTo(LifeTime);
