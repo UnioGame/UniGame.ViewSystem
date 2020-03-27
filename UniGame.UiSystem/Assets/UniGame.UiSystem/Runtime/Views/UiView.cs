@@ -42,7 +42,7 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// ui element visibility status
         /// </summary>
-        private BoolRecycleReactiveProperty _visibility = new BoolRecycleReactiveProperty(true);
+        private BoolRecycleReactiveProperty _visibility = new BoolRecycleReactiveProperty();
         /// <summary>
         /// model container
         /// </summary>
@@ -162,7 +162,7 @@ namespace UniGame.UiSystem.Runtime
         private IEnumerator OnHiding()
         {
             //set view as inactive
-            _visibility.Value = false;
+            _visibility.SetValueForce(false);
             //wait until user defined closing operation complete
             yield return OnHidingProgress(_progressLifeTime);
         }
@@ -173,7 +173,7 @@ namespace UniGame.UiSystem.Runtime
         private IEnumerator OnShow()
         {
             //set view as active
-            _visibility.Value = true;
+            _visibility.SetValueForce(true);
             yield return OnShowProgress(_progressLifeTime);
         }
 
