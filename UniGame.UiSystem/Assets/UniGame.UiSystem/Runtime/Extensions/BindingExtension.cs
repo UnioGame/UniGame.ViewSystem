@@ -15,7 +15,7 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime.Extensions
             int frameThrottle = 1)
         {
             return source.
-                ThrottleFrame(frameThrottle).
+                //ThrottleFrame(frameThrottle).
                 Subscribe(target);
         }
         

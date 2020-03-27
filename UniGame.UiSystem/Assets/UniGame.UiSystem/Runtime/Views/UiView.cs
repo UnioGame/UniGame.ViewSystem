@@ -14,9 +14,10 @@ namespace UniGame.UiSystem.Runtime
     using UniGreenModules.UniGame.UiSystem.Runtime.Extensions;
     using UniRx;
     using UnityEngine;
+    using UnityEngine.EventSystems;
 
     public abstract class UiView<TViewModel> :
-        MonoBehaviour, 
+        UIBehaviour, 
         IUiView<TViewModel> where TViewModel : class, IViewModel
     {
         #region inspector
@@ -41,7 +42,7 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// ui element visibility status
         /// </summary>
-        private BoolRecycleReactiveProperty _visibility = new BoolRecycleReactiveProperty();
+        private BoolRecycleReactiveProperty _visibility = new BoolRecycleReactiveProperty(true);
         /// <summary>
         /// model container
         /// </summary>
@@ -219,15 +220,16 @@ namespace UniGame.UiSystem.Runtime
         private void InitializeHandlers(IViewModel model)
         {
             _isVisible = _visibility.Value;
-            _visibility.Subscribe(x => this._isVisible = x).
+            _visibility.
+                Subscribe(x => this._isVisible = x).
                 AddTo(_lifeTimeDefinition);
 
             _visibility.Where(x => x).
-                Subscribe(x => _viewShown.Value = this).
+                Subscribe(x => _viewShown.SetValueForce(this)).
                 AddTo(_lifeTimeDefinition);
             
             _visibility.Where(x => !x).
-                Subscribe(x => _viewHidden.Value = this).
+                Subscribe(x => _viewHidden.SetValueForce(this)).
                 AddTo(_lifeTimeDefinition);
         }
 
@@ -252,7 +254,7 @@ namespace UniGame.UiSystem.Runtime
 
             //clean up view and notify observers
             _lifeTimeDefinition.AddCleanUpAction(() => {
-                _closeReactiveValue.Value = this;
+                _closeReactiveValue.SetValueForce(this);
                 _closeReactiveValue.Release();
                 IsDestroyed = true;
             });
