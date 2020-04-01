@@ -11,7 +11,11 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
     {
         #region inspector
 
-        public Canvas layoutCanvas;
+        [SerializeField]
+        private Canvas layoutCanvas;
+        
+        [SerializeField]
+        private CanvasGroup background;
 
         #endregion
 
@@ -69,7 +73,7 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         protected virtual IViewLayout Create()
         {
-            return new ViewsStackLayout(layoutCanvas.transform);
+            return new ViewsStackLayout(layoutCanvas.transform,background);
         }
 
         protected void OnDestroy()

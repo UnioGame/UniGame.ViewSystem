@@ -10,11 +10,9 @@ namespace UniGame.UiSystem.Runtime
     using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime;
     using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
-    using UniGreenModules.UniGame.Core.Runtime.Rx;
     using UniRx;
     using UnityEngine;
-    using Object = UnityEngine.Object;
-    
+
     public class ViewLayout : IViewLayout
     {
         protected readonly ReactiveCollection<IView> _views = new ReactiveCollection<IView>();

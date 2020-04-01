@@ -3,17 +3,19 @@
     using System.Linq;
     using Abstracts;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
+    using UniGreenModules.UniUiSystem.Runtime.Utils;
     using UniRx;
     using UnityEngine;
 
     public class ViewsStackLayout : ViewLayout
     {
-        private readonly Transform _root;
+        private readonly CanvasGroup _background;
 
         private IView _activeView;
 
-        public ViewsStackLayout(Transform layout)
+        public ViewsStackLayout(Transform layout,CanvasGroup background)
         {
+            _background = background;
             Layout = layout;
             
             OnClosed.Where(x => x == _activeView).
@@ -41,6 +43,8 @@
 
         private void HideView(IView view)
         {
+            _background?.SetState(0, false, false);
+            
             //mark active view as empty
             _activeView = null;
             
@@ -57,12 +61,15 @@
             _activeView = view;
             
             previous?.Hide();
+            
             //update top of stack
             Remove(view);
             Add(view);
             //show view if it inactive
             if(view.IsActive.Value == false)
                 view.Show();
+            
+            _background?.SetState(1);
         }
 
     }
