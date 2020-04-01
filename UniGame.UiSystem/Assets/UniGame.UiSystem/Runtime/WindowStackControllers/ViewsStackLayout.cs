@@ -43,14 +43,15 @@
 
         private void HideView(IView view)
         {
-            _background?.SetState(0, false, false);
-            
             //mark active view as empty
             _activeView = null;
             
             var lastView = Views.LastOrDefault(x => x != view);
             //empty view stack or only active
-            if (lastView == null) return;
+            if (lastView == null) {
+                _background?.SetState(0, false, false);
+                return;
+            }
             
             ActivateView(lastView);
         }
