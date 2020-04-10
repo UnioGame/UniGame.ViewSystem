@@ -158,7 +158,9 @@
         {
             view.Close();
             //TODO move to pool
-            UnityEngine.Object.Destroy(view.gameObject);
+            if(view != null &&
+                view.gameObject != null)
+                UnityEngine.Object.Destroy(view.gameObject);
         }
 
 
