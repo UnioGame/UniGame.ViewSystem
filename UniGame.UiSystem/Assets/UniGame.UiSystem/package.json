@@ -15,6 +15,7 @@
   "dependencies": {
     "com.unigame.neuecc.unirx": "7.1.1",
     "com.unigame.neuecc.unirx.async": "1.2.0",
+    "com.unigame.serializablecontext" : "1.2.18",
     "com.unigame.unicore": "1.5.13",
     "com.unigame.uniroutine": "1.5.30",
     "com.unigame.addressablestools": "1.3.1",

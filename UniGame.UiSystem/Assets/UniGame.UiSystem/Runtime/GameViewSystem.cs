@@ -22,21 +22,20 @@
 
         private readonly IViewFactory _viewFactory;
         private readonly IViewLayoutContainer _viewLayouts;
-        private readonly IViewSceneTransitionController _sceneTransitionController;
+        private readonly IViewFlowController _flowController;
 
         #endregion
 
         public GameViewSystem(
             IViewFactory viewFactory,
             IViewLayoutContainer viewLayouts,
-            IViewSceneTransitionController sceneTransitionController)
+            IViewFlowController flowController)
         {
             _viewFactory = viewFactory;
             _viewLayouts = viewLayouts;
-            _sceneTransitionController = sceneTransitionController;
-
-            BindSceneActions();
-
+            _flowController = flowController;
+            
+            _flowController.Activate(_viewLayouts);
         }
 
         public ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
@@ -88,15 +87,15 @@
 
         public IEnumerable<IViewLayout> Controllers => _viewLayouts.Controllers;
 
-        public IViewLayout GetViewController(ViewType type) => _viewLayouts.GetViewController(type);
+        public IViewLayout GetLayout(ViewType type) => _viewLayouts.GetLayout(type);
 
 
         #endregion
 
         public void CloseAll()
         {
-            _viewLayouts[ViewType.Screen].CloseAll();
-            _viewLayouts[ViewType.Window].CloseAll();
+            _viewLayouts.GetLayout(ViewType.Screen)?.CloseAll();
+            _viewLayouts.GetLayout(ViewType.Window)?.CloseAll();
         }
 
         /// <summary>
@@ -130,7 +129,7 @@
             string skinTag = "")
             where T : Component, IView
         {
-            var layout = _viewLayouts.GetViewController(viewType);
+            var layout = _viewLayouts.GetLayout(viewType);
             var parent = layout?.Layout;
 
             var view = await CreateView<T>(viewModel, skinTag, parent);
@@ -157,37 +156,13 @@
 
         private void Destroy<TView>(TView view) where TView : Component, IView
         {
-            foreach (var viewController in _viewLayouts.Controllers) {
-                if(viewController.Close(view))
-                    break;
-
-            }
-            
+            view.Close();
             //TODO move to pool
-            UnityEngine.Object.Destroy(view.gameObject);
+            if(view != null &&
+                view.gameObject != null)
+                UnityEngine.Object.Destroy(view.gameObject);
         }
 
-
-        private void BindSceneActions()
-        {
-            Observable.FromEvent(
-                    x => SceneManager.activeSceneChanged += _sceneTransitionController.OnSceneActivate,
-                    x => SceneManager.activeSceneChanged -= _sceneTransitionController.OnSceneActivate).
-                Subscribe().
-                AddTo(LifeTime);
-
-            Observable.FromEvent(
-                    x => SceneManager.sceneLoaded += _sceneTransitionController.OnSceneLoaded,
-                    x => SceneManager.sceneLoaded -= _sceneTransitionController.OnSceneLoaded).
-                Subscribe().
-                AddTo(LifeTime);
-
-            Observable.FromEvent(
-                    x => SceneManager.sceneUnloaded += _sceneTransitionController.OnSceneUnloaded,
-                    x => SceneManager.sceneUnloaded -= _sceneTransitionController.OnSceneUnloaded).
-                Subscribe().
-                AddTo(LifeTime);
-        }
 
         #endregion
  }

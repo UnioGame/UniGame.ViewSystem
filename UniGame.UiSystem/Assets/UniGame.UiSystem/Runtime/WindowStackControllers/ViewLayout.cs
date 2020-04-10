@@ -6,22 +6,35 @@ namespace UniGame.UiSystem.Runtime
     using System.Linq;
     using Abstracts;
     using UniGreenModules.UniCore.Runtime.DataFlow;
+    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
     using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime;
     using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
     using UniRx;
     using UnityEngine;
-    using Object = UnityEngine.Object;
-    
+
     public class ViewLayout : IViewLayout
     {
-        private ReactiveCollection<IView> _views = new ReactiveCollection<IView>();
-        private LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
+        protected readonly ReactiveCollection<IView> _views = new ReactiveCollection<IView>();
+        private readonly LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
 
-        protected IReactiveCollection<IView> Views => _views;
+        private Subject<IView> _onViewHidden = new Subject<IView>();
+        private Subject<IView> _onViewShown = new Subject<IView>();
+        private Subject<IView> _onViewClosed = new Subject<IView>();
+        
+        protected IReadOnlyReactiveCollection<IView> Views => _views;
         
         public Transform Layout { get; protected set; }
 
+        public ILifeTime LifeTime => _lifeTime;
+        
+        #region IViewStatus
+
+        public IObservable<IView> OnHidden => _onViewHidden;
+        public IObservable<IView> OnShown => _onViewShown;
+        public IObservable<IView> OnClosed => _onViewClosed;
+        
+        #endregion
 
         #region public methods
 
@@ -33,23 +46,34 @@ namespace UniGame.UiSystem.Runtime
         /// add view to controller
         /// </summary>
         public void Push<TView>(TView view) 
-            where TView : Component, IView
+            where TView :class, IView
         {
-            if (!_views.Contains(view)) {
-                view.OnClosed.
-                    Subscribe(Remove).
-                    AddTo(view.LifeTime);
-                
-                //register view
-                _views.Add(view);
+            if (_views.Contains(view)) {
+                return;
             }
-            //update view properties
+            
+            AddView(view);
+            
+            //custom user action on new view
             OnViewAdded(view);
         }
 
-        public TView Get<TView>() where TView : Component, IView
+        public TView Get<TView>() where TView :class, IView
         {
-            return (TView)_views.FirstOrDefault(v => v is TView);
+            return (TView)_views.LastOrDefault(v => v is TView);
+        }
+        
+        /// <summary>
+        /// select all view of target type into new container
+        /// </summary>
+        public List<TView> GetAll<TView>() where TView :class, IView
+        {
+            var list = this.Spawn<List<TView>>();
+            foreach (var view in _views) {
+                if(view is TView targetView)
+                    list.Add(targetView);
+            }
+            return list;
         }
 
         public void Hide<T>() where T : Component, IView
@@ -69,23 +93,26 @@ namespace UniGame.UiSystem.Runtime
 
         public void Close<T>() where T : Component, IView
         {
-            FirstViewAction<T>(x => x.Close());
+            FirstViewAction<T>(x => Close(x));
         }
 
         public void CloseAll()
         {
             var buffer = ClassPool.Spawn<List<IView>>();
             buffer.AddRange(_views);
+            
+            _views.Clear();
             foreach (var view in buffer)
             {
                 view.Close();
             }
+            
             buffer.Despawn();
         }
 
-        public bool Close<T>(T view) where T : Component, IView
+        public bool Close(IView view)
         {
-            if (!view || !Contains(view))
+            if (view == null || !Contains(view))
                 return false;
             
             //custom user action before cleanup view
@@ -98,13 +125,40 @@ namespace UniGame.UiSystem.Runtime
 
         #endregion
 
-        private void Remove(IView view)
+        #region private methods
+
+        
+        protected void AddView<TView>(TView view) 
+            where TView :class, IView
+        {
+            view.OnClosed.
+                Do(x => _onViewClosed.OnNext(x)).
+                Subscribe(x => Remove(x)).
+                AddTo(view.LifeTime);
+                
+            view.OnShown.
+                Subscribe(x => _onViewShown.OnNext(x)).
+                AddTo(view.LifeTime);
+                
+            view.OnHidden.
+                Subscribe(x => _onViewHidden.OnNext(x)).
+                AddTo(view.LifeTime);
+                
+            Add(view);
+        }
+        
+        protected bool Remove(IView view)
         {
             if (view == null || !Contains(view))
-                return;
-            
-            //remove view Object
-            _views.Remove(view);
+                return false;
+            return _views.Remove(view);
+        }
+
+        protected bool Add(IView view)
+        {
+            if (Contains(view)) return false;
+            _views.Add(view);
+            return true;
         }
         
         private void AllViewsAction<TView>(Func<TView, bool> predicate, Action<TView> action)
@@ -122,16 +176,33 @@ namespace UniGame.UiSystem.Runtime
         }
 
         private void FirstViewAction<TView>(Action<TView> action)
-            where TView : Object, IView
+            where TView : class,  IView
         {
-            var view = _views.FirstOrDefault(x => x is TView) as TView;
-            if (view)
+            if (_views.FirstOrDefault(x => x is TView) is TView view)
                 action(view);
         }
 
-        protected virtual void OnBeforeClose<T>(T view) where T : Component, IView { }
+        /// <summary>
+        /// close view with removing from collection
+        /// </summary>
+        /// <param name="view"></param>
+        protected void CloseSilent(IView view)
+        {
+            if(Remove(view))
+                view.Close();
+        }
 
-        protected virtual void OnViewAdded<T>(T view) where T : Component, IView { }
+        /// <summary>
+        /// user defined actions triggered before any view closed
+        /// </summary>
+        protected virtual void OnBeforeClose(IView view) { }
+
+        /// <summary>
+        /// user defined action on new view added to layout
+        /// </summary>
+        protected virtual void OnViewAdded<T>(T view) where T :class,  IView { }
+
+        #endregion
 
     }
 }
