@@ -14,6 +14,9 @@
     using UnityEngine;
     using ViewsFlow;
 
+    /// <summary>
+    /// Base View system settings. Contains info about all available view abd type info
+    /// </summary>
     [CreateAssetMenu(menuName = "UniGame/UiSystem/ViewSystemSettings", fileName = "ViewSystemSettings")]
     public class ViewSystemSettings : ViewsSource, IViewSystemSettings
     {
@@ -59,22 +62,23 @@
         }
 
         #region private methods
-
-        // TO DO
-        // Непонятно загрузились ли нужные ресурсы, появляются неявные связи 
-        // например в лобби нужно в сырсах указывать ещё и сырсы UI
-        // Возможности загрузить через ContextNode нету
+        
         private void DownloadAllAsyncSources(ILifeTime lifeTime)
         {
             //load ui views async
             foreach (var reference in sources) {
-                reference.ToObservable().Catch<ViewsSource, Exception>(
-                    x => {
-                        GameLog.LogError($"UiManagerSettings Load Ui Source failed {reference.AssetGUID}");
-                        GameLog.LogError(x);
-                        return Observable.Empty<ViewsSource>();
-                    }).Where(x => x != null).Do(
-                    x => uiResourceProvider.RegisterViews(x.uiViews)).Subscribe().AddTo(lifeTime);
+                reference.
+                    ToObservable().
+                    Catch<ViewsSource, Exception>(
+                        x => {
+                            GameLog.LogError($"UiManagerSettings Load Ui Source failed {reference.AssetGUID}");
+                            GameLog.LogError(x);
+                            return Observable.Empty<ViewsSource>();
+                        }).
+                    Where(x => x != null).
+                    Do(x => uiResourceProvider.RegisterViews(x.uiViews)).
+                    Subscribe().
+                    AddTo(lifeTime);
             }
         }
 

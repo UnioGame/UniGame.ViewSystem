@@ -2,6 +2,7 @@
 
 namespace UniGame.UiSystem.Runtime
 {
+    using System;
     using System.Collections.Generic;
     using Abstracts;
     using Settings;
@@ -33,30 +34,44 @@ namespace UniGame.UiSystem.Runtime
 
         public ILifeTime LifeTime => ViewSystem.LifeTime;
 
-        public UniTask<T> Create<T>(IViewModel viewModel, string skinTag = "", Transform parent = null)
-            where T : Component, IView
+        public async UniTask<T> Create<T>(IViewModel viewModel, string skinTag = "", Transform parent = null)
+            where T  : class, IView
         {
-            return ViewSystem.Create<T>(viewModel, skinTag); 
+            return await ViewSystem.Create<T>(viewModel, skinTag); 
         }
 
-        public UniTask<T> OpenWindow<T>(IViewModel viewModel, string skinTag = "")
-            where T : Component, IView
+        public async UniTask<T> OpenWindow<T>(IViewModel viewModel, string skinTag = "")
+            where T : class, IView
         {
-            return ViewSystem.OpenWindow<T>(viewModel, skinTag);
+            return await ViewSystem.OpenWindow<T>(viewModel, skinTag);
         }
 
-        public UniTask<T> OpenScreen<T>(IViewModel viewModel, string skinTag = "")
-            where T : Component, IView
+        public async UniTask<T> OpenScreen<T>(IViewModel viewModel, string skinTag = "")
+            where T : class, IView
         {
-            return ViewSystem.OpenScreen<T>(viewModel, skinTag);
+            return await ViewSystem.OpenScreen<T>(viewModel, skinTag);
         }
 
-        public UniTask<T> OpenOverlay<T>(IViewModel viewModel, string skinTag = "") 
-            where T : Component, IView
+        public async UniTask<T> OpenOverlay<T>(IViewModel viewModel, string skinTag = "") 
+            where T  : class, IView
         {
-            return ViewSystem.OpenOverlay<T>(viewModel, skinTag);
+            return await ViewSystem.OpenOverlay<T>(viewModel, skinTag);
         }
 
+        public async UniTask<IView> OpenWindow(IViewModel viewModel, Type viewType, string skinTag = "")
+        {
+            return await ViewSystem.OpenWindow(viewModel,viewType, skinTag);
+        }
+
+        public  async UniTask<IView> OpenScreen(IViewModel viewModel, Type viewType, string skinTag = "")
+        {
+            return await ViewSystem.OpenScreen(viewModel,viewType, skinTag);
+        }
+
+        public  async UniTask<IView> OpenOverlay(IViewModel viewModel, Type viewType, string skinTag = "")
+        {
+            return await ViewSystem.OpenOverlay(viewModel,viewType, skinTag);
+        }
 
         public IEnumerable<IViewLayout> Controllers => ViewSystem.Controllers;
         

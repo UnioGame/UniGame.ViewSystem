@@ -49,7 +49,7 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
             LayoutController.HideAll();
         }
 
-        public void Push<TView>(TView view) where TView : class,IView
+        public void Push(IView view)
         {
             LayoutController.Push(view);
         }

@@ -70,7 +70,7 @@ namespace UniGame.UiSystem.Editor.UiEditor
         }
 
 
-        private void AddView(List<UiViewDescription> views,IView view, bool defaultView)
+        private void AddView(List<UiViewReference> views,IView view, bool defaultView)
         {
             var assetView = view as MonoBehaviour;
             if (assetView == null) {
@@ -94,7 +94,7 @@ namespace UniGame.UiSystem.Editor.UiEditor
                 addressableAssetSettings.CreateOrMoveEntry(guid, addressableAssetSettings.DefaultGroup);
             }
             
-            var viewDescription = new UiViewDescription() {
+            var viewDescription = new UiViewReference() {
                 Tag  = defaultView ? string.Empty : 
                     Path.GetFileName(Path.GetDirectoryName(assetPath)),
                 Type = view.GetType(),

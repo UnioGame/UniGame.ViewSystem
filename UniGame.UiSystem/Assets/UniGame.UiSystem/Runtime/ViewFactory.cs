@@ -2,11 +2,13 @@
 
 namespace UniGame.UiSystem.Runtime
 {
+    using System;
     using Abstracts;
     using Addressables.Reactive;
     using UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
     using UniRx.Async;
+    using Object = UnityEngine.Object;
 
     public class ViewFactory : IViewFactory
     {
@@ -17,42 +19,55 @@ namespace UniGame.UiSystem.Runtime
             resourceProvider = viewResourceProvider;
         }
 
-        public async UniTask<T> Create<T>(string skinTag = "", Transform parent = null) 
-            where T : Component, IView
+        public async UniTask<IView> Create(Type viewType, string skinTag = "", Transform parent = null) 
         {
             //load View resource
             var result = await resourceProvider.
-                LoadViewAsync<T>(skinTag).
+                LoadViewAsync<Component>(viewType,skinTag).
                 ToAddressableUniTask();
 
-            var asset      = result.value;
             var disposable = result.disposable;
+
+            //create view instance
+            var view = Create(result.value, parent);
             
             //if loading failed release resource immediately
-            if (asset == null) {
-                GameLog.LogError($"Factory {this.GetType().Name} View of Type {typeof(T).Name} not loaded");
+            if (view == null) {
+                GameLog.LogError($"Factory {this.GetType().Name} View of Type {viewType?.Name} not loaded");
                 disposable.Dispose();
                 return null;
             }
-
-            //create view instance
-            var view = Create(asset, parent);
+            
             //bind resource lifetime to view
             view.LifeTime.AddDispose(disposable);
 
             return view;
-
+        }
+        
+        public async UniTask<T> Create<T>(string skinTag = "", Transform parent = null) 
+            where T : Component, IView
+        {
+            var handler = await Create(typeof(T), skinTag, parent);
+            var result = handler as T;
+            
+            if (result == null) {
+                GameLog.LogError($"View type mismatch Request type {typeof(T).Name} : ResultType {handler?.GetType().Name}");
+                handler?.Destroy();
+            }
+            
+            return result;
         }
         
         /// <summary>
         /// create view instance
         /// </summary>
-        protected virtual TView Create<TView>(TView asset, Transform parent = null) where TView : Component, IView
+        protected virtual IView Create(Component asset, Transform parent = null)
         {
+            if (asset == null) return null;
             //create instance of view
             var view = Object.
                 Instantiate(asset.gameObject, parent).
-                GetComponent<TView>();
+                GetComponent<IView>();
 
             return view;
         }

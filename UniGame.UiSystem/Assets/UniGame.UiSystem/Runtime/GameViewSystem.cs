@@ -47,26 +47,43 @@
 
         #region ui system api
 
-        public async UniTask<T> Create<T>(IViewModel viewModel, string skinTag = "", Transform parent = null) where T : Component, IView
+        public async UniTask<T> Create<T>(IViewModel viewModel, string skinTag = "", Transform parent = null) where T :class, IView
         {
-            return await CreateView<T>(viewModel, skinTag, parent);
+            return await CreateView<T>(viewModel,typeof(T), skinTag, parent);
         }
 
-        public async UniTask<T> OpenWindow<T>(IViewModel viewModel, string skinTag = "") where T : Component, IView
+        public async UniTask<T> OpenWindow<T>(IViewModel viewModel, string skinTag = "")where T :class, IView
         {
-            return await OpenView<T>(viewModel, ViewType.Window, skinTag);
+            return await OpenView<T>(viewModel,typeof(T), ViewType.Window, skinTag);
         }
 
-        public async UniTask<T> OpenScreen<T>(IViewModel viewModel, string skinTag = "") where T : Component, IView
+        public async UniTask<T> OpenScreen<T>(IViewModel viewModel, string skinTag = "") where T :class, IView
         {
-            return await OpenView<T>(viewModel, ViewType.Screen, skinTag);
+            return await OpenView<T>(viewModel,typeof(T), ViewType.Screen, skinTag);
         }
 
-        public async UniTask<T> OpenOverlay<T>(IViewModel viewModel, string skinTag = "") where T : Component, IView
+        public async UniTask<T> OpenOverlay<T>(IViewModel viewModel, string skinTag = "") where T :class, IView
         {
-            return await OpenView<T>(viewModel, ViewType.Overlay, skinTag);
+            return await OpenView<T>(viewModel,typeof(T), ViewType.Overlay, skinTag);
         }
 
+        //Direct type methods
+        
+        public async UniTask<IView> OpenWindow(IViewModel viewModel, Type viewType, string skinTag = "")
+        {
+            return await OpenView<ViewBase>(viewModel,viewType, ViewType.Window, skinTag);
+        }
+
+        public async UniTask<IView> OpenScreen(IViewModel viewModel,Type viewType, string skinTag = "")
+        {
+            return await OpenView<ViewBase>(viewModel,viewType, ViewType.Screen, skinTag);
+        }
+
+        public async UniTask<IView> OpenOverlay(IViewModel viewModel,Type viewType, string skinTag = "") 
+        {
+            return await OpenView<ViewBase>(viewModel,viewType, ViewType.Overlay, skinTag);
+        }
+        
         public T Get<T>() where T : Component, IView
         {
             foreach (var controller in _viewLayouts.Controllers)
@@ -102,15 +119,18 @@
         /// create new view element
         /// </summary>
         /// <param name="viewModel">target element model data</param>
+        /// <param name="viewType">view type filter</param>
         /// <param name="skinTag">target element skin</param>
+        /// <param name="parent">view parent</param>
         /// <returns>created view element</returns>
         public async UniTask<T> CreateView<T>(
             IViewModel viewModel,
+            Type viewType,
             string skinTag = "",
             Transform parent = null)
-            where T : Component, IView
+            where T :class, IView
         {
-            var view = await _viewFactory.Create<T>(skinTag, parent);
+            var view = (await _viewFactory.Create(viewType,skinTag, parent)) as T;
 
             InitializeView(view, viewModel);
 
@@ -125,14 +145,15 @@
         /// </summary>
         private async UniTask<T> OpenView<T>(
             IViewModel viewModel,
-            ViewType viewType,
+            Type viewType,
+            ViewType layoutType,
             string skinTag = "")
-            where T : Component, IView
+            where T : class, IView
         {
-            var layout = _viewLayouts.GetLayout(viewType);
+            var layout = _viewLayouts.GetLayout(layoutType);
             var parent = layout?.Layout;
 
-            var view = await CreateView<T>(viewModel, skinTag, parent);
+            var view = await CreateView<T>(viewModel,viewType, skinTag, parent);
 
             layout?.Push(view);
 
@@ -143,7 +164,7 @@
         /// Initialize View with model data
         /// </summary>
         private T InitializeView<T>(T view, IViewModel viewModel)
-            where T : Component, IView
+            where T : IView
         {
 
             view.Initialize(viewModel, this);
@@ -154,13 +175,16 @@
             return view;
         }
 
-        private void Destroy<TView>(TView view) where TView : Component, IView
+        private void Destroy(IView view)
         {
-            view.Close();
+            view.Destroy();
+            
             //TODO move to pool
-            if(view != null &&
-                view.gameObject != null)
-                UnityEngine.Object.Destroy(view.gameObject);
+            var asset = view as Component;
+            var target = asset?.gameObject;
+            
+            if(target != null)
+                UnityEngine.Object.Destroy(target);
         }
 
 

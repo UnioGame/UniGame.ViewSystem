@@ -45,8 +45,7 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// add view to controller
         /// </summary>
-        public void Push<TView>(TView view) 
-            where TView :class, IView
+        public void Push(IView view) 
         {
             if (_views.Contains(view)) {
                 return;

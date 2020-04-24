@@ -14,7 +14,7 @@ namespace UniGame.UiSystem.Runtime
 
     public class UiResourceProvider : IViewResourceProvider
     {
-        private Dictionary<Type,List<UiViewDescription>> views = new Dictionary<Type, List<UiViewDescription>>(32);
+        private Dictionary<Type,List<UiViewReference>> views = new Dictionary<Type, List<UiViewReference>>(32);
 
         public IAddressableObservable<TView> LoadViewAsync<TView>(bool strongMatching = true) 
             where TView : Object
@@ -22,10 +22,10 @@ namespace UniGame.UiSystem.Runtime
             return LoadViewAsync<TView>(string.Empty,strongMatching);
         }
         
-        public IAddressableObservable<TView> LoadViewAsync<TView>(string skin,bool strongMatching = true) 
+        public IAddressableObservable<TView> LoadViewAsync<TView>(Type viewType,string skin,bool strongMatching = true) 
             where TView : Object
         {
-            var items = FindItemsByType(typeof(TView), strongMatching);
+            var items = FindItemsByType(viewType, strongMatching);
             
             var item = items.FirstOrDefault(
                 x => string.IsNullOrEmpty(skin) || 
@@ -42,18 +42,22 @@ namespace UniGame.UiSystem.Runtime
             return item.View.ToObservable<TView>();
         }
 
+        public IAddressableObservable<TView> LoadViewAsync<TView>(string skin, bool strongMatching = true)
+            where TView : Object
+        {
+            return LoadViewAsync<TView>(typeof(TView), skin, strongMatching);
+        }
+
         public List<IAddressableObservable<TView>> LoadViewsAsync<TView>(bool strongMatching = true) 
             where TView : Object
         {
             return LoadViewsAsync<TView>(string.Empty, strongMatching);
         }
 
-        public List<IAddressableObservable<TView>> LoadViewsAsync<TView>(string skinTag, bool strongMatching = true) 
+        public List<IAddressableObservable<TView>> LoadViewsAsync<TView>(Type viewType,string skinTag, bool strongMatching = true)
             where TView : Object
         {
-            var result = new List<IAddressableObservable<TView>>();
-
-            var items = FindItemsByType(typeof(TView), strongMatching);
+            var items = FindItemsByType(viewType, strongMatching);
             //return collection to pool
             items.Despawn();
 
@@ -61,6 +65,8 @@ namespace UniGame.UiSystem.Runtime
                 Debug.LogError($"{nameof(UiResourceProvider)} ITEM MISSING skin:{skinTag} type {typeof(TView).Name}");
                 return null;
             }
+            
+            var result = new List<IAddressableObservable<TView>>();
 
             foreach (var item in items) {
                 result.Add(item.View.ToObservable<TView>());
@@ -68,14 +74,22 @@ namespace UniGame.UiSystem.Runtime
             
             return result;
         }
+        
+        public List<IAddressableObservable<TView>> LoadViewsAsync<TView>(string skinTag, bool strongMatching = true) 
+            where TView : Object
+        {
+
+            return LoadViewsAsync<TView>(typeof(TView), skinTag, strongMatching);
+
+        }
 
         
-        public void RegisterViews(IReadOnlyList<UiViewDescription> sourceViews)
+        public void RegisterViews(IReadOnlyList<UiViewReference> sourceViews)
         {
             foreach (var view in sourceViews) {
                 Type targetType = view.Type;
                 if (views.TryGetValue(targetType, out var items) == false) {
-                    items             = new List<UiViewDescription>();
+                    items             = new List<UiViewReference>();
                     views[targetType] = items;
                 }
                 items.Add(view);
@@ -83,9 +97,9 @@ namespace UniGame.UiSystem.Runtime
         }
 
 
-        private List<UiViewDescription> FindItemsByType(Type type, bool strongMatching)
+        private List<UiViewReference> FindItemsByType(Type type, bool strongMatching)
         {
-            var result = ClassPool.Spawn<List<UiViewDescription>>();
+            var result = ClassPool.Spawn<List<UiViewReference>>();
             if (strongMatching) {
                 if (views.TryGetValue(type, out var items)) {
                     result.AddRange(items);

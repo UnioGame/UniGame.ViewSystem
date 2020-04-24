@@ -26,6 +26,6 @@ namespace UniGame.UiSystem.Runtime.Settings
         public List<string> uiViewsSkinFolders = new List<string>();
 
         [Space]
-        public List<UiViewDescription> uiViews = new List<UiViewDescription>();
+        public List<UiViewReference> uiViews = new List<UiViewReference>();
     }
 }

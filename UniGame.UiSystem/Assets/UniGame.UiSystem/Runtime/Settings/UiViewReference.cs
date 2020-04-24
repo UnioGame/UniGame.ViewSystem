@@ -9,7 +9,7 @@ namespace UniGame.UiSystem.Runtime.Settings
     using UnityEngine.AddressableAssets;
 
     [Serializable]
-    public class UiViewDescription
+    public class UiViewReference
     {
             
 #if ODIN_INSPECTOR

@@ -8,8 +8,8 @@
         IDisposable, 
         IReadOnlyViewLayout
     {
-        
-        void Push<TView>(TView view) where TView :class, IView;
+
+        void Push(IView view);
 
         void HideAll();
 
