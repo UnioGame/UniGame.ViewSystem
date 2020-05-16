@@ -17,27 +17,27 @@
         [SerializeField] 
         private AssetReferenceUiSystem uiSystemSource;
 
-        private static GameViewSystemAsset uiSystemAsset;
+        private static IGameViewSystem uiSystemAsset;
         
         public async UniTask<IGameViewSystem> LoadSystem()
         {
-            if (uiSystemAsset) {
+            if (uiSystemAsset != null) {
                 return uiSystemAsset;
             }
             
             var uiSystem = await uiSystemSource.LoadGameObjectAssetTaskAsync(LifeTime);
-            
-            uiSystemAsset = Instantiate(uiSystem);
-            
-            DontDestroyOnLoad(uiSystemAsset.gameObject);
+
+            var uiAsset = Instantiate(uiSystem);
+            DontDestroyOnLoad(uiAsset.gameObject);
 
             LifeTime.AddCleanUpAction(() => {
-                if (uiSystemAsset) {
-                    Object.Destroy(uiSystemAsset.gameObject);
+                if (uiAsset) {
+                    Object.Destroy(uiAsset.gameObject);
                 }
             });
-            
-            return uiSystem;
+                        
+            uiSystemAsset = uiAsset.ViewSystem;
+            return uiSystemAsset;
         }
         
         public sealed override async UniTask<IContext> RegisterAsync(IContext context)
