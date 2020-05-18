@@ -6,6 +6,8 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
     using System.Collections.Generic;
     using Abstracts;
     using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
+    using UniModules.UniGame.UISystem.Runtime;
+    using UniRx;
 
     public class ViewsLayoutAsset : MonoBehaviour, IViewLayout
     {
@@ -25,6 +27,8 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         public Transform Layout => LayoutController.Layout;
 
+        public IReadOnlyReactiveProperty<ViewStatus> Status => LayoutController.Status;
+        
         public IObservable<IView> OnHidden => LayoutController.OnHidden;
         
         public IObservable<IView> OnShown => LayoutController.OnShown;

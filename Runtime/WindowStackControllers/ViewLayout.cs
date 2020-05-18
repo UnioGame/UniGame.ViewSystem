@@ -10,6 +10,7 @@ namespace UniGame.UiSystem.Runtime
     using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime;
     using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
+    using UniModules.UniGame.UISystem.Runtime;
     using UniRx;
     using UnityEngine;
 
@@ -21,6 +22,7 @@ namespace UniGame.UiSystem.Runtime
         private Subject<IView> _onViewHidden = new Subject<IView>();
         private Subject<IView> _onViewShown = new Subject<IView>();
         private Subject<IView> _onViewClosed = new Subject<IView>();
+        private ReactiveProperty<ViewStatus> _viewStatus = new ReactiveProperty<ViewStatus>();
         
         protected IReadOnlyReactiveCollection<IView> Views => _views;
         
@@ -30,6 +32,7 @@ namespace UniGame.UiSystem.Runtime
         
         #region IViewStatus
 
+        public IReadOnlyReactiveProperty<ViewStatus> Status => _viewStatus;
         public IObservable<IView> OnHidden => _onViewHidden;
         public IObservable<IView> OnShown => _onViewShown;
         public IObservable<IView> OnClosed => _onViewClosed;
@@ -143,6 +146,10 @@ namespace UniGame.UiSystem.Runtime
                 Subscribe(x => _onViewHidden.OnNext(x)).
                 AddTo(view.LifeTime);
                 
+            view.Status.
+                Subscribe(x => _viewStatus.SetValueAndForceNotify(x)).
+                AddTo(view.LifeTime);
+            
             Add(view);
         }
         

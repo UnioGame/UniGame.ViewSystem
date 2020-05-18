@@ -11,6 +11,7 @@
     using UniGreenModules.UniGame.Core.Runtime.Rx;
     using UniGreenModules.UniGame.UiSystem.Runtime.Extensions;
     using UniGreenModules.UniRoutine.Runtime;
+    using UniModules.UniGame.UISystem.Runtime;
     using UniRx;
     using UnityEngine;
     using UnityEngine.EventSystems;
@@ -38,9 +39,7 @@
         /// <summary>
         /// view statuses reactions
         /// </summary>
-        private RecycleReactiveProperty<IView> _closeReactiveValue = new RecycleReactiveProperty<IView>();
-        private RecycleReactiveProperty<IView> _viewShown  = new RecycleReactiveProperty<IView>();
-        private RecycleReactiveProperty<IView> _viewHidden = new RecycleReactiveProperty<IView>();
+        private RecycleReactiveProperty<ViewStatus> _status = new RecycleReactiveProperty<ViewStatus>();
 
         private IViewProvider _viewLayout;
         
@@ -62,12 +61,14 @@
         /// views layout
         /// </summary>
         public IViewProvider Layouts => _viewLayout;
+
+        public IReadOnlyReactiveProperty<ViewStatus> Status => _status;
         
-        public IObservable<IView> OnHidden => _viewHidden;
+        public IObservable<IView> OnHidden => SelectStatus(ViewStatus.Hidden);
 
-        public IObservable<IView> OnShown => _viewShown;
+        public IObservable<IView> OnShown => SelectStatus(ViewStatus.Shown);
 
-        public IObservable<IView> OnClosed => _closeReactiveValue;
+        public IObservable<IView> OnClosed => SelectStatus(ViewStatus.Closed);
 
         /// <summary>
         /// Is View Active
@@ -128,6 +129,13 @@
         
         
         #region private methods
+
+        private IObservable<IView> SelectStatus(ViewStatus status)
+        {
+            return _status.
+                Where(x => x == ViewStatus.Hidden).
+                Select(x => this);
+        }
         
         /// <summary>
         /// custom initialization methods
@@ -207,45 +215,51 @@
             IsTerminated = false;
 
             _isVisible = _visibility.Value;
+            
             _visibility.
                 Subscribe(x => this._isVisible = x).
                 AddTo(_lifeTimeDefinition);
 
-            _visibility.Where(x => x).
-                Subscribe(x => _viewShown.SetValueForce(this)).
+            _visibility.
+                Subscribe(x => OnStatusUpdate()).
                 AddTo(_lifeTimeDefinition);
             
-            _visibility.Where(x => !x).
-                Subscribe(x => _viewHidden.SetValueForce(this)).
-                AddTo(_lifeTimeDefinition);
+            OnStatusUpdate();
         }
         
         private void BindLifeTimeActions(IViewModel model)
         {
-             
             //bind model lifetime to local
             var modelLifeTime = model.LifeTime;
             modelLifeTime.AddCleanUpAction(Close);
-            
-            //terminate model when view closed
-            _lifeTimeDefinition.AddDispose(model);
 
             _lifeTimeDefinition.AddCleanUpAction(() => {
                 Context = null;
                 _viewLayout = null;
                 _visibility.Release();
-                _viewHidden.Release();
-                _viewShown.Release();
+                _status.SetValueForce(ViewStatus.Closed);
+                _status.SetValueForce(ViewStatus.Destroyed);
+                _status.Release();
+                IsTerminated = true;
             });
 
             _lifeTimeDefinition.AddCleanUpAction(_progressLifeTime.Terminate);
 
-            //clean up view and notify observers
-            _lifeTimeDefinition.AddCleanUpAction(() => {
-                _closeReactiveValue.SetValueForce(this);
-                _closeReactiveValue.Release();
-                IsTerminated = true;
-            });
+        }
+
+        private void OnStatusUpdate()
+        {
+            var status = ViewStatus.Closed;
+            if (_lifeTimeDefinition.IsTerminated) {
+                status = ViewStatus.Closed;
+            }
+            else if(_visibility.Value){
+                status = ViewStatus.Shown;
+            }
+            else {
+                status = ViewStatus.Hidden;
+            }
+            _status.Value = status;
         }
         
         protected void OnDestroy()
