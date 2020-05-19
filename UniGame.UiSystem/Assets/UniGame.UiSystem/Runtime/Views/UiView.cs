@@ -4,6 +4,7 @@ using UniGreenModules.UniRoutine.Runtime;
 namespace UniGame.UiSystem.Runtime
 {
     using System;
+    using System.Collections.Generic;
     using Abstracts;
     using UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniCore.Runtime.Attributes;
@@ -17,7 +18,7 @@ namespace UniGame.UiSystem.Runtime
     using UnityEngine.EventSystems;
 
     public abstract class UiView<TViewModel> :
-        UIBehaviour, 
+        UIBehaviour, IUiContainer,
         IUiView<TViewModel> where TViewModel : class, IViewModel
     {
         #region inspector
@@ -29,24 +30,26 @@ namespace UniGame.UiSystem.Runtime
         #endregion
         
         private IViewProvider _viewLayout;
-        private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
-        private LifeTimeDefinition _progressLifeTime = new LifeTimeDefinition();
+        private readonly LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
+        private readonly LifeTimeDefinition _progressLifeTime = new LifeTimeDefinition();
         
         /// <summary>
         /// view statuses reactions
         /// </summary>
-        private RecycleReactiveProperty<IView> _closeReactiveValue = new RecycleReactiveProperty<IView>();
-        private RecycleReactiveProperty<IView> _viewShown = new RecycleReactiveProperty<IView>();
-        private RecycleReactiveProperty<IView> _viewHidden = new RecycleReactiveProperty<IView>();
+        private readonly RecycleReactiveProperty<IView> _closeReactiveValue = new RecycleReactiveProperty<IView>();
+        private readonly RecycleReactiveProperty<IView> _viewShown = new RecycleReactiveProperty<IView>();
+        private readonly RecycleReactiveProperty<IView> _viewHidden = new RecycleReactiveProperty<IView>();
         
         /// <summary>
         /// ui element visibility status
         /// </summary>
-        private BoolRecycleReactiveProperty _visibility = new BoolRecycleReactiveProperty();
+        private readonly BoolRecycleReactiveProperty _visibility = new BoolRecycleReactiveProperty();
         /// <summary>
         /// model container
         /// </summary>
-        private ReactiveProperty<TViewModel> _viewModel = new ReactiveProperty<TViewModel>();
+        private readonly ReactiveProperty<TViewModel> _viewModel = new ReactiveProperty<TViewModel>();
+        
+        private readonly IList<IView> _containViews = new List<IView>();
 
         #region public properties
 
@@ -104,7 +107,6 @@ namespace UniGame.UiSystem.Runtime
             
             //custom initialization
             OnInitialize(modelData);
-
         }
 
         /// <summary>
@@ -210,18 +212,19 @@ namespace UniGame.UiSystem.Runtime
 
         private void StartProgressAction(LifeTimeDefinition lifeTime,Func<IEnumerator> action)
         {
-            if (lifeTime.IsTerminated) return;
+            if (lifeTime.IsTerminated) 
+                return;
+            
             lifeTime.Release();
             action().Execute().
                 AddTo(lifeTime);
         }
 
-
         private void InitializeHandlers(IViewModel model)
         {
             _isVisible = _visibility.Value;
             _visibility.
-                Subscribe(x => this._isVisible = x).
+                Subscribe(x => _isVisible = x).
                 AddTo(_lifeTimeDefinition);
 
             _visibility.Where(x => x).
@@ -235,7 +238,6 @@ namespace UniGame.UiSystem.Runtime
 
         private void BindLifeTimeActions(IViewModel model)
         {
-             
             //bind model lifetime to local
             var modelLifeTime = model.LifeTime;
             modelLifeTime.AddCleanUpAction(Close);
@@ -258,7 +260,31 @@ namespace UniGame.UiSystem.Runtime
                 _closeReactiveValue.Release();
                 IsDestroyed = true;
             });
+
+            _lifeTimeDefinition.AddCleanUpAction(() => {
+                foreach (var view in _containViews) {
+                    view.Close();
+                }
+            });
         }
 
+        public void Add(IView view)
+        {
+            if (!_containViews.Contains(view)) {
+                if (view is MonoBehaviour monoBehaviourView) {
+                    _containViews.Add(view);
+                    monoBehaviourView.transform.SetParent(transform, false);
+                    
+                    view.OnClosed.Subscribe(_ => Remove(view)).AddTo(view.LifeTime);
+                }
+            }
+        }
+
+        public void Remove(IView view)
+        {
+            if (_containViews.Contains(view)) {
+                _containViews.Remove(view);
+            }
+        }
     }
 }
