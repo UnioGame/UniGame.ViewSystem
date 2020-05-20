@@ -14,7 +14,8 @@
             var screenController = layouts.GetLayout(ViewType.Screen);
             var windowController = layouts.GetLayout(ViewType.Window);
 
-            screenController.OnShown.
+            screenController.
+                OnShown.
                 Subscribe(x => windowController.CloseAll()).
                 AddTo(windowController.LifeTime);
         }

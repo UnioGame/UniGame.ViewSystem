@@ -203,10 +203,11 @@
             
             //TODO move to pool
             var asset = view as Component;
-            var target = asset?.gameObject;
-            
-            if(target != null)
-                UnityEngine.Object.Destroy(target);
+
+            if (asset != null) {
+                var target = asset.gameObject;
+                UnityEngine.Object.Destroy(target.gameObject);
+            }
         }
 
 
