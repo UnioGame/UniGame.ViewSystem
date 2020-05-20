@@ -206,7 +206,7 @@
 
             if (asset != null) {
                 var target = asset.gameObject;
-                UnityEngine.Object.Destroy(target.gameObject);
+                UnityEngine.Object.Destroy(target);
             }
         }
 
