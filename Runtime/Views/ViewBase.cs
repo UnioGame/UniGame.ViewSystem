@@ -133,7 +133,7 @@
         private IObservable<IView> SelectStatus(ViewStatus status)
         {
             return _status.
-                Where(x => x == ViewStatus.Hidden).
+                Where(x => x == status).
                 Select(x => this);
         }
         
@@ -262,8 +262,9 @@
             _status.Value = status;
         }
         
-        protected void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             GameLog.LogFormat("View {0} Destroyed",name);
             Close();
         }

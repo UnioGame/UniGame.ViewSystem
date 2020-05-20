@@ -9,7 +9,7 @@ namespace UniGame.UiSystem.Runtime
 
     
     [RequireComponent(typeof(CanvasGroup))]
-    public class UiGroupView<TWindowModel> : UiView<TWindowModel> where TWindowModel : class, IViewModel
+    public class UiCanvasGroupView<TWindowModel> : UiView<TWindowModel> where TWindowModel : class, IViewModel
     {
              
         #region inspector
@@ -56,16 +56,17 @@ namespace UniGame.UiSystem.Runtime
 
         protected virtual void OnViewInitialize(TWindowModel model) {}
 
-        protected void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             canvasGroup = canvasGroup == null ? 
                 GetComponent<CanvasGroup>() : 
                 canvasGroup;
         }
 
-        [Conditional("UNITY_EDITOR")]
-        protected void OnValidate()
+        protected override void OnValidate()
         {
+            base.OnValidate();
             canvasGroup = canvasGroup == null ? 
                 GetComponent<CanvasGroup>() : 
                 canvasGroup;
