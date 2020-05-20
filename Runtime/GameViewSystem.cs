@@ -5,13 +5,10 @@
     using Abstracts;
     using UniGreenModules.UniCore.Runtime.DataFlow;
     using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
-    using UniGreenModules.UniCore.Runtime.Rx.Extensions;
     using UniGreenModules.UniGame.UiSystem.Runtime;
     using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
-    using UniRx;
     using UniRx.Async;
     using UnityEngine;
-    using UnityEngine.SceneManagement;
 
     [Serializable]
     public class GameViewSystem : IGameViewSystem
@@ -203,10 +200,12 @@
             
             //TODO move to pool
             var asset = view as Component;
-            var target = asset?.gameObject;
+            if (asset != null) {
+                var target = asset.gameObject;
             
-            if(target != null)
-                UnityEngine.Object.Destroy(target);
+                if(target != null)
+                    UnityEngine.Object.Destroy(target);
+            }
         }
 
 

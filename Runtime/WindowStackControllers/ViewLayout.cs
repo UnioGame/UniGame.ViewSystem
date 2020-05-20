@@ -60,7 +60,7 @@ namespace UniGame.UiSystem.Runtime
             OnViewAdded(view);
         }
 
-        public TView Get<TView>() where TView :class, IView
+        public TView Get<TView>() where TView : class, IView
         {
             return (TView)_views.LastOrDefault(v => v is TView);
         }
