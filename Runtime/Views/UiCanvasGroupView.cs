@@ -9,7 +9,7 @@ namespace UniGame.UiSystem.Runtime
 
     
     [RequireComponent(typeof(CanvasGroup))]
-    public class UiGroupView<TWindowModel> : UiView<TWindowModel> where TWindowModel : class, IViewModel
+    public class UiCanvasGroupView<TWindowModel> : UiView<TWindowModel> where TWindowModel : class, IViewModel
     {
              
         #region inspector
