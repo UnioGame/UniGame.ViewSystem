@@ -112,7 +112,7 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// show active view
         /// </summary>
-        public virtual void Show() => StartProgressAction(_progressLifeTime, OnShow);
+        public void Show() => StartProgressAction(_progressLifeTime, OnShow);
 
         /// <summary>
         /// hide view without release it
@@ -275,7 +275,7 @@ namespace UniGame.UiSystem.Runtime
                     _containViews.Add(view);
                     monoBehaviourView.transform.SetParent(transform, false);
                     
-                    view.OnClosed.Subscribe(_ => Remove(view)).AddTo(view.LifeTime);
+                    view.OnClosed.Subscribe(_ => Remove(view)).AddTo(LifeTime);
                 }
             }
         }
