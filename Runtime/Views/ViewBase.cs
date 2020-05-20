@@ -96,7 +96,7 @@
 
             InitializeHandlers(model);
             BindLifeTimeActions(model);
-            
+
             //custom initialization
             OnInitialize(model);
         }

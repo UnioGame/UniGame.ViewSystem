@@ -2,6 +2,7 @@
 {
     using System;
     using Abstracts;
+    using UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniGame.UiSystem.Runtime.Extensions;
     using UniRx;
 
@@ -36,19 +37,20 @@
 
         protected sealed override void OnInitialize(IViewModel model)
         {
-            //save model as context data
-            if (model is TViewModel modelData)
-            {
-                _viewModel.Value = modelData;
-            }
-            else
-            {
-                throw new ArgumentException($"VIEW: {name} wrong model type. Target type {typeof(TViewModel).Name} : model Type {model?.GetType().Name}");
-            }
-
             LifeTime.AddCleanUpAction(() => _viewModel.Value = null);
+
+            base.OnInitialize(model);
+
+            var modelData = model as TViewModel;
+            _viewModel.Value = modelData;
             
-            base.OnInitialize(modelData);
+            //save model as context data
+            if (modelData==null)
+            {
+                GameLog.LogError($"VIEW: {name} wrong model type. Target type {typeof(TViewModel).Name} : model Type {model?.GetType().Name}");
+            }
+            
+            OnInitialize(modelData);
         }
 
         /// <summary>
