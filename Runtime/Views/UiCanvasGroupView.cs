@@ -1,17 +1,14 @@
 namespace UniGame.UiSystem.Runtime
 {
-    using System.Diagnostics;
     using Abstracts;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
     using UniGreenModules.UniUiSystem.Runtime.Utils;
     using UniRx;
     using UnityEngine;
 
-    
     [RequireComponent(typeof(CanvasGroup))]
     public class UiCanvasGroupView<TWindowModel> : UiView<TWindowModel> where TWindowModel : class, IViewModel
     {
-             
         #region inspector
         
 #if ODIN_INSPECTOR

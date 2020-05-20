@@ -5,7 +5,7 @@
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
     using UniRx;
 
-    public abstract class UiContainerView<TViewModel> : UiGroupView<TViewModel>, IUiContainer where TViewModel : class, IViewModel
+    public abstract class UiContainerView<TViewModel> : UiCanvasGroupView<TViewModel>, IUiContainer where TViewModel : class, IViewModel
     {
         private readonly IList<ViewBase> _childViews = new List<ViewBase>();
         
