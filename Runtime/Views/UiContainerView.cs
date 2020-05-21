@@ -11,6 +11,9 @@
         
         public void Add(IView view)
         {
+            if(view == null)
+                return;
+            
             if (view is ViewBase monoView) {
                 if (!_childViews.Contains(monoView)) {
                     _childViews.Add(monoView);
@@ -23,10 +26,15 @@
 
         public void Remove(IView view)
         {
+            if(view == null)
+                return;
+            
             if (view is ViewBase monoView) {
                 if (_childViews.Contains(monoView)) {
                     _childViews.Remove(monoView);
-                    monoView.transform.SetParent(null);
+                    
+                    if(monoView != null)
+                        monoView.transform.SetParent(null);
                 }
             }
         }
