@@ -26,6 +26,7 @@
             if (view is ViewBase monoView) {
                 if (_childViews.Contains(monoView)) {
                     _childViews.Remove(monoView);
+                    monoView.transform.SetParent(null);
                 }
             }
         }
