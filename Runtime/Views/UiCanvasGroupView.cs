@@ -63,7 +63,8 @@ namespace UniGame.UiSystem.Runtime
                 GetComponent<CanvasGroup>() : 
                 canvasGroup;
         }
-
+        
+#if UNITY_EDITOR
         protected override void OnValidate()
         {
             base.OnValidate();
@@ -71,5 +72,7 @@ namespace UniGame.UiSystem.Runtime
                 GetComponent<CanvasGroup>() : 
                 canvasGroup;
         }
+#endif
+        
     }
 }
