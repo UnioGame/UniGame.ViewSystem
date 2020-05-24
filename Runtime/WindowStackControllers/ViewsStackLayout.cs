@@ -2,18 +2,18 @@
 {
     using System.Linq;
     using Abstracts;
+    using Backgrounds.Abstract;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
-    using UniGreenModules.UniUiSystem.Runtime.Utils;
     using UniRx;
     using UnityEngine;
 
     public class ViewsStackLayout : ViewLayout
     {
-        private readonly CanvasGroup _background;
+        private readonly IBackgroundView _background;
 
         private IView _activeView;
 
-        public ViewsStackLayout(Transform layout,CanvasGroup background)
+        public ViewsStackLayout(Transform layout, IBackgroundView background)
         {
             _background = background;
             Layout = layout;
@@ -49,7 +49,7 @@
             var lastView = Views.LastOrDefault(x => x != view);
             //empty view stack or only active
             if (lastView == null) {
-                _background?.SetState(0, false, false);
+                _background?.Hide();
                 return;
             }
             
@@ -69,9 +69,8 @@
             //show view if it inactive
             if(view.IsActive.Value == false)
                 view.Show();
-            
-            _background?.SetState(1);
-        }
 
+            _background?.Show();
+        }
     }
 }
