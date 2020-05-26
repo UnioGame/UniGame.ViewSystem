@@ -110,14 +110,12 @@
                 InitialSetup();
                 OnAwake();
             }
-            
             //restart view lifetime
             _viewModelLifeTime.Release();
 
             InitializeHandlers(model);
             
             BindLifeTimeActions(model);
-
             //custom initialization
             OnInitialize(model);
         }
@@ -253,17 +251,7 @@
         {
             //bind model lifetime to local
             var modelLifeTime = model.LifeTime;
-            
             modelLifeTime.ComposeCleanUp(_viewModelLifeTime, Close);
-
-            _viewModelLifeTime.AddCleanUpAction(() => {
-                IsTerminated = true;
-                Context = null;
-                _viewLayout = null;
-                _visibility.Release();
-                _status.SetValueForce(ViewStatus.Closed);
-                _status.Release();
-            });
 
             _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Terminate);
 
@@ -271,7 +259,7 @@
 
         private void OnStatusUpdate()
         {
-            var status = ViewStatus.Closed;
+            var status = ViewStatus.Hidden;
             if (_lifeTimeDefinition.IsTerminated) {
                 status = ViewStatus.Closed;
             }
@@ -287,12 +275,20 @@
         private void InitialSetup()
         {
             _isInitialized = true;
-            _lifeTimeDefinition.AddCleanUpAction(() => _viewModelLifeTime.Release());
+            _lifeTimeDefinition.AddCleanUpAction(
+                () => _viewModelLifeTime.Release());
+            
+            _lifeTimeDefinition.AddCleanUpAction(() => {
+                IsTerminated = true;
+                Context      = null;
+                _status.SetValueForce(ViewStatus.Closed);
+                _status.Release();
+                _visibility.Release();
+            });
         }
         
-        protected override void OnDestroy()
+        protected sealed override void OnDestroy()
         {
-            Close();
             _lifeTimeDefinition.Terminate();
             
             base.OnDestroy();
