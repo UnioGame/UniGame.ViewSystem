@@ -37,9 +37,9 @@
 
         protected sealed override void OnInitialize(IViewModel model)
         {
-            LifeTime.AddCleanUpAction(() => _viewModel.Value = null);
-
             base.OnInitialize(model);
+            
+            LifeTime.AddCleanUpAction(() => _viewModel.Value = null);
 
             var modelData = model as TViewModel;
             _viewModel.Value = modelData;
