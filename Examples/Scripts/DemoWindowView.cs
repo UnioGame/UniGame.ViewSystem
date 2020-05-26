@@ -5,6 +5,7 @@
     using Runtime;
     using Runtime.Abstracts;
     using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
+    using UniModules.UniGame.UISystem.Examples.Scripts;
     using UnityEngine;
 
     public class DemoWindowView : WindowView<IViewModel>
@@ -12,11 +13,14 @@
         public float showTime = 3f;
         public float hideTime = 3f;
 
+        public RectTransform demoControlParent;
+        
         private Tween animationTween;
 
         protected override void OnViewInitialize(IViewModel view)
         {
             LifeTime.AddCleanUpAction(() => animationTween?.Complete());
+            Layouts.Create<DemoControlView>(new DemoControlViewModel(),demoControlParent);
         }
         
         protected override IEnumerator OnShowProgress(ILifeTime progressLifeTime)

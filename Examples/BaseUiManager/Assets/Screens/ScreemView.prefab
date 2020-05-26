@@ -280,6 +280,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isVisible: 0
+  _isInitialized: 0
   canvasGroup: {fileID: 6921429995379675990}
   hiddenState:
     Alpha: 0

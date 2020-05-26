@@ -16,7 +16,8 @@
     using UnityEngine;
     using UnityEngine.EventSystems;
 
-    public abstract class ViewBase : UIBehaviour, IView
+    public abstract class ViewBase : UIBehaviour, 
+        IView, ILayoutFactoryView
     {
         #region inspector
 
@@ -46,7 +47,7 @@
         /// </summary>
         private RecycleReactiveProperty<ViewStatus> _status = new RecycleReactiveProperty<ViewStatus>();
 
-        private IViewProvider _viewLayout;
+        private IViewLayoutProvider _viewLayout;
         
         #region public properties
 
@@ -65,7 +66,7 @@
         /// <summary>
         /// views layout
         /// </summary>
-        public IViewProvider Layouts => _viewLayout;
+        public IViewLayoutProvider Layouts => _viewLayout;
 
         public IReadOnlyReactiveProperty<ViewStatus> Status => _status;
         
@@ -91,16 +92,27 @@
         /// </summary>
         public void Destroy() => _lifeTimeDefinition.Terminate();
         
-        public void Initialize(IViewModel model, IViewProvider layouts)
+        public void BindLayout(IViewLayoutProvider layoutProvider)
         {
+            _viewLayout = layoutProvider;
+        }
+
+        public void Initialize(IViewModel model,IViewLayoutProvider layoutProvider)
+        {
+            BindLayout(layoutProvider);
+            Initialize(model);
+        }
+        
+        public void Initialize(IViewModel model)
+        {
+            //calls one per lifetime
             if (!_isInitialized) {
-                OnSetup();
+                InitialSetup();
+                OnAwake();
             }
             
             //restart view lifetime
             _viewModelLifeTime.Release();
-
-            _viewLayout = layouts;
 
             InitializeHandlers(model);
             
@@ -109,6 +121,7 @@
             //custom initialization
             OnInitialize(model);
         }
+
 
         /// <summary>
         /// show active view
@@ -271,7 +284,7 @@
             _status.Value = status;
         }
 
-        private void OnSetup()
+        private void InitialSetup()
         {
             _isInitialized = true;
             _lifeTimeDefinition.AddCleanUpAction(() => _viewModelLifeTime.Release());
@@ -284,6 +297,11 @@
             
             base.OnDestroy();
             GameLog.LogFormat("View {0} Destroyed",name);
+        }
+
+        protected virtual void OnAwake()
+        {
+            
         }
 
         #endregion

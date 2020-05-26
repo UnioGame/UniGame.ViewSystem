@@ -57,6 +57,17 @@
         {
             return await CreateView(viewModel, viewType,skinTag, parent);
         }
+        
+        public async UniTask<T> Create<T>(IViewModel viewModel, Transform parent) 
+            where T :class, IView
+        {
+            return await CreateView<T>(viewModel, string.Empty, parent);
+        }
+        
+        public async UniTask<IView> Create(IViewModel viewModel, Type viewType,Transform parent) 
+        {
+            return await CreateView(viewModel, viewType,string.Empty, parent);
+        }
 
         public async UniTask<T> OpenWindow<T>(IViewModel viewModel, string skinTag = "")where T :class, IView
         {
@@ -188,8 +199,11 @@
         private T InitializeView<T>(T view, IViewModel viewModel)
             where T : IView
         {
-
-            view.Initialize(viewModel, this);
+            if(view is ILayoutFactoryView factoryView)
+                factoryView.BindLayout(this);
+            
+            view.Initialize(viewModel);
+            
             //destroy view when lifetime  terminated
             var viewLifeTime = view.LifeTime;
             viewLifeTime.AddCleanUpAction(() => Destroy(view));

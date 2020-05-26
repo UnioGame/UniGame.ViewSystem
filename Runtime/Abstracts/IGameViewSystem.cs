@@ -4,7 +4,7 @@
 
     public interface IGameViewSystem : 
         IDisposable, 
-        IViewProvider
+        IViewLayoutProvider
     {
         void CloseAll();
     }

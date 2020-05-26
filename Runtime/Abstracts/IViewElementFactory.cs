@@ -13,6 +13,16 @@
             Transform parent = null) 
             where T :class, IView;
 
+        UniTask<T> Create<T>(
+            IViewModel viewModel, 
+            Transform parent) 
+            where T :class, IView;
+        
+        UniTask<IView> Create(
+            IViewModel viewModel,
+            Type viewType,
+            Transform parent);
+        
         UniTask<IView> Create(
             IViewModel viewModel,
             Type viewType,

@@ -15,6 +15,6 @@
 
         bool IsTerminated { get; }
 
-        void Initialize(IViewModel vm,IViewProvider layouts);
+        void Initialize(IViewModel vm);
     }
 }

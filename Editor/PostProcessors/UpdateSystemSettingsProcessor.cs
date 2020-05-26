@@ -10,85 +10,50 @@ namespace UniGame.UiSystem.Editor.PostProcessors
     using Runtime.Settings;
     using UI.Editor.UiEdito;
     using UniCore.Runtime.ProfilerTools;
+    using UniGreenModules.UniCore.EditorTools.Editor.Utility;
     using UniGreenModules.UniCore.Runtime.ProfilerTools;
+    using UniGreenModules.UniCore.Runtime.Utils;
     using UnityEngine;
 
-    public class UpdateSystemSettingsProcessor : SaveAssetsProcessor
+    public class UpdateSystemSettingsProcessor : UnityEditor.AssetModificationProcessor
     {
-        private static Dictionary<ViewsSettings,List<string>> uiSystemSettings = new Dictionary<ViewsSettings,List<string>>(8);
-
-        private static HashSet<ViewsSettings> settingsToRebuild = new HashSet<ViewsSettings>();
+        private static Func<object, List<ViewsSettings>> _viewsSettingsCache = MemorizeTool.
+            Create<object, List<ViewsSettings>>(x => AssetEditorTools.GetAssets<ViewsSettings>());
         
         static string[] OnWillSaveAssets(string[] paths)
         {
-            BuildSettingsData();
-
-            foreach (var assetPath in paths)
+            var assets = _viewsSettingsCache(string.Empty);
+            foreach (var asset in assets)
             {
-                Validate(assetPath);
+                if(!Validate(asset,paths))
+                    continue;
+                
+                Rebuild(asset);
             }
 
-            Rebuild();
-            
             return paths;
         }
-        
-//        static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
-//        {
-//            BuildSettingsData();
-//
-//            var items = importedAssets.
-//                Concat(deletedAssets).
-//                Concat(movedAssets);
-//            
-//            foreach (var assetPath in items)
-//            {
-//                Validate(assetPath);
-//            }
-//
-//            Rebuild();
-//        }
 
-        private static void Rebuild()
+        private static void Rebuild(ViewsSettings settings)
         {
-            if (settingsToRebuild.Count == 0)
-                return;
-            
-            foreach (var uiViewsSource in settingsToRebuild)
-            {
-                uiViewsSource.Build();
-                EditorUtility.SetDirty(uiViewsSource);
-            }
-            
+            settings.Build();
+            settings.SetDirty();
             GameLog.Log($"Rebuild Ui View Settings",Color.blue);
         }
 
-        private static void Validate(string assetPath)
+        private static bool Validate(ViewsSettings settings,string[] paths)
         {
-            var changesViews  = uiSystemSettings.
-                Where(x => x.Value.
-                    Any(path => assetPath.IndexOf(path,StringComparison.OrdinalIgnoreCase) >= 0)).
-                Select(x => x.Key);
-            settingsToRebuild.AddRange(changesViews);
+            var settingsTargets = GetSettingsPath(settings);
+            var changesViews  = paths.
+                Any(x => settingsTargets.
+                    Any(path => x.IndexOf(path,StringComparison.OrdinalIgnoreCase) >= 0));
+            return changesViews;
         }
 
-        private static void BuildSettingsData()
+        private static IEnumerable<string> GetSettingsPath(ViewsSettings settings)
         {
-            settingsToRebuild.Clear();
-            if (uiSystemSettings.Count > 0)
-                return;
-            
-            uiSystemSettings.Clear();
-            
-            var settings = AssetEditorTools.GetAssets<ViewsSettings>();
-            foreach (var uiViewsSource in settings)
-            {
-                var items = new List<string>();
-                uiSystemSettings[uiViewsSource] = items;
-
-                items.AddRange(uiViewsSource.uiViewsDefaultFolders);
-                items.AddRange(uiViewsSource.uiViewsSkinFolders);
-            }
+            return settings.uiViewsDefaultFolders.
+                Concat(settings.uiViewsSkinFolders);
         }
     }
 
