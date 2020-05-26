@@ -24,12 +24,17 @@
         [SerializeField]
         private bool _isVisible;
 
+        [ReadOnlyValue]
+        [SerializeField]
+        private bool _isInitialized = false;
+        
         #endregion
 
         private RectTransform rectTransform;
         
         private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
         private LifeTimeDefinition _progressLifeTime = new LifeTimeDefinition();
+        private LifeTimeDefinition _viewModelLifeTime = new LifeTimeDefinition();
         
         /// <summary>
         /// ui element visibility status
@@ -88,13 +93,17 @@
         
         public void Initialize(IViewModel model, IViewProvider layouts)
         {
+            if (!_isInitialized) {
+                OnSetup();
+            }
+            
             //restart view lifetime
-            _lifeTimeDefinition.Release();
-            _progressLifeTime.Release();
+            _viewModelLifeTime.Release();
 
             _viewLayout = layouts;
 
             InitializeHandlers(model);
+            
             BindLifeTimeActions(model);
 
             //custom initialization
@@ -151,7 +160,7 @@
         {
             //wait until user defined closing operation complete
             yield return OnCloseProgress(_progressLifeTime);
-            _lifeTimeDefinition.Terminate();
+            _lifeTimeDefinition.Release();
         }
         
         /// <summary>
@@ -231,19 +240,19 @@
         {
             //bind model lifetime to local
             var modelLifeTime = model.LifeTime;
-            modelLifeTime.AddCleanUpAction(Close);
+            
+            modelLifeTime.ComposeCleanUp(_viewModelLifeTime, Close);
 
-            _lifeTimeDefinition.AddCleanUpAction(() => {
+            _viewModelLifeTime.AddCleanUpAction(() => {
+                IsTerminated = true;
                 Context = null;
                 _viewLayout = null;
                 _visibility.Release();
                 _status.SetValueForce(ViewStatus.Closed);
-                _status.SetValueForce(ViewStatus.Destroyed);
                 _status.Release();
-                IsTerminated = true;
             });
 
-            _lifeTimeDefinition.AddCleanUpAction(_progressLifeTime.Terminate);
+            _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Terminate);
 
         }
 
@@ -261,12 +270,20 @@
             }
             _status.Value = status;
         }
+
+        private void OnSetup()
+        {
+            _isInitialized = true;
+            _lifeTimeDefinition.AddCleanUpAction(() => _viewModelLifeTime.Release());
+        }
         
         protected override void OnDestroy()
         {
+            Close();
+            _lifeTimeDefinition.Terminate();
+            
             base.OnDestroy();
             GameLog.LogFormat("View {0} Destroyed",name);
-            Close();
         }
 
         #endregion

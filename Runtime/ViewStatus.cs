@@ -6,6 +6,5 @@
         Hidden,
         Shown,
         Closed,
-        Destroyed,
     }
 }
