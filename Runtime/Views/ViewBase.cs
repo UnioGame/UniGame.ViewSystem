@@ -16,7 +16,8 @@
     using UnityEngine;
     using UnityEngine.EventSystems;
 
-    public abstract class ViewBase : UIBehaviour, IView
+    public abstract class ViewBase : UIBehaviour, 
+        IView, ILayoutFactoryView
     {
         #region inspector
 
@@ -46,7 +47,7 @@
         /// </summary>
         private RecycleReactiveProperty<ViewStatus> _status = new RecycleReactiveProperty<ViewStatus>();
 
-        private IViewProvider _viewLayout;
+        private IViewLayoutProvider _viewLayout;
         
         #region public properties
 
@@ -65,7 +66,7 @@
         /// <summary>
         /// views layout
         /// </summary>
-        public IViewProvider Layouts => _viewLayout;
+        public IViewLayoutProvider Layouts => _viewLayout;
 
         public IReadOnlyReactiveProperty<ViewStatus> Status => _status;
         
@@ -91,24 +92,34 @@
         /// </summary>
         public void Destroy() => _lifeTimeDefinition.Terminate();
         
-        public void Initialize(IViewModel model, IViewProvider layouts)
+        public void BindLayout(IViewLayoutProvider layoutProvider)
         {
+            _viewLayout = layoutProvider;
+        }
+
+        public void Initialize(IViewModel model,IViewLayoutProvider layoutProvider)
+        {
+            BindLayout(layoutProvider);
+            Initialize(model);
+        }
+        
+        public void Initialize(IViewModel model)
+        {
+            //calls one per lifetime
             if (!_isInitialized) {
-                OnSetup();
+                InitialSetup();
+                OnAwake();
             }
-            
             //restart view lifetime
             _viewModelLifeTime.Release();
-
-            _viewLayout = layouts;
 
             InitializeHandlers(model);
             
             BindLifeTimeActions(model);
-
             //custom initialization
             OnInitialize(model);
         }
+
 
         /// <summary>
         /// show active view
@@ -240,17 +251,7 @@
         {
             //bind model lifetime to local
             var modelLifeTime = model.LifeTime;
-            
             modelLifeTime.ComposeCleanUp(_viewModelLifeTime, Close);
-
-            _viewModelLifeTime.AddCleanUpAction(() => {
-                IsTerminated = true;
-                Context = null;
-                _viewLayout = null;
-                _visibility.Release();
-                _status.SetValueForce(ViewStatus.Closed);
-                _status.Release();
-            });
 
             _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Terminate);
 
@@ -258,7 +259,7 @@
 
         private void OnStatusUpdate()
         {
-            var status = ViewStatus.Closed;
+            var status = ViewStatus.Hidden;
             if (_lifeTimeDefinition.IsTerminated) {
                 status = ViewStatus.Closed;
             }
@@ -271,19 +272,32 @@
             _status.Value = status;
         }
 
-        private void OnSetup()
+        private void InitialSetup()
         {
             _isInitialized = true;
-            _lifeTimeDefinition.AddCleanUpAction(() => _viewModelLifeTime.Release());
+            _lifeTimeDefinition.AddCleanUpAction(
+                () => _viewModelLifeTime.Release());
+            
+            _lifeTimeDefinition.AddCleanUpAction(() => {
+                IsTerminated = true;
+                Context      = null;
+                _status.SetValueForce(ViewStatus.Closed);
+                _status.Release();
+                _visibility.Release();
+            });
         }
         
-        protected override void OnDestroy()
+        protected sealed override void OnDestroy()
         {
-            Close();
             _lifeTimeDefinition.Terminate();
             
             base.OnDestroy();
             GameLog.LogFormat("View {0} Destroyed",name);
+        }
+
+        protected virtual void OnAwake()
+        {
+            
         }
 
         #endregion

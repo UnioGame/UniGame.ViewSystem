@@ -5,7 +5,7 @@
     using UniGreenModules.UniCore.Runtime.Interfaces;
     using UniRx.Async;
 
-    public interface IViewProvider : 
+    public interface IViewLayoutProvider : 
         ILifeTimeContext, 
         IViewLayoutContainer,
         IViewElementFactory

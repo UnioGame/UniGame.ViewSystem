@@ -68,7 +68,6 @@ namespace UniGame.UiSystem.Runtime
             var view = Object.
                 Instantiate(asset.gameObject, parent).
                 GetComponent<IView>();
-
             return view;
         }
     }

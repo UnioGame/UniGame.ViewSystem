@@ -39,7 +39,17 @@ namespace UniGame.UiSystem.Runtime
         {
             return await ViewSystem.Create<T>(viewModel, skinTag); 
         }
-        
+
+        public async UniTask<T> Create<T>(IViewModel viewModel, Transform parent) where T : class, IView 
+        {
+            return await ViewSystem.Create<T>(viewModel, parent); 
+        }
+
+        public async UniTask<IView> Create(IViewModel viewModel, Type viewType, Transform parent) 
+        {
+            return await ViewSystem.Create(viewModel,viewType, parent); 
+        }
+
         public async UniTask<IView> Create(IViewModel viewModel,Type viewType, string skinTag = "", Transform parent = null)
         {
             return await ViewSystem.Create(viewModel,viewType, skinTag); 
