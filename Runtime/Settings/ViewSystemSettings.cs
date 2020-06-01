@@ -8,7 +8,6 @@
     using UniGreenModules.UniCore.Runtime.DataFlow;
     using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
-    using UniGreenModules.UniGame.AddressableTools.Runtime.Attributes;
     using UniGreenModules.UniGame.Core.Runtime.Attributes;
     using UniRx;
     using UnityEngine;

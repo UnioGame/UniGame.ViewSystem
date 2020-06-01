@@ -5,6 +5,7 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
     using System;
     using System.Collections.Generic;
     using Abstracts;
+    using Backgrounds.Abstract;
     using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime;
     using UniRx;
@@ -14,16 +15,16 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         #region inspector
 
         [SerializeField]
-        private Canvas layoutCanvas;
-        
+        private Canvas _layoutCanvas;
+
         [SerializeField]
-        private CanvasGroup background;
+        private BackgroundFactory _backgroundFactory;
 
         #endregion
 
-        private Lazy<IViewLayout> layout;
+        private readonly Lazy<IViewLayout> _layout;
 
-        public IViewLayout LayoutController => layout.Value;
+        public IViewLayout LayoutController => _layout.Value;
 
         public Transform Layout => LayoutController.Layout;
 
@@ -41,7 +42,7 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         public ViewsLayoutAsset()
         {
-            layout = new Lazy<IViewLayout>(Create);
+            _layout = new Lazy<IViewLayout>(Create);
         }
 
         public void Dispose() => LayoutController.Dispose();
@@ -77,13 +78,18 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         protected virtual IViewLayout Create()
         {
-            return new ViewsStackLayout(layoutCanvas.transform,background);
+            IBackgroundView backgroundView = null;
+            if (_backgroundFactory != null) {
+                backgroundView = _backgroundFactory.Create();
+            }
+
+            return new ViewsStackLayout(_layoutCanvas.transform, backgroundView);
         }
 
         protected void OnDestroy()
         {
-            if(layout.IsValueCreated)
-                layout.Value.Dispose();
+            if(_layout.IsValueCreated)
+                _layout.Value.Dispose();
         }
 
         #endregion
