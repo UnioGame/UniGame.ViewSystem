@@ -12,9 +12,9 @@ namespace UniGame.UiSystem.Runtime
 
     public class ViewFactory : IViewFactory
     {
-        private readonly IViewResourceProvider resourceProvider;
+        private readonly IViewResourceProvider<Component> resourceProvider;
         
-        public ViewFactory(IViewResourceProvider viewResourceProvider)
+        public ViewFactory(IViewResourceProvider<Component> viewResourceProvider)
         {
             resourceProvider = viewResourceProvider;
         }
@@ -23,7 +23,7 @@ namespace UniGame.UiSystem.Runtime
         {
             //load View resource
             var result = await resourceProvider.
-                LoadViewAsync<Component>(viewType,skinTag).
+                LoadViewAsync(viewType,skinTag).
                 ToAddressableUniTask();
 
             var disposable = result.disposable;

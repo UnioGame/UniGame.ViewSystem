@@ -17,7 +17,7 @@
     /// Base View system settings. Contains info about all available view abd type info
     /// </summary>
     [CreateAssetMenu(menuName = "UniGame/UiSystem/UiSystemSettings", fileName = "UiSystemSettings")]
-    public class ViewSystemSettings : ViewsSettings, IViewSystemSettings
+    public class ViewSystemSettings : ViewsSettings
     {
         [SerializeField]
         private List<UiViewsSourceReference> sources = new List<UiViewsSourceReference>();
@@ -38,7 +38,7 @@
 
         public void Dispose() => lifeTimeDefinition?.Terminate();
 
-        public IViewResourceProvider UIResourceProvider => uiResourceProvider;
+        public IViewResourceProvider<Component> ResourceProvider => uiResourceProvider;
 
         public IViewFlowController FlowController { get; protected set; }
 
