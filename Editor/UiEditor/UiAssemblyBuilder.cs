@@ -99,6 +99,7 @@ namespace UniGame.UiSystem.Editor.UiEditor
                     Path.GetFileName(Path.GetDirectoryName(assetPath)),
                 Type = view.GetType(),
                 View = assetReference,
+                ViewName = assetReference.editorAsset.name
             };
 
             if (proceedViews.Add(view)) {

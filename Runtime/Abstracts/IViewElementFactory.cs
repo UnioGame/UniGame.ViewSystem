@@ -7,26 +7,25 @@
 
     public interface IViewElementFactory
     {
-        UniTask<T> Create<T>(
-            IViewModel viewModel, 
-            string skinTag = "", 
-            Transform parent = null) 
-            where T :class, IView;
-
-        UniTask<T> Create<T>(
-            IViewModel viewModel, 
-            Transform parent) 
-            where T :class, IView;
-        
-        UniTask<IView> Create(
-            IViewModel viewModel,
-            Type viewType,
-            Transform parent);
-        
         UniTask<IView> Create(
             IViewModel viewModel,
             Type viewType,
             string skinTag = "",
-            Transform parent = null);
+            Transform parent = null,
+            string viewName = null);
+    }
+
+    public static class IViewElementFactoryExtension
+    {
+        public async static UniTask<T> Create<T>( 
+            this IViewElementFactory factory,
+            IViewModel viewModel,
+            string skinTag = "",
+            Transform parent = null,
+            string viewName = null) where T : class, IView
+        {
+            var view = await factory.Create(viewModel, typeof(T), skinTag, parent, viewName) as T;
+            return view;
+        }
     }
 }

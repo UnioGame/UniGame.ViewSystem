@@ -20,7 +20,7 @@
         protected override void OnViewInitialize(IViewModel view)
         {
             LifeTime.AddCleanUpAction(() => animationTween?.Complete());
-            Layouts.Create<DemoControlView>(new DemoControlViewModel(),demoControlParent);
+            Layouts.Create<DemoControlView>(new DemoControlViewModel(),parent:demoControlParent);
         }
         
         protected override IEnumerator OnShowProgress(ILifeTime progressLifeTime)

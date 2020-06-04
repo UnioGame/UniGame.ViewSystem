@@ -19,7 +19,7 @@ namespace UniGame.UiSystem.Runtime
             resourceProvider = viewResourceProvider;
         }
 
-        public async UniTask<IView> Create(Type viewType, string skinTag = "", Transform parent = null) 
+        public async UniTask<IView> Create(Type viewType, string skinTag = "", Transform parent = null, string viewName = null) 
         {
             //load View resource
             var result = await resourceProvider.
@@ -42,20 +42,6 @@ namespace UniGame.UiSystem.Runtime
             view.LifeTime.AddDispose(disposable);
 
             return view;
-        }
-        
-        public async UniTask<T> Create<T>(string skinTag = "", Transform parent = null) 
-            where T : Component, IView
-        {
-            var handler = await Create(typeof(T), skinTag, parent);
-            var result = handler as T;
-            
-            if (result == null) {
-                GameLog.LogError($"View type mismatch Request type {typeof(T).Name} : ResultType {handler?.GetType().Name}");
-                handler?.Destroy();
-            }
-            
-            return result;
         }
         
         /// <summary>

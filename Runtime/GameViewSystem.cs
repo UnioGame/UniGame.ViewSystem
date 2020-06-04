@@ -47,56 +47,22 @@
 
         #region ui system api
 
-        public async UniTask<T> Create<T>(IViewModel viewModel, string skinTag = "", Transform parent = null) 
-            where T :class, IView
-        {
-            return await CreateView<T>(viewModel, skinTag, parent);
-        }
-        
-        public async UniTask<IView> Create(IViewModel viewModel, Type viewType,string skinTag = "", Transform parent = null) 
+        public async UniTask<IView> Create(IViewModel viewModel, Type viewType,string skinTag = "", Transform parent = null, string viewName = null) 
         {
             return await CreateView(viewModel, viewType,skinTag, parent);
         }
         
-        public async UniTask<T> Create<T>(IViewModel viewModel, Transform parent) 
-            where T :class, IView
-        {
-            return await CreateView<T>(viewModel, string.Empty, parent);
-        }
-        
-        public async UniTask<IView> Create(IViewModel viewModel, Type viewType,Transform parent) 
-        {
-            return await CreateView(viewModel, viewType,string.Empty, parent);
-        }
-
-        public async UniTask<T> OpenWindow<T>(IViewModel viewModel, string skinTag = "")where T :class, IView
-        {
-            return await OpenView<T>(viewModel,typeof(T), ViewType.Window, skinTag);
-        }
-
-        public async UniTask<T> OpenScreen<T>(IViewModel viewModel, string skinTag = "") where T :class, IView
-        {
-            return await OpenView<T>(viewModel,typeof(T), ViewType.Screen, skinTag);
-        }
-
-        public async UniTask<T> OpenOverlay<T>(IViewModel viewModel, string skinTag = "") where T :class, IView
-        {
-            return await OpenView<T>(viewModel,typeof(T), ViewType.Overlay, skinTag);
-        }
-
-        //Direct type methods
-        
-        public async UniTask<IView> OpenWindow(IViewModel viewModel, Type viewType, string skinTag = "")
+        public async UniTask<IView> OpenWindow(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
         {
             return await OpenView<ViewBase>(viewModel,viewType, ViewType.Window, skinTag);
         }
 
-        public async UniTask<IView> OpenScreen(IViewModel viewModel,Type viewType, string skinTag = "")
+        public async UniTask<IView> OpenScreen(IViewModel viewModel,Type viewType, string skinTag = "", string viewName = null)
         {
             return await OpenView<ViewBase>(viewModel,viewType, ViewType.Screen, skinTag);
         }
 
-        public async UniTask<IView> OpenOverlay(IViewModel viewModel,Type viewType, string skinTag = "") 
+        public async UniTask<IView> OpenOverlay(IViewModel viewModel,Type viewType, string skinTag = "", string viewName = null) 
         {
             return await OpenView<ViewBase>(viewModel,viewType, ViewType.Overlay, skinTag);
         }
@@ -144,9 +110,10 @@
             IViewModel viewModel,
             Type viewType,
             string skinTag = "",
-            Transform parent = null)
+            Transform parent = null,
+            string viewName = null)
         {
-            var view = (await _viewFactory.Create(viewType,skinTag, parent));
+            var view = (await _viewFactory.Create(viewType,skinTag, parent, viewName));
 
             InitializeView(view, viewModel);
 
@@ -180,7 +147,8 @@
             IViewModel viewModel,
             Type viewType,
             ViewType layoutType,
-            string skinTag = "")
+            string skinTag = "",
+            string viewName = null)
             where T : class, IView
         {
             var layout = _viewLayouts.GetLayout(layoutType);

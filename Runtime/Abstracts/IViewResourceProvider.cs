@@ -18,12 +18,15 @@
         IAddressableObservable<TView> LoadViewAsync(
             Type viewType,
             string skinTag = null,
-            bool strongMatching = true);
+            bool strongMatching = true,
+            string viewName = null);
 
         /// <summary>
         /// load all Views with target Type
         /// </summary>
-        List<IAddressableObservable<TView>> LoadViewsAsync(Type viewType, string skinTag = null, bool strongMatching = true);
+        List<IAddressableObservable<TView>> LoadViewsAsync(Type viewType,
+            string skinTag = null,
+            bool strongMatching = true);
 
     }
 }

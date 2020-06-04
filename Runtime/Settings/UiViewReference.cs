@@ -32,5 +32,11 @@ namespace UniGame.UiSystem.Runtime.Settings
         [ShowAssetReference]
         public AssetReferenceGameObject View;
 
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.DrawWithUnity]
+#endif
+        [Space(2)]
+        public string ViewName;
+
     }
 }
