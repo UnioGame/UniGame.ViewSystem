@@ -49,22 +49,22 @@
 
         public async UniTask<IView> Create(IViewModel viewModel, Type viewType,string skinTag = "", Transform parent = null, string viewName = null) 
         {
-            return await CreateView(viewModel, viewType,skinTag, parent);
+            return await CreateView(viewModel, viewType,skinTag, parent, viewName);
         }
         
         public async UniTask<IView> OpenWindow(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
         {
-            return await OpenView<ViewBase>(viewModel,viewType, ViewType.Window, skinTag);
+            return await OpenView<ViewBase>(viewModel,viewType, ViewType.Window, skinTag, viewName);
         }
 
         public async UniTask<IView> OpenScreen(IViewModel viewModel,Type viewType, string skinTag = "", string viewName = null)
         {
-            return await OpenView<ViewBase>(viewModel,viewType, ViewType.Screen, skinTag);
+            return await OpenView<ViewBase>(viewModel,viewType, ViewType.Screen, skinTag, viewName);
         }
 
         public async UniTask<IView> OpenOverlay(IViewModel viewModel,Type viewType, string skinTag = "", string viewName = null) 
         {
-            return await OpenView<ViewBase>(viewModel,viewType, ViewType.Overlay, skinTag);
+            return await OpenView<ViewBase>(viewModel,viewType, ViewType.Overlay, skinTag, viewName);
         }
         
         public T Get<T>() where T : Component, IView

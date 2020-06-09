@@ -23,7 +23,7 @@ namespace UniGame.UiSystem.Runtime
         {
             //load View resource
             var result = await resourceProvider.
-                LoadViewAsync(viewType,skinTag).
+                LoadViewAsync(viewType,skinTag, viewName:viewName).
                 ToAddressableUniTask();
 
             var disposable = result.disposable;

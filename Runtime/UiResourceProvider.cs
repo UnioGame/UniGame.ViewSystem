@@ -27,7 +27,7 @@ namespace UniGame.UiSystem.Runtime
                 x => (string.IsNullOrEmpty(skinTag) ||
                      string.Equals(x.Tag, skinTag, StringComparison.InvariantCultureIgnoreCase)) &&
                     (string.IsNullOrEmpty(viewName) ||
-                     string.Equals(x.Tag, skinTag, StringComparison.InvariantCultureIgnoreCase))
+                     string.Equals(x.ViewName, viewName, StringComparison.InvariantCultureIgnoreCase))
                      );
 
             //return collection to pool
