@@ -7,11 +7,13 @@
 
     public static class ViewExtensions
     {
-        public static async UniTask Create<TView>(this IViewProvider source, IViewModel viewModel, Transform parent) 
+        public static async UniTask<TView> Create<TView>(this IViewProvider source, IViewModel viewModel, Transform parent) 
             where TView : Component, IView
         {
             var view = await source.CreateView<TView>(viewModel);
             view.transform.SetParent(parent, false);
+
+            return view;
         }
     }
 }
