@@ -275,10 +275,10 @@
         private void InitialSetup()
         {
             _isInitialized = true;
-            _lifeTimeDefinition.AddCleanUpAction(
-                () => _viewModelLifeTime.Release());
+            _lifeTimeDefinition.AddCleanUpAction(_viewModelLifeTime.Release);
             
             _lifeTimeDefinition.AddCleanUpAction(() => {
+                _progressLifeTime.Release();
                 IsTerminated = true;
                 Context      = null;
                 _status.SetValueForce(ViewStatus.Closed);
@@ -286,7 +286,13 @@
                 _visibility.Release();
             });
         }
-        
+
+        protected override void OnDisable()
+        {
+            _progressLifeTime.Release();
+            base.OnDisable();
+        }
+
         protected sealed override void OnDestroy()
         {
             _lifeTimeDefinition.Terminate();
