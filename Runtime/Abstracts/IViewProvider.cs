@@ -5,6 +5,6 @@
 
     public interface IViewProvider
     {
-        UniTask<T> CreateView<T>(IViewModel viewModel) where T : class, IView;
+        UniTask<T> CreateView<T>(IViewModel viewModel, string tag = null) where T : class, IView;
     }
 }
