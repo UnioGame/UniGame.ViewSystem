@@ -253,7 +253,7 @@
             var modelLifeTime = model.LifeTime;
             modelLifeTime.ComposeCleanUp(_viewModelLifeTime, Close);
 
-            _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Terminate);
+            _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Release);
 
         }
 
