@@ -8,6 +8,7 @@ namespace UniGame.UiSystem.Runtime
     using Settings;
     using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
     using UniGreenModules.UniGame.UiSystem.Runtime;
+    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniRx.Async;
 
     public class GameViewSystemAsset : MonoBehaviour, IGameViewSystem

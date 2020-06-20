@@ -7,6 +7,7 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
     using Abstracts;
     using Backgrounds.Abstract;
     using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
+    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime;
     using UniRx;
 
