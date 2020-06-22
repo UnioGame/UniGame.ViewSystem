@@ -3,10 +3,8 @@ using UniRx;
 
 namespace UniGreenModules.UniGame.UiSystem.Runtime.Extensions
 {
-    using Abstracts;
     using UniCore.Runtime.Interfaces;
     using UniCore.Runtime.Rx.Extensions;
-    using UniModules.UniGame.Core.Runtime.Interfaces;
 
     public static class BindingExtension
     {

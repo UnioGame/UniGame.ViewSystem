@@ -11,7 +11,6 @@
     using UniGreenModules.UniGame.Core.Runtime.Rx;
     using UniGreenModules.UniGame.UiSystem.Runtime.Extensions;
     using UniGreenModules.UniRoutine.Runtime;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime;
     using UniRx;
     using UnityEngine;

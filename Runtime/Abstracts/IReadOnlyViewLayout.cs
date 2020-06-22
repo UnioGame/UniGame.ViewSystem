@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using UniGreenModules.UniCore.Runtime.Interfaces;
-    using UniModules.UniGame.Core.Runtime.Interfaces;
     using UnityEngine;
 
     public interface IReadOnlyViewLayout : 

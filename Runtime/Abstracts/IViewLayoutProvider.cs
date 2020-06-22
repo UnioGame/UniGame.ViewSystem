@@ -3,7 +3,6 @@
     using System;
     using Abstracts;
     using UniGreenModules.UniCore.Runtime.Interfaces;
-    using UniModules.UniGame.Core.Runtime.Interfaces;
     using UniRx.Async;
 
     public interface IViewLayoutProvider : 
