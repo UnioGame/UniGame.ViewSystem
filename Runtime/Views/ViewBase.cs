@@ -112,6 +112,7 @@
             }
             //restart view lifetime
             _viewModelLifeTime.Release();
+            _progressLifeTime.Release();
 
             InitializeHandlers(model);
             
@@ -223,10 +224,10 @@
 
         private void StartProgressAction(LifeTimeDefinition lifeTime,Func<IEnumerator> action)
         {
-            if (lifeTime.IsTerminated) return;
-            lifeTime.Release();
-            action().Execute().
-                AddTo(lifeTime);
+            if (lifeTime.IsTerminated) 
+                return;
+            
+            action().Execute().AddTo(lifeTime);
         }
 
         private void InitializeHandlers(IViewModel model)
@@ -253,7 +254,7 @@
             var modelLifeTime = model.LifeTime;
             modelLifeTime.ComposeCleanUp(_viewModelLifeTime, Close);
 
-            _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Release);
+            _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Terminate);
 
         }
 
