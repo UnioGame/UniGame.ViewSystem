@@ -1,8 +1,9 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
+    using System;
     using Abstracts;
     using UniGreenModules.UniCore.Runtime.DataFlow;
-    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
+    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniRx;
 
     public class ViewModelBase : IViewModel
@@ -14,8 +15,11 @@
         public  ILifeTime LifeTime => lifeTimeDefinition.LifeTime;
 
         public IReadOnlyReactiveProperty<bool> IsActive => isActive;
-        
-        public void Dispose() => lifeTimeDefinition.Terminate();
+
+        public void Dispose()
+        {
+            lifeTimeDefinition.Terminate();
+        }
 
     }
 }

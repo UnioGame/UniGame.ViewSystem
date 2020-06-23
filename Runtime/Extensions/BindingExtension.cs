@@ -5,6 +5,7 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime.Extensions
 {
     using UniCore.Runtime.Interfaces;
     using UniCore.Runtime.Rx.Extensions;
+    using UniModules.UniGame.Core.Runtime.Interfaces;
 
     public static class BindingExtension
     {

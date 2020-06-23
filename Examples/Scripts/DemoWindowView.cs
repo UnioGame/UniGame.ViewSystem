@@ -5,6 +5,7 @@
     using Runtime;
     using Runtime.Abstracts;
     using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
+    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Examples.Scripts;
     using UnityEngine;
 
