@@ -1,10 +1,13 @@
-﻿namespace UniGame.UiSystem.Runtime
+﻿using UnityEngine.Scripting;
+
+[assembly: AlwaysLinkAssembly]
+
+namespace UniGame.UiSystem.Runtime
 {
     using System;
     using System.Collections.Generic;
     using Abstracts;
     using UniGreenModules.UniCore.Runtime.DataFlow;
-    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
     using UniGreenModules.UniGame.UiSystem.Runtime;
     using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
