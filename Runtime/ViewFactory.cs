@@ -7,6 +7,7 @@ namespace UniGame.UiSystem.Runtime
     using Addressables.Reactive;
     using UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
+    using UniRx;
     using UniRx.Async;
     using Object = UnityEngine.Object;
 
@@ -24,22 +25,16 @@ namespace UniGame.UiSystem.Runtime
             //load View resource
             var result = await resourceProvider.
                 LoadViewAsync(viewType,skinTag, viewName:viewName).
-                ToAddressableUniTask();
-
-            var disposable = result.disposable;
+                First();
 
             //create view instance
-            var view = Create(result.value, parent);
+            var view = Create(result, parent);
             
             //if loading failed release resource immediately
             if (view == null) {
                 GameLog.LogError($"Factory {this.GetType().Name} View of Type {viewType?.Name} not loaded");
-                disposable.Dispose();
                 return null;
             }
-            
-            //bind resource lifetime to view
-            view.LifeTime.AddDispose(disposable);
 
             return view;
         }
