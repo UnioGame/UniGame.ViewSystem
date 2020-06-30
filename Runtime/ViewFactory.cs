@@ -6,6 +6,7 @@ namespace UniGame.UiSystem.Runtime
     using Abstracts;
     using Addressables.Reactive;
     using UniCore.Runtime.ProfilerTools;
+    using UniGreenModules.UniCore.Runtime.Rx.Extensions;
     using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
     using UniRx;
     using UniRx.Async;
@@ -22,20 +23,22 @@ namespace UniGame.UiSystem.Runtime
 
         public async UniTask<IView> Create(Type viewType, string skinTag = "", Transform parent = null, string viewName = null) 
         {
+            var viewObservable = resourceProvider.
+                LoadViewAsync(viewType,skinTag, viewName:viewName);
+            
             //load View resource
-            var result = await resourceProvider.
-                LoadViewAsync(viewType,skinTag, viewName:viewName).
-                First();
-
+            var result = await viewObservable.First();
             //create view instance
             var view = Create(result, parent);
             
             //if loading failed release resource immediately
             if (view == null) {
+                viewObservable.Dispose();
                 GameLog.LogError($"Factory {this.GetType().Name} View of Type {viewType?.Name} not loaded");
                 return null;
             }
 
+            viewObservable.AddTo(view.LifeTime);
             return view;
         }
         
