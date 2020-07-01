@@ -22,6 +22,7 @@ namespace UniGame.UiSystem.Editor.PostProcessors
         
         static string[] OnWillSaveAssets(string[] paths)
         {
+            return paths;
             var assets = _viewsSettingsCache(string.Empty);
             foreach (var asset in assets)
             {
@@ -34,7 +35,7 @@ namespace UniGame.UiSystem.Editor.PostProcessors
             return paths;
         }
 
-        private static void Rebuild(ViewsSettings settings)
+        public static void Rebuild(ViewsSettings settings)
         {
             settings.Build();
             settings.SetDirty();
