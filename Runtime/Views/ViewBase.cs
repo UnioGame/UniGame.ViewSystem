@@ -103,7 +103,7 @@
             BindLayout(layoutProvider);
             Initialize(model);
         }
-        
+
         public void Initialize(IViewModel model)
         {
             //calls one per lifetime
@@ -151,7 +151,10 @@
         
         
         #region private methods
+        
+        private void SetState(bool state) => gameObject.SetActive(state); 
 
+        
         private IObservable<IView> SelectStatus(ViewStatus status)
         {
             return _status.
@@ -223,12 +226,13 @@
             yield break;
         }
 
-        private void StartProgressAction(LifeTimeDefinition lifeTime,Func<IEnumerator> action)
+        private void StartProgressAction(ILifeTime lifeTime,Func<IEnumerator> action)
         {
             if (lifeTime.IsTerminated) 
                 return;
-            
-            action().Execute().AddTo(lifeTime);
+            //run animation immediately
+            action().Execute(RoutineType.Update,true).
+                AddTo(lifeTime);
         }
 
         private void InitializeHandlers(IViewModel model)
