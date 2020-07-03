@@ -6,7 +6,6 @@
     using UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniCore.Runtime.Attributes;
     using UniGreenModules.UniCore.Runtime.DataFlow;
-    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
     using UniGreenModules.UniGame.Core.Runtime.Rx;
     using UniGreenModules.UniGame.UiSystem.Runtime.Extensions;
