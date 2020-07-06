@@ -116,7 +116,7 @@ namespace UniGame.UiSystem.Runtime
         {
             var view = (await _viewFactory.Create(viewType,skinTag, parent, viewName));
 
-            InitializeView(view, viewModel);
+            await InitializeView(view, viewModel);
 
             return view;
         }

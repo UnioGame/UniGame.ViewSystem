@@ -7,7 +7,6 @@ namespace UniGame.UiSystem.Runtime
     using UniRx.Async;
     using UnityEngine;
 
-    
     [RequireComponent(typeof(CanvasGroup))]
     public class UiCanvasGroupView<TWindowModel> : UiView<TWindowModel> where TWindowModel : class, IViewModel
     {
@@ -24,7 +23,7 @@ namespace UniGame.UiSystem.Runtime
 #endif
         [SerializeField]
         private CanvasGroupState hiddenState = new CanvasGroupState() {
-            Alpha         = 0,
+            Alpha = 0,
             BlockRaycasts = false,
             Interactable  = false
         };
@@ -34,7 +33,7 @@ namespace UniGame.UiSystem.Runtime
 #endif 
         [SerializeField]
         private CanvasGroupState visibleState = new CanvasGroupState() {
-            Alpha         = 1,
+            Alpha = 1,
             BlockRaycasts = true,
             Interactable  = true
         };
@@ -44,7 +43,7 @@ namespace UniGame.UiSystem.Runtime
         protected sealed override async UniTask OnInitialize(TWindowModel model)
         {
             await base.OnInitialize(model);
-            
+
             IsActive.Where(x => x).
                 Subscribe(x => canvasGroup.SetState(visibleState)).
                 AddTo(LifeTime);
@@ -64,6 +63,8 @@ namespace UniGame.UiSystem.Runtime
             canvasGroup = canvasGroup == null ? 
                 GetComponent<CanvasGroup>() : 
                 canvasGroup;
+            
+            canvasGroup.SetState(hiddenState);
         }
         
 #if UNITY_EDITOR
@@ -75,6 +76,5 @@ namespace UniGame.UiSystem.Runtime
                 canvasGroup;
         }
 #endif
-        
     }
 }
