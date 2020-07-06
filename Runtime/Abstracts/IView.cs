@@ -1,8 +1,8 @@
 ﻿namespace UniGame.UiSystem.Runtime.Abstracts
 {
-    using UniGreenModules.UniCore.Runtime.Interfaces;
     using UniModules.UniGame.Core.Runtime.Interfaces;
     using UniRx;
+    using UniRx.Async;
     using UnityEngine;
 
     public interface IView : 
@@ -16,6 +16,6 @@
 
         bool IsTerminated { get; }
 
-        void Initialize(IViewModel vm);
+        UniTask Initialize(IViewModel vm);
     }
 }

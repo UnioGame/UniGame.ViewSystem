@@ -4,6 +4,7 @@
     using TMPro;
     using UniGreenModules.UniCore.Runtime.Utils;
     using UniRx;
+    using UniRx.Async;
     using UnityEngine.UI;
     using ViewModels;
 
@@ -17,8 +18,10 @@
         public Button buyButton;
         public Button removeButton;
         
-        protected override void OnInitialize(DemoItemViewModel model)
+        protected override async UniTask OnInitialize(DemoItemViewModel model)
         {
+            await base.OnInitialize(model);
+            
             BindTo(model.Armor, x => armor.text = x.ToStringFromCache()).
             BindTo(model.Damage, x => damage.text = x.ToStringFromCache()).
             BindTo(model.Level, x => level.text = x.ToStringFromCache()).

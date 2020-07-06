@@ -4,6 +4,7 @@ namespace UniGame.UiSystem.Runtime
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
     using UniGreenModules.UniUiSystem.Runtime.Utils;
     using UniRx;
+    using UniRx.Async;
     using UnityEngine;
 
     
@@ -40,8 +41,10 @@ namespace UniGame.UiSystem.Runtime
         
         #endregion
 
-        protected sealed override void OnInitialize(TWindowModel model)
+        protected sealed override async UniTask OnInitialize(TWindowModel model)
         {
+            await base.OnInitialize(model);
+            
             IsActive.Where(x => x).
                 Subscribe(x => canvasGroup.SetState(visibleState)).
                 AddTo(LifeTime);
@@ -50,10 +53,10 @@ namespace UniGame.UiSystem.Runtime
                 Subscribe(x => canvasGroup.SetState(hiddenState)).
                 AddTo(LifeTime);
 
-            OnViewInitialize(model);
+            await OnViewInitialize(model);
         }
 
-        protected virtual void OnViewInitialize(TWindowModel model) {}
+        protected virtual async UniTask OnViewInitialize(TWindowModel model) {}
 
         protected override void Awake()
         {

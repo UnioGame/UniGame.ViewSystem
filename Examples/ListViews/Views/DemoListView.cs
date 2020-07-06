@@ -17,8 +17,10 @@ namespace UniGame.UiSystem.Examples.ListViews.Views
         
         public List<DemoItemView> itemViews = new List<DemoItemView>();
 
-        protected override void OnViewInitialize(DemoListViewModel model)
+        protected override async UniTask OnViewInitialize(DemoListViewModel model)
         {
+            await base.OnViewInitialize(model);
+            
             var items = model.ListItems;
 
             BindTo(items.ObserveAdd(), x => CreateItem(x.Value)).

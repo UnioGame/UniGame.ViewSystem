@@ -5,6 +5,7 @@
     using UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniGame.UiSystem.Runtime.Extensions;
     using UniRx;
+    using UniRx.Async;
 
     public abstract class UiView<TViewModel> :
         ViewBase, 
@@ -35,9 +36,9 @@
 
         #endregion
 
-        protected sealed override void OnInitialize(IViewModel model)
+        protected sealed override async UniTask OnInitialize(IViewModel model)
         {
-            base.OnInitialize(model);
+            await base.OnInitialize(model);
             
             LifeTime.AddCleanUpAction(() => _viewModel.Value = null);
 
@@ -50,13 +51,13 @@
                 GameLog.LogError($"VIEW: {name} wrong model type. Target type {typeof(TViewModel).Name} : model Type {model?.GetType().Name}");
             }
             
-            OnInitialize(modelData);
+            await OnInitialize(modelData);
         }
 
         /// <summary>
         /// custom initialization methods
         /// </summary>
-        protected virtual void OnInitialize(TViewModel model) { }
+        protected virtual async UniTask OnInitialize(TViewModel model) { }
         
     }
 }
