@@ -116,7 +116,7 @@ namespace UniGame.UiSystem.Runtime
         {
             var view = (await _viewFactory.Create(viewType,skinTag, parent, viewName));
 
-            InitializeView(view, viewModel);
+            await InitializeView(view, viewModel);
 
             return view;
         }
@@ -165,13 +165,13 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// Initialize View with model data
         /// </summary>
-        private T InitializeView<T>(T view, IViewModel viewModel)
+        private async UniTask<T> InitializeView<T>(T view, IViewModel viewModel)
             where T : IView
         {
             if(view is ILayoutFactoryView factoryView)
                 factoryView.BindLayout(this);
             
-            view.Initialize(viewModel);
+            await view.Initialize(viewModel);
             
             //destroy view when lifetime  terminated
             var viewLifeTime = view.LifeTime;

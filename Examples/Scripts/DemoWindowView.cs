@@ -7,6 +7,7 @@
     using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Examples.Scripts;
+    using UniRx.Async;
     using UnityEngine;
 
     public class DemoWindowView : WindowView<IViewModel>
@@ -18,8 +19,10 @@
         
         private Tween animationTween;
 
-        protected override void OnViewInitialize(IViewModel view)
+        protected override async UniTask OnViewInitialize(IViewModel view)
         {
+            await base.OnViewInitialize(view);
+            
             LifeTime.AddCleanUpAction(() => animationTween?.Complete());
             Layouts.Create<DemoControlView>(new DemoControlViewModel(),parent:demoControlParent);
         }

@@ -13,6 +13,7 @@
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime;
     using UniRx;
+    using UniRx.Async;
     using UnityEngine;
     using UnityEngine.EventSystems;
 
@@ -27,25 +28,25 @@
 
         [ReadOnlyValue]
         [SerializeField]
-        private bool _isInitialized = false;
+        private bool _isInitialized;
         
         #endregion
 
-        private RectTransform rectTransform;
+        private RectTransform _rectTransform;
         
-        private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
-        private LifeTimeDefinition _progressLifeTime = new LifeTimeDefinition();
-        private LifeTimeDefinition _viewModelLifeTime = new LifeTimeDefinition();
+        private readonly LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
+        private readonly LifeTimeDefinition _progressLifeTime = new LifeTimeDefinition();
+        private readonly LifeTimeDefinition _viewModelLifeTime = new LifeTimeDefinition();
         
         /// <summary>
         /// ui element visibility status
         /// </summary>
-        private BoolRecycleReactiveProperty _visibility = new BoolRecycleReactiveProperty();
+        private readonly BoolRecycleReactiveProperty _visibility = new BoolRecycleReactiveProperty();
 
         /// <summary>
         /// view statuses reactions
         /// </summary>
-        private RecycleReactiveProperty<ViewStatus> _status = new RecycleReactiveProperty<ViewStatus>();
+        private readonly RecycleReactiveProperty<ViewStatus> _status = new RecycleReactiveProperty<ViewStatus>();
 
         private IViewLayoutProvider _viewLayout;
         
@@ -59,9 +60,9 @@
         /// <summary>
         /// view transform
         /// </summary>
-        public RectTransform RectTransform => rectTransform != null ? 
-            rectTransform:
-            (rectTransform = transform as RectTransform);
+        public RectTransform RectTransform => _rectTransform != null ? 
+            _rectTransform:
+            _rectTransform = transform as RectTransform;
 
         /// <summary>
         /// views layout
@@ -97,13 +98,13 @@
             _viewLayout = layoutProvider;
         }
 
-        public void Initialize(IViewModel model,IViewLayoutProvider layoutProvider)
+        public async UniTask Initialize(IViewModel model,IViewLayoutProvider layoutProvider)
         {
             BindLayout(layoutProvider);
-            Initialize(model);
+            await Initialize(model);
         }
 
-        public void Initialize(IViewModel model)
+        public async UniTask Initialize(IViewModel model)
         {
             //calls one per lifetime
             if (!_isInitialized) {
@@ -118,7 +119,7 @@
             
             BindLifeTimeActions(model);
             //custom initialization
-            OnInitialize(model);
+            await OnInitialize(model);
         }
 
 
@@ -150,10 +151,7 @@
         
         
         #region private methods
-        
-        private void SetState(bool state) => gameObject.SetActive(state); 
 
-        
         private IObservable<IView> SelectStatus(ViewStatus status)
         {
             return _status.
@@ -164,7 +162,7 @@
         /// <summary>
         /// custom initialization methods
         /// </summary>
-        protected virtual void OnInitialize(IViewModel model) { }
+        protected virtual async UniTask OnInitialize(IViewModel model) { }
         
         /// <summary>
         /// view closing process
@@ -264,7 +262,7 @@
 
         private void OnStatusUpdate()
         {
-            var status = ViewStatus.Hidden;
+            ViewStatus status;
             if (_lifeTimeDefinition.IsTerminated) {
                 status = ViewStatus.Closed;
             }
