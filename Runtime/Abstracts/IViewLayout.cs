@@ -15,5 +15,7 @@
 
         void CloseAll();
 
+        void ShowLast();
+
     }
 }

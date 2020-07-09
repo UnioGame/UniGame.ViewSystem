@@ -72,6 +72,8 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         public void CloseAll() => LayoutController.CloseAll();
 
+        public void ShowLast() => LayoutController.ShowLast();
+
         #endregion
 
 

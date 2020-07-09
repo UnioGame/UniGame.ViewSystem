@@ -79,6 +79,13 @@ namespace UniGame.UiSystem.Runtime
             return list;
         }
 
+        public void ShowLast()
+        {
+            var lastView = Views.LastOrDefault(v => v is IView);
+            if(lastView != null)
+                lastView.Show();
+        }
+
         public void Hide<T>() where T : Component, IView
         {
             FirstViewAction<T>(x => x.Hide());
