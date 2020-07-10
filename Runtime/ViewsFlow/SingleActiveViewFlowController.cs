@@ -1,6 +1,5 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
-    using System.Diagnostics;
     using Abstracts;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
     using UniGreenModules.UniGame.UiSystem.Runtime;
@@ -27,16 +26,17 @@
 
             windowController
                 .OnShown
-                .Subscribe(view => { _screenSuspended.Value = view is IScreenSuspendingWindow; })
+                .Subscribe(view => {
+                    if (view is IScreenSuspendingWindow) {
+                        _screenSuspended.Value = true;
+                    }
+                })
                 .AddTo(windowController.LifeTime);
 
-            windowController
-                .OnHidden
-                .Subscribe(view => {
-                    if (view is IScreenSuspendingWindow)
-                        _screenSuspended.Value = false;
-
-                });
+            windowController.OnClosed.Subscribe(view => {
+                if (view is IScreenSuspendingWindow)
+                    _screenSuspended.Value = false;
+            });
 
             _screenSuspended
                 .Skip(1)
@@ -55,8 +55,6 @@
                 })
                 .Subscribe()
                 .AddTo(windowController.LifeTime);
-
         }
-
     }
 }
