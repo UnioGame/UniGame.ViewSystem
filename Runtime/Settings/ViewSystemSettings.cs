@@ -30,7 +30,7 @@
         [Space]
         [Tooltip("Layout Flow Behaviour")]
         [SerializeField]
-        [AssetDropDown(typeof(ViewFlowControllerAsset))]
+        [AssetFilter(typeof(ViewFlowControllerAsset))]
         private ViewFlowControllerAsset layoutFlow;
 
         private                 LifeTimeDefinition lifeTimeDefinition;
