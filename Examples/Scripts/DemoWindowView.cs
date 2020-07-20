@@ -24,7 +24,7 @@
             await base.OnViewInitialize(view);
             
             LifeTime.AddCleanUpAction(() => animationTween?.Complete());
-            Layouts.Create<DemoControlView>(new DemoControlViewModel(),parent:demoControlParent);
+            Layout.Create<DemoControlView>(new DemoControlViewModel(),parent:demoControlParent);
         }
         
         protected override IEnumerator OnShowProgress(ILifeTime progressLifeTime)
