@@ -29,6 +29,7 @@ MonoBehaviour:
     View:
       m_AssetGUID: 7b492dba94b5c334395cdef64097fffb
       m_SubObjectName: 
+    ViewName: ScreemView Variant1
   - Tag: Skin2
     Type:
       fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoScreenView,
@@ -36,6 +37,7 @@ MonoBehaviour:
     View:
       m_AssetGUID: dfabff60446732548aa88aa669f41a01
       m_SubObjectName: 
+    ViewName: ScreemView Variant2
   - Tag: Skin3
     Type:
       fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoScreenView,
@@ -43,6 +45,7 @@ MonoBehaviour:
     View:
       m_AssetGUID: bc8663cb7bc22d94d9528365c84b8bdb
       m_SubObjectName: 
+    ViewName: ScreemView Variant3
   - Tag: Skin1
     Type:
       fullTypeName: UniGame.UiSystem.Examples.BaseUiManager.DemoWindowView, unigame.uisystem.example,
@@ -50,6 +53,7 @@ MonoBehaviour:
     View:
       m_AssetGUID: fa8b6f04fe536f747a4a8541abc3b6dc
       m_SubObjectName: 
+    ViewName: WindowView Variant1
   - Tag: Skin2
     Type:
       fullTypeName: UniGame.UiSystem.Examples.BaseUiManager.DemoWindowView, unigame.uisystem.example,
@@ -57,6 +61,7 @@ MonoBehaviour:
     View:
       m_AssetGUID: 12aadc7245988a14fb80511ba28836e0
       m_SubObjectName: 
+    ViewName: WindowView Variant2
   - Tag: Skin3
     Type:
       fullTypeName: UniGame.UiSystem.Examples.BaseUiManager.DemoWindowView, unigame.uisystem.example,
@@ -64,6 +69,7 @@ MonoBehaviour:
     View:
       m_AssetGUID: 357c111d984b1bd40ba741185ef88fc8
       m_SubObjectName: 
+    ViewName: WindowView Variant3
   - Tag: 
     Type:
       fullTypeName: UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager.DemoScreenView,
@@ -71,6 +77,7 @@ MonoBehaviour:
     View:
       m_AssetGUID: 53f1cadcc1309cf4b987bfd3bca7930b
       m_SubObjectName: 
+    ViewName: ScreemView
   - Tag: 
     Type:
       fullTypeName: UniGame.UiSystem.Examples.BaseUiManager.DemoWindowView, unigame.uisystem.example,
@@ -78,6 +85,7 @@ MonoBehaviour:
     View:
       m_AssetGUID: 329a088191261d949a8beeeec874145d
       m_SubObjectName: 
+    ViewName: WindowView
   - Tag: 
     Type:
       fullTypeName: UniModules.UniGame.UISystem.Examples.Scripts.DemoControlView,
@@ -85,5 +93,6 @@ MonoBehaviour:
     View:
       m_AssetGUID: f011b5b6672244a43b647bf073ab02a8
       m_SubObjectName: 
+    ViewName: DemoViewControl
   sources: []
   layoutFlow: {fileID: 11400000, guid: c22cfe04dc8dc9e43b8b9b36576fab63, type: 2}

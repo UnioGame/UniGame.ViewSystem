@@ -67,7 +67,7 @@
         /// <summary>
         /// views layout
         /// </summary>
-        public IViewLayoutProvider Layouts => _viewLayout;
+        public IViewLayoutProvider Layout => _viewLayout;
 
         public IReadOnlyReactiveProperty<ViewStatus> Status => _status;
         
@@ -86,7 +86,9 @@
 
         public IViewModel Context { get; private set; }
 
-        #endregion
+        #endregion public properties
+
+        #region public methods
 
         /// <summary>
         /// complete view lifetime immediately
@@ -98,7 +100,7 @@
             _viewLayout = layoutProvider;
         }
 
-        public async UniTask Initialize(IViewModel model,IViewLayoutProvider layoutProvider)
+        public async UniTask Initialize(IViewModel model, IViewLayoutProvider layoutProvider)
         {
             BindLayout(layoutProvider);
             await Initialize(model);
@@ -122,7 +124,6 @@
             await OnInitialize(model);
         }
 
-
         /// <summary>
         /// show active view
         /// </summary>
@@ -137,7 +138,6 @@
         /// end of view lifetime
         /// </summary>
         public void Close() => StartProgressAction(_progressLifeTime, OnClose);
-
         
         /// <summary>
         /// bind source stream to view action
@@ -148,8 +148,9 @@
             var result = this.Bind(source, action);
             return result;
         }
-        
-        
+
+        #endregion public methods
+
         #region private methods
 
         private IObservable<IView> SelectStatus(ViewStatus status)
@@ -310,6 +311,5 @@
         }
 
         #endregion
-        
     }
 }

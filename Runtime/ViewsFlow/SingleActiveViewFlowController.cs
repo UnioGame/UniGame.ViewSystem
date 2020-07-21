@@ -7,9 +7,18 @@
 
     public class SingleActiveScreenFlow : ViewFlowController
     {
-        private IView _activeView;
+        private int _openWindowCount;
+        
+        private int OpenWindowCount {
+            get => _openWindowCount;
+            set {
+                _openWindowCount = value;
+                if (_openWindowCount < 0)
+                    _openWindowCount = 0;
+            }
+        }
 
-        private ReactiveProperty<bool> _screenSuspended = new ReactiveProperty<bool>(false);
+        private readonly ReactiveProperty<bool> _screenSuspended = new ReactiveProperty<bool>(false);
 
         protected override void OnActivate(IViewLayoutContainer layouts)
         {
@@ -28,14 +37,27 @@
                 .OnShown
                 .Subscribe(view => {
                     if (view is IScreenSuspendingWindow) {
-                        _screenSuspended.Value = true;
+                        if(OpenWindowCount == 0) {
+                            _screenSuspended.Value = true;
+                        }
+                        OpenWindowCount++;
                     }
                 })
                 .AddTo(windowController.LifeTime);
 
+            windowController.OnHidden.Subscribe(view => {
+                if (view is IScreenSuspendingWindow) {
+                    OpenWindowCount--;
+                }
+            }).AddTo(LifeTime);
+
             windowController.OnClosed.Subscribe(view => {
-                if (view is IScreenSuspendingWindow)
-                    _screenSuspended.Value = false;
+                if (view is IScreenSuspendingWindow) {
+                    OpenWindowCount--;
+                    if (OpenWindowCount == 0) {
+                        _screenSuspended.Value = false;
+                    }
+                }
             });
 
             _screenSuspended
