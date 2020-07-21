@@ -3,6 +3,7 @@
     using System;
     using System.Collections;
     using Abstracts;
+    using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniCore.Runtime.Attributes;
     using UniGreenModules.UniCore.Runtime.DataFlow;
@@ -13,7 +14,7 @@
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime;
     using UniRx;
-    using UniRx.Async;
+    
     using UnityEngine;
     using UnityEngine.EventSystems;
 

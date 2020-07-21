@@ -1,10 +1,11 @@
 ﻿namespace UniGame.UiSystem.Examples.ListViews.Views
 {
     using BaseUiManager.Scripts;
+    using Cysharp.Threading.Tasks;
     using Runtime;
     using TMPro;
     using UniGreenModules.UniCore.Runtime.Utils;
-    using UniRx.Async;
+    
 
     public class DemoResourcePanelScreen : WindowView<DemoResourceUiViewModel>
     {

@@ -1,10 +1,11 @@
 namespace UniGame.UiSystem.Runtime
 {
     using Abstracts;
+    using Cysharp.Threading.Tasks;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
     using UniGreenModules.UniUiSystem.Runtime.Utils;
     using UniRx;
-    using UniRx.Async;
+    
     using UnityEngine;
 
     [RequireComponent(typeof(CanvasGroup))]

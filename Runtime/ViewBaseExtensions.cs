@@ -1,8 +1,8 @@
 ﻿namespace UniModules.UniGame.UISystem.Runtime
 {
+    using Cysharp.Threading.Tasks;
     using global::UniGame.UiSystem.Runtime;
     using global::UniGame.UiSystem.Runtime.Abstracts;
-    using UniRx.Async;
     using UnityEngine;
 
     public static class ViewBaseExtensions

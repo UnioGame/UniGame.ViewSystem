@@ -7,11 +7,12 @@ namespace UniGame.UiSystem.Runtime
     using System;
     using System.Collections.Generic;
     using Abstracts;
+    using Cysharp.Threading.Tasks;
     using UniGreenModules.UniCore.Runtime.DataFlow;
     using UniGreenModules.UniGame.UiSystem.Runtime;
     using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniRx.Async;
+    
     using UnityEngine;
 
     [Serializable]

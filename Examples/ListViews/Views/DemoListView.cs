@@ -3,9 +3,10 @@
 namespace UniGame.UiSystem.Examples.ListViews.Views
 {
     using System.Collections.Generic;
+    using Cysharp.Threading.Tasks;
     using Runtime;
     using UniRx;
-    using UniRx.Async;
+    
     using UnityEngine.UI;
     using ViewModels;
 

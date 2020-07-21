@@ -5,11 +5,12 @@ namespace UniGame.UiSystem.Runtime
     using System;
     using Abstracts;
     using Addressables.Reactive;
+    using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
     using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
     using UniRx;
-    using UniRx.Async;
+    
     using Object = UnityEngine.Object;
 
     public class ViewFactory : IViewFactory

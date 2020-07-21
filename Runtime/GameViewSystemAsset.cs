@@ -5,11 +5,12 @@ namespace UniGame.UiSystem.Runtime
     using System;
     using System.Collections.Generic;
     using Abstracts;
+    using Cysharp.Threading.Tasks;
     using Settings;
     using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
     using UniGreenModules.UniGame.UiSystem.Runtime;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniRx.Async;
+    
 
     public class GameViewSystemAsset : MonoBehaviour, IGameViewSystem
     {

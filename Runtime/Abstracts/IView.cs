@@ -1,8 +1,9 @@
 ﻿namespace UniGame.UiSystem.Runtime.Abstracts
 {
+    using Cysharp.Threading.Tasks;
     using UniModules.UniGame.Core.Runtime.Interfaces;
     using UniRx;
-    using UniRx.Async;
+    
     using UnityEngine;
 
     public interface IView : 

@@ -1,10 +1,11 @@
 ﻿namespace UniGame.UiSystem.Examples.ListViews.Views
 {
+    using Cysharp.Threading.Tasks;
     using Runtime;
     using TMPro;
     using UniGreenModules.UniCore.Runtime.Utils;
     using UniRx;
-    using UniRx.Async;
+    
     using UnityEngine.UI;
     using ViewModels;
 

@@ -1,13 +1,14 @@
 ﻿namespace UniGame.UiSystem.Examples.BaseUiManager
 {
     using System.Collections;
+    using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using Runtime;
     using Runtime.Abstracts;
     using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Examples.Scripts;
-    using UniRx.Async;
+    
     using UnityEngine;
 
     public class DemoWindowView : WindowView<IViewModel>

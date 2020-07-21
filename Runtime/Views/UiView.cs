@@ -2,10 +2,11 @@
 {
     using System;
     using Abstracts;
+    using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniGame.UiSystem.Runtime.Extensions;
     using UniRx;
-    using UniRx.Async;
+    
 
     public abstract class UiView<TViewModel> :
         ViewBase, 
@@ -24,6 +25,7 @@
 
         #region public methods
 
+        //TODO use async
         /// <summary>
         /// bind source stream to view action
         /// with View LifeTime context

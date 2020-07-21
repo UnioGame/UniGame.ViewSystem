@@ -7,11 +7,11 @@
         "unigame.uniroutine.runtime",
         "Unity.TextMeshPro",
         "UniRx",
-        "UniRx.Async",
         "Unity.Addressables",
         "Unity.ResourceManager",
         "DOTweenPro.Scripts",
-        "DOTween.Modules"
+        "DOTween.Modules",
+        "UniTask"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
