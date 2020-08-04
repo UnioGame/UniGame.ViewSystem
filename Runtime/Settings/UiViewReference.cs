@@ -22,7 +22,7 @@ namespace UniGame.UiSystem.Runtime.Settings
         [Sirenix.OdinInspector.DrawWithUnity]
 #endif
         [Space(2)]
-        [STypeFilter(typeof(IView), nameof(SType.fullTypeName))]
+        [STypeFilter(typeof(IView))]
         public SType Type;
 
 #if ODIN_INSPECTOR
