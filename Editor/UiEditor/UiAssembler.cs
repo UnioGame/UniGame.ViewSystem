@@ -2,7 +2,7 @@
 {
     using Runtime.Settings;
     using UiSystem.Editor.UiEditor;
-    using UniGreenModules.UniCore.EditorTools.Editor.AssetOperations;
+    using UniModules.UniGame.Core.EditorTools.Editor.AssetOperations;
     using UnityEditor;
 
     public static class UiAssembler 

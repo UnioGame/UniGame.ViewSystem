@@ -8,8 +8,8 @@ namespace UniGame.UiSystem.Editor.UiEditor
     using Runtime.Abstracts;
     using Runtime.Settings;
     using UniCore.Runtime.ProfilerTools;
-    using UniGreenModules.UniCore.EditorTools.Editor.AssetOperations;
     using UniGreenModules.UniCore.Runtime.ProfilerTools;
+    using UniModules.UniGame.Core.EditorTools.Editor.AssetOperations;
     using UnityEditor;
     using UnityEditor.AddressableAssets;
     using UnityEditor.AddressableAssets.Settings;

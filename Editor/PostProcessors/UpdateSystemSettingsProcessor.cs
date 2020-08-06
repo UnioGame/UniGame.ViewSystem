@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.Utilities;
-using UniGreenModules.UniCore.EditorTools.Editor.AssetOperations;
 using UnityEditor;
 
 namespace UniGame.UiSystem.Editor.PostProcessors
@@ -13,6 +12,7 @@ namespace UniGame.UiSystem.Editor.PostProcessors
     using UniGreenModules.UniCore.EditorTools.Editor.Utility;
     using UniGreenModules.UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniCore.Runtime.Utils;
+    using UniModules.UniGame.Core.EditorTools.Editor.AssetOperations;
     using UnityEngine;
 
     public class UpdateSystemSettingsProcessor : UnityEditor.AssetModificationProcessor
