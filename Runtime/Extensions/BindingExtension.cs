@@ -3,7 +3,7 @@ using UniRx;
 
 namespace UniGreenModules.UniGame.UiSystem.Runtime.Extensions
 {
-    using UniCore.Runtime.Interfaces;
+    using global::UniCore.Runtime.ProfilerTools;
     using UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.Core.Runtime.Interfaces;
 
@@ -14,6 +14,10 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime.Extensions
             Action<T> target, 
             int frameThrottle = 1)
         {
+            if (source == null) {
+                GameLog.LogWarning($"BindingExtension: NULL IObservable<T> detected with type {typeof(T).Name}");
+                return Disposable.Empty;
+            }
             return source.
                 //ThrottleFrame(frameThrottle).
                 Subscribe(target);
