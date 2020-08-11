@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Sirenix.Utilities;
-using UnityEditor;
 
 namespace UniGame.UiSystem.Editor.PostProcessors
 {
     using Runtime.Settings;
     using UI.Editor.UiEdito;
     using UniCore.Runtime.ProfilerTools;
-    using UniGreenModules.UniCore.EditorTools.Editor.AssetOperations;
-    using UniGreenModules.UniCore.EditorTools.Editor.Utility;
-    using UniGreenModules.UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniCore.Runtime.Utils;
     using UniModules.UniGame.Core.EditorTools.Editor.AssetOperations;
     using UnityEngine;
