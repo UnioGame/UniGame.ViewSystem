@@ -11,6 +11,12 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
     using UniModules.UniGame.UISystem.Runtime;
     using UniRx;
 
+    public enum LayoutType
+    {
+        Default,
+        Stack
+    }
+
     public class ViewsLayoutAsset : MonoBehaviour, IViewLayout
     {
         #region inspector
@@ -20,6 +26,9 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         [SerializeField]
         private BackgroundFactory _backgroundFactory;
+
+        [SerializeField]
+        private LayoutType _layoutType = LayoutType.Stack;
 
         #endregion
 
@@ -86,7 +95,7 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
                 backgroundView = _backgroundFactory.Create();
             }
 
-            return new ViewsStackLayout(_layoutCanvas.transform, backgroundView);
+            return GetViewLayout(_layoutType, backgroundView);
         }
 
         protected void OnDestroy()
@@ -95,7 +104,16 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
                 _layout.Value.Dispose();
         }
 
-        #endregion
+        private IViewLayout GetViewLayout(LayoutType layoutType, IBackgroundView backgroundView)
+        {
+            switch (layoutType) {
+                case LayoutType.Stack:
+                    return new StackViewLayout(_layoutCanvas.transform, backgroundView);
+                default:
+                    return new DefaultViewLayout(_layoutCanvas.transform, backgroundView);
+            }
+        }
 
+        #endregion
     }
 }

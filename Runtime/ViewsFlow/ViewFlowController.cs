@@ -2,7 +2,6 @@
 {
     using Abstracts;
     using UniGreenModules.UniCore.Runtime.DataFlow;
-    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
     using UniGreenModules.UniGame.UiSystem.Runtime;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
@@ -27,7 +26,6 @@
             
             OnActivate(controllerContainer);
         }
-
 
         public void Dispose() => _lifeTimeDefinition.Terminate();
         
@@ -55,13 +53,10 @@
         /// <param name="layouts"></param>
         protected virtual void OnActivate(IViewLayoutContainer layouts)
         {
-            
         }
-
 
         private void BindSceneActions()
         {
-            
             Observable.FromEvent(
                     x => SceneManager.activeSceneChanged += OnSceneActivate,
                     x => SceneManager.activeSceneChanged -= OnSceneActivate).

@@ -181,7 +181,7 @@ namespace UniGame.UiSystem.Runtime
             for (var i = 0; i < _views.Count; i++)
             {
                 var view = _views[i];
-                if ((view is TView targetView) &&
+                if (view is TView targetView &&
                     predicate(targetView))
                 {
                     action(targetView);
