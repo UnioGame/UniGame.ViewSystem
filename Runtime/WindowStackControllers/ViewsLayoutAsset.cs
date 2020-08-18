@@ -6,9 +6,9 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
     using System.Collections.Generic;
     using Abstracts;
     using Backgrounds.Abstract;
-    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime;
+    using UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract;
     using UniRx;
 
     public class ViewsLayoutAsset : MonoBehaviour, IViewLayout
@@ -20,6 +20,9 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         [SerializeField]
         private BackgroundFactory _backgroundFactory;
+
+        [SerializeReference]
+        private ViewLayoutFactoryAbstract _layoutBehaviourFactory;
 
         #endregion
 
@@ -85,8 +88,11 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
             if (_backgroundFactory != null) {
                 backgroundView = _backgroundFactory.Create();
             }
+            
+            if(_layoutBehaviourFactory == null)
+                throw new NullReferenceException(nameof(_layoutBehaviourFactory));
 
-            return new ViewsStackLayout(_layoutCanvas.transform, backgroundView);
+            return _layoutBehaviourFactory.Create(_layoutCanvas.transform, backgroundView);
         }
 
         protected void OnDestroy()
@@ -96,6 +102,5 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         }
 
         #endregion
-
     }
 }

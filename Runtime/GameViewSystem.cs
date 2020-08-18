@@ -80,7 +80,6 @@ namespace UniGame.UiSystem.Runtime
             return null;
         }
 
-        
         #endregion
 
         #region layout container api
@@ -90,8 +89,7 @@ namespace UniGame.UiSystem.Runtime
         public IEnumerable<IViewLayout> Controllers => _viewLayouts.Controllers;
 
         public IViewLayout GetLayout(ViewType type) => _viewLayouts.GetLayout(type);
-
-
+        
         #endregion
 
         public void CloseAll()

@@ -4,16 +4,17 @@
     using Abstracts;
     using Backgrounds.Abstract;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
+    using UniModules.UniGame.UISystem.Runtime;
     using UniRx;
     using UnityEngine;
 
-    public class ViewsStackLayout : ViewLayout
+    public class DefaultViewLayout : ViewLayout
     {
         private readonly IBackgroundView _background;
-
+        
         private IView _activeView;
 
-        public ViewsStackLayout(Transform layout, IBackgroundView background)
+        public DefaultViewLayout(Transform layout, IBackgroundView background)
         {
             _background = background;
             Layout = layout;
@@ -29,10 +30,12 @@
             OnShown.Where(x => x!=_activeView).
                 Subscribe(ActivateView).
                 AddTo(LifeTime);
-            
         }
 
-        protected override void OnViewAdded<T>(T view) => ActivateView(view);
+        protected override void OnViewAdded<T>(T view)
+        {
+            ActivateView(view);
+        }
 
         protected override void OnBeforeClose(IView view)
         {
@@ -48,21 +51,15 @@
             
             var lastView = Views.LastOrDefault(x => x != view);
             //empty view stack or only active
-            if (lastView == null) {
-                _background?.Hide();
-                return;
+            if (lastView == null && _background != null && _background.Status.Value == ViewStatus.Shown) {
+                _background.Hide();
             }
-            
-            ActivateView(lastView);
         }
 
         private void ActivateView(IView view)
         {
-            var previous = _activeView;
             _activeView = view;
-            
-            previous?.Hide();
-            
+
             //update top of stack
             Remove(view);
             Add(view);
@@ -70,7 +67,9 @@
             if(view.IsActive.Value == false)
                 view.Show();
 
-            _background?.Show();
+            if(_background != null && _background.Status.Value != ViewStatus.Shown) {
+                _background.Show();
+            }
         }
     }
 }

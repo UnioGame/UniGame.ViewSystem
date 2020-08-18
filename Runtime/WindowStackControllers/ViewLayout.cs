@@ -5,8 +5,8 @@ namespace UniGame.UiSystem.Runtime
     using System.Collections.Generic;
     using System.Linq;
     using Abstracts;
+    using Backgrounds.Abstract;
     using UniGreenModules.UniCore.Runtime.DataFlow;
-    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
     using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime;
     using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
@@ -17,13 +17,13 @@ namespace UniGame.UiSystem.Runtime
 
     public class ViewLayout : IViewLayout
     {
-        protected readonly ReactiveCollection<IView> _views = new ReactiveCollection<IView>();
+        private readonly ReactiveCollection<IView> _views = new ReactiveCollection<IView>();
         private readonly LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
 
-        private Subject<IView> _onViewHidden = new Subject<IView>();
-        private Subject<IView> _onViewShown = new Subject<IView>();
-        private Subject<IView> _onViewClosed = new Subject<IView>();
-        private ReactiveProperty<ViewStatus> _viewStatus = new ReactiveProperty<ViewStatus>();
+        private readonly Subject<IView> _onViewHidden = new Subject<IView>();
+        private readonly Subject<IView> _onViewShown = new Subject<IView>();
+        private readonly Subject<IView> _onViewClosed = new Subject<IView>();
+        private readonly ReactiveProperty<ViewStatus> _viewStatus = new ReactiveProperty<ViewStatus>();
         
         protected IReadOnlyReactiveCollection<IView> Views => _views;
         
@@ -181,7 +181,7 @@ namespace UniGame.UiSystem.Runtime
             for (var i = 0; i < _views.Count; i++)
             {
                 var view = _views[i];
-                if ((view is TView targetView) &&
+                if (view is TView targetView &&
                     predicate(targetView))
                 {
                     action(targetView);
