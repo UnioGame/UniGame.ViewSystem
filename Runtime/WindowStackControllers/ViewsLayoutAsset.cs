@@ -6,16 +6,10 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
     using System.Collections.Generic;
     using Abstracts;
     using Backgrounds.Abstract;
-    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime;
+    using UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract;
     using UniRx;
-
-    public enum LayoutType
-    {
-        Default,
-        Stack
-    }
 
     public class ViewsLayoutAsset : MonoBehaviour, IViewLayout
     {
@@ -27,8 +21,8 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         [SerializeField]
         private BackgroundFactory _backgroundFactory;
 
-        [SerializeField]
-        private LayoutType _layoutType = LayoutType.Stack;
+        [SerializeReference]
+        private ViewLayoutFactoryAbstract _layoutBehaviourFactory;
 
         #endregion
 
@@ -94,24 +88,17 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
             if (_backgroundFactory != null) {
                 backgroundView = _backgroundFactory.Create();
             }
+            
+            if(_layoutBehaviourFactory == null)
+                throw new NullReferenceException(nameof(_layoutBehaviourFactory));
 
-            return GetViewLayout(_layoutType, backgroundView);
+            return _layoutBehaviourFactory.Create(_layoutCanvas.transform, backgroundView);
         }
 
         protected void OnDestroy()
         {
             if(_layout.IsValueCreated)
                 _layout.Value.Dispose();
-        }
-
-        private IViewLayout GetViewLayout(LayoutType layoutType, IBackgroundView backgroundView)
-        {
-            switch (layoutType) {
-                case LayoutType.Stack:
-                    return new StackViewLayout(_layoutCanvas.transform, backgroundView);
-                default:
-                    return new DefaultViewLayout(_layoutCanvas.transform, backgroundView);
-            }
         }
 
         #endregion
