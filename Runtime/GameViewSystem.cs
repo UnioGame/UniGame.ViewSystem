@@ -9,10 +9,11 @@ namespace UniGame.UiSystem.Runtime
     using Abstracts;
     using Cysharp.Threading.Tasks;
     using UniGreenModules.UniCore.Runtime.DataFlow;
+    using UniGreenModules.UniCore.Runtime.Rx.Extensions;
     using UniGreenModules.UniGame.UiSystem.Runtime;
     using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    
+    using UniRx;
     using UnityEngine;
 
     [Serializable]
@@ -22,9 +23,10 @@ namespace UniGame.UiSystem.Runtime
 
         private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
 
-        private readonly IViewFactory _viewFactory;
+        private readonly IViewFactory         _viewFactory;
         private readonly IViewLayoutContainer _viewLayouts;
-        private readonly IViewFlowController _flowController;
+        private readonly IViewFlowController  _flowController;
+        private readonly Subject<IView>       _viewCreatedSubject;
 
         #endregion
 
@@ -33,14 +35,21 @@ namespace UniGame.UiSystem.Runtime
             IViewLayoutContainer viewLayouts,
             IViewFlowController flowController)
         {
-            _viewFactory = viewFactory;
-            _viewLayouts = viewLayouts;
-            _flowController = flowController;
+            _viewCreatedSubject = new Subject<IView>().AddTo(_lifeTimeDefinition);
             
+            _viewFactory        = viewFactory;
+            _viewLayouts        = viewLayouts;
+            _flowController     = flowController;
+
             _flowController.Activate(_viewLayouts);
         }
 
         public ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
+
+        /// <summary>
+        /// reactive views stream
+        /// </summary>
+        public IObservable<IView> ViewCreated => _viewCreatedSubject;
 
         /// <summary>
         /// terminate game view system lifetime
@@ -49,34 +58,40 @@ namespace UniGame.UiSystem.Runtime
 
         #region ui system api
 
-        public async UniTask<IView> Create(IViewModel viewModel, Type viewType,string skinTag = "", Transform parent = null, string viewName = null) 
+        public IObservable<TView> ObserveView<TView>()
+            where TView : IView
         {
-            return await CreateView(viewModel, viewType,skinTag, parent, viewName);
+            return ViewCreated.OfType<IView, TView>();
         }
-        
+
+        public async UniTask<IView> Create(IViewModel viewModel, Type viewType, string skinTag = "", Transform parent = null, string viewName = null)
+        {
+            return await CreateView(viewModel, viewType, skinTag, parent, viewName);
+        }
+
         public async UniTask<IView> OpenWindow(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
         {
-            return await OpenView<ViewBase>(viewModel,viewType, ViewType.Window, skinTag, viewName);
+            return await OpenView<ViewBase>(viewModel, viewType, ViewType.Window, skinTag, viewName);
         }
 
-        public async UniTask<IView> OpenScreen(IViewModel viewModel,Type viewType, string skinTag = "", string viewName = null)
+        public async UniTask<IView> OpenScreen(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
         {
-            return await OpenView<ViewBase>(viewModel,viewType, ViewType.Screen, skinTag, viewName);
+            return await OpenView<ViewBase>(viewModel, viewType, ViewType.Screen, skinTag, viewName);
         }
 
-        public async UniTask<IView> OpenOverlay(IViewModel viewModel,Type viewType, string skinTag = "", string viewName = null) 
+        public async UniTask<IView> OpenOverlay(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
         {
-            return await OpenView<ViewBase>(viewModel,viewType, ViewType.Overlay, skinTag, viewName);
+            return await OpenView<ViewBase>(viewModel, viewType, ViewType.Overlay, skinTag, viewName);
         }
-        
+
         public T Get<T>() where T : Component, IView
         {
-            foreach (var controller in _viewLayouts.Controllers)
-            {
+            foreach (var controller in _viewLayouts.Controllers) {
                 var v = controller.Get<T>();
                 if (v != null)
                     return v;
             }
+
             return null;
         }
 
@@ -89,7 +104,7 @@ namespace UniGame.UiSystem.Runtime
         public IEnumerable<IViewLayout> Controllers => _viewLayouts.Controllers;
 
         public IViewLayout GetLayout(ViewType type) => _viewLayouts.GetLayout(type);
-        
+
         #endregion
 
         public void CloseAll()
@@ -113,13 +128,13 @@ namespace UniGame.UiSystem.Runtime
             Transform parent = null,
             string viewName = null)
         {
-            var view = (await _viewFactory.Create(viewType,skinTag, parent, viewName));
+            var view = (await _viewFactory.Create(viewType, skinTag, parent, viewName));
 
             await InitializeView(view, viewModel);
 
             return view;
         }
-        
+
         /// <summary>
         /// create new view element
         /// </summary>
@@ -132,7 +147,7 @@ namespace UniGame.UiSystem.Runtime
             IViewModel viewModel,
             string skinTag = "",
             Transform parent = null)
-            where T : class,IView
+            where T : class, IView
         {
             var view = await CreateView(viewModel, typeof(T), skinTag, parent) as T;
             return view;
@@ -154,7 +169,7 @@ namespace UniGame.UiSystem.Runtime
             var layout = _viewLayouts.GetLayout(layoutType);
             var parent = layout?.Layout;
 
-            var view = await CreateView(viewModel,viewType, skinTag, parent);
+            var view = await CreateView(viewModel, viewType, skinTag, parent);
 
             layout?.Push(view);
 
@@ -167,14 +182,17 @@ namespace UniGame.UiSystem.Runtime
         private async UniTask<T> InitializeView<T>(T view, IViewModel viewModel)
             where T : IView
         {
-            if(view is ILayoutFactoryView factoryView)
+            if (view is ILayoutFactoryView factoryView)
                 factoryView.BindLayout(this);
-            
+
             await view.Initialize(viewModel);
-            
-            //destroy view when lifetime  terminated
+
+            //destroy view when lifetime terminated
             var viewLifeTime = view.LifeTime;
             viewLifeTime.AddCleanUpAction(() => Destroy(view));
+
+            //fire view data
+            _viewCreatedSubject.OnNext(view);
 
             return view;
         }
@@ -182,7 +200,7 @@ namespace UniGame.UiSystem.Runtime
         private void Destroy(IView view)
         {
             view.Destroy();
-            
+
             //TODO move to pool
             var asset = view as Component;
 
@@ -192,7 +210,6 @@ namespace UniGame.UiSystem.Runtime
             }
         }
 
-
         #endregion
- }
+    }
 }

@@ -7,11 +7,9 @@ namespace UniGame.UiSystem.Runtime
     using Abstracts;
     using Cysharp.Threading.Tasks;
     using Settings;
-    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
     using UniGreenModules.UniGame.UiSystem.Runtime;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     
-
     public class GameViewSystemAsset : MonoBehaviour, IGameViewSystem
     {
         
@@ -32,13 +30,17 @@ namespace UniGame.UiSystem.Runtime
 
         #region view system api
 
-        public IGameViewSystem ViewSystem => gameViewSystem ?? (gameViewSystem = Create());
+        public IObservable<IView> ViewCreated => ViewSystem.ViewCreated;
+        
+        public IGameViewSystem    ViewSystem  => gameViewSystem ?? (gameViewSystem = Create());
 
         public ILifeTime LifeTime => ViewSystem.LifeTime;
 
         public IEnumerable<IViewLayout> Controllers => ViewSystem.Controllers;
         
         public IReadOnlyViewLayout this[ViewType type] => ViewSystem[type];
+
+        public IObservable<TView> ObserveView<TView>() where TView : IView => ViewSystem.ObserveView<TView>();
 
         public UniTask<IView> Create(IViewModel viewModel, Type viewType, string skinTag = "", Transform parent = null, string viewName = null) => ViewSystem.Create(viewModel, viewType, skinTag, parent, viewName);
 
@@ -81,5 +83,6 @@ namespace UniGame.UiSystem.Runtime
 
             return new GameViewSystem(factory, viewLayoutContainer, sceneFlowController);
         }
+
     }
 }
