@@ -6,7 +6,8 @@
     using UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniGame.UiSystem.Runtime.Extensions;
     using UniRx;
-    
+    using UnityEngine;
+
 
     public abstract class UiView<TViewModel> :
         ViewBase, 
@@ -16,10 +17,13 @@
         /// model container
         /// </summary>
         private ReactiveProperty<TViewModel> _viewModel = new ReactiveProperty<TViewModel>();
+        private CanvasGroup   _canvasGroup;
 
         #region public properties
 
         public TViewModel Model => _viewModel.Value;
+
+        public virtual CanvasGroup CanvasGroup => (_canvasGroup = _canvasGroup ?? GetComponent<CanvasGroup>());
 
         #endregion
 

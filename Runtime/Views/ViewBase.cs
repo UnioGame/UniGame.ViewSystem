@@ -34,6 +34,7 @@
         #endregion
 
         private RectTransform _rectTransform;
+        private Transform _transform;
         
         private readonly LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
         private readonly LifeTimeDefinition _progressLifeTime = new LifeTimeDefinition();
@@ -53,6 +54,8 @@
         
         #region public properties
 
+        public GameObject Owner => gameObject;
+        
         /// <summary>
         /// View LifeTime
         /// </summary>
@@ -61,10 +64,16 @@
         /// <summary>
         /// view transform
         /// </summary>
-        public RectTransform RectTransform => _rectTransform != null ? 
+        public virtual RectTransform RectTransform => _rectTransform != null ? 
             _rectTransform:
             _rectTransform = transform as RectTransform;
 
+        
+        /// <summary>
+        /// view transform
+        /// </summary>
+        public virtual Transform Transform => (_transform = _transform ?? transform);
+        
         /// <summary>
         /// views layout
         /// </summary>
@@ -85,7 +94,7 @@
 
         public bool IsTerminated { get; private set; }
 
-        public IViewModel Context { get; private set; }
+        public IViewModel ViewModel { get; private set; }
 
         #endregion public properties
 
@@ -125,6 +134,7 @@
             await OnInitialize(model);
         }
 
+        
         /// <summary>
         /// show active view
         /// </summary>
@@ -148,6 +158,41 @@
         {
             var result = this.Bind(source, action);
             return result;
+        }
+        
+        /// <summary>
+        /// add new child view to active view item
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="worldPositionStays"></param>
+        /// <returns>return current view</returns>
+        public virtual IView AddView(IView view, bool worldPositionStays = false)
+        {
+            if (view == null)
+                return this;
+
+            var viewTransform = view.Transform;
+            if (viewTransform == null || viewTransform.parent == this.transform)
+                return this;
+
+            view.Owner.layer = Owner.layer;
+            viewTransform.SetParent(this.transform, worldPositionStays);
+            return this;
+        }
+
+        /// <summary>
+        /// add new child view to active view item
+        /// </summary>
+        /// <returns>created view</returns>
+        public virtual async UniTask<IView> CreateView<TView>(IViewModel viewModel, string skinTag = "")
+            where TView : class,IView
+        {
+            if (viewModel == null)
+                return null;
+
+            var view = await Layout.Create<TView>(viewModel, LifeTime, skinTag, Transform);
+
+            return view;
         }
 
         #endregion public methods
@@ -236,7 +281,7 @@
 
         private void InitializeHandlers(IViewModel model)
         {
-            Context = model;
+            ViewModel = model;
             IsTerminated = false;
 
             _isVisible = _visibility.Value;
@@ -285,7 +330,7 @@
             _lifeTimeDefinition.AddCleanUpAction(() => {
                 _progressLifeTime.Release();
                 IsTerminated = true;
-                Context      = null;
+                ViewModel      = null;
                 _status.SetValueForce(ViewStatus.Closed);
                 _status.Release();
                 _visibility.Release();

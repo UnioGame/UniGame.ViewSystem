@@ -19,7 +19,7 @@ namespace UniGame.UiSystem.Runtime
         public IAddressableObservable<Component> LoadViewAsync(Type viewType,
             string skinTag = null,
             bool strongMatching = true,
-            string viewName = null)
+            string viewName = "")
         {
             var items = FindItemsByType(viewType, strongMatching);
 
@@ -27,8 +27,7 @@ namespace UniGame.UiSystem.Runtime
                 x => (string.IsNullOrEmpty(skinTag) ||
                      string.Equals(x.Tag, skinTag, StringComparison.InvariantCultureIgnoreCase)) &&
                     (string.IsNullOrEmpty(viewName) ||
-                     string.Equals(x.ViewName, viewName, StringComparison.InvariantCultureIgnoreCase))
-                     );
+                     string.Equals(x.ViewName, viewName, StringComparison.InvariantCultureIgnoreCase)));
 
             //return collection to pool
             items.Despawn();

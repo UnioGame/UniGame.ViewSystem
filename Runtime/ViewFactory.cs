@@ -22,7 +22,11 @@ namespace UniGame.UiSystem.Runtime
             resourceProvider = viewResourceProvider;
         }
 
-        public async UniTask<IView> Create(Type viewType, string skinTag = "", Transform parent = null, string viewName = null) 
+        public async UniTask<IView> Create(Type viewType, 
+            string skinTag = "", 
+            Transform parent = null, 
+            string viewName = "",
+            bool stayWorldPosition = false) 
         {
             var viewObservable = resourceProvider.
                 LoadViewAsync(viewType,skinTag, viewName:viewName);
@@ -30,7 +34,7 @@ namespace UniGame.UiSystem.Runtime
             //load View resource
             var result = await viewObservable.First();
             //create view instance
-            var view = Create(result, parent);
+            var view = Create(result, parent,stayWorldPosition);
             
             //if loading failed release resource immediately
             if (view == null) {
@@ -46,12 +50,12 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// create view instance
         /// </summary>
-        protected virtual IView Create(Component asset, Transform parent = null)
+        protected virtual IView Create(Component asset, Transform parent = null, bool stayPosition = false)
         {
             if (asset == null) return null;
             //create instance of view
             var view = Object.
-                Instantiate(asset.gameObject, parent).
+                Instantiate(asset.gameObject, parent,stayPosition).
                 GetComponent<IView>();
             return view;
         }

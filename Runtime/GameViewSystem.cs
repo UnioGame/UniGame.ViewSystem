@@ -64,9 +64,9 @@ namespace UniGame.UiSystem.Runtime
             return ViewCreated.OfType<IView, TView>();
         }
 
-        public async UniTask<IView> Create(IViewModel viewModel, Type viewType, string skinTag = "", Transform parent = null, string viewName = null)
+        public async UniTask<IView> Create(IViewModel viewModel, Type viewType, string skinTag = "", Transform parent = null, string viewName = null, bool stayWorld = false)
         {
-            return await CreateView(viewModel, viewType, skinTag, parent, viewName);
+            return await CreateView(viewModel, viewType, skinTag, parent, viewName,stayWorld);
         }
 
         public async UniTask<IView> OpenWindow(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
@@ -126,9 +126,10 @@ namespace UniGame.UiSystem.Runtime
             Type viewType,
             string skinTag = "",
             Transform parent = null,
-            string viewName = null)
+            string viewName = null,
+            bool stayWorld = false)
         {
-            var view = (await _viewFactory.Create(viewType, skinTag, parent, viewName));
+            var view = (await _viewFactory.Create(viewType, skinTag, parent, viewName,stayWorld));
 
             await InitializeView(view, viewModel);
 
@@ -146,10 +147,11 @@ namespace UniGame.UiSystem.Runtime
         public async UniTask<T> CreateView<T>(
             IViewModel viewModel,
             string skinTag = "",
-            Transform parent = null)
+            Transform parent = null,
+            bool stayWorld = false)
             where T : class, IView
         {
-            var view = await CreateView(viewModel, typeof(T), skinTag, parent) as T;
+            var view = await CreateView(viewModel, typeof(T), skinTag, parent,String.Empty,stayWorld) as T;
             return view;
         }
 
