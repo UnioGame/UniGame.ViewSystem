@@ -24,12 +24,8 @@ namespace UniGame.UiSystem.Runtime.Settings
         [Space(2)]
         [STypeFilter(typeof(IView))]
         public SType Type;
-
-#if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.DrawWithUnity]
-#endif
+        
         [Space(2)]
-        [ShowAssetReference]
         public AssetReferenceGameObject View;
 
 #if ODIN_INSPECTOR
