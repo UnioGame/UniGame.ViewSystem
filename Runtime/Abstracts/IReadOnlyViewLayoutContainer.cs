@@ -10,6 +10,6 @@
         /// </summary>
         IReadOnlyViewLayout this[ViewType type] { get; }
 
-        TView Get<TView>()  where TView : Component, IView;
+        TView Get<TView>()  where TView : class,IView;
     }
 }

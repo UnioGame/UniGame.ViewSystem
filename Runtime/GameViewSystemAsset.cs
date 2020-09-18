@@ -40,7 +40,7 @@ namespace UniGame.UiSystem.Runtime
         
         public IReadOnlyViewLayout this[ViewType type] => ViewSystem[type];
 
-        public IObservable<TView> ObserveView<TView>() where TView : IView => ViewSystem.ObserveView<TView>();
+        public IObservable<TView> ObserveView<TView>() where  TView :class, IView => ViewSystem.ObserveView<TView>();
 
         public UniTask<IView> Create(IViewModel viewModel, Type viewType, string skinTag = "", Transform parent = null, string viewName = null, bool stayWorld = false) =>
             ViewSystem.Create(viewModel, viewType, skinTag, parent, viewName,stayWorld);
@@ -53,7 +53,7 @@ namespace UniGame.UiSystem.Runtime
 
         public IViewLayout GetLayout(ViewType type) => ViewSystem.GetLayout(type);
 
-        public T Get<T>() where T : Component, IView
+        public T Get<T>() where T : class, IView
         {
             return ViewSystem.Get<T>();
         }

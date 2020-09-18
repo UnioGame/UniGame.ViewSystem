@@ -5,7 +5,7 @@ namespace UniGame.UiSystem.Runtime
 
     public interface IViewLayoutData
     {
-        IObservable<TView> ObserveView<TView>() where TView : IView;
+        IObservable<TView> ObserveView<TView>() where TView :class, IView;
 
         IObservable<IView> ViewCreated { get; }
 

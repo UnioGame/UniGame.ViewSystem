@@ -10,6 +10,7 @@ namespace UniGame.UiSystem.Runtime
     using Cysharp.Threading.Tasks;
     using UniGreenModules.UniCore.Runtime.DataFlow;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
+    using UniGreenModules.UniGame.Core.Runtime.Rx;
     using UniGreenModules.UniGame.UiSystem.Runtime;
     using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
@@ -59,8 +60,14 @@ namespace UniGame.UiSystem.Runtime
         #region ui system api
 
         public IObservable<TView> ObserveView<TView>()
-            where TView : IView
+            where TView :class, IView
         {
+            // var reactiveValue = new RecycleReactiveProperty<TView>();
+            // var view          = Get<TView>();
+            // if (view != null) {
+            //     reactiveValue.Value = view;
+            // }
+            //
             return ViewCreated.OfType<IView, TView>();
         }
 
@@ -84,7 +91,7 @@ namespace UniGame.UiSystem.Runtime
             return await OpenView<ViewBase>(viewModel, viewType, ViewType.Overlay, skinTag, viewName);
         }
 
-        public T Get<T>() where T : Component, IView
+        public T Get<T>() where T :class, IView
         {
             foreach (var controller in _viewLayouts.Controllers) {
                 var v = controller.Get<T>();

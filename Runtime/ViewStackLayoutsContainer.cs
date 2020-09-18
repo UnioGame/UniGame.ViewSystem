@@ -26,12 +26,12 @@ namespace UniGame.UiSystem.Runtime
         public IReadOnlyViewLayout this[ViewType type] => GetLayout(type);
 
         
-        public TView Get<TView>()  where TView : Component, IView
+        public TView Get<TView>()  where TView : class, IView
         {
             foreach (var viewLayout in _viewControllers) {
                 var layout = viewLayout.Value;
                 var view = layout.Get<TView>();
-                if (view) return view;
+                if (view!=null) return view;
             }
 
             return null;
