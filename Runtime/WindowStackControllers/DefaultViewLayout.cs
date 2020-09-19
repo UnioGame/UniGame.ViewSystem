@@ -64,7 +64,7 @@
             Remove(view);
             Add(view);
             //show view if it inactive
-            if(view.IsActive.Value == false)
+            if(view.IsVisible.Value == false)
                 view.Show();
 
             if(_background != null && _background.Status.Value != ViewStatus.Shown) {

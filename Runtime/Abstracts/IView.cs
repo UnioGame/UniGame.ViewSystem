@@ -16,7 +16,7 @@
         /// </summary>
         GameObject Owner { get; }
 
-        IReadOnlyReactiveProperty<bool> IsActive { get; }
+        IReadOnlyReactiveProperty<bool> IsVisible { get; }
 
         /// <summary>
         /// view rect transform

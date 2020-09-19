@@ -46,7 +46,7 @@ namespace UniGame.UiSystem.Examples.BaseUiManager.Scripts
                 return;
             }
 
-            if (view.IsActive.Value) {
+            if (view.IsVisible.Value) {
                 view.Hide();
             }
             else {
@@ -80,7 +80,7 @@ namespace UniGame.UiSystem.Examples.BaseUiManager.Scripts
                 text.text = $"Open {index}";
                 return;
             }
-            text.text = view.IsActive.Value
+            text.text = view.IsVisible.Value
                 ? $"Hide {index}"
                 : $"Show {index}";
         }

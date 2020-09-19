@@ -41,15 +41,20 @@ namespace UniGame.UiSystem.Runtime
         
         #endregion
 
+        public sealed override CanvasGroup CanvasGroup => canvasGroup;
+        
+
         protected sealed override async UniTask OnInitialize(TWindowModel model)
         {
             await base.OnInitialize(model);
 
-            IsActive.Where(x => x).
+            IsVisible.
+                Where(x => x).
                 Subscribe(x => canvasGroup.SetState(visibleState)).
                 AddTo(LifeTime);
             
-            IsActive.Where(x => !x).
+            IsVisible.
+                Where(x => !x).
                 Subscribe(x => canvasGroup.SetState(hiddenState)).
                 AddTo(LifeTime);
 

@@ -93,7 +93,7 @@ namespace UniGame.UiSystem.Examples.BaseUiManager.Scripts
                 return;
             }
 
-            if (view.IsActive.Value) {
+            if (view.IsVisible.Value) {
                 status.text = "SHOWN";
             }
             else {

@@ -90,7 +90,7 @@
         /// <summary>
         /// Is View Active
         /// </summary>
-        public IReadOnlyReactiveProperty<bool> IsActive => _visibility;
+        public IReadOnlyReactiveProperty<bool> IsVisible => _visibility;
 
         public bool IsTerminated { get; private set; }
 
@@ -294,7 +294,7 @@
                 Subscribe(x => OnStatusUpdate()).
                 AddTo(_lifeTimeDefinition);
             
-            OnStatusUpdate();
+            //OnStatusUpdate();
         }
         
         private void BindLifeTimeActions(IViewModel model)
