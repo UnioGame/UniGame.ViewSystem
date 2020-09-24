@@ -3,7 +3,6 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime.Settings
     using System;
     using System.Collections.Generic;
     using AddressableTools.Runtime.Attributes;
-    using Sirenix.OdinInspector;
     using UnityEngine.AddressableAssets;
 
     [Serializable]

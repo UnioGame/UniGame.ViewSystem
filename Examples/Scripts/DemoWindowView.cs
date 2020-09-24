@@ -2,10 +2,8 @@
 {
     using System.Collections;
     using Cysharp.Threading.Tasks;
-    using DG.Tweening;
     using Runtime;
     using Runtime.Abstracts;
-    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Examples.Scripts;
     
@@ -17,14 +15,11 @@
         public float hideTime = 3f;
 
         public RectTransform demoControlParent;
-        
-        private Tween animationTween;
 
         protected override async UniTask OnViewInitialize(IViewModel view)
         {
             await base.OnViewInitialize(view);
             
-            LifeTime.AddCleanUpAction(() => animationTween?.Complete());
             Layout.Create<DemoControlView>(new DemoControlViewModel(),parent:demoControlParent);
         }
         
@@ -40,17 +35,17 @@
 
         private IEnumerator PlayFade(ILifeTime progress,float fromAlpha,float toAlpha, float duration)
         {
-            animationTween?.Complete();
-            
             canvasGroup.alpha = fromAlpha;
-            
-            animationTween = canvasGroup.
-                DOFade(toAlpha,duration).
-                SetEase(Ease.Linear);
 
-            while (progress.IsTerminated == false && animationTween.IsPlaying()) {
+            var animationTime = 0f;
+            while (animationTime < duration)
+            {
+                var timeProgression = duration <= 0 ? 1 : animationTime / duration;
+                canvasGroup.alpha =  Mathf.Lerp(fromAlpha, toAlpha, timeProgression);
+                animationTime     += Time.deltaTime;
                 yield return null;
             }
+
         }
     }
 }
