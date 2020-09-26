@@ -32,7 +32,7 @@
             return paths;
         }        
         
-        [MenuItem("UniGame/UI System/Rebuild ModelsViewsSettings")]
+        [MenuItem("UniGame/View System/Rebuild ModelsViewsSettings")]
         public static void Rebuild()
         {
             var settings = AssetEditorTools.

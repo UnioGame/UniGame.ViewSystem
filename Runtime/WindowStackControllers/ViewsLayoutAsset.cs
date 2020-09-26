@@ -87,6 +87,7 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
             IBackgroundView backgroundView = null;
             if (_backgroundFactory != null) {
                 backgroundView = _backgroundFactory.Create();
+                backgroundView.Hide();
             }
             
             if(_layoutBehaviourFactory == null)
