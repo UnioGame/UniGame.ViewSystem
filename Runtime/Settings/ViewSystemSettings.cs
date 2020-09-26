@@ -17,7 +17,7 @@
     /// <summary>
     /// Base View system settings. Contains info about all available view abd type info
     /// </summary>
-    [CreateAssetMenu(menuName = "UniGame/UiSystem/UiSystemSettings", fileName = "UiSystemSettings")]
+    [CreateAssetMenu(menuName = "UniGame/ViewSystem/UiSystemSettings", fileName = nameof(ViewSystemSettings))]
     public class ViewSystemSettings : ViewsSettings
     {
         [SerializeField]

@@ -6,7 +6,7 @@
     using global::UniGame.UiSystem.Runtime.Backgrounds.Abstract;
     using UnityEngine;
 
-    [CreateAssetMenu(menuName = "UniGame/UiSystem/DefaultViewLayoutFactory", fileName = "DefaultViewLayoutFactory")]
+    [CreateAssetMenu(menuName = "UniGame/ViewSystem/DefaultViewLayoutFactory", fileName = "DefaultViewLayoutFactory")]
     public class DefaultViewLayoutFactory : ViewLayoutFactoryAbstract
     {
         public override IViewLayout Create(Transform canvasPoint, IBackgroundView backgroundView)

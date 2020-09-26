@@ -12,7 +12,7 @@
     using Object = UnityEngine.Object;
 
     [Serializable]
-    [CreateAssetMenu(menuName = "UniGame/UiSystem/UiSystemSource", fileName = "UiSystemSource")]
+    [CreateAssetMenu(menuName = "UniGame/ViewSystem/UiSystemSource", fileName = "UiSystemSource")]
     public class UiSystemSource : AsyncContextDataSource
     {
         [SerializeField] 

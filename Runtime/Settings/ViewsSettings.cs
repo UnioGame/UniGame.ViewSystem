@@ -3,7 +3,7 @@ namespace UniGame.UiSystem.Runtime.Settings
     using System.Collections.Generic;
     using UnityEngine;
 
-    [CreateAssetMenu(menuName = "UniGame/UiSystem/UiViewsSettings", fileName = "UiViewsSettings")]
+    [CreateAssetMenu(menuName = "UniGame/ViewSystem/UiViewsSettings", fileName = "UiViewsSettings")]
     public class ViewsSettings : ScriptableObject
     {
         public string sourceName;
