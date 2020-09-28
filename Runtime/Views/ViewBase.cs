@@ -59,7 +59,7 @@
         /// <summary>
         /// View LifeTime
         /// </summary>
-        public ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
+        public ILifeTime LifeTime => _lifeTimeDefinition;
 
         /// <summary>
         /// view transform
@@ -118,15 +118,15 @@
 
         public async UniTask Initialize(IViewModel model)
         {
+            //restart view lifetime
+            _viewModelLifeTime.Release();
+            _progressLifeTime.Release();
+
             //calls one per lifetime
             if (!_isInitialized) {
                 InitialSetup();
                 OnAwake();
             }
-
-            //restart view lifetime
-            _viewModelLifeTime.Release();
-            _progressLifeTime.Release();
 
             InitializeHandlers(model);
             
@@ -294,7 +294,7 @@
             _visibility.
                 Subscribe(x => OnStatusUpdate()).
                 AddTo(_lifeTimeDefinition);
-            
+
             //OnStatusUpdate();
         }
         
@@ -327,12 +327,14 @@
         {
             _isInitialized = true;
             _status.Value  = ViewStatus.None;
-            _lifeTimeDefinition.AddCleanUpAction(_viewModelLifeTime.Release);
-            _lifeTimeDefinition.AddCleanUpAction(() => _status.Value = ViewStatus.None);
             
-            _lifeTimeDefinition.AddCleanUpAction(() => {
-                _progressLifeTime.Release();
-                IsTerminated = true;
+            _viewModelLifeTime.AddTo(LifeTime);
+            _progressLifeTime.AddTo(LifeTime);
+            
+            LifeTime.AddCleanUpAction(() => 
+            {
+                _isInitialized = false;
+                IsTerminated   = true;
                 ViewModel      = null;
                 _status.SetValueForce(ViewStatus.Closed);
                 _status.Release();
