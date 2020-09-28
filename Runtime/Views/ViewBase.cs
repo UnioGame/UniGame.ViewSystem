@@ -23,9 +23,6 @@
     {
         #region inspector
 
-        [SerializeField]
-        private bool _defaultVisivility = true;
-        
         [ReadOnlyValue]
         [SerializeField]
         private bool _isVisible;
@@ -288,7 +285,6 @@
             ViewModel = model;
             IsTerminated = false;
             
-            _visibility.Value = _defaultVisivility;
             _isVisible        = _visibility.Value;
             
             _visibility.
@@ -299,7 +295,7 @@
                 Subscribe(x => OnStatusUpdate()).
                 AddTo(_lifeTimeDefinition);
             
-            OnStatusUpdate();
+            //OnStatusUpdate();
         }
         
         private void BindLifeTimeActions(IViewModel model)
@@ -330,7 +326,9 @@
         private void InitialSetup()
         {
             _isInitialized = true;
+            _status.Value  = ViewStatus.None;
             _lifeTimeDefinition.AddCleanUpAction(_viewModelLifeTime.Release);
+            _lifeTimeDefinition.AddCleanUpAction(() => _status.Value = ViewStatus.None);
             
             _lifeTimeDefinition.AddCleanUpAction(() => {
                 _progressLifeTime.Release();
