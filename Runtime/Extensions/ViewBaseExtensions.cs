@@ -94,12 +94,14 @@
             if (view == null)
                 throw new ArgumentNullException(nameof(source));
 
-            var viewTransform = source.transform;
-            if (viewTransform == null || viewTransform.parent == view.transform)
+            var viewTransform = view.transform;
+            var sourceTransform = source.transform;
+            
+            if (viewTransform == null || sourceTransform.parent == viewTransform)
                 throw new InvalidOperationException("Cannot add view as a child because it's the parent!");
 
             view.Owner.layer = source.Owner.layer;
-            viewTransform.SetParent(source.transform, worldPositionStays);
+            viewTransform.SetParent(sourceTransform, worldPositionStays);
         }
     }
 }

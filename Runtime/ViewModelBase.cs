@@ -7,18 +7,16 @@
 
     public class ViewModelBase : IViewModel
     {
-        private LifeTimeDefinition  lifeTimeDefinition = new LifeTimeDefinition();
+        private readonly LifeTimeDefinition   _lifeTimeDefinition = new LifeTimeDefinition();
+        private readonly BoolReactiveProperty _isActive           = new BoolReactiveProperty(true);
         
-        public BoolReactiveProperty isActive = new BoolReactiveProperty(true);
-        
-        public  ILifeTime LifeTime => lifeTimeDefinition.LifeTime;
+        public  ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
 
-        public IReadOnlyReactiveProperty<bool> IsActive => isActive;
+        public IReadOnlyReactiveProperty<bool> IsActive => _isActive;
 
         public void Dispose()
         {
-            lifeTimeDefinition.Terminate();
+            _lifeTimeDefinition.Terminate();
         }
-
     }
 }
