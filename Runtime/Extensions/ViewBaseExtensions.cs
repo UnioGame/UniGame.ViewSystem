@@ -87,21 +87,36 @@
         /// <param name="view"></param>
         /// <param name="worldPositionStays"></param>
         /// <returns>Return current view.</returns>
-        public static void AddView<T>(this ViewBase source, T view, bool worldPositionStays = false) where T : ViewBase
+        public static void AddAsChild<T>(this ViewBase source, T view, bool worldPositionStays = false) where T : ViewBase
+        {
+            var sourceTransform = source.transform;
+
+            AddAsChild(source, view, sourceTransform, worldPositionStays);
+        }
+
+        /// <summary>
+        /// Add new child view to active view item.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="view"></param>
+        /// <param name="newParent"></param>
+        /// <param name="worldPositionStays"></param>
+        /// <returns>Return current view.</returns>
+        public static void AddAsChild<T>(this ViewBase source, T view, Transform newParent, bool worldPositionStays = false) where T : ViewBase
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
             if (view == null)
                 throw new ArgumentNullException(nameof(source));
-
-            var viewTransform = view.transform;
-            var sourceTransform = source.transform;
             
-            if (viewTransform == null || sourceTransform.parent == viewTransform)
+            var viewTransform  = view.transform;
+
+            if (viewTransform == null || viewTransform.parent == newParent)
                 throw new InvalidOperationException("Cannot add view as a child because it's the parent!");
 
             view.Owner.layer = source.Owner.layer;
-            viewTransform.SetParent(sourceTransform, worldPositionStays);
+            viewTransform.SetParent(newParent, worldPositionStays);
+            viewTransform.localScale = Vector3.one;
         }
     }
 }
