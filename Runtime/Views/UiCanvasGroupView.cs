@@ -1,9 +1,9 @@
 namespace UniGame.UiSystem.Runtime
 {
-    using Abstracts;
     using Cysharp.Threading.Tasks;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
     using UniGreenModules.UniUiSystem.Runtime.Utils;
+    using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniRx;
     
     using UnityEngine;

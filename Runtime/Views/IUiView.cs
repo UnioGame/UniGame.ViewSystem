@@ -1,12 +1,10 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
-    using Abstracts;
-    using UnityEngine;
+    using UniModules.UniGame.UISystem.Runtime.Abstract;
 
     public interface IUiView<TViewModel> : IView
         where TViewModel : class, IViewModel
     {
-        CanvasGroup   CanvasGroup   { get; }
         TViewModel    Model         { get; }
     }
 }

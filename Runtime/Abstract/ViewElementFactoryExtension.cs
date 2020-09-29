@@ -1,8 +1,7 @@
-﻿namespace UniGame.UiSystem.Runtime
+﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
-    using Abstracts;
+    using Core.Runtime.DataFlow.Interfaces;
     using Cysharp.Threading.Tasks;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UnityEngine;
 
     public static class ViewElementFactoryExtension

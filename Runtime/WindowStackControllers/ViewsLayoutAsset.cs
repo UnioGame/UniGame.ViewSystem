@@ -4,10 +4,10 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 {
     using System;
     using System.Collections.Generic;
-    using Abstracts;
     using Backgrounds.Abstract;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime;
+    using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract;
     using UniRx;
 

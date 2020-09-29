@@ -1,9 +1,8 @@
-﻿namespace UniGame.UiSystem.Runtime.Abstracts
+﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
     using System;
     using System.Collections.Generic;
-    using Addressables.Reactive;
-    using Object = UnityEngine.Object;
+    using global::UniGame.Addressables.Reactive;
 
     /// <summary>
     /// Providing views by specified type and skin

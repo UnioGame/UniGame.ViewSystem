@@ -1,8 +1,6 @@
-﻿namespace UniModules.UniGame.UISystem.Runtime.Abstracts
+﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
     using Cysharp.Threading.Tasks;
-    using global::UniGame.UiSystem.Runtime.Abstracts;
-    
 
     public interface IViewProvider
     {

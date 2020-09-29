@@ -1,7 +1,6 @@
-namespace UniGame.UiSystem.Runtime
+namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
     using System;
-    using Abstracts;
 
     public interface IViewLayoutData
     {

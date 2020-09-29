@@ -1,7 +1,7 @@
 ﻿namespace UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager
 {
     using global::UniGame.UiSystem.Runtime;
-    using global::UniGame.UiSystem.Runtime.Abstracts;
+    using UniModules.UniGame.UISystem.Runtime.Abstract;
 
     public class DemoScreenView : WindowView<IViewModel>
     {

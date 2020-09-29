@@ -57,6 +57,5 @@ namespace UniGreenModules.UniGame.UiSystem.Runtime.Extensions
                 AddTo(view.LifeTime);
             return view;
         }
-
     }
 }

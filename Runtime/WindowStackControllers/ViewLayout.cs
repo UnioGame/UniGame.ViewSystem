@@ -4,7 +4,6 @@ namespace UniGame.UiSystem.Runtime
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Abstracts;
     using Backgrounds.Abstract;
     using UniGreenModules.UniCore.Runtime.DataFlow;
     using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime;
@@ -12,6 +11,7 @@ namespace UniGame.UiSystem.Runtime
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime;
+    using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniRx;
     using UnityEngine;
 

@@ -1,9 +1,8 @@
-﻿namespace UniGame.UiSystem.Runtime
+﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
     using System;
-    using Abstracts;
+    using Core.Runtime.Interfaces;
     using Cysharp.Threading.Tasks;
-    using UniModules.UniGame.Core.Runtime.Interfaces;
 
     public interface IViewLayoutProvider : 
         ILifeTimeContext, 

@@ -3,12 +3,11 @@
 namespace UniGame.UiSystem.Runtime
 {
     using System;
-    using Abstracts;
     using Addressables.Reactive;
     using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniCore.Runtime.Rx.Extensions;
-    using UniGreenModules.UniGame.UiSystem.Runtime.Abstracts;
+    using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniRx;
     
     using Object = UnityEngine.Object;

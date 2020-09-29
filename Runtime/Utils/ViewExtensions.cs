@@ -1,9 +1,7 @@
 ﻿namespace UniModules.UniGame.UISystem.Runtime.Utils
 {
-    using Abstracts;
+    using Abstract;
     using Cysharp.Threading.Tasks;
-    using global::UniGame.UiSystem.Runtime.Abstracts;
-    
     using UnityEngine;
 
     public static class ViewExtensions

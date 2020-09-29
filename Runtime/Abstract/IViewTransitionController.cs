@@ -1,9 +1,7 @@
-﻿namespace UniGame.UiSystem.Runtime
+﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
     using System;
-    using Abstracts;
-    using UniGreenModules.UniCore.Runtime.Interfaces;
-    using UniModules.UniGame.Core.Runtime.Interfaces;
+    using Core.Runtime.Interfaces;
 
     public interface IViewFlowController : 
         IDisposable,

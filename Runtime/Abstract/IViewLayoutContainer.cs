@@ -1,4 +1,4 @@
-﻿namespace UniGame.UiSystem.Runtime.Abstracts
+﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
     using System.Collections.Generic;
     using UniGreenModules.UniGame.UiSystem.Runtime;

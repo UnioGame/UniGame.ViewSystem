@@ -5,11 +5,11 @@ namespace UniGame.UiSystem.Runtime
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Abstracts;
     using Addressables.Reactive;
     using Settings;
     using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime;
     using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
+    using UniModules.UniGame.UISystem.Runtime.Abstract;
     using Object = UnityEngine.Object;
 
     public class UiResourceProvider : IViewResourceProvider<Component>

@@ -1,6 +1,5 @@
-namespace UniGame.UiSystem.Runtime
+namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
-    using Abstracts;
     using Cysharp.Threading.Tasks;
 
     public static class ViewLayoutProviderExtension
