@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace UniGame.UiSystem.Examples.ConcurrentViewLoading
 {
+    using UniModules.UniGame.UISystem.Runtime.Abstract;
+
     public class ConcurrentDemoStart : MonoBehaviour
     {
         public GameViewSystemAsset viewSystem;

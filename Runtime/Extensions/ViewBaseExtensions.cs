@@ -1,8 +1,9 @@
-﻿namespace UniModules.UniGame.UISystem.Runtime
+﻿namespace UniModules.UniGame.UISystem.Runtime.Extensions
 {
+    using System;
+    using Abstract;
     using Cysharp.Threading.Tasks;
     using global::UniGame.UiSystem.Runtime;
-    using global::UniGame.UiSystem.Runtime.Abstracts;
     using UnityEngine;
 
     public static class ViewBaseExtensions
@@ -17,7 +18,7 @@
         /// <param name="viewName"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static async UniTask<T> CreateView<T>(this ViewBase source, IViewModel viewModel, string skinTag = null, Transform parent = null, string viewName = null) 
+        public static async UniTask<T> CreateViewAsync<T>(this ViewBase source, IViewModel viewModel, string skinTag = null, Transform parent = null, string viewName = null) 
             where T : class, IView
         {
             return await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName) as T;
@@ -32,7 +33,7 @@
         /// <param name="viewName"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static async UniTask<T> OpenAsWindow<T>(this ViewBase source, IViewModel viewModel, string skinTag = null, string viewName = null) 
+        public static async UniTask<T> OpenAsWindowAsync<T>(this ViewBase source, IViewModel viewModel, string skinTag = null, string viewName = null) 
             where T : class, IView
         {
             return await source.Layout.OpenWindow(viewModel, typeof(T), skinTag, viewName) as T;
@@ -47,7 +48,7 @@
         /// <param name="viewName"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static async UniTask<T> OpenAsScreen<T>(this ViewBase source, IViewModel viewModel, string skinTag = null, string viewName = null) 
+        public static async UniTask<T> OpenAsScreenAsync<T>(this ViewBase source, IViewModel viewModel, string skinTag = null, string viewName = null) 
             where T : class, IView
         {
             return await source.Layout.OpenScreen(viewModel, typeof(T), skinTag, viewName) as T;
@@ -62,7 +63,7 @@
         /// <param name="viewName"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static async UniTask<T> OpenAsOverlay<T>(this ViewBase source, IViewModel viewModel, string skinTag = null, string viewName = null) 
+        public static async UniTask<T> OpenAsOverlayAsync<T>(this ViewBase source, IViewModel viewModel, string skinTag = null, string viewName = null) 
             where T : class, IView
         {
             return await source.Layout.OpenOverlay(viewModel, typeof(T), skinTag, viewName) as T;
@@ -74,10 +75,31 @@
         /// <param name="source"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static T GetView<T>(this ViewBase source) 
-            where T : Component, IView
+        public static T GetView<T>(this ViewBase source) where T : Component, IView
         {
             return source.Layout.Get<T>();
+        }
+
+        /// <summary>
+        /// Add new child view to active view item.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="view"></param>
+        /// <param name="worldPositionStays"></param>
+        /// <returns>Return current view.</returns>
+        public static void AddView<T>(this ViewBase source, T view, bool worldPositionStays = false) where T : ViewBase
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (view == null)
+                throw new ArgumentNullException(nameof(source));
+
+            var viewTransform = source.transform;
+            if (viewTransform == null || viewTransform.parent == view.transform)
+                throw new InvalidOperationException("Cannot add view as a child because it's the parent!");
+
+            view.Owner.layer = source.Owner.layer;
+            viewTransform.SetParent(source.transform, worldPositionStays);
         }
     }
 }

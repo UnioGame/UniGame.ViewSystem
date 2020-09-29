@@ -1,4 +1,4 @@
-﻿namespace UniGame.UiSystem.Runtime.Abstracts
+﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
     using System;
 
@@ -13,6 +13,5 @@
         void CloseAll();
 
         void ShowLast();
-
     }
 }

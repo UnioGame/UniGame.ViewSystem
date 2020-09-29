@@ -7,6 +7,7 @@ namespace UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager
     using global::UniGame.UiSystem.Examples.BaseUiManager;
     using global::UniGame.UiSystem.Runtime;
     using UniCore.Runtime.DataFlow;
+    using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UnityEngine.AddressableAssets;
 
     public enum DemoUiType

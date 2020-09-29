@@ -1,7 +1,7 @@
-﻿namespace UniGame.UiSystem.Runtime.Abstracts
+﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
     using System;
-    using UniModules.UniGame.UISystem.Runtime;
+    using Runtime;
     using UniRx;
 
     public interface IViewStatus

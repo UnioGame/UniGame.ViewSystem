@@ -3,10 +3,9 @@
     using System.Collections;
     using Cysharp.Threading.Tasks;
     using Runtime;
-    using Runtime.Abstracts;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Examples.Scripts;
-    
+    using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UnityEngine;
 
     public class DemoWindowView : WindowView<IViewModel>

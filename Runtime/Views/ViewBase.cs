@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections;
-    using Abstracts;
     using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniCore.Runtime.Attributes;
@@ -13,6 +12,7 @@
     using UniGreenModules.UniRoutine.Runtime;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime;
+    using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniRx;
     
     using UnityEngine;
@@ -64,7 +64,7 @@
         /// <summary>
         /// view transform
         /// </summary>
-        public virtual RectTransform RectTransform => _rectTransform != null ? 
+        public RectTransform RectTransform => _rectTransform != null ? 
             _rectTransform:
             _rectTransform = transform as RectTransform;
 
@@ -72,7 +72,7 @@
         /// <summary>
         /// view transform
         /// </summary>
-        public virtual Transform Transform => (_transform = _transform ?? transform);
+        public Transform Transform => _transform = _transform ? _transform : transform;
         
         /// <summary>
         /// views layout
@@ -161,40 +161,7 @@
             return result;
         }
         
-        /// <summary>
-        /// add new child view to active view item
-        /// </summary>
-        /// <param name="view"></param>
-        /// <param name="worldPositionStays"></param>
-        /// <returns>return current view</returns>
-        public virtual IView AddView(IView view, bool worldPositionStays = false)
-        {
-            if (view == null)
-                return this;
-
-            var viewTransform = view.Transform;
-            if (viewTransform == null || viewTransform.parent == this.transform)
-                return this;
-
-            view.Owner.layer = Owner.layer;
-            viewTransform.SetParent(this.transform, worldPositionStays);
-            return this;
-        }
-
-        /// <summary>
-        /// add new child view to active view item
-        /// </summary>
-        /// <returns>created view</returns>
-        public virtual async UniTask<IView> CreateView<TView>(IViewModel viewModel, string skinTag = "")
-            where TView : class,IView
-        {
-            if (viewModel == null)
-                return null;
-
-            var view = await Layout.Create<TView>(viewModel, LifeTime, skinTag, Transform);
-
-            return view;
-        }
+        
 
         #endregion public methods
 
@@ -288,7 +255,7 @@
             _isVisible        = _visibility.Value;
             
             _visibility.
-                Subscribe(x => this._isVisible = x).
+                Subscribe(x => _isVisible = x).
                 AddTo(_lifeTimeDefinition);
 
             _visibility.

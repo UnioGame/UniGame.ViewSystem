@@ -1,14 +1,13 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
     using System;
-    using Abstracts;
     using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
     using UniGreenModules.UniGame.UiSystem.Runtime.Extensions;
+    using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniRx;
     using UnityEngine;
-
-
+    
     public abstract class UiView<TViewModel> :
         ViewBase, 
         IUiView<TViewModel> where TViewModel : class, IViewModel
@@ -23,7 +22,7 @@
 
         public TViewModel Model => _viewModel.Value;
 
-        public virtual CanvasGroup CanvasGroup => (_canvasGroup = _canvasGroup ?? GetComponent<CanvasGroup>());
+        public virtual CanvasGroup CanvasGroup => (_canvasGroup = _canvasGroup ? _canvasGroup : GetComponent<CanvasGroup>());
 
         #endregion
 

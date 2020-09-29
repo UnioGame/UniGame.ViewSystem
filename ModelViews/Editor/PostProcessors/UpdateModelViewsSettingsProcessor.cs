@@ -5,10 +5,10 @@
     using System.Linq;
     using ModelViewsMap.Runtime.Settings;
     using UiSystem.Runtime;
-    using UiSystem.Runtime.Abstracts;
     using UniGreenModules.UniCore.Runtime.ReflectionUtils;
     using UniGreenModules.UniCore.Runtime.Utils;
     using UniModules.UniGame.Core.EditorTools.Editor.AssetOperations;
+    using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UnityEditor;
 
     public class UpdateModelViewsSettingsProcessor : AssetModificationProcessor

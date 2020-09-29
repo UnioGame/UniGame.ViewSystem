@@ -1,9 +1,7 @@
-﻿namespace UniGreenModules.UniGame.UiSystem.Runtime.Abstracts
+﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
     using System;
     using Cysharp.Threading.Tasks;
-    using global::UniGame.UiSystem.Runtime.Abstracts;
-    
     using UnityEngine;
 
     public interface IViewFactory

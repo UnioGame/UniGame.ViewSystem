@@ -1,10 +1,10 @@
 namespace UniGame.UiSystem.Runtime.Settings
 {
     using System;
-    using Abstracts;
     using UniGreenModules.UniGame.AddressableTools.Runtime.Attributes;
     using UniGreenModules.UniGame.Core.Runtime.SerializableType;
     using UniGreenModules.UniGame.Core.Runtime.SerializableType.Attributes;
+    using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
 
