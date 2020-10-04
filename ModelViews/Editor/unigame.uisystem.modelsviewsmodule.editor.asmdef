@@ -1,0 +1,23 @@
+{
+    "name": "unigame.uisystem.modelsviewsmodule.runtime",
+    "references": [
+        "GUID:ab7c9c40a6be6334eb67c4e332935e6a",
+        "GUID:9f8e6b2872ac2ca4683e584b9ba21f29",
+        "GUID:0a6c1794e4ebd1a43b1a79f2d16f1cec",
+        "GUID:6632c725b5599b14c865359e6ecc36f4",
+        "GUID:8e4577c9194c10845984cf27eb974fd1",
+        "GUID:2796129a6c23eb84a8181f62bf7332f1",
+        "GUID:2bd4bfcbafd5d854bb5049e1ec96cd04"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

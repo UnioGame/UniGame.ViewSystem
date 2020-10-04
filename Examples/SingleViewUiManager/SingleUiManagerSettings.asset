@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fb7e5639c338ff4a9a1cee8f5178231, type: 3}
+  m_Name: SingleUiManagerSettings
+  m_EditorClassIdentifier: 
+  sourceName: 
+  addressableGroupName: 
+  uiViewsDefaultFolders:
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/SingleViewUiManager/Assets/Screens
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/SingleViewUiManager/Assets/Windows
+  uiViewsSkinFolders:
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/SingleViewUiManager/Assets/Screens/Skin1
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/SingleViewUiManager/Assets/Screens/Skin2
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/SingleViewUiManager/Assets/Screens/Skin3
+  - Assets/UniModules/UniGame.UISystem/UniGame.UiSystem/Assets/UniGame.UiSystem/Examples/SingleViewUiManager/Assets/Windows/Skins
+  uiViews: []
+  sources: []
+  layoutFlow: {fileID: 11400000, guid: c22cfe04dc8dc9e43b8b9b36576fab63, type: 2}
