@@ -4,7 +4,7 @@
   "displayName": "UniGame Views System",
   "description": "MVVM Views system for Unity",
   "unity": "2019.2",
-  "version": "2020.1.1",
+  "version": "2020.1.7",
   "license": "MIT",
   "homepage": "https://github.com/UniGameTeam/UniGame.UISystem#readme",
   "keywords": [
@@ -15,10 +15,10 @@
   "dependencies": {
     "com.unigame.neuecc.unirx": "7.1.1",
     "com.unigame.neuecc.unitask": "2.0.32",
-    "com.unigame.contextdata": "2020.0.4",
-    "com.unigame.unicore": "2020.0.15",
-    "com.unigame.uniroutine": "2020.0.2",
-    "com.unigame.addressablestools": "2020.0.19",
+    "com.unigame.contextdata": "2020.0.9",
+    "com.unigame.unicore": "2020.0.16",
+    "com.unigame.uniroutine": "2020.0.4",
+    "com.unigame.addressablestools": "2020.0.22",
     "com.unity.addressables": "1.16.1",
     "com.unity.textmeshpro": "2.1.1"
   },
