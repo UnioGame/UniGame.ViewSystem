@@ -3,7 +3,7 @@
     using System;
     using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
-    using UniGreenModules.UniGame.UiSystem.Runtime.Extensions;
+    using UniModules.UniGame.UiSystem.Runtime.Extensions;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniRx;
     using UnityEngine;

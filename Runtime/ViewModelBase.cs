@@ -1,6 +1,6 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
-    using UniGreenModules.UniCore.Runtime.DataFlow;
+    using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniRx;

@@ -1,7 +1,7 @@
 ﻿using System;
 using UniRx;
 
-namespace UniGreenModules.UniGame.UiSystem.Runtime.Extensions
+namespace UniModules.UniGame.UiSystem.Runtime.Extensions
 {
     using global::UniCore.Runtime.ProfilerTools;
     using UniCore.Runtime.Rx.Extensions;

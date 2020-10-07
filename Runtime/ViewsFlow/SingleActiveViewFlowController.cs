@@ -1,7 +1,7 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
-    using UniGreenModules.UniCore.Runtime.Rx.Extensions;
-    using UniGreenModules.UniGame.UiSystem.Runtime;
+    using UniModules.UniCore.Runtime.Rx.Extensions;
+    using UniModules.UniGame.UiSystem.Runtime;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniRx;
 

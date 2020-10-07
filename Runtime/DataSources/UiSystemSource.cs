@@ -6,8 +6,8 @@
     using Cysharp.Threading.Tasks;
     using global::UniGame.ModelViewsMap.Runtime.Settings;
     using global::UniGame.UiSystem.Runtime;
-    using UniGreenModules.UniCore.Runtime.Interfaces;
-    using UniGreenModules.UniGame.AddressableTools.Runtime.Extensions;
+    using UniModules.UniCore.Runtime.Interfaces;
+    using UniModules.UniGame.AddressableTools.Runtime.Extensions;
     
     using UnityEngine;
     using Object = UnityEngine.Object;

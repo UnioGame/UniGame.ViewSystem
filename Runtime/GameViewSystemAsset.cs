@@ -6,7 +6,7 @@ namespace UniGame.UiSystem.Runtime
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
     using Settings;
-    using UniGreenModules.UniGame.UiSystem.Runtime;
+    using UniModules.UniGame.UiSystem.Runtime;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
 

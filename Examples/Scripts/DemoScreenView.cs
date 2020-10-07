@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager
+﻿namespace UniModules.UniGame.UiSystem.Examples.BaseUiManager
 {
     using global::UniGame.UiSystem.Runtime;
     using UniModules.UniGame.UISystem.Runtime.Abstract;

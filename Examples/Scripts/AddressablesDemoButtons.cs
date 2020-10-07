@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UniGreenModules.UniGame.UiSystem.Examples.BaseUiManager
+namespace UniModules.UniGame.UiSystem.Examples.BaseUiManager
 {
     using System.Collections.Generic;
     using AddressableTools.Runtime.Extensions;

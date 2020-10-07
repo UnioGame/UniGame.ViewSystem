@@ -7,8 +7,8 @@ namespace UniGame.UiSystem.Runtime
     using System.Linq;
     using Addressables.Reactive;
     using Settings;
-    using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime;
-    using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
+    using UniModules.UniCore.Runtime.ObjectPool.Runtime;
+    using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using Object = UnityEngine.Object;
 

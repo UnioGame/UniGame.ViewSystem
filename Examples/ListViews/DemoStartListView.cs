@@ -5,7 +5,7 @@ namespace UniGame.UiSystem.Examples.ListViews
     using BaseUiManager.Scripts;
     using Runtime;
     using UniCore.Runtime.ProfilerTools;
-    using UniGreenModules.UniGame.UiSystem.Runtime.Extensions;
+    using UniModules.UniGame.UiSystem.Runtime.Extensions;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniRx;
     using ViewModels;

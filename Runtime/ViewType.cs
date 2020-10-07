@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniGame.UiSystem.Runtime
+﻿namespace UniModules.UniGame.UiSystem.Runtime
 {
     public enum ViewType
     {

@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniGame.UiSystem.Runtime.Settings
+﻿namespace UniModules.UniGame.UiSystem.Runtime.Settings
 {
     using UnityEngine;
 

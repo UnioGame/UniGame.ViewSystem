@@ -3,7 +3,7 @@
     using Cysharp.Threading.Tasks;
     using Runtime;
     using TMPro;
-    using UniGreenModules.UniCore.Runtime.Utils;
+    using UniModules.UniCore.Runtime.Utils;
     
 
     public class DemoResourcePanelScreenView : WindowView<DemoResourceUiViewModel>

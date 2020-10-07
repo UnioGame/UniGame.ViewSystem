@@ -4,12 +4,12 @@
     using System.Collections;
     using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
-    using UniGreenModules.UniCore.Runtime.Attributes;
-    using UniGreenModules.UniCore.Runtime.DataFlow;
-    using UniGreenModules.UniCore.Runtime.Rx.Extensions;
-    using UniGreenModules.UniGame.Core.Runtime.Rx;
-    using UniGreenModules.UniGame.UiSystem.Runtime.Extensions;
-    using UniGreenModules.UniRoutine.Runtime;
+    using UniModules.UniCore.Runtime.Attributes;
+    using UniModules.UniCore.Runtime.DataFlow;
+    using UniModules.UniCore.Runtime.Rx.Extensions;
+    using UniModules.UniGame.Core.Runtime.Rx;
+    using UniModules.UniGame.UiSystem.Runtime.Extensions;
+    using UniModules.UniRoutine.Runtime;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime;
     using UniModules.UniGame.UISystem.Runtime.Abstract;

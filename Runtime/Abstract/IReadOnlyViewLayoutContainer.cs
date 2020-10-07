@@ -1,6 +1,6 @@
 ﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
-    using UniGreenModules.UniGame.UiSystem.Runtime;
+    using UniModules.UniGame.UiSystem.Runtime;
 
     public interface IReadOnlyViewLayoutContainer
     {

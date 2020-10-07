@@ -6,7 +6,7 @@ namespace UniGame.UiSystem.Runtime
     using Addressables.Reactive;
     using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
-    using UniGreenModules.UniCore.Runtime.Rx.Extensions;
+    using UniModules.UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniRx;
     

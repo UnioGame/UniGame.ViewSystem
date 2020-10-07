@@ -2,7 +2,7 @@
 {
     using System.Linq;
     using Backgrounds.Abstract;
-    using UniGreenModules.UniCore.Runtime.Rx.Extensions;
+    using UniModules.UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniRx;
     using UnityEngine;

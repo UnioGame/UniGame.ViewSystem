@@ -1,5 +1,5 @@
 ﻿using System;
-using UniGreenModules.UniGame.AddressableTools.Runtime.AssetReferencies;
+using UniModules.UniGame.AddressableTools.Runtime.AssetReferencies;
 
 namespace UniModules.UniGame.UISystem.Runtime.DataSources
 {

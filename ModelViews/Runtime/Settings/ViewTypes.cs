@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using UniGreenModules.UniGame.Core.Runtime.SerializableType;
+    using UniModules.UniGame.Core.Runtime.SerializableType;
 
     [Serializable]
     public class ViewTypes

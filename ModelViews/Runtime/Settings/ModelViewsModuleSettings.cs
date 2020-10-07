@@ -9,10 +9,10 @@ namespace UniGame.ModelViewsMap.Runtime.Settings
     using Taktika.GameRuntime.Types;
     using UiSystem.ModelViews.Runtime.Flow;
     using UiSystem.Runtime;
-    using UniGreenModules.UniCore.Runtime.Attributes;
-    using UniGreenModules.UniCore.Runtime.Interfaces;
-    using UniGreenModules.UniGame.AddressableTools.Runtime.Extensions;
-    using UniGreenModules.UniGame.Core.Runtime.SerializableType;
+    using UniModules.UniCore.Runtime.Attributes;
+    using UniModules.UniCore.Runtime.Interfaces;
+    using UniModules.UniGame.AddressableTools.Runtime.Extensions;
+    using UniModules.UniGame.Core.Runtime.SerializableType;
     using UniModules.UniGame.Context.Runtime.Abstract;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniModules.UniGame.UISystem.Runtime.DataSources;

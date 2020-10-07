@@ -1,4 +1,4 @@
-namespace UniGreenModules.UniUiSystem.Runtime.Utils
+namespace UniModules.UniUiSystem.Runtime.Utils
 {
     using System;
 
