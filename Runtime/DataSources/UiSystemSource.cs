@@ -3,10 +3,10 @@
     using System;
     using Abstract;
     using Context.Runtime.Abstract;
+    using Core.Runtime.Interfaces;
     using Cysharp.Threading.Tasks;
     using global::UniGame.ModelViewsMap.Runtime.Settings;
     using global::UniGame.UiSystem.Runtime;
-    using UniModules.UniCore.Runtime.Interfaces;
     using UniModules.UniGame.AddressableTools.Runtime.Extensions;
     
     using UnityEngine;

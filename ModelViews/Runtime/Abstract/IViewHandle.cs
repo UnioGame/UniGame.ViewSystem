@@ -1,7 +1,6 @@
 ﻿namespace UniGame.UiSystem.ModelViews.Runtime.Flow
 {
     using System;
-    using UniModules.UniCore.Runtime.Interfaces;
     using UniModules.UniGame.Core.Runtime.Interfaces;
     using UniModules.UniGame.UISystem.Runtime;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
