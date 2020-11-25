@@ -1,5 +1,5 @@
 {
-    "name": "unigame.uisystem.runtime",
+    "name": "unigame.viewsystem.runtime",
     "references": [
         "GUID:8e4577c9194c10845984cf27eb974fd1",
         "GUID:7aa076d38fb14aa448159faea36ca289",

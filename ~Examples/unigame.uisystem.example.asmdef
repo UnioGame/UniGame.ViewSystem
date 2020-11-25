@@ -2,7 +2,7 @@
     "name": "unigame.uisystem.example",
     "references": [
         "unigame.addressables.tools.runtime",
-        "unigame.uisystem.runtime",
+        "unigame.viewsystem.runtime",
         "unigame.unicore.runtime",
         "unigame.uniroutine.runtime",
         "Unity.TextMeshPro",
