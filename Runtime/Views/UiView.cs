@@ -45,7 +45,10 @@
         {
             await base.OnInitialize(model);
             
-            LifeTime.AddCleanUpAction(() => _viewModel.Value = null);
+            LifeTime.AddCleanUpAction(() =>
+            {
+                _viewModel.Value = null;
+            });
 
             var modelData = model as TViewModel;
             _viewModel.Value = modelData;
@@ -63,6 +66,5 @@
         /// custom initialization methods
         /// </summary>
         protected virtual async UniTask OnInitialize(TViewModel model) { }
-        
     }
 }

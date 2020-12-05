@@ -121,6 +121,8 @@
             //restart view lifetime
             _viewModelLifeTime.Release();
             _progressLifeTime.Release();
+            
+            ViewModel?.Dispose();
 
             //calls one per lifetime
             if (!_isInitialized) {
@@ -160,8 +162,6 @@
             var result = this.Bind(source, action);
             return result;
         }
-        
-        
 
         #endregion public methods
 
@@ -272,7 +272,6 @@
             modelLifeTime.ComposeCleanUp(_viewModelLifeTime, Close);
 
             _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Terminate);
-
         }
 
         private void OnStatusUpdate()
