@@ -17,5 +17,6 @@
         bool IsTerminated { get; }
 
         UniTask Initialize(IViewModel vm);
+        UniTask Initialize(IViewModel model, bool disposePrevious);
     }
 }

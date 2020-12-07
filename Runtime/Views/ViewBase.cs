@@ -121,8 +121,6 @@
             //restart view lifetime
             _viewModelLifeTime.Release();
             _progressLifeTime.Release();
-            
-            ViewModel?.Dispose();
 
             //calls one per lifetime
             if (!_isInitialized) {
@@ -137,7 +135,18 @@
             await OnInitialize(model);
         }
 
-        
+        public async UniTask Initialize(IViewModel model, bool disposePrevious)
+        {
+            var previousViewModel = ViewModel;
+
+            await Initialize(model);
+
+            if (disposePrevious)
+            {
+                previousViewModel?.Dispose();
+            }
+        }
+
         /// <summary>
         /// show active view
         /// </summary>
