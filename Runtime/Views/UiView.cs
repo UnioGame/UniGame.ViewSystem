@@ -33,9 +33,9 @@
         /// bind source stream to view action
         /// with View LifeTime context
         /// </summary>
-        public UiView<TViewModel> BindTo<T>(IObservable<T> source, Action<T> action)
+        public void BindTo<T>(IObservable<T> source, Action<T> action)
         {
-            return BindToView(source, action) as UiView<TViewModel>;
+            BindToView(source, action);
         }
 
         #endregion

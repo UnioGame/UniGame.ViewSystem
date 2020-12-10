@@ -120,10 +120,6 @@
 
         public async UniTask Initialize(IViewModel model, bool isViewOwner = false)
         {
-            // cache previous state
-            var previousOwnerIsView = _isViewOwner;
-            var previousViewModel   = ViewModel;
-            
             // save current state
             _isViewOwner = isViewOwner;
             
@@ -142,12 +138,6 @@
             BindLifeTimeActions(model);
             //custom initialization
             await OnInitialize(model);
-            
-            // dispose previous model if view was owner
-            if (previousOwnerIsView)
-            {
-                previousViewModel?.Dispose();
-            }
         }
 
         /// <summary>
@@ -282,6 +272,14 @@
             var modelLifeTime = model.LifeTime;
             modelLifeTime.ComposeCleanUp(_viewModelLifeTime, Close);
 
+            _viewModelLifeTime.AddCleanUpAction(() =>
+            {
+                if (_isViewOwner)
+                {
+                    model.Dispose();
+                }
+            });
+            
             _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Terminate);
         }
 
