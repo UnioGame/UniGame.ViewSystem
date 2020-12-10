@@ -51,6 +51,8 @@
         private readonly RecycleReactiveProperty<ViewStatus> _status = new RecycleReactiveProperty<ViewStatus>();
 
         private IViewLayoutProvider _viewLayout;
+
+        private bool _isViewOwner;
         
         #region public properties
 
@@ -116,8 +118,15 @@
             await Initialize(model);
         }
 
-        public async UniTask Initialize(IViewModel model)
+        public async UniTask Initialize(IViewModel model, bool isViewOwner = false)
         {
+            // cache previous state
+            var previousOwnerIsView = _isViewOwner;
+            var previousViewModel   = ViewModel;
+            
+            // save current state
+            _isViewOwner = isViewOwner;
+            
             //restart view lifetime
             _viewModelLifeTime.Release();
             _progressLifeTime.Release();
@@ -133,18 +142,12 @@
             BindLifeTimeActions(model);
             //custom initialization
             await OnInitialize(model);
-        }
-
-        public async UniTask Initialize(IViewModel model, bool disposePrevious)
-        {
-            //var previousViewModel = ViewModel;
-
-            await Initialize(model);
-
-            /*if (disposePrevious)
+            
+            // dispose previous model if view was owner
+            if (previousOwnerIsView)
             {
                 previousViewModel?.Dispose();
-            }*/
+            }
         }
 
         /// <summary>
@@ -168,8 +171,7 @@
         /// </summary>
         public IView BindToView<T>(IObservable<T> source, Action<T> action)
         {
-            var result = this.Bind(source, _viewModelLifeTime, action);
-            return result;
+            return this.Bind(source, _viewModelLifeTime, action);
         }
 
         #endregion public methods
