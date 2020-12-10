@@ -37,8 +37,8 @@
         private Transform _transform;
         
         private readonly LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
-        private readonly LifeTimeDefinition _progressLifeTime = new LifeTimeDefinition();
-        private readonly LifeTimeDefinition _viewModelLifeTime = new LifeTimeDefinition();
+        private readonly LifeTimeDefinition _progressLifeTime   = new LifeTimeDefinition();
+        private readonly LifeTimeDefinition _viewModelLifeTime   = new LifeTimeDefinition();
         
         /// <summary>
         /// ui element visibility status
@@ -137,14 +137,14 @@
 
         public async UniTask Initialize(IViewModel model, bool disposePrevious)
         {
-            var previousViewModel = ViewModel;
+            //var previousViewModel = ViewModel;
 
             await Initialize(model);
 
-            if (disposePrevious)
+            /*if (disposePrevious)
             {
                 previousViewModel?.Dispose();
-            }
+            }*/
         }
 
         /// <summary>
@@ -168,7 +168,7 @@
         /// </summary>
         public IView BindToView<T>(IObservable<T> source, Action<T> action)
         {
-            var result = this.Bind(source, action);
+            var result = this.Bind(source, _viewModelLifeTime, action);
             return result;
         }
 

@@ -15,7 +15,7 @@
         /// <summary>
         /// model container
         /// </summary>
-        private ReactiveProperty<TViewModel> _viewModel = new ReactiveProperty<TViewModel>();
+        private readonly ReactiveProperty<TViewModel> _viewModel = new ReactiveProperty<TViewModel>();
         private CanvasGroup   _canvasGroup;
 
         #region public properties
@@ -35,8 +35,7 @@
         /// </summary>
         public UiView<TViewModel> BindTo<T>(IObservable<T> source, Action<T> action)
         {
-            var result = this.Bind(source, action);
-            return result;
+            return BindToView(source, action) as UiView<TViewModel>;
         }
 
         #endregion
