@@ -15,7 +15,7 @@
         /// <summary>
         /// model container
         /// </summary>
-        private ReactiveProperty<TViewModel> _viewModel = new ReactiveProperty<TViewModel>();
+        private readonly ReactiveProperty<TViewModel> _viewModel = new ReactiveProperty<TViewModel>();
         private CanvasGroup   _canvasGroup;
 
         #region public properties
@@ -33,10 +33,9 @@
         /// bind source stream to view action
         /// with View LifeTime context
         /// </summary>
-        public UiView<TViewModel> BindTo<T>(IObservable<T> source, Action<T> action)
+        public void BindTo<T>(IObservable<T> source, Action<T> action)
         {
-            var result = this.Bind(source, action);
-            return result;
+            BindToView(source, action);
         }
 
         #endregion
@@ -45,7 +44,10 @@
         {
             await base.OnInitialize(model);
             
-            LifeTime.AddCleanUpAction(() => _viewModel.Value = null);
+            LifeTime.AddCleanUpAction(() =>
+            {
+                _viewModel.Value = null;
+            });
 
             var modelData = model as TViewModel;
             _viewModel.Value = modelData;
@@ -63,6 +65,5 @@
         /// custom initialization methods
         /// </summary>
         protected virtual async UniTask OnInitialize(TViewModel model) { }
-        
     }
 }

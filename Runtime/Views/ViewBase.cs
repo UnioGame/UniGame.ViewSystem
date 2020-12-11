@@ -37,8 +37,8 @@
         private Transform _transform;
         
         private readonly LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
-        private readonly LifeTimeDefinition _progressLifeTime = new LifeTimeDefinition();
-        private readonly LifeTimeDefinition _viewModelLifeTime = new LifeTimeDefinition();
+        private readonly LifeTimeDefinition _progressLifeTime   = new LifeTimeDefinition();
+        private readonly LifeTimeDefinition _viewModelLifeTime   = new LifeTimeDefinition();
         
         /// <summary>
         /// ui element visibility status
@@ -51,6 +51,8 @@
         private readonly RecycleReactiveProperty<ViewStatus> _status = new RecycleReactiveProperty<ViewStatus>();
 
         private IViewLayoutProvider _viewLayout;
+
+        private bool _isViewOwner;
         
         #region public properties
 
@@ -116,8 +118,11 @@
             await Initialize(model);
         }
 
-        public async UniTask Initialize(IViewModel model)
+        public async UniTask Initialize(IViewModel model, bool isViewOwner = false)
         {
+            // save current state
+            _isViewOwner = isViewOwner;
+            
             //restart view lifetime
             _viewModelLifeTime.Release();
             _progressLifeTime.Release();
@@ -135,7 +140,6 @@
             await OnInitialize(model);
         }
 
-        
         /// <summary>
         /// show active view
         /// </summary>
@@ -157,11 +161,8 @@
         /// </summary>
         public IView BindToView<T>(IObservable<T> source, Action<T> action)
         {
-            var result = this.Bind(source, action);
-            return result;
+            return this.Bind(source, _viewModelLifeTime, action);
         }
-        
-        
 
         #endregion public methods
 
@@ -271,8 +272,15 @@
             var modelLifeTime = model.LifeTime;
             modelLifeTime.ComposeCleanUp(_viewModelLifeTime, Close);
 
+            _viewModelLifeTime.AddCleanUpAction(() =>
+            {
+                if (_isViewOwner)
+                {
+                    model.Dispose();
+                }
+            });
+            
             _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Terminate);
-
         }
 
         private void OnStatusUpdate()
