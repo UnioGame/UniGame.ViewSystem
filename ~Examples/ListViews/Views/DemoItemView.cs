@@ -22,12 +22,12 @@
         protected override async UniTask OnInitialize(DemoItemViewModel model)
         {
             await base.OnInitialize(model);
-            
-            BindTo(model.Armor, x => armor.text = x.ToStringFromCache()).
-            BindTo(model.Damage, x => damage.text = x.ToStringFromCache()).
-            BindTo(model.Level, x => level.text = x.ToStringFromCache()).
-            BindTo(model.Icon, x => icon.sprite = x).
-            BindTo(buyButton.onClick.AsObservable(),x => model.Sell.Execute()).
+
+            BindTo(model.Armor, x => armor.text   = x.ToStringFromCache());
+            BindTo(model.Damage, x => damage.text = x.ToStringFromCache());
+            BindTo(model.Level, x => level.text   = x.ToStringFromCache());
+            BindTo(model.Icon, x => icon.sprite   = x);
+            BindTo(buyButton.onClick.AsObservable(), x => model.Sell.Execute());
             BindTo(removeButton.onClick.AsObservable(),x => model.Remove.Execute());
         }
     }

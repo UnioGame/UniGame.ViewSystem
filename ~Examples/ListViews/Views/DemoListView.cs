@@ -25,8 +25,8 @@ namespace UniGame.UiSystem.Examples.ListViews.Views
             
             var items = model.ListItems;
 
-            BindTo(items.ObserveAdd(), x => CreateItem(x.Value)).
-            BindTo(items.ObserveRemove(), x => RemoveItem(x.Index)).
+            BindTo(items.ObserveAdd(), x => CreateItem(x.Value));
+            BindTo(items.ObserveRemove(), x => RemoveItem(x.Index));
             BindTo(addItem.onClick.AsObservable(),x => model.Add.Execute());
         }
 
