@@ -142,8 +142,9 @@ namespace UniGame.UiSystem.Runtime
             where TView :class, IView
         {
             view.OnClosed.
+                Do(x => Remove(x)).
                 Do(x => _onViewClosed.OnNext(x)).
-                Subscribe(x => Remove(x)).
+                Subscribe().
                 AddTo(view.LifeTime);
                 
             view.OnShown.
