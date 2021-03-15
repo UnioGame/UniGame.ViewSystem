@@ -8,6 +8,9 @@ namespace UniGame.UiSystem.Runtime.Settings
     {
         public string sourceName;
 
+        [Header("Is Source will be filled on Update")]
+        public bool isActive = true;
+        
         [HideInInspector] 
         [Header("Name of target addressable group")]
         public string addressableGroupName;

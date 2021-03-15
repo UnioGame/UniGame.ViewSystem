@@ -22,7 +22,9 @@ namespace UniGame.UiSystem.Editor.UiEditor
         public void Build(ViewsSettings settings)
         {
             addressableAssetSettings = AddressableAssetSettingsDefaultObject.Settings;
-            
+
+            if (settings.isActive == false) return;
+
             proceedViews.Clear();
             
             if (!settings) {
