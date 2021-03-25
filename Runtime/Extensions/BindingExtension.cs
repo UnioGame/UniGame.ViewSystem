@@ -1,4 +1,6 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
+using UniModules.UniGame.Rx.Runtime.Extensions;
 using UniRx;
 
 namespace UniModules.UniGame.UiSystem.Runtime.Extensions
@@ -20,7 +22,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
                 return Disposable.Empty;
             }
             return source.
-                //ThrottleFrame(frameThrottle).
+                BatchPlayerTiming(frameThrottle,PlayerLoopTiming.LastPostLateUpdate).
                 Subscribe(target);
         }
         
@@ -30,7 +32,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             int frameThrottle = 1)
         {
             return source.
-                ThrottleFrame(frameThrottle).
+                BatchPlayerTiming(frameThrottle,PlayerLoopTiming.LastPostLateUpdate).
                 Where(x => target.CanExecute.Value).
                 Subscribe(x => target.Execute(x));
         }
