@@ -1,11 +1,12 @@
 ﻿using System;
-using UniModules.UniGame.AddressableTools.Runtime.AssetReferencies;
 
 namespace UniModules.UniGame.UISystem.Runtime.DataSources
 {
+    using UnityEngine.AddressableAssets;
+
     [Serializable]
     public class AssetReferenceUiSystemSource : 
-        DisposableAssetReference<UiSystemSource>
+        AssetReferenceT<UiSystemSource>
     {
         public AssetReferenceUiSystemSource(string guid) : base(guid)
         {
