@@ -1,17 +1,20 @@
+using System.Linq;
+using UniModules.UniGame.Core.Runtime.ScriptableObjects;
+
 namespace UniGame.UiSystem.Runtime.Settings
 {
     using System.Collections.Generic;
     using UnityEngine;
 
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/UiViewsSettings", fileName = "UiViewsSettings")]
-    public class ViewsSettings : ScriptableObject
+    public class ViewsSettings : LifetimeScriptableObject, IViewsSettings
     {
         public string sourceName;
 
         [Header("Is Source will be filled on Update")]
         public bool isActive = true;
-        
-        [HideInInspector] 
+
+        [HideInInspector]
         [Header("Name of target addressable group")]
         public string addressableGroupName;
 
@@ -28,8 +31,11 @@ namespace UniGame.UiSystem.Runtime.Settings
 #endif
         public List<string> uiViewsSkinFolders = new List<string>();
 
-        [Header("Registered Views")]
-        [Space]
-        public List<UiViewReference> uiViews = new List<UiViewReference>();
+        [Header("Registered Views")] [Space] public List<UiViewReference> uiViews = new List<UiViewReference>();
+
+        public bool IsActive => isActive;
+
+        public IReadOnlyList<UiViewReference> Views => uiViews;
+        
     }
 }

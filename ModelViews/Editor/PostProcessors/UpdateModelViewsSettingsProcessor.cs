@@ -1,4 +1,6 @@
-﻿namespace UniGame.UiSystem.ModelViews.Editor.PostProcessors
+﻿using UniModules.UniGame.ViewSystem.ModelViews.Editor;
+
+namespace UniGame.UiSystem.ModelViews.Editor.PostProcessors
 {
     using System;
     using System.Collections.Generic;
@@ -21,51 +23,19 @@
         
         public static string[] OnWillSaveAssets(string[] paths)
         {
+            return paths;
+            
             var settingsAssets = settingsCache(cacheKey);
             
             foreach (var asset in settingsAssets) {
                 if(!ValidateTarget(asset,paths))
                     continue;
-                Rebuild(asset);
+                ModelViewsEditorCommands.Rebuild(asset);
             }
             
             return paths;
         }        
-        
-        [MenuItem("UniGame/View System/Rebuild ModelsViewsSettings")]
-        public static void Rebuild()
-        {
-            var settings = AssetEditorTools.
-                GetAssets<ModelViewsModuleSettings>();
-            
-            foreach (var setting in settings) {
-                Rebuild(setting);
-                EditorUtility.SetDirty(setting);
-            }
-        }
-        
-        public static void Rebuild(ModelViewsModuleSettings settings)
-        {
-            settings.CleanUp();
-            
-            var baseViewType  = typeof(IUiView<>);
-            var baseModelType = typeof(IViewModel);
-            
-            var modelTypes = baseModelType.GetAssignableTypes();
-            var typeArs    = new Type[1];
-            //get all views
-            foreach (var modelType in modelTypes) {
-                typeArs[0] = modelType;
-                var targetType = baseViewType.MakeGenericType(typeArs);
-                var viewTypes  = targetType.GetAssignableTypes();
-
-                settings.UpdateValue(modelType,viewTypes);
-
-            }
-            
-            EditorUtility.SetDirty(settings);
-        }
-
+  
         private static bool ValidateTarget(ModelViewsModuleSettings asset, string[] paths)
         {
             if (!asset || asset.isRebuildActive == false) return false;
