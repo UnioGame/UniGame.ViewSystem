@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using UniModules.UniCore.EditorTools.Editor.Utility;
+using UniModules.UniGame.AddressableExtensions.Editor;
+using UnityEngine;
 
 namespace UniGame.UiSystem.Editor.UiEditor
 {
@@ -36,18 +38,20 @@ namespace UniGame.UiSystem.Editor.UiEditor
 
             var skinsFolders = settings.uiViewsSkinFolders;
             var defaultFolders = settings.uiViewsDefaultFolders;
-
+            var groupName = string.IsNullOrEmpty(settings.sourceName) ? 
+                settings.name : settings.sourceName;
+            
             if (skinsFolders.Count > 0) {
                 var views = LoadUiViews<IView>(skinsFolders);
-                views.ForEach(x => AddView(settings.uiViews,x,false));
+                views.ForEach(x => AddView(settings,x,false,groupName));
             }
 
             if (defaultFolders.Count > 0) {
                 var views = LoadUiViews<IView>(defaultFolders);
-                views.ForEach(x => AddView(settings.uiViews,x,true));
+                views.ForEach(x => AddView(settings,x,true,groupName));
             }
             
-            settings?.SetDirty();
+            settings.MarkDirty();
         }
 
         public void Reset(ViewsSettings settings)
@@ -71,7 +75,7 @@ namespace UniGame.UiSystem.Editor.UiEditor
         }
 
 
-        private void AddView(List<UiViewReference> views,IView view, bool defaultView)
+        private void AddView(ViewsSettings viewsSettings,IView view, bool defaultView, string groupName)
         {
             var assetView = view as MonoBehaviour;
             if (assetView == null) {
@@ -79,34 +83,34 @@ namespace UniGame.UiSystem.Editor.UiEditor
                 return;
             }
 
-            var assetPath = AssetDatabase.GetAssetPath(assetView.gameObject);
-            var guid = AssetDatabase.AssetPathToGUID(assetPath);
+            var gameObject = assetView.gameObject;
+            var guid = gameObject.GetGUID();
+            var views = viewsSettings.uiViews;
             
+            if (views.Any(x => string.Equals(guid, x.AssetGUID)))
+                return;
             
-            var assetReference = new AssetReferenceGameObject(guid);
+            var assetPath = AssetDatabase.GetAssetPath(gameObject);
+            var tag = defaultView ? string.Empty : Path.GetFileName(Path.GetDirectoryName(assetPath));
+            var labels = viewsSettings.labels;
+
+            gameObject.SetAddressableAssetGroup(groupName);
+            var assetReference = gameObject.PrefabToAssetReference();
+            
             if (assetReference.RuntimeKeyIsValid() == false) {
-                GameLog.LogError($"Asset by path {assetPath} wrong addressable asset");
+                GameLog.LogError($"Asset {gameObject.name} by path {assetPath} wrong addressable asset");
                 return;
             }
 
-            var entry = addressableAssetSettings.FindAssetEntry(guid);
-            if (entry == null) {
-                GameLog.LogWarning($"Add View {assetView.name} to Addressables");
-                addressableAssetSettings.CreateOrMoveEntry(guid, addressableAssetSettings.DefaultGroup);
-            }
-            
             var viewDescription = new UiViewReference() {
-                Tag  = defaultView ? string.Empty : 
-                    Path.GetFileName(Path.GetDirectoryName(assetPath)),
+                Tag  = tag,
+                AssetGUID = assetReference.AssetGUID,
                 Type = view.GetType(),
                 View = assetReference,
                 ViewName = assetReference.editorAsset.name
             };
 
-            if (proceedViews.Add(view)) {
-                views.Add(viewDescription);
-            }
-
+            views.Add(viewDescription);
         }
     }
 }

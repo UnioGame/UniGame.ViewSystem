@@ -10,14 +10,16 @@ namespace UniGame.UiSystem.Runtime.Settings
 
     [Serializable]
     public class UiViewReference
-    {
+    { 
             
+         public string AssetGUID = string.Empty;
+
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.GUIColor(g:1.0f, r: 1.0f, b:0.5f)]
 #endif
         [Space(2)]
         public string Tag = string.Empty;
-      
+
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.DrawWithUnity]
 #endif

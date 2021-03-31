@@ -28,7 +28,7 @@
             settingsBuilder.Build(settings);
         }
 
-        [MenuItem(itemName:"Assets/Rebuild UI Settings")]
+        [MenuItem(itemName:"Assets/Rebuild Views Settings")]
         public static void RebuildSelected()
         {
             Build(Selection.activeObject as ViewsSettings);

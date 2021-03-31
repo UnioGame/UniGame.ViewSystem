@@ -1,4 +1,7 @@
-using System.Linq;
+#if UNITY_EDITOR
+using UniModules.UniGame.AddressableExtensions.Editor;
+#endif
+
 using UniModules.UniGame.Core.Runtime.ScriptableObjects;
 
 namespace UniGame.UiSystem.Runtime.Settings
@@ -11,11 +14,17 @@ namespace UniGame.UiSystem.Runtime.Settings
     {
         public string sourceName;
 
+#if ODIN_INSPECTOR
+#if UNITY_EDITOR
+        [Sirenix.OdinInspector.ValueDropdown(nameof(GetLabels),ExcludeExistingValuesInList = true)]
+#endif
+#endif
+        public List<string> labels = new List<string>();
+
         [Header("Is Source will be filled on Update")]
         public bool isActive = true;
 
-        [HideInInspector]
-        [Header("Name of target addressable group")]
+        [HideInInspector] [Header("Name of target addressable group")]
         public string addressableGroupName;
 
         [Space]
@@ -36,6 +45,12 @@ namespace UniGame.UiSystem.Runtime.Settings
         public bool IsActive => isActive;
 
         public IReadOnlyList<UiViewReference> Views => uiViews;
-        
+
+#if UNITY_EDITOR
+        private IEnumerable<string> GetLabels()
+        {
+            return this.GetAllAddressablesLabels();
+        }
+#endif
     }
 }
