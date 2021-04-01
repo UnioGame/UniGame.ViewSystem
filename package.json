@@ -20,7 +20,7 @@
     "com.unigame.uniroutine": "2020.0.42",
     "com.unigame.addressablestools": "2021.0.1",
     "com.unity.addressables": "1.17.15",
-    "com.unity.textmeshpro": "2.1.1",
+    "com.unity.textmeshpro": "3.0.4",
     "com.unigame.rx": "2021.0.1"
   },
   "repository": {
