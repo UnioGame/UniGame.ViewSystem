@@ -1,11 +1,12 @@
 # UniGame.ViewSystem
+
 MVVM View System for Unity3D
 
 ## Overview
 
 - support base principles of MVVM concepts.
-- support ui skins from the box
-- based on Unity Addressable Resources
+- support ui skins out of the box
+- based on Unity Addressables Resources
 - handle Addressables Resource lifetime
 
 
