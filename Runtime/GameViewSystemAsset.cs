@@ -73,7 +73,7 @@ namespace UniGame.UiSystem.Runtime
         {
             settings.Initialize();
             
-            var factory  = new ViewFactory(settings.ResourceProvider);
+            var factory  = new ViewFactory(new AsyncLazy(() => settings.WaitForInitialize()),settings.ResourceProvider);
             var stackMap = new Dictionary<ViewType, IViewLayout>(4);
             foreach (var item in layoutMap) {
                 stackMap[item.Key] = item.Value;

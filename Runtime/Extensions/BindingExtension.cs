@@ -48,11 +48,12 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
                 AddTo(view.LifeTime);
             return view;
         }
+        
 
-        public static TSource Bind<TSource, T>(this TSource view, IObservable<T> source, ILifeTime lifeTime, Action<T> target, int frameThrottle = 1) where TSource : ILifeTimeContext
+        public static TSource Bind<TSource, T>(this TSource view, IObservable<T> source, ILifeTime lifeTime, Action<T> target, int frameThrottle = 1) 
+            where TSource : ILifeTimeContext
         {
             source.Bind(target, frameThrottle).AddTo(lifeTime);
-
             return view;
         }
 

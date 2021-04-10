@@ -7,7 +7,7 @@
 
     public static class UiAssembler 
     {
-        private static UiAssemblyBuilder settingsBuilder = new UiAssemblyBuilder();
+        private static ViewsAssemblyBuilder settingsBuilder = new ViewsAssemblyBuilder();
         
         [MenuItem(itemName:"UniGame/View System/Rebuild View Settings")]
         public static void RefreshUiSettings()

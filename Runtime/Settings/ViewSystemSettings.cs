@@ -1,14 +1,15 @@
-﻿namespace UniGame.UiSystem.Runtime.Settings
+﻿using System.Linq;
+using Cysharp.Threading.Tasks;
+using UniModules.UniGame.Core.Runtime.Interfaces;
+
+namespace UniGame.UiSystem.Runtime.Settings
 {
     using System;
     using System.Collections.Generic;
     using Addressables.Reactive;
     using UniCore.Runtime.ProfilerTools;
     using UniModules.UniCore.Runtime.DataFlow;
-    using UniModules.UniCore.Runtime.DataFlow.Interfaces;
-    using UniModules.UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.Core.Runtime.Attributes;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniRx;
     using UnityEngine;
@@ -18,10 +19,10 @@
     /// Base View system settings. Contains info about all available view abd type info
     /// </summary>
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/ViewSystemSettings", fileName = nameof(ViewSystemSettings))]
-    public class ViewSystemSettings : ViewsSettings
+    public class ViewSystemSettings : ViewsSettings, ICompletionStatus
     {
         [SerializeField]
-        private List<UiViewsSourceReference> sources = new List<UiViewsSourceReference>();
+        private List<NestedViewSourceSettings> sources = new List<NestedViewSourceSettings>();
 
         
 #if ODIN_INSPECTOR
@@ -35,19 +36,30 @@
 
         private                 LifeTimeDefinition lifeTimeDefinition;
         private                 UiResourceProvider uiResourceProvider;
-        [NonSerialized] private bool               isInitialized;
+        [NonSerialized] private bool               isStarted;
 
         public void Dispose() => lifeTimeDefinition?.Terminate();
-
+        
+        public bool IsComplete { get; private set; } = false;
+        
         public IViewResourceProvider<Component> ResourceProvider => uiResourceProvider;
 
         public IViewFlowController FlowController { get; protected set; }
 
+        public async UniTask WaitForInitialize()
+        {
+            while (!LifeTime.IsTerminated && !IsComplete)
+            {
+                await UniTask.Yield();
+            }
+        }
+        
         public void Initialize()
         {
-            if (isInitialized) return;
-            
-            isInitialized = true;
+            if (isStarted) return;
+
+            IsComplete = false;
+            isStarted = true;
 
             FlowController = layoutFlow.Create();
             
@@ -56,28 +68,50 @@
 
             uiResourceProvider.RegisterViews(uiViews);
 
-            DownloadAllAsyncSources(lifeTimeDefinition.LifeTime);
+            DownloadAllAsyncSources();  
         }
 
         #region private methods
         
-        private void DownloadAllAsyncSources(ILifeTime lifeTime)
+        private async UniTask DownloadAllAsyncSources()
         {
-            //load ui views async
-            foreach (var reference in sources) {
-                reference.
-                    ToObservable().
-                    Catch<ViewsSettings, Exception>(
-                        x => {
-                            GameLog.LogError($"UiManagerSettings Load Ui Source failed {reference.AssetGUID}");
-                            GameLog.LogError(x);
-                            return Observable.Empty<ViewsSettings>();
-                        }).
-                    Where(x => x != null).
-                    Do(x => uiResourceProvider.RegisterViews(x.uiViews)).
-                    Subscribe().
-                    AddTo(lifeTime);
+            IsComplete = false;
+
+            foreach (var source in sources.Where(x => !x.awaitLoading))
+            {
+                LoadAsyncSource(source.viewSourceReference);
             }
+            
+            //load ui views async
+            foreach (var viewSource in sources.Where(x => x.awaitLoading))
+            {
+                await LoadAsyncSource(viewSource.viewSourceReference);
+            }
+
+            IsComplete = true;
+        }
+
+        private async UniTask LoadAsyncSource(AssetReferenceViewSource reference)
+        {
+            try
+            {
+                var settings = await reference
+                    .ToObservable()
+                    .First();
+                
+                if (!settings)
+                {
+                    GameLog.LogError($"UiManagerSettings Load EMPTY Settings {reference.AssetGUID}");
+                    return;
+                }
+                uiResourceProvider.RegisterViews(settings.uiViews);
+            }
+            catch (Exception e)
+            {
+                GameLog.LogError($"UiManagerSettings Load Ui Source failed {reference.AssetGUID}");
+                GameLog.LogError(e);
+            }
+            
         }
 
         private void OnDisable()
@@ -86,5 +120,6 @@
         }
 
         #endregion
+
     }
 }

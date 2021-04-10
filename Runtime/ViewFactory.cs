@@ -14,19 +14,26 @@ namespace UniGame.UiSystem.Runtime
 
     public class ViewFactory : IViewFactory
     {
+        private readonly AsyncLazy _readyStatus;
         private readonly IViewResourceProvider<Component> resourceProvider;
         
-        public ViewFactory(IViewResourceProvider<Component> viewResourceProvider)
+        public ViewFactory(
+            AsyncLazy readyStatus,
+            IViewResourceProvider<Component> viewResourceProvider)
         {
+            _readyStatus = readyStatus;
             resourceProvider = viewResourceProvider;
         }
 
-        public async UniTask<IView> Create(Type viewType, 
+        public async UniTask<IView> Create(
+            Type viewType, 
             string skinTag = "", 
             Transform parent = null, 
             string viewName = "",
-            bool stayWorldPosition = false) 
+            bool stayWorldPosition = false)
         {
+            await _readyStatus;
+            
             var viewObservable = resourceProvider.
                 LoadViewAsync(viewType,skinTag, viewName:viewName);
             

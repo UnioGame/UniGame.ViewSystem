@@ -8,7 +8,7 @@ namespace UniGame.UiSystem.UI.Editor.UiEditor
 
     public class UiViewsEditor : Editor
     {
-        private UiAssemblyBuilder builder = new UiAssemblyBuilder();
+        private ViewsAssemblyBuilder builder = new ViewsAssemblyBuilder();
         
         public override void OnInspectorGUI()
         {

@@ -16,7 +16,7 @@ namespace UniGame.UiSystem.Editor.UiEditor
     using UnityEditor.AddressableAssets.Settings;
     using UnityEngine.AddressableAssets;
 
-    public class UiAssemblyBuilder
+    public class ViewsAssemblyBuilder
     {
         private HashSet<IView> proceedViews = new HashSet<IView>();
         private AddressableAssetSettings addressableAssetSettings;

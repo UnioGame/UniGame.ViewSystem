@@ -10,6 +10,7 @@
     /// <typeparam name="TView">Base view type</typeparam>
     public interface IViewResourceProvider<TView>
     {
+        
         /// <summary>
         /// Load view by type and target skin tag
         /// </summary>
