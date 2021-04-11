@@ -2,12 +2,38 @@
 
 MVVM View System for Unity3D
 
+
+**Odin Inspector Asset recommended to usage with this Package (https://odininspector.com)**
+
 ## Overview
 
 - support base principles of MVVM concepts.
 - support ui skins out of the box
 - based on Unity Addressables Resources
 - handle Addressables Resource lifetime
+
+## How To Install
+
+Add to your project manifiest by path [%UnityProject%]/Packages/manifiest.json new Scope:
+
+```json
+{
+  "scopedRegistries": [
+   {
+      "name": "UniGame",
+      "url": "http://packages.unigame.pro:4873/",
+      "scopes": [
+        "com.unigame"
+      ]
+    }
+  ],
+}
+
+```
+
+and now install via Package Manager
+
+![](https://github.com/UniGameTeam/UniGame.ViewSystem/blob/master/Readme/Assets/package_manager.png)
 
 
 ## UI System Settings
