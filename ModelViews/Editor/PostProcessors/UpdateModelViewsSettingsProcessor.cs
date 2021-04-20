@@ -20,6 +20,7 @@ namespace UniGame.UiSystem.ModelViews.Editor.PostProcessors
         public static Func<object,List<ModelViewsModuleSettings>> settingsCache = MemorizeTool.
             Create<object,List<ModelViewsModuleSettings>>(x => AssetEditorTools.
             GetAssets<ModelViewsModuleSettings>());
+
         
         public static string[] OnWillSaveAssets(string[] paths)
         {
@@ -36,6 +37,7 @@ namespace UniGame.UiSystem.ModelViews.Editor.PostProcessors
             return paths;
         }        
   
+        
         private static bool ValidateTarget(ModelViewsModuleSettings asset, string[] paths)
         {
             if (!asset || asset.isRebuildActive == false) return false;

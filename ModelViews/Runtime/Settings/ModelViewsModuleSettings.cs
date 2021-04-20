@@ -18,7 +18,7 @@ namespace UniGame.ModelViewsMap.Runtime.Settings
     using UniModules.UniGame.UISystem.Runtime.DataSources;
     
 
-    [CreateAssetMenu(menuName = "UniGame/ViewSystem/ModelViewsModuleSettings", fileName = "ModelViewsModuleSettings")]
+    [CreateAssetMenu(menuName = "UniGame/ViewSystem/ModelViewsModuleSettings", fileName = nameof(ModelViewsModuleSettings))]
     public class ModelViewsModuleSettings : AsyncContextDataSource, IModelViewsSettings
     {
         private static List<SType> _emptyList = new List<SType>();
