@@ -3,7 +3,7 @@
   "author": "UniGameTeam",
   "displayName": "UniGame Views System",
   "description": "MVVM Views system for Unity",
-  "unity": "2019.2",
+  "unity": "2020",
   "version": "2021.0.26",
   "license": "MIT",
   "homepage": "https://github.com/UniGameTeam/UniGame.ViewSystem#readme",
@@ -23,7 +23,7 @@
     "com.unigame.uniroutine": "2020.0.46",
     "com.unigame.addressablestools": "2021.0.11",
     "com.unity.addressables": "1.17.15",
-    "com.unity.textmeshpro": "3.0.4",
+    "com.unity.textmeshpro": "3.0.5",
     "com.unigame.rx": "2021.0.7"
   },
   "repository": {
