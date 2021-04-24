@@ -159,9 +159,9 @@
         /// bind source stream to view action
         /// with View LifeTime context
         /// </summary>
-        public IView BindToView<T>(IObservable<T> source, Action<T> action)
+        public IView BindToView<T>(IObservable<T> source, Action<T> action, int frameThrottle = 0)
         {
-            return this.Bind(source, _viewModelLifeTime, action);
+            return this.Bind(source, _viewModelLifeTime, action,frameThrottle);
         }
 
         #endregion public methods
@@ -270,14 +270,19 @@
         {
             //bind model lifetime to local
             var modelLifeTime = model.LifeTime;
-            modelLifeTime.ComposeCleanUp(_viewModelLifeTime, Close);
+            if (model.IsDisposeWithModel)
+            {
+                modelLifeTime.ComposeCleanUp(_viewModelLifeTime, () =>
+                {
+                    if (Equals(ViewModel, model))
+                        Close();
+                });
+            }
 
             _viewModelLifeTime.AddCleanUpAction(() =>
             {
                 if (_isViewOwner)
-                {
-                    model.Dispose();
-                }
+                    ViewModel.Cancel();
             });
             
             _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Terminate);

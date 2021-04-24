@@ -10,8 +10,11 @@
         private readonly LifeTimeDefinition   _lifeTimeDefinition = new LifeTimeDefinition();
         private readonly BoolReactiveProperty _isActive           = new BoolReactiveProperty(true);
         
+        
         public  ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
 
+        public virtual bool IsDisposeWithModel => true;
+        
         public IReadOnlyReactiveProperty<bool> IsActive => _isActive;
 
         public void Dispose()

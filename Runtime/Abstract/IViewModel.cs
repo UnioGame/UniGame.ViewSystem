@@ -6,5 +6,7 @@
     public interface IViewModel: IDisposable, ILifeTimeContext
     {
 
+        public bool IsDisposeWithModel { get; }
+
     }
 }

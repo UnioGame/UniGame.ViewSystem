@@ -28,7 +28,6 @@
 
         #region public methods
 
-        //TODO use async
         /// <summary>
         /// bind source stream to view action
         /// with View LifeTime context
@@ -36,6 +35,15 @@
         public void BindTo<T>(IObservable<T> source, Action<T> action)
         {
             BindToView(source, action);
+        }
+        
+        /// <summary>
+        /// bind source stream to view action
+        /// with View LifeTime context
+        /// </summary>
+        public void BindThrottleTo<T>(IObservable<T> source, Action<T> action,int frameThrottle = 1)
+        {
+            BindToView(source, action,frameThrottle);
         }
 
         #endregion

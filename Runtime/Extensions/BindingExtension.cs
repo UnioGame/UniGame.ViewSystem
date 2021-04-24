@@ -21,8 +21,10 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
                 GameLog.LogWarning($"BindingExtension: NULL IObservable<T> detected with type {typeof(T).Name}");
                 return Disposable.Empty;
             }
-            return source.
-                BatchPlayerTiming(frameThrottle,PlayerLoopTiming.LastPostLateUpdate).
+
+            return frameThrottle < 1 ? 
+                source.Subscribe(target) :
+                source.BatchPlayerTiming(frameThrottle,PlayerLoopTiming.LastPostLateUpdate).
                 Subscribe(target);
         }
         
@@ -53,7 +55,10 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
         public static TSource Bind<TSource, T>(this TSource view, IObservable<T> source, ILifeTime lifeTime, Action<T> target, int frameThrottle = 1) 
             where TSource : ILifeTimeContext
         {
-            source.Bind(target, frameThrottle).AddTo(lifeTime);
+            source
+                .Bind(target, frameThrottle)
+                .AddTo(lifeTime);
+            
             return view;
         }
 
@@ -64,8 +69,9 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             int frameThrottle = 1)
             where TSource : ILifeTimeContext
         {
-            source.Bind(target,frameThrottle).
-                AddTo(view.LifeTime);
+            source
+                .Bind(target,frameThrottle)
+                .AddTo(view.LifeTime);
             return view;
         }
     }
