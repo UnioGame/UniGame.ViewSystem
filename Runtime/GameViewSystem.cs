@@ -1,4 +1,5 @@
-﻿using UnityEngine.Scripting;
+﻿using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions;
+using UnityEngine.Scripting;
 
 [assembly: AlwaysLinkAssembly]
 
@@ -9,7 +10,6 @@ namespace UniGame.UiSystem.Runtime
     using Cysharp.Threading.Tasks;
     using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniCore.Runtime.Rx.Extensions;
-    using UniModules.UniGame.Core.Runtime.Rx;
     using UniModules.UniGame.UiSystem.Runtime;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
@@ -42,6 +42,8 @@ namespace UniGame.UiSystem.Runtime
             _flowController     = flowController;
 
             _flowController.Activate(_viewLayouts);
+
+            this.TryMakeActive();
         }
 
         public ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
@@ -51,6 +53,8 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         public IObservable<IView> ViewCreated => _viewCreatedSubject;
 
+        #region public methods
+        
         /// <summary>
         /// terminate game view system lifetime
         /// </summary>
@@ -61,12 +65,6 @@ namespace UniGame.UiSystem.Runtime
         public IObservable<TView> ObserveView<TView>()
             where TView :class, IView
         {
-            // var reactiveValue = new RecycleReactiveProperty<TView>();
-            // var view          = Get<TView>();
-            // if (view != null) {
-            //     reactiveValue.Value = view;
-            // }
-            //
             return ViewCreated.OfType<IView, TView>();
         }
 
@@ -161,6 +159,9 @@ namespace UniGame.UiSystem.Runtime
             return view;
         }
 
+        #endregion
+        
+        
         #region private methods
 
         /// <summary>
