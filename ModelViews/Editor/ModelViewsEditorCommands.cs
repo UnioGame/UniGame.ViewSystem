@@ -37,9 +37,7 @@ namespace UniModules.UniGame.ViewSystem.ModelViews.Editor
                 typeArs[0] = modelType;
                 var targetType = baseViewType.MakeGenericType(typeArs);
                 var viewTypes  = targetType.GetAssignableTypes();
-
                 settings.UpdateValue(modelType,viewTypes);
-
             }
             
             EditorUtility.SetDirty(settings);

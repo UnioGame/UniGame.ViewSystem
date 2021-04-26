@@ -1,4 +1,7 @@
-﻿using UniModules.UniCore.EditorTools.Editor.Utility;
+﻿using System;
+using UniGame.UiSystem.Runtime;
+using UniModules.UniCore.EditorTools.Editor.Utility;
+using UniModules.UniCore.Runtime.ReflectionUtils;
 using UniModules.UniGame.AddressableExtensions.Editor;
 using UnityEngine;
 
@@ -18,6 +21,9 @@ namespace UniGame.UiSystem.Editor.UiEditor
 
     public class ViewsAssemblyBuilder
     {
+                    
+        private Type baseViewType  = typeof(IUiView<>);
+        private Type baseModelType = typeof(IViewModel);
         private HashSet<IView> proceedViews = new HashSet<IView>();
         private AddressableAssetSettings addressableAssetSettings;
         
@@ -102,10 +108,19 @@ namespace UniGame.UiSystem.Editor.UiEditor
                 return;
             }
 
+            
+            var viewType = view.GetType();
+            var viewInterface = viewType.GetInterfaces()
+                .FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == baseViewType);
+            
+            var modelsArgs = viewInterface?.GetGenericArguments();
+            var modelType = modelsArgs?.FirstOrDefault();
+
             var viewDescription = new UiViewReference() {
                 Tag  = tag,
                 AssetGUID = assetReference.AssetGUID,
-                Type = view.GetType(),
+                Type = viewType,
+                ModelType = modelType,
                 View = assetReference,
                 ViewName = assetReference.editorAsset.name
             };
