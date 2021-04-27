@@ -1,5 +1,3 @@
-
-
 namespace UniGame.UiSystem.Runtime.Settings
 {
     using System;
@@ -44,7 +42,18 @@ namespace UniGame.UiSystem.Runtime.Settings
 
         private string GetModelTypeName()
         {
-            return $"ModelType : {ModelType?.Type?.GetFormattedName()}"; 
+            return $"ModelType : {ModelType?.Type?.GetFormattedName()}";
+        }
+
+        public override int GetHashCode()
+        {
+            return AssetGUID.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+            return obj.GetHashCode() == GetHashCode();
         }
     }
 }

@@ -1,14 +1,13 @@
-﻿using System.Linq;
-using Cysharp.Threading.Tasks;
-using UniModules.UniGame.Core.Runtime.Interfaces;
-
-namespace UniGame.UiSystem.Runtime.Settings
+﻿namespace UniGame.UiSystem.Runtime.Settings
 {
+    using System.Linq;
+    using Cysharp.Threading.Tasks;
+    using UniModules.UniGame.Core.Runtime.Interfaces;
+    using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
     using System;
     using System.Collections.Generic;
     using Addressables.Reactive;
     using UniCore.Runtime.ProfilerTools;
-    using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniGame.Core.Runtime.Attributes;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniRx;
@@ -21,8 +20,11 @@ namespace UniGame.UiSystem.Runtime.Settings
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/ViewSystemSettings", fileName = nameof(ViewSystemSettings))]
     public class ViewSystemSettings : ViewsSettings, ICompletionStatus
     {
+        
+        #region inspector 
+        
         [SerializeField]
-        private List<NestedViewSourceSettings> sources = new List<NestedViewSourceSettings>();
+        public List<NestedViewSourceSettings> sources = new List<NestedViewSourceSettings>();
 
         
 #if ODIN_INSPECTOR
@@ -32,14 +34,27 @@ namespace UniGame.UiSystem.Runtime.Settings
         [Tooltip("Layout Flow Behaviour")]
         [SerializeField]
         [AssetFilter(typeof(ViewFlowControllerAsset))]
-        private ViewFlowControllerAsset layoutFlow;
+        public ViewFlowControllerAsset layoutFlow;
 
-        private                 LifeTimeDefinition lifeTimeDefinition;
+        [Space]
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.InlineEditor(Expanded = false)]
+#endif
+        public ViewModelProviderSettings viewsModelProviderSettings;
+        
+        [Space]
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.InlineProperty]
+        [Sirenix.OdinInspector.HideLabel]
+#endif
+        public ViewModelTypeMap viewModelTypeMap = new ViewModelTypeMap();
+        
+        #endregion
+        
         private                 UiResourceProvider uiResourceProvider;
+        
         [NonSerialized] private bool               isStarted;
 
-        public void Dispose() => lifeTimeDefinition?.Terminate();
-        
         public bool IsComplete { get; private set; } = false;
         
         public IViewResourceProvider<Component> ResourceProvider => uiResourceProvider;
@@ -63,7 +78,6 @@ namespace UniGame.UiSystem.Runtime.Settings
 
             FlowController = layoutFlow.Create();
             
-            lifeTimeDefinition = lifeTimeDefinition ?? new LifeTimeDefinition();
             uiResourceProvider = uiResourceProvider ?? new UiResourceProvider();
 
             uiResourceProvider.RegisterViews(uiViews);
@@ -79,7 +93,7 @@ namespace UniGame.UiSystem.Runtime.Settings
 
             foreach (var source in sources.Where(x => !x.awaitLoading))
             {
-                LoadAsyncSource(source.viewSourceReference);
+                LoadAsyncSource(source.viewSourceReference).Forget();
             }
             
             //load ui views async

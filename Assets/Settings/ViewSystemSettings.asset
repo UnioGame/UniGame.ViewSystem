@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ViewSystemSettings
   m_EditorClassIdentifier: 
   sourceName: GameViewSystemSettings
+  labels: []
   isActive: 0
   addressableGroupName: 
   uiViewsDefaultFolders: []
@@ -20,3 +21,11 @@ MonoBehaviour:
   uiViews: []
   sources: []
   layoutFlow: {fileID: 11400000, guid: c22cfe04dc8dc9e43b8b9b36576fab63, type: 2}
+  viewsModelProviderSettings: {fileID: 0}
+  viewModelTypeMap:
+    viewsTypeMap:
+      keys: []
+      values: []
+    modelTypeMap:
+      keys: []
+      values: []

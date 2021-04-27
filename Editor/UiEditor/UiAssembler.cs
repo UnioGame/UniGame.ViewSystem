@@ -12,13 +12,7 @@
         [MenuItem(itemName:"UniGame/View System/Rebuild View Settings")]
         public static void RefreshUiSettings()
         {
-
-            var uiSettings = AssetEditorTools.GetAssets<ViewsSettings>();
-            
-            foreach (var source in uiSettings) {
-                Build(source);
-            }
-            
+            settingsBuilder.RebuildAll();
         }
 
         public static void Build(this ViewsSettings settings)
@@ -28,11 +22,11 @@
             settingsBuilder.Build(settings);
         }
 
-        [MenuItem(itemName:"Assets/Rebuild Views Settings")]
+        
+        [MenuItem(itemName:"Assets/Rebuild ViewsSettings")]
         public static void RebuildSelected()
         {
             Build(Selection.activeObject as ViewsSettings);
         }
-        
     }
 }

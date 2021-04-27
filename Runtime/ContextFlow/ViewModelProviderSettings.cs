@@ -7,12 +7,14 @@ using UnityEngine;
 
 namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
 {
-    [CreateAssetMenu(menuName = "UniGame/ViewSystem/Settings/ViewContextMap",fileName = nameof(ViewContextMapSettings))]
-    public class ViewContextMapSettings : ScriptableObject,IViewModelProvider
+    /// <summary>
+    /// Create View Model by requested type 
+    /// </summary>
+    [CreateAssetMenu(menuName = "UniGame/ViewSystem/Settings/ViewContextMap",fileName = nameof(ViewModelProviderSettings))]
+    public class ViewModelProviderSettings : ScriptableObject,IViewModelProvider
     {
         #region inspector
         
-        [SerializeReference]
         public List<ProviderVariant> modelProviders = new List<ProviderVariant>();
 
         #endregion

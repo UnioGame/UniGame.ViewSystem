@@ -1,8 +1,8 @@
 ﻿using System;
 using UniGame.UiSystem.Runtime;
 using UniModules.UniCore.EditorTools.Editor.Utility;
-using UniModules.UniCore.Runtime.ReflectionUtils;
 using UniModules.UniGame.AddressableExtensions.Editor;
+using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
 using UnityEngine;
 
 namespace UniGame.UiSystem.Editor.UiEditor
@@ -17,20 +17,56 @@ namespace UniGame.UiSystem.Editor.UiEditor
     using UnityEditor;
     using UnityEditor.AddressableAssets;
     using UnityEditor.AddressableAssets.Settings;
-    using UnityEngine.AddressableAssets;
 
     public class ViewsAssemblyBuilder
     {
-                    
         private Type baseViewType  = typeof(IUiView<>);
         private Type baseModelType = typeof(IViewModel);
         private HashSet<IView> proceedViews = new HashSet<IView>();
+        private HashSet<UiViewReference> viewsReferences = new HashSet<UiViewReference>();
+        private List<ViewModelProviderSettings> contextViewsMapSettings = new List<ViewModelProviderSettings>();
         private AddressableAssetSettings addressableAssetSettings;
+        private List<Action> rebuildCommands;
+        private List<Func<ViewsSettings,bool>> rebuildSettingsCommands;
+
+        public ViewsAssemblyBuilder()
+        {
+            rebuildCommands = new List<Action>()
+            {
+                Reset,
+                RebuildViewSettings,
+                RebuildContextSettings,
+                BuildViewModelMap,
+            };
+
+            rebuildSettingsCommands = new List<Func<ViewsSettings, bool>>()
+            {
+                Clear,
+                ValidateSettings,
+                BuildViewSettingsData,
+                BuildViewModelMap,
+            };
+        }
         
+        public void RebuildAll()
+        {
+            rebuildCommands.ForEach(x => x.Invoke());
+        }
+
+        public void RebuildViewSettings()
+        {
+            var viewSettings = AssetEditorTools.GetAssets<ViewsSettings>();
+            foreach (var setting in viewSettings)
+            {
+                Build(setting);
+                setting.MarkDirty();
+            }
+        }
+
         public void Build(ViewsSettings settings)
         {
             addressableAssetSettings = AddressableAssetSettingsDefaultObject.Settings;
-
+            
             if (settings.isActive == false) return;
 
             proceedViews.Clear();
@@ -39,11 +75,94 @@ namespace UniGame.UiSystem.Editor.UiEditor
                 GameLog.LogError($"EMPTY UiManagerSettings on UiAssemblyBuilder.Build");
                 return;
             }
-            
-            Reset(settings);
 
+            ApplyViewSettingsPipeline(settings);
+            
+            settings.MarkDirty();
+        }
+
+        public bool ValidateSettings(ViewsSettings settings)
+        {
+            return settings.IsActive;
+        }
+        
+        public bool Clear(ViewsSettings settings)
+        {
+            settings.uiViews.Clear();
+            return settings;
+        }
+
+        private bool BuildViewModelMap(ViewsSettings settings)
+        {
+            var systemSettings = settings as ViewSystemSettings;
+            if (!systemSettings)
+                return true;
+            
+            var viewSettings = new HashSet<ViewsSettings>();
+            viewSettings.Clear();
+            var relatedSettings = GetSettings(systemSettings, viewSettings);
+
+            foreach (var nestedSettings in relatedSettings)
+            {
+                if(nestedSettings == settings) continue;
+                Build(nestedSettings);
+            }
+            
+            var views = relatedSettings
+                .SelectMany(x => x.Views)
+                .ToList();
+            
+            var typeMap = new ViewModelTypeMap();
+            typeMap.RegisterViewReference(views);
+            systemSettings.viewModelTypeMap = typeMap;
+            systemSettings.MarkDirty();
+            
+            return true;
+        }
+        
+        private void BuildViewModelMap()
+        {
+            var viewSystemSettings = AssetEditorTools.GetAssets<ViewSystemSettings>();
+            foreach (var systemSetting in viewSystemSettings)
+            {
+                BuildViewModelMap(systemSetting);
+            }
+        }
+
+        private HashSet<ViewsSettings> GetSettings(ViewsSettings viewsSettings, HashSet<ViewsSettings> settings)
+        {
+            if (!settings.Add(viewsSettings))
+                return settings;
+
+            if (!(viewsSettings is ViewSystemSettings systemSettings)) return settings;
+            
+            var nestedSettings = systemSettings.sources;
+            foreach (var nestedSetting in nestedSettings)
+            {
+                GetSettings(nestedSetting.viewSourceReference.editorAsset,settings);
+            }
+
+            return settings;
+        }
+        
+        private ViewsSettings ApplyViewSettingsPipeline(ViewsSettings settings)
+        {
+            foreach (var settingsCommand in rebuildSettingsCommands)
+            {
+                var result = settingsCommand(settings);
+                if (!result) break;
+            }
+
+            return settings;
+        }
+
+        private bool BuildViewSettingsData(ViewsSettings settings)
+        {
+            settings.uiViews.Clear();
+            
             var skinsFolders = settings.uiViewsSkinFolders;
             var defaultFolders = settings.uiViewsDefaultFolders;
+            
             var groupName = string.IsNullOrEmpty(settings.sourceName) ? 
                 settings.name : settings.sourceName;
             
@@ -56,16 +175,10 @@ namespace UniGame.UiSystem.Editor.UiEditor
                 var views = LoadUiViews<IView>(defaultFolders);
                 views.ForEach(x => AddView(settings,x,true,groupName));
             }
-            
-            settings.MarkDirty();
+
+            return settings;
         }
-
-        public void Reset(ViewsSettings settings)
-        {
-            settings.uiViews.Clear();
-        }
-
-
+        
         private List<TView> LoadUiViews<TView>(IReadOnlyList<string> paths)
             where TView : class,IView
         {
@@ -95,19 +208,36 @@ namespace UniGame.UiSystem.Editor.UiEditor
             
             if (views.Any(x => string.Equals(guid, x.AssetGUID)))
                 return;
+
+            var viewReference = CreateViewReference(view, groupName, defaultView);
             
+            viewsReferences.Add(viewReference);
+            views.Add(viewReference);
+        }
+
+        public void Reset()
+        {
+            proceedViews.Clear();
+            viewsReferences.Clear();
+            contextViewsMapSettings.Clear();
+        }
+        
+        public UiViewReference CreateViewReference(
+            IView view, 
+            string groupName,bool defaultView)
+        {
+            var assetView = view as MonoBehaviour;
+            var gameObject = assetView.gameObject;
             var assetPath = AssetDatabase.GetAssetPath(gameObject);
             var tag = defaultView ? string.Empty : Path.GetFileName(Path.GetDirectoryName(assetPath));
-            var labels = viewsSettings.labels;
 
             gameObject.SetAddressableAssetGroup(groupName);
             var assetReference = gameObject.PrefabToAssetReference();
             
             if (assetReference.RuntimeKeyIsValid() == false) {
                 GameLog.LogError($"Asset {gameObject.name} by path {assetPath} wrong addressable asset");
-                return;
+                return null;
             }
-
             
             var viewType = view.GetType();
             var viewInterface = viewType.GetInterfaces()
@@ -125,7 +255,15 @@ namespace UniGame.UiSystem.Editor.UiEditor
                 ViewName = assetReference.editorAsset.name
             };
 
-            views.Add(viewDescription);
+            return viewDescription;
         }
+        
+        
+        private void RebuildContextSettings()
+        {
+            var contextSettings = AssetEditorTools.GetAssets<ViewModelProviderSettings>();
+            
+        }
+
     }
 }

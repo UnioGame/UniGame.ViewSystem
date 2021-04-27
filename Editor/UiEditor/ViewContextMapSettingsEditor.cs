@@ -1,14 +1,16 @@
-﻿using UniGame.UiSystem.Editor.UiEditor;
-using UniGame.UiSystem.Runtime.Settings;
-using UnityEditor;
-using UnityEngine;
+﻿
+using UniGame.UiSystem.Editor.UiEditor;
 
 namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
 {
+    using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
+    using UnityEditor;
+    using UnityEngine;
+    
 #if !ODIN_INSPECTOR
-    [CustomEditor(typeof(ViewsSettings),editorForChildClasses:true)]
+    [CustomEditor(typeof(ViewModelProviderSettings),editorForChildClasses:true)]
 #endif
-    public class UiViewsEditor : UnityEditor.Editor
+    public class ViewContextMapSettingsEditor : UnityEditor.Editor
     {
         private ViewsAssemblyBuilder builder = new ViewsAssemblyBuilder();
         

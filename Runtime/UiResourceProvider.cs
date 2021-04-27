@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UniModules.UniGame.ViewSystem.Runtime.Extensions;
+using UnityEngine;
 
 namespace UniGame.UiSystem.Runtime
 {
@@ -17,17 +18,13 @@ namespace UniGame.UiSystem.Runtime
         private Dictionary<Type, List<UiViewReference>> views = new Dictionary<Type, List<UiViewReference>>(32);
 
         public IAddressableObservable<Component> LoadViewAsync(Type viewType,
-            string skinTag = null,
+            string skinTag = "",
             bool strongMatching = true,
             string viewName = "")
         {
             var items = FindItemsByType(viewType, strongMatching);
 
-            var item = items.FirstOrDefault(
-                x => (string.IsNullOrEmpty(skinTag) ||
-                     string.Equals(x.Tag, skinTag, StringComparison.InvariantCultureIgnoreCase)) &&
-                    (string.IsNullOrEmpty(viewName) ||
-                     string.Equals(x.ViewName, viewName, StringComparison.InvariantCultureIgnoreCase)));
+            var item = items.SelectReference(skinTag,viewName);
 
             //return collection to pool
             items.Despawn();
