@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
+﻿using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
+
+namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
     using System;
     using Core.Runtime.Interfaces;
@@ -10,6 +12,8 @@
         IViewElementFactory,
         IViewLayoutData
     {
+        IViewModelTypeMap ModelTypeMap { get; }
+        
         UniTask<IView> OpenWindow(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null);
 
         UniTask<IView> OpenScreen(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null);

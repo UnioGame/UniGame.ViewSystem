@@ -1,4 +1,7 @@
-﻿using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions;
+﻿using UniModules.UniGame.Core.Runtime.Interfaces;
+using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
+using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
+using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions;
 using UnityEngine.Scripting;
 
 [assembly: AlwaysLinkAssembly]
@@ -23,28 +26,34 @@ namespace UniGame.UiSystem.Runtime
 
         private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
 
-        private readonly IViewFactory         _viewFactory;
+        private readonly IViewFactory _viewFactory;
         private readonly IViewLayoutContainer _viewLayouts;
-        private readonly IViewFlowController  _flowController;
-        private readonly Subject<IView>       _viewCreatedSubject;
+        private readonly IViewFlowController _flowController;
+        private readonly IViewModelProvider _viewModelProvider;
+        private readonly IViewModelTypeMap _modelTypeMap;
+        private readonly Subject<IView> _viewCreatedSubject;
 
         #endregion
 
         public GameViewSystem(
             IViewFactory viewFactory,
             IViewLayoutContainer viewLayouts,
-            IViewFlowController flowController)
+            IViewFlowController flowController,
+            IViewModelProvider viewModelProvider,
+            IViewModelTypeMap modelTypeMap)
         {
             _viewCreatedSubject = new Subject<IView>().AddTo(_lifeTimeDefinition);
-            
-            _viewFactory        = viewFactory;
-            _viewLayouts        = viewLayouts;
-            _flowController     = flowController;
+
+            _viewFactory = viewFactory;
+            _viewLayouts = viewLayouts;
+            _flowController = flowController;
+            _viewModelProvider = viewModelProvider;
+            _modelTypeMap = modelTypeMap;
 
             _flowController.Activate(_viewLayouts);
-
-            this.TryMakeActive();
         }
+        
+        public IViewModelTypeMap ModelTypeMap => _modelTypeMap;
 
         public ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
 
@@ -54,43 +63,61 @@ namespace UniGame.UiSystem.Runtime
         public IObservable<IView> ViewCreated => _viewCreatedSubject;
 
         #region public methods
-        
+
         /// <summary>
         /// terminate game view system lifetime
         /// </summary>
         public void Dispose() => _lifeTimeDefinition.Terminate();
 
+        #region IViewModelProvider api
+
+        public bool IsValid(Type modelType) => _viewModelProvider.IsValid(modelType);
+
+        public async UniTask<IViewModel> Create(IContext context, Type modelType)
+        {
+            if (_viewModelProvider == null)
+                return null;
+            return await _viewModelProvider.Create(context,modelType);
+        }
+        
+        #endregion
+        
         #region ui system api
 
         public IObservable<TView> ObserveView<TView>()
-            where TView :class, IView
+            where TView : class, IView
         {
             return ViewCreated.OfType<IView, TView>();
         }
 
-        public async UniTask<IView> Create(IViewModel viewModel, Type viewType, string skinTag = "", Transform parent = null, string viewName = null, bool stayWorld = false)
+        public async UniTask<IView> Create(IViewModel viewModel, Type viewType, string skinTag = "",
+            Transform parent = null, string viewName = null, bool stayWorld = false)
         {
-            return await CreateView(viewModel, viewType, skinTag, parent, viewName,stayWorld);
+            return await CreateView(viewModel, viewType, skinTag, parent, viewName, stayWorld);
         }
 
-        public async UniTask<IView> OpenWindow(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
+        public async UniTask<IView> OpenWindow(IViewModel viewModel, Type viewType, string skinTag = "",
+            string viewName = null)
         {
             return await OpenView<ViewBase>(viewModel, viewType, ViewType.Window, skinTag, viewName);
         }
 
-        public async UniTask<IView> OpenScreen(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
+        public async UniTask<IView> OpenScreen(IViewModel viewModel, Type viewType, string skinTag = "",
+            string viewName = null)
         {
             return await OpenView<ViewBase>(viewModel, viewType, ViewType.Screen, skinTag, viewName);
         }
 
-        public async UniTask<IView> OpenOverlay(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
+        public async UniTask<IView> OpenOverlay(IViewModel viewModel, Type viewType, string skinTag = "",
+            string viewName = null)
         {
             return await OpenView<ViewBase>(viewModel, viewType, ViewType.Overlay, skinTag, viewName);
         }
 
-        public T Get<T>() where T :class, IView
+        public T Get<T>() where T : class, IView
         {
-            foreach (var controller in _viewLayouts.Controllers) {
+            foreach (var controller in _viewLayouts.Controllers)
+            {
                 var v = controller.Get<T>();
                 if (v != null)
                     return v;
@@ -133,7 +160,7 @@ namespace UniGame.UiSystem.Runtime
             string viewName = null,
             bool stayWorld = false)
         {
-            var view = (await _viewFactory.Create(viewType, skinTag, parent, viewName,stayWorld));
+            var view = (await _viewFactory.Create(viewType, skinTag, parent, viewName, stayWorld));
 
             await InitializeView(view, viewModel);
 
@@ -155,13 +182,13 @@ namespace UniGame.UiSystem.Runtime
             bool stayWorld = false)
             where T : class, IView
         {
-            var view = await CreateView(viewModel, typeof(T), skinTag, parent,String.Empty,stayWorld) as T;
+            var view = await CreateView(viewModel, typeof(T), skinTag, parent, String.Empty, stayWorld) as T;
             return view;
         }
 
         #endregion
-        
-        
+
+
         #region private methods
 
         /// <summary>
@@ -213,7 +240,8 @@ namespace UniGame.UiSystem.Runtime
             //TODO move to pool
             var asset = view as Component;
 
-            if (asset != null) {
+            if (asset != null)
+            {
                 var target = asset.gameObject;
                 UnityEngine.Object.Destroy(target);
             }

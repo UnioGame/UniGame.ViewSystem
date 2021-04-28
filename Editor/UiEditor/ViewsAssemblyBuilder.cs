@@ -24,7 +24,7 @@ namespace UniGame.UiSystem.Editor.UiEditor
         private Type baseModelType = typeof(IViewModel);
         private HashSet<IView> proceedViews = new HashSet<IView>();
         private HashSet<UiViewReference> viewsReferences = new HashSet<UiViewReference>();
-        private List<ViewModelProviderSettings> contextViewsMapSettings = new List<ViewModelProviderSettings>();
+        private List<ViewModelFactorySettings> contextViewsMapSettings = new List<ViewModelFactorySettings>();
         private AddressableAssetSettings addressableAssetSettings;
         private List<Action> rebuildCommands;
         private List<Func<ViewsSettings,bool>> rebuildSettingsCommands;
@@ -261,7 +261,7 @@ namespace UniGame.UiSystem.Editor.UiEditor
         
         private void RebuildContextSettings()
         {
-            var contextSettings = AssetEditorTools.GetAssets<ViewModelProviderSettings>();
+            var contextSettings = AssetEditorTools.GetAssets<ViewModelFactorySettings>();
             
         }
 

@@ -2,7 +2,6 @@ using Cysharp.Threading.Tasks;
 using UniGame.UiSystem.Runtime.Settings;
 using UniModules.UniCore.Runtime.DataFlow;
 using UniModules.UniGame.AddressableTools.Runtime.Extensions;
-using UniModules.UniGame.Core.Runtime.DataFlow.Extensions;
 using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
 using UniModules.UniGame.ViewSystem.Runtime.Settings;
 using UnityEngine;
@@ -26,8 +25,7 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
         {
             return await WarmupInternal(settingsReference, gameObject);
         }
-
-
+        
         public static async UniTask<ILifeTime> Warmup(this IViewsSettings settings,Scene scene)
         {
             return await settings.Warmup(scene.GetLifeTime());

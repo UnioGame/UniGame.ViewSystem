@@ -1,4 +1,6 @@
-﻿namespace UniGame.UiSystem.Runtime.Settings
+﻿using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
+
+namespace UniGame.UiSystem.Runtime.Settings
 {
     using System.Linq;
     using Cysharp.Threading.Tasks;
@@ -17,16 +19,13 @@
     /// <summary>
     /// Base View system settings. Contains info about all available view abd type info
     /// </summary>
-    [CreateAssetMenu(menuName = "UniGame/ViewSystem/ViewSystemSettings", fileName = nameof(ViewSystemSettings))]
+    [CreateAssetMenu(menuName = "UniGame/ViewSystem/Settings/ViewSystemSettings", fileName = nameof(ViewSystemSettings))]
     public class ViewSystemSettings : ViewsSettings, ICompletionStatus
     {
-        
-        #region inspector 
-        
-        [SerializeField]
-        public List<NestedViewSourceSettings> sources = new List<NestedViewSourceSettings>();
+        #region inspector
 
-        
+        [SerializeField] public List<NestedViewSourceSettings> sources = new List<NestedViewSourceSettings>();
+
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.DrawWithUnity]
 #endif
@@ -37,30 +36,37 @@
         public ViewFlowControllerAsset layoutFlow;
 
         [Space]
+        [Header("model factory object")]
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.InlineEditor(Expanded = false)]
+        [Sirenix.OdinInspector.HideLabel]
 #endif
-        public ViewModelProviderSettings viewsModelProviderSettings;
-        
+        public ViewModelFactorySettings viewsModelProviderSettings;
+
         [Space]
+        [Header("views and models map")]
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.InlineProperty]
         [Sirenix.OdinInspector.HideLabel]
 #endif
         public ViewModelTypeMap viewModelTypeMap = new ViewModelTypeMap();
-        
+
         #endregion
-        
-        private                 UiResourceProvider uiResourceProvider;
-        
-        [NonSerialized] private bool               isStarted;
+
+        private UiResourceProvider uiResourceProvider;
+
+        [NonSerialized] private bool isStarted;
 
         public bool IsComplete { get; private set; } = false;
-        
+
+        public IViewModelTypeMap ViewModelTypeMap => viewModelTypeMap;
+
         public IViewResourceProvider<Component> ResourceProvider => uiResourceProvider;
 
         public IViewFlowController FlowController { get; protected set; }
 
+        #region public methods
+        
         public async UniTask WaitForInitialize()
         {
             while (!LifeTime.IsTerminated && !IsComplete)
@@ -68,7 +74,7 @@
                 await UniTask.Yield();
             }
         }
-        
+
         public void Initialize()
         {
             if (isStarted) return;
@@ -77,16 +83,18 @@
             isStarted = true;
 
             FlowController = layoutFlow.Create();
+
+            uiResourceProvider = uiResourceProvider ?? new UiResourceProvider(viewModelTypeMap);
+
+            viewsModelProviderSettings?.Initialize();
             
-            uiResourceProvider = uiResourceProvider ?? new UiResourceProvider();
-
-            uiResourceProvider.RegisterViews(uiViews);
-
-            DownloadAllAsyncSources();  
+            DownloadAllAsyncSources().Forget();
         }
 
-        #region private methods
+        #endregion
         
+        #region private methods
+
         private async UniTask DownloadAllAsyncSources()
         {
             IsComplete = false;
@@ -95,7 +103,7 @@
             {
                 LoadAsyncSource(source.viewSourceReference).Forget();
             }
-            
+
             //load ui views async
             foreach (var viewSource in sources.Where(x => x.awaitLoading))
             {
@@ -112,28 +120,22 @@
                 var settings = await reference
                     .ToObservable()
                     .First();
-                
+
                 if (!settings)
                 {
                     GameLog.LogError($"UiManagerSettings Load EMPTY Settings {reference.AssetGUID}");
                     return;
                 }
-                uiResourceProvider.RegisterViews(settings.uiViews);
             }
             catch (Exception e)
             {
                 GameLog.LogError($"UiManagerSettings Load Ui Source failed {reference.AssetGUID}");
                 GameLog.LogError(e);
             }
-            
         }
 
-        private void OnDisable()
-        {
-            Dispose();
-        }
+        private void OnDisable() => Dispose();
 
         #endregion
-
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UniGame.UiSystem.Runtime.Settings;
+using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
 using UnityEngine;
 
 namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
@@ -30,8 +31,13 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
             
             return modelType;
         }
-        
 
+        public IReadOnlyList<UiViewReference> FindViewsByType(Type viewType, bool strongMatching = true) =>
+            viewsTypeMap.FindByType(viewType, strongMatching);
+
+        public IReadOnlyList<UiViewReference> FindModelByType(Type modelType, bool strongMatching = true) =>
+            modelTypeMap.FindByType(modelType, strongMatching);
+        
         public Type GetViewTypeByModel(Type modeType, bool strongTypeMatching = true)
         {
             var viewType =  modelTypeMap

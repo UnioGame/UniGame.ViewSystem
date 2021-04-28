@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using UniModules.UniGame.Core.Runtime.Interfaces;
+using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
+using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions;
+using UnityEngine;
 
 namespace UniGame.UiSystem.Runtime
 {
@@ -28,8 +31,18 @@ namespace UniGame.UiSystem.Runtime
 
         private IGameViewSystem gameViewSystem;
 
+        #region IViewModelProvider api
+
+        public bool IsValid(Type modelType) => ViewSystem.IsValid(modelType);
+
+        public async UniTask<IViewModel> Create(IContext context,Type modelType) => await ViewSystem.Create(context,modelType);
+        
+        #endregion
+        
         #region view system api
 
+        public IViewModelTypeMap ModelTypeMap => ViewSystem.ModelTypeMap;
+        
         public IObservable<IView> ViewCreated => ViewSystem.ViewCreated;
         
         public IGameViewSystem    ViewSystem  => gameViewSystem ?? (gameViewSystem = Create());
@@ -72,7 +85,7 @@ namespace UniGame.UiSystem.Runtime
         private IGameViewSystem Create()
         {
             settings.Initialize();
-            
+
             var factory  = new ViewFactory(new AsyncLazy(() => settings.WaitForInitialize()),settings.ResourceProvider);
             var stackMap = new Dictionary<ViewType, IViewLayout>(4);
             foreach (var item in layoutMap) {
@@ -82,7 +95,11 @@ namespace UniGame.UiSystem.Runtime
             var viewLayoutContainer = new ViewStackLayoutsContainer(stackMap);
             var sceneFlowController = settings.FlowController;
 
-            return new GameViewSystem(factory, viewLayoutContainer, sceneFlowController);
+            var gameSystem = new GameViewSystem(factory, viewLayoutContainer, sceneFlowController,settings.viewsModelProviderSettings,settings.ViewModelTypeMap);
+
+            gameSystem.TryMakeActive();
+            
+            return gameSystem;
         }
 
     }

@@ -1,4 +1,6 @@
-﻿using UniModules.UniGame.ViewSystem.Runtime.Extensions;
+﻿using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
+using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
+using UniModules.UniGame.ViewSystem.Runtime.Extensions;
 using UnityEngine;
 
 namespace UniGame.UiSystem.Runtime
@@ -15,19 +17,20 @@ namespace UniGame.UiSystem.Runtime
 
     public class UiResourceProvider : IViewResourceProvider<Component>
     {
-        private Dictionary<Type, List<UiViewReference>> views = new Dictionary<Type, List<UiViewReference>>(32);
+        private IViewModelTypeMap _viewModelTypeMap;
 
+        public UiResourceProvider(IViewModelTypeMap viewModelTypeMap)
+        {
+            _viewModelTypeMap = viewModelTypeMap;
+        }
+        
         public IAddressableObservable<Component> LoadViewAsync(Type viewType,
             string skinTag = "",
             bool strongMatching = true,
             string viewName = "")
         {
-            var items = FindItemsByType(viewType, strongMatching);
-
+            var items = _viewModelTypeMap.FindViewsByType(viewType, strongMatching);
             var item = items.SelectReference(skinTag,viewName);
-
-            //return collection to pool
-            items.Despawn();
 
             if (item == null)
             {
@@ -40,9 +43,7 @@ namespace UniGame.UiSystem.Runtime
 
         public List<IAddressableObservable<Component>> LoadViewsAsync(Type viewType, string skinTag = null, bool strongMatching = true)
         {
-            var items = FindItemsByType(viewType, strongMatching);
-            //return collection to pool
-            items.Despawn();
+            var items = _viewModelTypeMap.FindViewsByType(viewType, strongMatching);
 
             if (items.Count <= 0)
             {
@@ -60,41 +61,6 @@ namespace UniGame.UiSystem.Runtime
             return result;
         }
 
-        public void RegisterViews(IReadOnlyList<UiViewReference> sourceViews)
-        {
-            foreach (var view in sourceViews)
-            {
-                Type targetType = view.Type;
-                if (views.TryGetValue(targetType, out var items) == false)
-                {
-                    items = new List<UiViewReference>();
-                    views[targetType] = items;
-                }
-                items.Add(view);
-            }
-        }
-
-        private List<UiViewReference> FindItemsByType(Type type, bool strongMatching)
-        {
-            var result = ClassPool.Spawn<List<UiViewReference>>();
-            if (strongMatching)
-            {
-                if (views.TryGetValue(type, out var items))
-                {
-                    result.AddRange(items);
-                }
-                return result;
-            }
-
-            foreach (var view in views)
-            {
-                var viewType = view.Key;
-                if (type.IsAssignableFrom(viewType))
-                    result.AddRange(view.Value);
-            }
-
-            return result;
-        }
 
     }
 }
