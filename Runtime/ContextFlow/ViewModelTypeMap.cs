@@ -70,10 +70,10 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
                 map[targetType] = items;
             }
 
-            if (items.Contains(reference))
+            if (items.references.Contains(reference))
                 return;
             
-            items.Add(reference);
+            items.references.Add(reference);
         }
         
     }

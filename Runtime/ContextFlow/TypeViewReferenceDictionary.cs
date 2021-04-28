@@ -18,14 +18,14 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
             if (strongMatching)
             {
                 return TryGetValue(type, out var items) ? 
-                    items : _emptyList;
+                    items.references : _emptyList;
             }
 
             foreach (var view in this)
             {
                 var viewType = view.Key;
                 if (type.IsAssignableFrom(viewType))
-                    return view.Value;
+                    return view.Value.references;
             }
 
             return _emptyList;

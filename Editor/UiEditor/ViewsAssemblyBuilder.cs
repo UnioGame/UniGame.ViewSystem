@@ -115,6 +115,7 @@ namespace UniGame.UiSystem.Editor.UiEditor
             var typeMap = new ViewModelTypeMap();
             typeMap.RegisterViewReference(views);
             systemSettings.viewModelTypeMap = typeMap;
+            
             systemSettings.MarkDirty();
             
             return true;
