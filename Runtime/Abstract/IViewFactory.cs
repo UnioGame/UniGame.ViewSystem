@@ -6,7 +6,11 @@
 
     public interface IViewFactory
     {
-        UniTask<IView> Create(Type viewType, string skinTag = "", Transform parent = null, string viewName = null,
+        UniTask<IView> Create(
+            Type viewType, 
+            string skinTag = "", 
+            Transform parent = null, 
+            string viewName = null,
             bool stayWorldPosition = false);
     }
 }

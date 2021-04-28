@@ -49,7 +49,9 @@ namespace UniGame.UiSystem.Runtime
                 return null;
             }
 
+            //bind view addressables counter to view lifetime
             viewObservable.AddTo(view.LifeTime);
+            
             return view;
         }
         
