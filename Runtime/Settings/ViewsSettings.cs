@@ -40,7 +40,11 @@ namespace UniGame.UiSystem.Runtime.Settings
 #endif
         public List<string> uiViewsSkinFolders = new List<string>();
 
-        [Header("Registered Views")] [Space] public List<UiViewReference> uiViews = new List<UiViewReference>();
+        [Header("Registered Views")] [Space] 
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.Searchable]        
+#endif
+        public List<UiViewReference> uiViews = new List<UiViewReference>();
 
         public bool IsActive => isActive;
 

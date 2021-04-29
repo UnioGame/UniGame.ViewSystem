@@ -8,11 +8,10 @@ namespace UniGame.UiSystem.Runtime.Settings
     using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
     using System;
     using System.Collections.Generic;
-    using Addressables.Reactive;
     using UniCore.Runtime.ProfilerTools;
+    using UniModules.UniGame.AddressableTools.Runtime.Extensions;
     using UniModules.UniGame.Core.Runtime.Attributes;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
-    using UniRx;
     using UnityEngine;
     using ViewsFlow;
 
@@ -24,7 +23,11 @@ namespace UniGame.UiSystem.Runtime.Settings
     {
         #region inspector
 
-        [SerializeField] public List<NestedViewSourceSettings> sources = new List<NestedViewSourceSettings>();
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.Searchable]        
+#endif
+        [SerializeField] 
+        public List<NestedViewSourceSettings> sources = new List<NestedViewSourceSettings>();
 
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.DrawWithUnity]
@@ -43,14 +46,6 @@ namespace UniGame.UiSystem.Runtime.Settings
 #endif
         public ViewModelFactorySettings viewsModelProviderSettings;
 
-        [Space]
-        [Header("views and models map")]
-#if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.InlineProperty]
-        [Sirenix.OdinInspector.HideLabel]
-#endif
-        public ViewModelTypeMap viewModelTypeMap = new ViewModelTypeMap();
-
         #endregion
 
         private UiResourceProvider uiResourceProvider;
@@ -59,9 +54,9 @@ namespace UniGame.UiSystem.Runtime.Settings
 
         public bool IsComplete { get; private set; } = false;
 
-        public IViewModelTypeMap ViewModelTypeMap => viewModelTypeMap;
+        public IViewResourceProvider ResourceProvider => uiResourceProvider;
 
-        public IViewResourceProvider<Component> ResourceProvider => uiResourceProvider;
+        public IViewModelTypeMap ViewModelTypeMap => uiResourceProvider;
 
         public IViewFlowController FlowController { get; protected set; }
 
@@ -84,8 +79,10 @@ namespace UniGame.UiSystem.Runtime.Settings
 
             FlowController = layoutFlow.Create();
 
-            uiResourceProvider = uiResourceProvider ?? new UiResourceProvider(viewModelTypeMap);
+            uiResourceProvider = uiResourceProvider ?? new UiResourceProvider();
 
+            uiResourceProvider.RegisterViewReferences(Views);
+            
             viewsModelProviderSettings?.Initialize();
             
             DownloadAllAsyncSources().Forget();
@@ -117,15 +114,16 @@ namespace UniGame.UiSystem.Runtime.Settings
         {
             try
             {
-                var settings = await reference
-                    .ToObservable()
-                    .First();
+                var settings = await reference.LoadAssetTaskAsync(LifeTime);
 
                 if (!settings)
                 {
                     GameLog.LogError($"UiManagerSettings Load EMPTY Settings {reference.AssetGUID}");
                     return;
                 }
+                
+                uiResourceProvider.RegisterViewReferences(settings.Views);
+
             }
             catch (Exception e)
             {

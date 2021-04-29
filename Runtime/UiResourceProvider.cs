@@ -1,5 +1,4 @@
-﻿using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
-using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
+﻿using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
 using UniModules.UniGame.ViewSystem.Runtime.Extensions;
 using UnityEngine;
 
@@ -8,26 +7,30 @@ namespace UniGame.UiSystem.Runtime
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Addressables.Reactive;
+    using Cysharp.Threading.Tasks;
     using Settings;
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime;
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
+    using UniModules.UniGame.AddressableTools.Runtime.Extensions;
+    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
-    using Object = UnityEngine.Object;
+    using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
 
-    public class UiResourceProvider : IViewResourceProvider<Component>
+    public class UiResourceProvider : 
+        IViewResourceProvider, 
+        IViewModelTypeMap
     {
-        private IViewModelTypeMap _viewModelTypeMap;
+        private ViewModelTypeMap _viewModelTypeMap = new ViewModelTypeMap();
 
-        public UiResourceProvider(IViewModelTypeMap viewModelTypeMap)
+
+        public void RegisterViewReferences(IEnumerable<UiViewReference> sourceViews)
         {
-            _viewModelTypeMap = viewModelTypeMap;
+            _viewModelTypeMap.RegisterViewReference(sourceViews);
         }
         
-        public IAddressableObservable<Component> LoadViewAsync(Type viewType,
-            string skinTag = "",
-            bool strongMatching = true,
-            string viewName = "")
+        public async UniTask<TView> LoadViewAsync<TView>(
+            Type viewType, 
+            ILifeTime lifeTime,
+            string skinTag = "", 
+            bool strongMatching = true, string viewName = "") where TView : UnityEngine.Object
         {
             var items = _viewModelTypeMap.FindViewsByType(viewType, strongMatching);
             var item = items.SelectReference(skinTag,viewName);
@@ -38,10 +41,12 @@ namespace UniGame.UiSystem.Runtime
                 return null;
             }
 
-            return item.View.ToObservable<Component>();
+            return await item.View.LoadAssetTaskAsync<TView>(lifeTime);
         }
 
-        public List<IAddressableObservable<Component>> LoadViewsAsync(Type viewType, string skinTag = null, bool strongMatching = true)
+        public List<UniTask<TView>> LoadViewsAsync<TView>(
+            Type viewType,ILifeTime lifeTime, string skinTag = null, bool strongMatching = true)
+            where TView : UnityEngine.Object
         {
             var items = _viewModelTypeMap.FindViewsByType(viewType, strongMatching);
 
@@ -51,16 +56,21 @@ namespace UniGame.UiSystem.Runtime
                 return null;
             }
 
-            var result = new List<IAddressableObservable<Component>>();
-
-            foreach (var item in items)
-            {
-                result.Add(item.View.ToObservable<Component>());
-            }
-
-            return result;
+            return items
+                .Select(item => item.View.LoadAssetTaskAsync<TView>(lifeTime))
+                .ToList();
         }
 
+#region view model map API
 
+        public IReadOnlyList<UiViewReference> FindViewsByType(Type viewType, bool strongMatching = true) => _viewModelTypeMap.FindViewsByType(viewType, strongMatching);
+
+        public IReadOnlyList<UiViewReference> FindModelByType(Type modelType, bool strongMatching = true) => _viewModelTypeMap.FindModelByType(modelType, strongMatching);
+
+        public Type GetModelTypeByView(Type viewType, bool strongTypeMatching = true) => _viewModelTypeMap.GetModelTypeByView(viewType, strongTypeMatching);
+
+        public Type GetViewTypeByModel(Type modeType, bool strongTypeMatching = true) => _viewModelTypeMap.GetViewTypeByModel(modeType, strongTypeMatching);
+        
+#endregion
     }
 }
