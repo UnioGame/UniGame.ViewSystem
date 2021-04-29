@@ -6,6 +6,8 @@ namespace UniGame.UiSystem.Runtime
     using Addressables.Reactive;
     using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
+    using UniModules.UniCore.Runtime.DataFlow;
+    using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
     using UniModules.UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniRx;
@@ -15,11 +17,11 @@ namespace UniGame.UiSystem.Runtime
     public class ViewFactory : IViewFactory
     {
         private readonly AsyncLazy _readyStatus;
-        private readonly IViewResourceProvider<Component> resourceProvider;
+        private readonly IViewResourceProvider resourceProvider;
         
         public ViewFactory(
             AsyncLazy readyStatus,
-            IViewResourceProvider<Component> viewResourceProvider)
+            IViewResourceProvider viewResourceProvider)
         {
             _readyStatus = readyStatus;
             resourceProvider = viewResourceProvider;
@@ -33,25 +35,21 @@ namespace UniGame.UiSystem.Runtime
             bool stayWorldPosition = false)
         {
             await _readyStatus;
-            
-            var viewObservable = resourceProvider.
-                LoadViewAsync(viewType,skinTag, viewName:viewName);
-            
-            //load View resource
-            var result = await viewObservable.First();
+
+            var viewLifeTime = LifeTime.Create();
+            var result       = await resourceProvider.LoadViewAsync<Component>(viewType,viewLifeTime,skinTag, viewName:viewName);
             //create view instance
             var view = Create(result, parent,stayWorldPosition);
             
             //if loading failed release resource immediately
             if (view == null) {
-                viewObservable.Dispose();
+                viewLifeTime.Despawn();
                 GameLog.LogError($"Factory {this.GetType().Name} View of Type {viewType?.Name} not loaded");
                 return null;
             }
 
-            //bind view addressables counter to view lifetime
-            viewObservable.AddTo(view.LifeTime);
-            
+            view.LifeTime.AddCleanUpAction(() => viewLifeTime.Despawn());
+
             return view;
         }
         
