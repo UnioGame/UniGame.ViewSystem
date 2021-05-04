@@ -13,6 +13,11 @@ namespace UniGame.UiSystem.Runtime.Settings
     {
         public string AssetGUID = string.Empty;
 
+        [Space(2)] public AssetReferenceGameObject View;
+        
+        [Space(2)]
+        public string ViewName;
+
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.GUIColor(g: 1.0f, r: 1.0f, b: 0.5f)]
 #endif
@@ -32,28 +37,10 @@ namespace UniGame.UiSystem.Runtime.Settings
         [Space(2)]
         public SType ModelType;
 
-        [Space(2)] public AssetReferenceGameObject View;
-
-#if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.DrawWithUnity]
-#endif
-        [Space(2)]
-        public string ViewName;
-
         private string GetModelTypeName()
         {
             return $"ModelType : {ModelType?.Type?.GetFormattedName()}";
         }
 
-        public override int GetHashCode()
-        {
-            return AssetGUID.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null) return false;
-            return obj.GetHashCode() == GetHashCode();
-        }
     }
 }

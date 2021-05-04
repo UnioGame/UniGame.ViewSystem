@@ -36,7 +36,6 @@ namespace UniGame.UiSystem.Editor.UiEditor
                 Reset,
                 RebuildViewSettings,
                 RebuildContextSettings,
-                BuildViewModelMap,
             };
 
             rebuildSettingsCommands = new List<Func<ViewsSettings, bool>>()
@@ -44,7 +43,6 @@ namespace UniGame.UiSystem.Editor.UiEditor
                 Clear,
                 ValidateSettings,
                 BuildViewSettingsData,
-                BuildViewModelMap,
             };
         }
         
@@ -90,44 +88,6 @@ namespace UniGame.UiSystem.Editor.UiEditor
         {
             settings.uiViews.Clear();
             return settings;
-        }
-
-        private bool BuildViewModelMap(ViewsSettings settings)
-        {
-            var systemSettings = settings as ViewSystemSettings;
-            if (!systemSettings)
-                return true;
-            
-            var viewSettings = new HashSet<ViewsSettings>();
-            viewSettings.Clear();
-            var relatedSettings = GetSettings(systemSettings, viewSettings);
-
-            foreach (var nestedSettings in relatedSettings)
-            {
-                if(nestedSettings == settings) continue;
-                Build(nestedSettings);
-            }
-            
-            var views = relatedSettings
-                .SelectMany(x => x.Views)
-                .ToList();
-            
-            var typeMap = new ViewModelTypeMap();
-            typeMap.RegisterViewReference(views);
-            systemSettings.viewModelTypeMap = typeMap;
-            
-            systemSettings.MarkDirty();
-            
-            return true;
-        }
-        
-        private void BuildViewModelMap()
-        {
-            var viewSystemSettings = AssetEditorTools.GetAssets<ViewSystemSettings>();
-            foreach (var systemSetting in viewSystemSettings)
-            {
-                BuildViewModelMap(systemSetting);
-            }
         }
 
         private HashSet<ViewsSettings> GetSettings(ViewsSettings viewsSettings, HashSet<ViewsSettings> settings)
