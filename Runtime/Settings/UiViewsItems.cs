@@ -13,7 +13,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Settings
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.DrawWithUnity]
 #endif
-        [ShowAssetReference]
+        [DrawAssetReference]
         public List<AssetReferenceGameObject> views = new List<AssetReferenceGameObject>();
     }
 }
