@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using UniGame.UiSystem.Runtime;
 using UniModules.UniGame.Core.Runtime.Interfaces;
 using UniModules.UniGame.UISystem.Runtime.Abstract;
 
@@ -50,10 +51,13 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
                 
                 var isValid = modelProvider.IsValid(type);
                 if (isValid)
-                    return await modelProvider.Create(context,type);
+                {
+                    var model = await modelProvider.Create(context,type);
+                    return model;
+                }
             }
 
-            return null;
+            return new ViewModelBase();
         }
         
     }
