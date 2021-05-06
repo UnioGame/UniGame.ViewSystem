@@ -35,7 +35,6 @@ namespace UniGame.UiSystem.Editor.UiEditor
             {
                 Reset,
                 RebuildViewSettings,
-                RebuildContextSettings,
             };
 
             rebuildSettingsCommands = new List<Func<ViewsSettings, bool>>()
@@ -219,12 +218,5 @@ namespace UniGame.UiSystem.Editor.UiEditor
             return viewDescription;
         }
         
-        
-        private void RebuildContextSettings()
-        {
-            var contextSettings = AssetEditorTools.GetAssets<ViewModelFactorySettings>();
-            
-        }
-
     }
 }

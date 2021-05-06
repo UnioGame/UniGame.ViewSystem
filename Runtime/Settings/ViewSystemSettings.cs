@@ -39,12 +39,13 @@ namespace UniGame.UiSystem.Runtime.Settings
         public ViewFlowControllerAsset layoutFlow;
 
         [Space]
-        [Header("model factory object")]
+        [Header("Model Factory Object")]
+        [SerializeField]
 #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.InlineEditor(Expanded = false)]
+        [Sirenix.OdinInspector.InlineProperty]
         [Sirenix.OdinInspector.HideLabel]
 #endif
-        public ViewModelFactorySettings viewsModelProviderSettings;
+        public ViewModelFactorySettings viewsModelProviderSettings = new ViewModelFactorySettings();
 
         #endregion
 

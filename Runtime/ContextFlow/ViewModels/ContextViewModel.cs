@@ -19,7 +19,7 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow.ViewModels
             _context.Reset();
             _context.Connect(context);
 
-            await OnInitializeContext(context);
+            await OnInitializeContext(_context);
         }
 
         public void Dispose() => _context.Dispose();
