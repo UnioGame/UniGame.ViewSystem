@@ -29,7 +29,7 @@
 
         [ReadOnlyValue]
         [SerializeField]
-        private bool _isInitialized;
+        private BoolRecycleReactiveProperty _isInitialized = new BoolRecycleReactiveProperty();
         
         #endregion
 
@@ -39,7 +39,7 @@
         private readonly LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
         private readonly LifeTimeDefinition _progressLifeTime   = new LifeTimeDefinition();
         private readonly LifeTimeDefinition _viewModelLifeTime   = new LifeTimeDefinition();
-        
+
         /// <summary>
         /// ui element visibility status
         /// </summary>
@@ -56,6 +56,8 @@
         
         #region public properties
 
+        public IReadOnlyReactiveProperty<bool> IsInitialized => _isInitialized;
+        
         public GameObject Owner => gameObject;
         
         /// <summary>
@@ -107,15 +109,16 @@
         /// </summary>
         public void Destroy() => _lifeTimeDefinition.Terminate();
         
-        public void BindLayout(IViewLayoutProvider layoutProvider)
-        {
-            _viewLayout = layoutProvider;
-        }
+        public void BindLayout(IViewLayoutProvider layoutProvider) => _viewLayout = layoutProvider;
 
         public async UniTask Initialize(IViewModel model, IViewLayoutProvider layoutProvider)
         {
+            _isInitialized.Value = false;
+            
             BindLayout(layoutProvider);
             await Initialize(model);
+
+            _isInitialized.Value = true;
         }
 
         public async UniTask Initialize(IViewModel model, bool isViewOwner = false)
@@ -128,7 +131,7 @@
             _progressLifeTime.Release();
 
             //calls one per lifetime
-            if (!_isInitialized) {
+            if (!_isInitialized.Value) {
                 InitialSetup();
                 OnAwake();
             }
@@ -305,7 +308,7 @@
 
         private void InitialSetup()
         {
-            _isInitialized = true;
+            _isInitialized.Value = true;
             _status.Value  = ViewStatus.None;
             
             _viewModelLifeTime.AddTo(LifeTime);
@@ -313,7 +316,7 @@
             
             LifeTime.AddCleanUpAction(() => 
             {
-                _isInitialized = false;
+                _isInitialized.Value = false;
                 IsTerminated   = true;
                 ViewModel      = null;
                 _status.SetValueForce(ViewStatus.Closed);

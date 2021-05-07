@@ -11,6 +11,8 @@
     {
         IReadOnlyReactiveProperty<bool> IsVisible { get; }
 
+        IReadOnlyReactiveProperty<bool> IsInitialized { get; }
+
         /// <summary>
         /// is view lifetime finished
         /// </summary>

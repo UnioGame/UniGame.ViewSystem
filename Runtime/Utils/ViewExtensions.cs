@@ -2,6 +2,8 @@
 {
     using Abstract;
     using Cysharp.Threading.Tasks;
+    using UniCore.Runtime.Extension;
+    using UniRx;
     using UnityEngine;
 
     public static class ViewExtensions
@@ -14,5 +16,24 @@
 
             return view;
         }
+
+        public static async UniTask AwaitIsReadyAsync(this IView view)
+        {
+            if (view == null || view.LifeTime.IsTerminated)
+                return;
+            await view.IsInitialized
+                .Where(x => x)
+                .AwaitFirstAsync(view.LifeTime);
+        }
+        
+        public static async UniTask AwaitStatusAsync(this IView view,ViewStatus status)
+        {
+            if (view == null || view.LifeTime.IsTerminated)
+                return;
+            await view.Status
+                .Where(x => x == status)
+                .AwaitFirstAsync(view.LifeTime);
+        }
+        
     }
 }
