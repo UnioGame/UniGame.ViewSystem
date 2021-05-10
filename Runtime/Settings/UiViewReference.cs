@@ -37,6 +37,10 @@ namespace UniGame.UiSystem.Runtime.Settings
         [Space(2)]
         public SType ModelType;
 
+        //type of view model
+        [Space(2)]
+        public SType ViewModelType;
+        
         private string GetModelTypeName()
         {
             return $"ModelType : {ModelType?.Type?.GetFormattedName()}";

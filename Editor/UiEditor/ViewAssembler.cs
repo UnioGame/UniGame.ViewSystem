@@ -1,11 +1,12 @@
-﻿namespace UniGame.UiSystem.UI.Editor.UiEdito
+﻿using UniModules.UniGame.ViewSystem.Editor.UiEditor;
+
+namespace UniGame.UiSystem.UI.Editor.UiEdito
 {
     using Runtime.Settings;
-    using UiSystem.Editor.UiEditor;
     using UniModules.UniGame.Core.EditorTools.Editor.AssetOperations;
     using UnityEditor;
 
-    public static class UiAssembler 
+    public static class ViewAssembler 
     {
         private static ViewsAssemblyBuilder settingsBuilder = new ViewsAssemblyBuilder();
         

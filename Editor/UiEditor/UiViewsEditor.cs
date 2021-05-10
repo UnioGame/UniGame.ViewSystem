@@ -1,5 +1,4 @@
-﻿using UniGame.UiSystem.Editor.UiEditor;
-using UniGame.UiSystem.Runtime.Settings;
+﻿using UniGame.UiSystem.Runtime.Settings;
 using UnityEditor;
 using UnityEngine;
 

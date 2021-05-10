@@ -1,27 +1,57 @@
-﻿using System;
-using UniGame.UiSystem.Runtime;
+﻿using Taktika.GameRuntime.Types;
+using UniCore.Runtime.ProfilerTools;
+using UniGame.ModelViewsMap.Runtime.Settings;
+using UniGame.UiSystem.Runtime.Settings;
 using UniModules.UniCore.EditorTools.Editor.Utility;
-using UniModules.UniGame.AddressableExtensions.Editor;
-using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
-using UnityEngine;
+using UniModules.UniCore.Runtime.ReflectionUtils;
+using UniModules.UniGame.Core.Runtime.SerializableType;
 
-namespace UniGame.UiSystem.Editor.UiEditor
+namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Runtime.Settings;
-    using UniCore.Runtime.ProfilerTools;
+    using UniModules.UniGame.AddressableExtensions.Editor;
     using UniModules.UniGame.Core.EditorTools.Editor.AssetOperations;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using Runtime.ContextFlow;
     using UnityEditor;
     using UnityEditor.AddressableAssets;
     using UnityEditor.AddressableAssets.Settings;
+    using UnityEngine;
+
+
+    public class ViewModelsAssemblyMap
+    {
+        
+
+        public ViewModelsAssemblyMap Build()
+        {
+            var viewType = ViewSystemConstants.BaseViewType;
+            var modelType = ViewSystemConstants.BaseModelType;
+
+            var allModelTypes = modelType.GetAssignableTypes(false);
+
+            CreateApiModelMap(allModelTypes);
+            
+            return this;
+        }
+
+        private void CreateApiModelMap(List<Type> modelTypes)
+        {
+            var modelsApi = modelTypes.Where(x => x.IsAbstract || x.IsInterface).ToList();
+            foreach (var type in modelsApi)
+            {
+                var instanceVariants = type.GetAssignableTypes();
+            }
+        }
+
+    }
 
     public class ViewsAssemblyBuilder
     {
-        private Type baseViewType  = typeof(IUiView<>);
-        private Type baseModelType = typeof(IViewModel);
+        private ViewModelsAssemblyMap viewSystemTypesMap = new ViewModelsAssemblyMap();
         private HashSet<IView> proceedViews = new HashSet<IView>();
         private HashSet<UiViewReference> viewsReferences = new HashSet<UiViewReference>();
         private List<ViewModelFactorySettings> contextViewsMapSettings = new List<ViewModelFactorySettings>();
@@ -201,7 +231,7 @@ namespace UniGame.UiSystem.Editor.UiEditor
             
             var viewType = view.GetType();
             var viewInterface = viewType.GetInterfaces()
-                .FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == baseViewType);
+                .FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == ViewSystemConstants.BaseViewType);
             
             var modelsArgs = viewInterface?.GetGenericArguments();
             var modelType = modelsArgs?.FirstOrDefault();

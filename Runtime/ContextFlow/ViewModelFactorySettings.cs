@@ -35,7 +35,7 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
 
         public void Initialize()
         {
-            _contextModelFactory = new ContextViewModelFactory(modelFactoryTimeoutMs);
+            _contextModelFactory = new ContextViewModelFactory();
             _runtimeFactories = new List<IViewModelProvider>();
             //register context provider as first
             _runtimeFactories.Add(_contextModelFactory);

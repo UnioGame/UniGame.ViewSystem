@@ -4,6 +4,7 @@ using UniGame.UiSystem.Runtime;
 using UniModules.UniCore.Runtime.ReflectionUtils;
 using UniModules.UniGame.Core.EditorTools.Editor.AssetOperations;
 using UniModules.UniGame.UISystem.Runtime.Abstract;
+using UniModules.UniGame.ViewSystem.Editor.UiEditor;
 using UnityEditor;
 using UnityEngine;
 
@@ -27,8 +28,8 @@ namespace UniModules.UniGame.ViewSystem.ModelViews.Editor
         {
             settings.CleanUp();
             
-            var baseViewType  = typeof(IUiView<>);
-            var baseModelType = typeof(IViewModel);
+            var baseViewType  = ViewSystemConstants.BaseViewType;
+            var baseModelType = ViewSystemConstants.BaseModelType;
             
             var modelTypes = baseModelType.GetAssignableTypes();
             var typeArs    = new Type[1];
