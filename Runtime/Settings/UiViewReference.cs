@@ -46,5 +46,7 @@ namespace UniGame.UiSystem.Runtime.Settings
             return $"ModelType : {ModelType?.Type?.GetFormattedName()}";
         }
 
+        
+        
     }
 }

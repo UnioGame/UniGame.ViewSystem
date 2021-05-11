@@ -9,13 +9,13 @@ namespace UniGame.UiSystem.UI.Editor.UiEdito
     public static class ViewAssembler 
     {
         private static ViewsAssemblyBuilder settingsBuilder = new ViewsAssemblyBuilder();
-        
+
         [MenuItem(itemName:"UniGame/View System/Rebuild View Settings")]
         public static void RefreshUiSettings()
         {
             settingsBuilder.RebuildAll();
         }
-
+        
         public static void Build(this ViewsSettings settings)
         {
             if (settings == null)
