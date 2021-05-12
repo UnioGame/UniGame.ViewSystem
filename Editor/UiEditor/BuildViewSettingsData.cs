@@ -68,12 +68,11 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
 
             var viewType = view.GetType();
             var viewInterface = viewType.GetInterfaces()
-                .FirstOrDefault(
-                    x => x.IsGenericType && x.GetGenericTypeDefinition() == ViewSystemConstants.BaseViewType);
+                .FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == ViewSystemConstants.BaseViewType);
 
             var modelsArgs = viewInterface.GetGenericArguments();
-            var modelTypeArgument = modelsArgs.FirstOrDefault();
-            var modelType = ViewModelsAssemblyMap.GetFirstAssignable(modelTypeArgument);
+            var modelType = modelsArgs.FirstOrDefault();
+            var viewModelType = ViewModelsAssemblyMap.GetFirstAssignable(modelType);
                 
             var viewDescription = new UiViewReference()
             {
@@ -81,7 +80,7 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
                 AssetGUID = assetReference.AssetGUID,
                 Type = viewType,
                 ModelType = modelType,
-                ViewModelType = modelType,
+                ViewModelType = viewModelType,
                 View = assetReference,
                 ViewName = assetReference.editorAsset.name
             };

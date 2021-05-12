@@ -33,7 +33,7 @@ namespace UniGame.UiSystem.Runtime.Settings
         public SType Type;
 
 #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.LabelText("@GetModelTypeName()")]
+        [Sirenix.OdinInspector.ValueDropdown(nameof(GetModelValue))]
 #endif
         public SType ModelType;
 
@@ -50,10 +50,22 @@ namespace UniGame.UiSystem.Runtime.Settings
         }
 
 #if ODIN_INSPECTOR
+
+        private IEnumerable<Sirenix.OdinInspector.ValueDropdownItem<SType>> GetModelValue()
+        {
+            yield return new Sirenix.OdinInspector.ValueDropdownItem<SType>()
+            {
+                Text = ModelType.Type == null 
+                    ? "(empty)" 
+                    : ModelType.Type.Name,
+                Value = ModelType
+            };
+        }
         
         private IEnumerable<Sirenix.OdinInspector.ValueDropdownItem<SType>> GetModelDropdowns()
         {
             var type = ModelType.Type;
+            
             if (type == null || (!type.IsAbstract && !type.IsInterface))
             {
                 yield return new Sirenix.OdinInspector.ValueDropdownItem<SType>()

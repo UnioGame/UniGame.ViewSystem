@@ -50,11 +50,9 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
                     continue;
                 
                 var isValid = modelProvider.IsValid(type);
-                if (isValid)
-                {
-                    var model = await modelProvider.Create(context,type);
-                    return model;
-                }
+                if (!isValid) continue;
+                var model = await modelProvider.Create(context,type);
+                return model;
             }
 
             return new ViewModelBase();

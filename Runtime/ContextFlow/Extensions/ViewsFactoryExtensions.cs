@@ -1,8 +1,10 @@
 using System;
 using Cysharp.Threading.Tasks;
+using UniGame.UiSystem.Runtime.Settings;
 using UniModules.UniGame.Core.Runtime.Interfaces;
 using UniModules.UniGame.UiSystem.Runtime;
 using UniModules.UniGame.UISystem.Runtime.Abstract;
+using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
 using UnityEngine;
 
 namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions
@@ -35,7 +37,7 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions
             string viewName = null,
             bool stayWorldPosition = false)
         {
-            return await CreateView(context,typeof(TView), ViewType.None, skinTag, parent,viewName,stayWorldPosition);
+            return await CreateView(Current,context,typeof(TView), ViewType.None, skinTag, viewName,parent,stayWorldPosition);
         }
 
         public static IViewLayoutProvider MakeActive(this IGameViewSystem viewSystem)
@@ -74,16 +76,17 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions
             string viewName = null,
             bool stayWorldPosition = false)
         {
-            return await CreateView(context,typeof(TView), viewLayoutType, skinTag, parent,viewName,stayWorldPosition);
+            return await CreateView(Current,context,typeof(TView), viewLayoutType, skinTag, viewName,parent,stayWorldPosition);
         }
         
         private static async UniTask<IView> CreateView(
+            IGameViewSystem viewSystem,
             IContext context,
             Type viewType,
             ViewType viewLayoutType,
             string skinTag = "",
-            Transform parent = null,
             string viewName = null,
+            Transform parent = null,
             bool stayWorldPosition = false)
         {
 #if UNITY_EDITOR
@@ -92,7 +95,6 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions
                 throw new NullReferenceException("ViewSystem must be initialized before usage");
             }
 #endif
-            var viewSystem = Current;
             var typeMap = viewSystem.ModelTypeMap;
             var modelType = typeMap.GetModelTypeByView(viewType);
 
@@ -106,6 +108,11 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions
                 ViewType.Overlay => await viewSystem.OpenOverlay(model, viewType, skinTag, viewName),
                 _ => await viewSystem.OpenScreen(model, viewType, skinTag, viewName)
             };
+        }
+
+        private static UiViewReference SelectReference(IViewModelTypeMap viewModelTypeMap,Type viewType,string tag,string name)
+        {
+            return new UiViewReference();
         }
         
         #endregion

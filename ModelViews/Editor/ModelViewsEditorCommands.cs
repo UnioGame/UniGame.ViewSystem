@@ -33,6 +33,7 @@ namespace UniModules.UniGame.ViewSystem.ModelViews.Editor
             
             var modelTypes = baseModelType.GetAssignableTypes();
             var typeArs    = new Type[1];
+            
             //get all views
             foreach (var modelType in modelTypes) {
                 typeArs[0] = modelType;

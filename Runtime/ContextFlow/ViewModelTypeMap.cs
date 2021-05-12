@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UniGame.UiSystem.Runtime.Settings;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
+using UniModules.UniGame.ViewSystem.Runtime.Extensions;
 using UnityEngine;
 
 namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
@@ -32,6 +33,17 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
             return modelType;
         }
 
+        public UiViewReference FindView(
+            Type viewType,
+            string skinTag = "", 
+            string viewName = "",
+            bool strongMatching = true)
+        {
+            var views = FindViewsByType(viewType, strongMatching);
+            var item = views.SelectReference(skinTag,viewName);
+            return item;
+        }
+        
         public IReadOnlyList<UiViewReference> FindViewsByType(Type viewType, bool strongMatching = true) =>
             viewsTypeMap.FindByType(viewType, strongMatching);
 

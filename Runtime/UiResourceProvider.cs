@@ -30,7 +30,8 @@ namespace UniGame.UiSystem.Runtime
             Type viewType, 
             ILifeTime lifeTime,
             string skinTag = "", 
-            bool strongMatching = true, string viewName = "") where TView : UnityEngine.Object
+            bool strongMatching = true, 
+            string viewName = "") where TView : UnityEngine.Object
         {
             var items = _viewModelTypeMap.FindViewsByType(viewType, strongMatching);
             var item = items.SelectReference(skinTag,viewName);
