@@ -1,8 +1,6 @@
 ﻿using UniCore.Runtime.ProfilerTools;
 using UniGame.UiSystem.Runtime.Settings;
 using UniModules.UniCore.EditorTools.Editor.Utility;
-using UniModules.UniCore.Runtime.ReflectionUtils;
-using UniModules.UniCore.Runtime.Utils;
 
 namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
 {
@@ -12,38 +10,6 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
     using Runtime.ContextFlow;
     using UnityEditor.AddressableAssets;
     using UnityEditor.AddressableAssets.Settings;
-
-    public static class ViewModelsAssemblyMap
-    {
-        private static readonly List<Type> _empty = new List<Type>(0);
-        
-        public static readonly MemorizeItem<Type, IReadOnlyList<Type>> ModelsRealizationMap =
-            MemorizeTool.Memorize<Type, IReadOnlyList<Type>>(type =>
-            {
-                if (!type.IsAbstract && !type.IsInterface)
-                {
-                    return _empty;
-                }
-                
-                return type.GetAssignableTypes();
-            });
-
-        public static void Initialize()
-        {
-            Build();
-        }
-        
-        public static void Build()
-        {
-            var viewType = ViewSystemConstants.BaseViewType;
-            var modelType = ViewSystemConstants.BaseModelType;
-
-            var allModelTypes = modelType.GetAssignableTypes(false);
-            allModelTypes.ForEach(x => ModelsRealizationMap.GetValue(x));
-            
-        }
-
-    }
 
     public class ViewsAssemblyBuilder
     {

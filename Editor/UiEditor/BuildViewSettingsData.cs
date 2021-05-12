@@ -15,40 +15,42 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
     {
         private HashSet<IView> proceedViews = new HashSet<IView>();
         private List<UiViewReference> previousReferences = new List<UiViewReference>();
-        
+
         public bool Execute(ViewsSettings settings)
         {
             proceedViews.Clear();
-            
+
             previousReferences.Clear();
             previousReferences.AddRange(settings.uiViews);
             settings.uiViews.Clear();
-            
+
             var skinsFolders = settings.uiViewsSkinFolders;
             var defaultFolders = settings.uiViewsDefaultFolders;
-            
-            var groupName = string.IsNullOrEmpty(settings.sourceName) 
-                ? settings.name 
+
+            var groupName = string.IsNullOrEmpty(settings.sourceName)
+                ? settings.name
                 : settings.sourceName;
-            
-            if (skinsFolders.Count > 0) {
+
+            if (skinsFolders.Count > 0)
+            {
                 var views = LoadUiViews<IView>(skinsFolders);
-                views.ForEach(x => AddView(settings.uiViews,x,false,groupName));
+                views.ForEach(x => AddView(settings.uiViews, x, false, groupName));
             }
 
-            if (defaultFolders.Count > 0) {
+            if (defaultFolders.Count > 0)
+            {
                 var views = LoadUiViews<IView>(defaultFolders);
-                views.ForEach(x => AddView(settings.uiViews,x,true,groupName));
+                views.ForEach(x => AddView(settings.uiViews, x, true, groupName));
             }
 
             settings.uiViews
                 .ForEach(ApplyOverrideValues);
-            
+
             previousReferences.Clear();
             return settings;
         }
-        
-        public UiViewReference CreateViewReference(IView view, string groupName,bool defaultView)
+
+        public UiViewReference CreateViewReference(IView view, string groupName, bool defaultView)
         {
             var assetView = view as MonoBehaviour;
             var gameObject = assetView.gameObject;
@@ -57,21 +59,25 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
 
             gameObject.SetAddressableAssetGroup(groupName);
             var assetReference = gameObject.PrefabToAssetReference();
-            
-            if (assetReference.RuntimeKeyIsValid() == false) {
+
+            if (assetReference.RuntimeKeyIsValid() == false)
+            {
                 GameLog.LogError($"Asset {gameObject.name} by path {assetPath} wrong addressable asset");
                 return null;
             }
-            
+
             var viewType = view.GetType();
             var viewInterface = viewType.GetInterfaces()
-                .FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == ViewSystemConstants.BaseViewType);
-            
-            var modelsArgs = viewInterface?.GetGenericArguments();
-            var modelType = modelsArgs?.FirstOrDefault();
+                .FirstOrDefault(
+                    x => x.IsGenericType && x.GetGenericTypeDefinition() == ViewSystemConstants.BaseViewType);
 
-            var viewDescription = new UiViewReference() {
-                Tag  = tag,
+            var modelsArgs = viewInterface.GetGenericArguments();
+            var modelTypeArgument = modelsArgs.FirstOrDefault();
+            var modelType = ViewModelsAssemblyMap.GetFirstAssignable(modelTypeArgument);
+                
+            var viewDescription = new UiViewReference()
+            {
+                Tag = tag,
                 AssetGUID = assetReference.AssetGUID,
                 Type = viewType,
                 ModelType = modelType,
@@ -82,43 +88,41 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
 
             return viewDescription;
         }
-        
+
         public void Reset() => proceedViews.Clear();
-        
+
         private List<TView> LoadUiViews<TView>(IReadOnlyList<string> paths)
-            where TView : class,IView
+            where TView : class, IView
         {
             var assets = AssetEditorTools.GetAssets<GameObject>(paths.ToArray());
-            
-            var views  = assets.
-                Select(x => x.GetComponent<TView>()).
-                Where(x => x != null).
-                Where(x=> !proceedViews.Contains(x)).
-                ToList();
-            
+
+            var views = assets
+                .Select(x => x.GetComponent<TView>())
+                .Where(x => x != null)
+                .Where(x => !proceedViews.Contains(x)).ToList();
+
             return views;
         }
 
-
         private void ApplyOverrideValues(UiViewReference viewReference)
         {
-            var overrideValue = previousReferences.FirstOrDefault(x =>
-            {
-                return x.Type.Equals(viewReference.Type) &&
-                       x.ModelType.Equals(viewReference.ModelType) &&
-                       string.Equals(x.Tag , viewReference.Tag) &&
-                       string.Equals(x.ViewName , viewReference.ViewName);
-            });
+            var overrideValue = previousReferences
+                .FirstOrDefault(x => x.Type.Equals(viewReference.Type) &&
+                                     x.ModelType.Equals(viewReference.ModelType) &&
+                                     string.Equals(x.Tag, viewReference.Tag) &&
+                                     string.Equals(x.ViewName, viewReference.ViewName));
 
-            if (overrideValue == null || overrideValue.ViewModelType == null) return;
+            var type = overrideValue?.ViewModelType.Type;
+            if (type == null || type.IsAbstract || type.IsInterface) return;
 
             viewReference.ViewModelType = overrideValue.ViewModelType;
         }
-        
-        private void AddView(List<UiViewReference> views,IView view, bool defaultView, string groupName)
+
+        private void AddView(List<UiViewReference> views, IView view, bool defaultView, string groupName)
         {
             var assetView = view as MonoBehaviour;
-            if (assetView == null) {
+            if (assetView == null)
+            {
                 GameLog.LogError($"View at Path not Unity Asset with View Type {defaultView}");
                 return;
             }
@@ -130,11 +134,8 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
                 return;
 
             var viewReference = CreateViewReference(view, groupName, defaultView);
-            
+
             views.Add(viewReference);
         }
-        
-                
-        
     }
 }
