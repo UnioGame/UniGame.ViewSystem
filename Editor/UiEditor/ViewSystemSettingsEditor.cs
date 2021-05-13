@@ -1,12 +1,14 @@
+#if !ODIN_INSPECTOR && ENABLE_UI_TOOLKIT
+
 using UniGame.UiSystem.Runtime.Settings;
-using UniModules.UniGame.CoreModules.UniGame.Core.Editor.UiElements;
 using UnityEditor;
 using UnityEngine.UIElements;
 
 namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
 {
-#if !ODIN_INSPECTOR
-    
+
+    using UniModules.UniGame.CoreModules.UniGame.Core.Editor.UiElements;
+
     [CustomEditor(typeof(ViewSystemSettings),true)]
     public class ViewSystemSettingsEditor : UnityEditor.Editor
     {
@@ -28,7 +30,8 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
  
         }
     }
-    
-#endif
 
 }
+
+
+#endif
