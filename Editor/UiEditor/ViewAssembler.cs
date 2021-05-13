@@ -3,7 +3,6 @@
 namespace UniGame.UiSystem.UI.Editor.UiEdito
 {
     using Runtime.Settings;
-    using UniModules.UniGame.Core.EditorTools.Editor.AssetOperations;
     using UnityEditor;
 
     public static class ViewAssembler 

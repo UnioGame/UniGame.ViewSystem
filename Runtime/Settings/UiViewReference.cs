@@ -12,6 +12,9 @@ namespace UniGame.UiSystem.Runtime.Settings
     using UnityEngine.AddressableAssets;
 
     [Serializable]
+#if ODIN_INSPECTOR
+    [Sirenix.OdinInspector.DrawWithUnity]    
+#endif
     public class UiViewReference
     {
         public string AssetGUID = string.Empty;
