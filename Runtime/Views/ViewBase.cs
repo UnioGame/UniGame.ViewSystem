@@ -1,4 +1,6 @@
-﻿namespace UniGame.UiSystem.Runtime
+﻿using UniModules.UniRoutine.Runtime.Extension;
+
+namespace UniGame.UiSystem.Runtime
 {
     using System;
     using System.Collections;
@@ -211,8 +213,10 @@
         /// </summary>
         private IEnumerator OnShow()
         {
+            yield return this.WaitForEndOfFrame();
             //set view as active
             _visibility.SetValueForce(true);
+            
             yield return OnShowProgress(_progressLifeTime);
         }
 

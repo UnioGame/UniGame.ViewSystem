@@ -151,6 +151,8 @@ namespace UniGame.UiSystem.Runtime
         /// <param name="viewType">view type filter</param>
         /// <param name="skinTag">target element skin</param>
         /// <param name="parent">view parent</param>
+        /// <param name="viewName"></param>
+        /// <param name="stayWorld"></param>
         /// <returns>created view element</returns>
         public async UniTask<IView> CreateView(
             IViewModel viewModel,
@@ -205,7 +207,7 @@ namespace UniGame.UiSystem.Runtime
             var layout = _viewLayouts.GetLayout(layoutType);
             var parent = layout?.Layout;
 
-            var view = await CreateView(viewModel, viewType, skinTag, parent);
+            var view = await CreateView(viewModel, viewType, skinTag, parent,viewName);
 
             layout?.Push(view);
 

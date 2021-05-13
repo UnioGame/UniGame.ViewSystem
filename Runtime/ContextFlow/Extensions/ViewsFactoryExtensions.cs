@@ -5,6 +5,7 @@ using UniModules.UniGame.Core.Runtime.Interfaces;
 using UniModules.UniGame.UiSystem.Runtime;
 using UniModules.UniGame.UISystem.Runtime.Abstract;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
+using UniModules.UniGame.ViewSystem.Runtime.Extensions;
 using UnityEngine;
 
 namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions
@@ -96,8 +97,10 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions
             }
 #endif
             var typeMap = viewSystem.ModelTypeMap;
-            var modelType = typeMap.GetModelTypeByView(viewType);
-
+            var views = typeMap.FindViewsByType(viewType);
+            var modelReference = views.SelectReference(skinTag, viewName);
+            var modelType = modelReference.ViewModelType;
+            
             var model = await viewSystem.Create(context,modelType);
 
             return viewLayoutType switch
