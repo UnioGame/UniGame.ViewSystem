@@ -24,12 +24,30 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
 
             
             var resultModel = modelType == null
-                ? models
-                : models.Where(x => x.ViewModelType == modelType);
+                ? models.ToList()
+                : models.Where(x => x.ViewModelType == modelType).ToList();
 
-            var result = resultModel.FirstOrDefault();
+            if (!string.IsNullOrEmpty(skinTag) && !string.IsNullOrEmpty(viewName) && modelType != null)
+            {
+                return resultModel.FirstOrDefault();
+            }
 
-            return result;
+            if (string.IsNullOrEmpty(skinTag) && resultModel.FirstOrDefault(x => string.IsNullOrEmpty(x.Tag)) != null)
+            {
+                resultModel = resultModel.Where(x => string.IsNullOrEmpty(x.Tag)).ToList();
+            }
+
+            if (string.IsNullOrEmpty(viewName) && resultModel.FirstOrDefault(x => string.IsNullOrEmpty(x.ViewName)) != null)
+            {
+                resultModel = resultModel.Where(x => string.IsNullOrEmpty(x.ViewName)).ToList();
+            }
+
+            if (modelType == null && resultModel.FirstOrDefault(x => x.Type == null) != null)
+            {
+                resultModel = resultModel.Where(x => x.Type == null).ToList();
+            }
+
+            return resultModel.FirstOrDefault();
         }
     
     }

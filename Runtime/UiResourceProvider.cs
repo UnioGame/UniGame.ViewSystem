@@ -33,8 +33,7 @@ namespace UniGame.UiSystem.Runtime
             bool strongMatching = true, 
             string viewName = "") where TView : UnityEngine.Object
         {
-            var items = _viewModelTypeMap.FindViewsByType(viewType, strongMatching);
-            var item = items.SelectReference(skinTag,viewName);
+            var item = _viewModelTypeMap.FindView(viewType, skinTag, viewName, strongMatching);
 
             if (item == null)
             {
