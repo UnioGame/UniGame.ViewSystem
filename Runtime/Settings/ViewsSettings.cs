@@ -1,7 +1,6 @@
 #if UNITY_EDITOR
 using UniModules.UniGame.AddressableExtensions.Editor;
 #endif
-
 using UniModules.UniGame.Core.Runtime.ScriptableObjects;
 
 namespace UniGame.UiSystem.Runtime.Settings
@@ -9,6 +8,10 @@ namespace UniGame.UiSystem.Runtime.Settings
     using System.Collections.Generic;
     using UnityEngine;
 
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+#endif
+    
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/UiViewsSettings", fileName = "UiViewsSettings")]
     public class ViewsSettings : LifetimeScriptableObject, IViewsSettings
     {
@@ -16,7 +19,7 @@ namespace UniGame.UiSystem.Runtime.Settings
 
 #if ODIN_INSPECTOR
 #if UNITY_EDITOR
-        [Sirenix.OdinInspector.ValueDropdown(nameof(GetLabels),ExcludeExistingValuesInList = true)]
+        [Sirenix.OdinInspector.ValueDropdown(nameof(GetLabels), ExcludeExistingValuesInList = true)]
 #endif
 #endif
         public List<string> labels = new List<string>();
@@ -24,7 +27,13 @@ namespace UniGame.UiSystem.Runtime.Settings
         [Header("Is Source will be filled on Update")]
         public bool isActive = true;
 
-        [HideInInspector] [Header("Name of target addressable group")]
+        public bool applyAddressablesGroup = false;
+
+#if ODIN_INSPECTOR
+        [ShowIf(nameof(applyAddressablesGroup))]    
+#endif
+        [HideInInspector]
+        [Header("Name of target addressable group")]
         public string addressableGroupName;
 
         [Space]
@@ -40,9 +49,10 @@ namespace UniGame.UiSystem.Runtime.Settings
 #endif
         public List<string> uiViewsSkinFolders = new List<string>();
 
-        [Header("Registered Views")] [Space] 
+        [Header("Registered Views")]
+        [Space]
 #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.Searchable]        
+        [Sirenix.OdinInspector.Searchable]
 #endif
         public List<UiViewReference> uiViews = new List<UiViewReference>();
 

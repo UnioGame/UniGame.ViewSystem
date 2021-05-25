@@ -34,13 +34,13 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
             if (skinsFolders.Count > 0)
             {
                 var views = LoadUiViews<IView>(skinsFolders);
-                views.ForEach(x => AddView(settings.uiViews, x, false, groupName));
+                views.ForEach(x => AddView(settings, x, false, groupName));
             }
 
             if (defaultFolders.Count > 0)
             {
                 var views = LoadUiViews<IView>(defaultFolders);
-                views.ForEach(x => AddView(settings.uiViews, x, true, groupName));
+                views.ForEach(x => AddView(settings, x, true, groupName));
             }
 
             settings.uiViews
@@ -50,14 +50,18 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
             return settings;
         }
 
-        public UiViewReference CreateViewReference(IView view, string groupName, bool defaultView)
+        public UiViewReference CreateViewReference(IView view, bool defaultView,bool overrideAddressables, string groupName)
         {
             var assetView = view as MonoBehaviour;
             var gameObject = assetView.gameObject;
             var assetPath = AssetDatabase.GetAssetPath(gameObject);
             var tag = defaultView ? string.Empty : Path.GetFileName(Path.GetDirectoryName(assetPath));
 
-            gameObject.SetAddressableAssetGroup(groupName);
+            if (overrideAddressables || !gameObject.IsInAnyAddressableAssetGroup())
+            {
+                gameObject.SetAddressableAssetGroup(groupName);
+            }
+            
             var assetReference = gameObject.PrefabToAssetReference();
 
             if (assetReference.RuntimeKeyIsValid() == false)
@@ -117,8 +121,9 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
             viewReference.ViewModelType = overrideValue.ViewModelType;
         }
 
-        private void AddView(List<UiViewReference> views, IView view, bool defaultView, string groupName)
+        private void AddView(ViewsSettings settings, IView view, bool defaultView, string groupName)
         {
+            var views     = settings.uiViews;
             var assetView = view as MonoBehaviour;
             if (assetView == null)
             {
@@ -132,8 +137,7 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
             if (views.Any(x => string.Equals(guid, x.AssetGUID)))
                 return;
 
-            var viewReference = CreateViewReference(view, groupName, defaultView);
-
+            var viewReference = CreateViewReference(view,defaultView,settings.applyAddressablesGroup, groupName);
             views.Add(viewReference);
         }
     }
