@@ -153,7 +153,7 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// hide view without release it
         /// </summary>
-        public void Hide() => StartProgressAction(_progressLifeTime, OnHiding);
+        public void Hide() => StartProgressAction(_progressLifeTime, OnHide);
 
         /// <summary>
         /// end of view lifetime
@@ -194,33 +194,55 @@ namespace UniGame.UiSystem.Runtime
         {
             //wait until user defined closing operation complete
             yield return OnCloseProgress(_progressLifeTime);
+
             _lifeTimeDefinition.Release();
         }
         
         /// <summary>
         /// hide process
         /// </summary>
-        private IEnumerator OnHiding()
+        private IEnumerator OnHide()
         {
-            //set view as inactive
-            _visibility.SetValueForce(false);
+            if(!SetStatus(ViewStatus.Hiding))
+                yield break;
+
             //wait until user defined closing operation complete
             yield return OnHidingProgress(_progressLifeTime);
+
+            SetStatus(ViewStatus.Hidden);
         }
         
         /// <summary>
-        /// hide process
+        /// show process
         /// </summary>
         private IEnumerator OnShow()
         {
             yield return this.WaitForEndOfFrame();
-            //set view as active
-            _visibility.SetValueForce(true);
+
+            if(!SetStatus(ViewStatus.Showing))
+                yield break;
             
             yield return OnShowProgress(_progressLifeTime);
+
+            SetStatus(ViewStatus.Shown);
         }
 
-        
+
+        protected virtual bool SetStatus(ViewStatus status)
+        {
+            if (status == _status.Value)
+                return false;
+
+            if (_lifeTimeDefinition.IsTerminated)
+            {
+                _status.Value = ViewStatus.Closed;
+                return false;
+            }
+
+            _status.Value = status;
+            return true;
+        }
+
         /// <summary>
         /// close continuation
         /// use hiding progress by default
@@ -251,8 +273,7 @@ namespace UniGame.UiSystem.Runtime
             if (lifeTime.IsTerminated) 
                 return;
             //run animation immediately
-            action().Execute(RoutineType.Update,true).
-                AddTo(lifeTime);
+            action().Execute(RoutineType.Update,true).AddTo(lifeTime);
         }
 
         private void InitializeHandlers(IViewModel model)
@@ -261,16 +282,20 @@ namespace UniGame.UiSystem.Runtime
             IsTerminated = false;
             
             _isVisible        = _visibility.Value;
-            
+
+            _status.Where(x => x == ViewStatus.Hidden || x == ViewStatus.Closed)
+                .Do(x => _visibility.Value = false)
+                .Subscribe()
+                .AddTo(LifeTime);
+
+            _status.Where(x => x == ViewStatus.Shown || x == ViewStatus.Showing)
+                .Do(x => _visibility.Value = true)
+                .Subscribe()
+                .AddTo(LifeTime);
+
             _visibility.
                 Subscribe(x => _isVisible = x).
                 AddTo(_lifeTimeDefinition);
-
-            _visibility.
-                Subscribe(x => OnStatusUpdate()).
-                AddTo(_lifeTimeDefinition);
-
-            //OnStatusUpdate();
         }
         
         private void BindLifeTimeActions(IViewModel model)
@@ -293,21 +318,6 @@ namespace UniGame.UiSystem.Runtime
             });
             
             _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Terminate);
-        }
-
-        private void OnStatusUpdate()
-        {
-            ViewStatus status;
-            if (_lifeTimeDefinition.IsTerminated) {
-                status = ViewStatus.Closed;
-            }
-            else if(_visibility.Value){
-                status = ViewStatus.Shown;
-            }
-            else {
-                status = ViewStatus.Hidden;
-            }
-            _status.Value = status;
         }
 
         private void InitialSetup()
