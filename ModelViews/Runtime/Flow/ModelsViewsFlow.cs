@@ -69,7 +69,6 @@
         public static IObservable<IViewHandle> DestroyView(this IObservable<IViewHandle> handle)
         {
             var result = handle.
-                Where(x => x.Status.Value == ViewStatus.Shown || x.Status.Value == ViewStatus.Showing).
                 Do(x => x.Destroy());
             return result;
         }
@@ -77,7 +76,6 @@
         public static IObservable<IViewHandle> CloseView(this IObservable<IViewHandle> handle)
         {
             var result= handle.
-                Where(x => x.Status.Value == ViewStatus.Shown || x.Status.Value == ViewStatus.Showing).
                 Do(x => x.Close());
             return result;
         }

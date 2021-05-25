@@ -51,7 +51,7 @@
             
             var lastView = Views.LastOrDefault(x => x != view);
             //empty view stack or only active
-            if (lastView == null && _background != null && (_background.Status.Value == ViewStatus.Shown || _background.Status.Value == ViewStatus.Showing)) {
+            if (lastView == null && _background != null) {
                 _background.Hide();
             }
         }
@@ -67,7 +67,7 @@
             if(view.IsVisible.Value == false)
                 view.Show();
 
-            if(_background != null && _background.Status.Value != ViewStatus.Shown && _background.Status.Value != ViewStatus.Showing) {
+            if(_background != null) {
                 _background.Show();
             }
         }

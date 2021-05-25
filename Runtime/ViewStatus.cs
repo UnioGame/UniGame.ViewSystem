@@ -7,7 +7,6 @@
         Shown,
         Closed,
         Showing,
-        Hiding,
-        Closing
+        Hiding
     }
 }
