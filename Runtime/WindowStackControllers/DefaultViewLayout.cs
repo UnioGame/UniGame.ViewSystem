@@ -18,16 +18,16 @@
         {
             _background = background;
             Layout = layout;
-            
+
             OnClosed.Where(x => x == _activeView).
                 Subscribe(HideView).
                 AddTo(LifeTime);
-            
+
             OnHidden.Where(x => x == _activeView).
                 Subscribe(HideView).
                 AddTo(LifeTime);
-            
-            OnShown.Where(x => x!=_activeView).
+
+            OnShown.Where(x => x != _activeView).
                 Subscribe(ActivateView).
                 AddTo(LifeTime);
         }
@@ -51,7 +51,7 @@
             
             var lastView = Views.LastOrDefault(x => x != view);
             //empty view stack or only active
-            if (lastView == null && _background != null && _background.Status.Value == ViewStatus.Shown) {
+            if (lastView == null && _background != null && (_background.Status.Value == ViewStatus.Shown || _background.Status.Value == ViewStatus.Showing)) {
                 _background.Hide();
             }
         }
@@ -67,7 +67,7 @@
             if(view.IsVisible.Value == false)
                 view.Show();
 
-            if(_background != null && _background.Status.Value != ViewStatus.Shown) {
+            if(_background != null && _background.Status.Value != ViewStatus.Shown && _background.Status.Value != ViewStatus.Showing) {
                 _background.Show();
             }
         }

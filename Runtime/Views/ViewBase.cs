@@ -153,7 +153,7 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// hide view without release it
         /// </summary>
-        public void Hide() => StartProgressAction(_progressLifeTime, OnHiding);
+        public void Hide() => StartProgressAction(_progressLifeTime, OnHide);
 
         /// <summary>
         /// end of view lifetime
@@ -192,6 +192,7 @@ namespace UniGame.UiSystem.Runtime
         /// <returns></returns>
         private IEnumerator OnClose()
         {
+            _status.Value = ViewStatus.Closing;
             //wait until user defined closing operation complete
             yield return OnCloseProgress(_progressLifeTime);
             _lifeTimeDefinition.Release();
@@ -200,24 +201,34 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// hide process
         /// </summary>
-        private IEnumerator OnHiding()
+        private IEnumerator OnHide()
         {
-            //set view as inactive
-            _visibility.SetValueForce(false);
+            _status.Value = ViewStatus.Hiding;
             //wait until user defined closing operation complete
             yield return OnHidingProgress(_progressLifeTime);
+
+            //set view as inactive
+            if (_status.Value == ViewStatus.Hiding)
+            {
+                _visibility.SetValueForce(false);
+            }
         }
         
         /// <summary>
-        /// hide process
+        /// show process
         /// </summary>
         private IEnumerator OnShow()
         {
             yield return this.WaitForEndOfFrame();
-            //set view as active
-            _visibility.SetValueForce(true);
-            
+
+            _status.Value = ViewStatus.Showing;
             yield return OnShowProgress(_progressLifeTime);
+
+            //set view as active
+            if (_status.Value == ViewStatus.Showing)
+            {
+                _visibility.SetValueForce(true);
+            }
         }
 
         
