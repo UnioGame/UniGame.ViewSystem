@@ -9,7 +9,10 @@
         IReadOnlyReactiveProperty<ViewStatus> Status { get; }
 
         IObservable<IView> OnHidden { get; }
+        IObservable<IView> OnHiding { get; }
+        IObservable<IView> OnShowing { get; }
         IObservable<IView> OnShown { get; }
         IObservable<IView> OnClosed { get; }
+     
     }
 }

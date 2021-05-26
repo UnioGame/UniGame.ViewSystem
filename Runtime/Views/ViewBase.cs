@@ -87,7 +87,9 @@ namespace UniGame.UiSystem.Runtime
 
         public IReadOnlyReactiveProperty<ViewStatus> Status => _status;
         
-        public IObservable<IView> OnHidden => SelectStatus(ViewStatus.Hidden);
+        public IObservable<IView> OnHidden  => SelectStatus(ViewStatus.Hidden);
+        public IObservable<IView> OnHiding => SelectStatus(ViewStatus.Hiding);
+        public IObservable<IView> OnShowing   => SelectStatus(ViewStatus.Showing);
 
         public IObservable<IView> OnShown => SelectStatus(ViewStatus.Shown);
 
@@ -173,7 +175,7 @@ namespace UniGame.UiSystem.Runtime
 
         #region private methods
 
-        private IObservable<IView> SelectStatus(ViewStatus status)
+        public IObservable<IView> SelectStatus(ViewStatus status)
         {
             return _status.
                 Where(x => x == status).
