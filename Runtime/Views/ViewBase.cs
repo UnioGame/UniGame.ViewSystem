@@ -205,6 +205,8 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         private IEnumerator OnHide()
         {
+            _visibility.SetValueForce(false);
+
             if(!SetStatus(ViewStatus.Hiding))
                 yield break;
 
@@ -220,10 +222,12 @@ namespace UniGame.UiSystem.Runtime
         private IEnumerator OnShow()
         {
             yield return this.WaitForEndOfFrame();
+            
+            _visibility.SetValueForce(true);
 
             if(!SetStatus(ViewStatus.Showing))
                 yield break;
-            
+
             yield return OnShowProgress(_progressLifeTime);
 
             SetStatus(ViewStatus.Shown);
@@ -232,12 +236,10 @@ namespace UniGame.UiSystem.Runtime
 
         protected virtual bool SetStatus(ViewStatus status)
         {
-            if (status == _status.Value)
-                return false;
-
             if (_lifeTimeDefinition.IsTerminated)
             {
-                _status.Value = ViewStatus.Closed;
+                _status.Value     = ViewStatus.Closed;
+                _visibility.Value = false;
                 return false;
             }
 
@@ -284,20 +286,11 @@ namespace UniGame.UiSystem.Runtime
             IsTerminated = false;
             
             _isVisible        = _visibility.Value;
-
-            _status.Where(x => x == ViewStatus.Hidden || x == ViewStatus.Closed)
-                .Do(x => _visibility.Value = false)
-                .Subscribe()
-                .AddTo(LifeTime);
-
-            _status.Where(x => x == ViewStatus.Shown || x == ViewStatus.Showing)
-                .Do(x => _visibility.Value = true)
-                .Subscribe()
-                .AddTo(LifeTime);
-
+            
             _visibility.
                 Subscribe(x => _isVisible = x).
                 AddTo(_lifeTimeDefinition);
+            
         }
         
         private void BindLifeTimeActions(IViewModel model)
@@ -335,7 +328,7 @@ namespace UniGame.UiSystem.Runtime
                 _isInitialized.Value = false;
                 IsTerminated   = true;
                 ViewModel      = null;
-                _status.SetValueForce(ViewStatus.Closed);
+                SetStatus(ViewStatus.Closed);
                 _status.Release();
                 _visibility.Release();
             });
