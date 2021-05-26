@@ -1,5 +1,6 @@
 ﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
+    using System;
     using Core.Runtime.Interfaces;
     using Cysharp.Threading.Tasks;
     using UniRx;
@@ -13,6 +14,8 @@
 
         IReadOnlyReactiveProperty<bool> IsInitialized { get; }
 
+        IObservable<IView> SelectStatus(ViewStatus status);
+        
         /// <summary>
         /// is view lifetime finished
         /// </summary>

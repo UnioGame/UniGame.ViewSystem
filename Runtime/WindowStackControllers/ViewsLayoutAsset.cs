@@ -40,6 +40,10 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         
         public IObservable<IView> OnClosed  => LayoutController.OnClosed;
         
+        public IObservable<IView> OnHiding  => LayoutController.OnHiding;
+        
+        public IObservable<IView> OnShowing  => LayoutController.OnShowing;
+        
         public ILifeTime LifeTime => LayoutController.LifeTime;
         
         #region public methods
@@ -78,8 +82,7 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         public void ShowLast() => LayoutController.ShowLast();
 
         #endregion
-
-
+        
         #region private methods
 
         protected virtual IViewLayout Create()

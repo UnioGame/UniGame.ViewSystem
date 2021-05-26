@@ -23,11 +23,11 @@
                 Subscribe(HideView).
                 AddTo(LifeTime);
 
-            OnHidden.Where(x => x == _activeView).
+            OnBecameHidden.Where(x => x == _activeView).
                 Subscribe(HideView).
                 AddTo(LifeTime);
 
-            OnShown.Where(x => x != _activeView).
+            OnBecameVisible.Where(x => x != _activeView).
                 Subscribe(ActivateView).
                 AddTo(LifeTime);
         }

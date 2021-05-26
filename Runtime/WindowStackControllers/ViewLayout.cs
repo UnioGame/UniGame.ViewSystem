@@ -21,7 +21,11 @@ namespace UniGame.UiSystem.Runtime
         private readonly LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
 
         private readonly Subject<IView> _onViewHidden = new Subject<IView>();
+        private readonly Subject<IView> _onViewHiding = new Subject<IView>();
         private readonly Subject<IView> _onViewShown = new Subject<IView>();
+        private readonly Subject<IView> _onViewShowing = new Subject<IView>();
+        private readonly Subject<IView> _onBecameVisible = new Subject<IView>();
+        private readonly Subject<IView> _onBecameHidden = new Subject<IView>();
         private readonly Subject<IView> _onViewClosed = new Subject<IView>();
         private readonly ReactiveProperty<ViewStatus> _viewStatus = new ReactiveProperty<ViewStatus>();
         
@@ -33,10 +37,15 @@ namespace UniGame.UiSystem.Runtime
         
         #region IViewStatus
 
-        public IReadOnlyReactiveProperty<ViewStatus> Status => _viewStatus;
-        public IObservable<IView> OnHidden => _onViewHidden;
-        public IObservable<IView> OnShown => _onViewShown;
-        public IObservable<IView> OnClosed => _onViewClosed;
+        public IReadOnlyReactiveProperty<ViewStatus> Status    => _viewStatus;
+        public IObservable<IView>                    OnHidden  => _onViewHidden;
+        public IObservable<IView>                    OnShown   => _onViewShown;
+        public IObservable<IView>                    OnHiding  => _onViewHiding;
+        public IObservable<IView>                    OnShowing => _onViewShowing;
+        public IObservable<IView>                    OnClosed  => _onViewClosed;
+        
+        public IObservable<IView> OnBecameVisible => _onBecameVisible;
+        public IObservable<IView> OnBecameHidden => _onBecameHidden;
         
         #endregion
 
@@ -141,23 +150,43 @@ namespace UniGame.UiSystem.Runtime
         protected void AddView<TView>(TView view) 
             where TView :class, IView
         {
-            view.OnClosed.
-                Do(x => Remove(x)).
-                Do(x => _onViewClosed.OnNext(x)).
-                Subscribe().
-                AddTo(view.LifeTime);
+            var lifeTime = view.LifeTime;
+            
+            view.OnClosed
+                .Do(x => Remove(x))
+                .Do(_onViewClosed)
+                .Subscribe()
+                .AddTo(lifeTime);
                 
-            view.OnShown.
-                Subscribe(x => _onViewShown.OnNext(x)).
-                AddTo(view.LifeTime);
+            view.OnShown
+                .Subscribe(_onViewShown)
+                .AddTo(lifeTime);
                 
-            view.OnHidden.
-                Subscribe(x => _onViewHidden.OnNext(x)).
-                AddTo(view.LifeTime);
+            view.OnHidden
+                .Subscribe(_onViewHidden)
+                .AddTo(lifeTime);
                 
-            view.Status.
-                Subscribe(x => _viewStatus.SetValueAndForceNotify(x)).
-                AddTo(view.LifeTime);
+            view.Status
+                .Subscribe(x => _viewStatus.SetValueAndForceNotify(x))
+                .AddTo(lifeTime);
+
+            view.OnHiding
+                .Subscribe(_onViewHiding)
+                .AddTo(lifeTime);
+            
+            view.OnShowing
+                .Subscribe(_onViewShowing)
+                .AddTo(lifeTime);
+
+            view.IsVisible
+                .Where(x => !x)
+                .Subscribe(x => _onBecameHidden.OnNext(view))
+                .AddTo(lifeTime);
+            
+            view.IsVisible
+                .Where(x => x)
+                .Subscribe(x => _onBecameVisible.OnNext(view))
+                .AddTo(lifeTime);
             
             Add(view);
         }
