@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
+﻿using UniRx;
+
+namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
     using System;
 
@@ -6,6 +8,8 @@
         IDisposable, 
         IReadOnlyViewLayout
     {
+        IReadOnlyReactiveProperty<bool> HasActiveView { get; }
+        
         void Push(IView view);
 
         void HideAll();

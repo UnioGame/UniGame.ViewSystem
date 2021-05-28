@@ -1,10 +1,10 @@
 ﻿using System;
+using UniModules.UniGame.Core.Runtime.Rx;
 
 namespace UniGame.UiSystem.Runtime
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Backgrounds.Abstract;
     using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniCore.Runtime.ObjectPool.Runtime;
     using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
@@ -27,13 +27,16 @@ namespace UniGame.UiSystem.Runtime
         private readonly Subject<IView> _onBecameVisible;
         private readonly Subject<IView> _onBecameHidden;
         private readonly Subject<IView> _onViewClosed;
-        private readonly ReactiveProperty<ViewStatus> _viewStatus = new ReactiveProperty<ViewStatus>();
+        private readonly RecycleReactiveProperty<bool> _hasActiveView;
+        private readonly RecycleReactiveProperty<ViewStatus> _viewStatus;
 
         protected IReadOnlyReactiveCollection<IView> Views => _views;
 
         public Transform Layout { get; protected set; }
 
         public ILifeTime LifeTime => _lifeTime;
+
+        public virtual IReadOnlyReactiveProperty<bool> HasActiveView => _hasActiveView;
 
         #region IViewStatus
 
@@ -60,6 +63,8 @@ namespace UniGame.UiSystem.Runtime
             _onBecameVisible = new Subject<IView>().AddTo(LifeTime);
             _onBecameHidden = new Subject<IView>().AddTo(LifeTime);
             _onViewClosed = new Subject<IView>().AddTo(LifeTime);
+            _hasActiveView = new RecycleReactiveProperty<bool>().AddTo(LifeTime);
+            _viewStatus = new RecycleReactiveProperty<ViewStatus>().AddTo(LifeTime);
         }
 
         public void Dispose() => _lifeTime.Terminate();
@@ -84,7 +89,7 @@ namespace UniGame.UiSystem.Runtime
 
         public TView Get<TView>() where TView : class, IView
         {
-            return (TView)_views.LastOrDefault(v => v is TView);
+            return (TView) _views.LastOrDefault(v => v is TView);
         }
 
         /// <summary>
@@ -98,14 +103,14 @@ namespace UniGame.UiSystem.Runtime
                 if (view is TView targetView)
                     list.Add(targetView);
             }
+
             return list;
         }
 
         public void ShowLast()
         {
-            var lastView = Views.LastOrDefault(v => v is IView);
-            if (lastView != null)
-                lastView.Show();
+            var lastView = Views.LastOrDefault(v => v != null);
+            lastView?.Show();
         }
 
         public void Hide<T>() where T : Component, IView
@@ -159,51 +164,53 @@ namespace UniGame.UiSystem.Runtime
 
         #region private methods
 
-
         protected void AddView<TView>(TView view)
             where TView : class, IView
         {
             var lifeTime = view.LifeTime;
 
-            view.OnClosed
-                .Do(x => Remove(x))
-                .Do(_onViewClosed.OnNext)
-                .Subscribe()
-                .AddTo(lifeTime);
-
-            view.OnShown
-                .Subscribe(_onViewShown.OnNext)
-                .AddTo(lifeTime);
-
-            view.OnHidden
-                .Subscribe(_onViewHidden.OnNext)
-                .AddTo(lifeTime);
-
             view.Status
-                .Subscribe(x => _viewStatus.SetValueAndForceNotify(x))
-                .AddTo(lifeTime);
-
-            view.OnHiding
-                .Subscribe(_onViewHiding.OnNext)
-                .AddTo(lifeTime);
-
-            view.OnShowing
-                .Subscribe(_onViewShowing.OnNext)
-                .AddTo(lifeTime);
-
-            view.IsVisible
-                .Where(x => !x)
-                .Subscribe(x => _onBecameHidden.OnNext(view))
-                .AddTo(lifeTime);
-
-            view.IsVisible
-                .Where(x => x)
-                .Subscribe(x => _onBecameVisible.OnNext(view))
+                .Subscribe(x => ViewStatusChanged(view, x))
                 .AddTo(lifeTime);
 
             Add(view);
         }
 
+        protected void ViewStatusChanged<TView>(TView view, ViewStatus status)
+            where TView : class, IView
+        {
+            
+            switch (status)
+            {
+                case ViewStatus.Hidden:
+                    _onViewHidden.OnNext(view);
+                    _onBecameVisible.OnNext(view);
+                    break;
+                case ViewStatus.Shown:
+                    _onViewShown.OnNext(view);
+                    break;
+                case ViewStatus.Closed:
+                    Remove(view);
+                    _onViewClosed.OnNext(view);
+                    break;
+                case ViewStatus.Showing:
+                    _onViewShowing.OnNext(view);
+                    _onBecameHidden.OnNext(view);
+                    break;
+                case ViewStatus.Hiding:
+                    _onViewHidden.OnNext(view);
+                    break;
+            }
+
+            _hasActiveView.Value = IsAnyViewActive();
+
+        }
+
+        protected virtual bool IsAnyViewActive()
+        {
+            return _views.Count > 0 && _views.Any(x => x.Status.Value == ViewStatus.Showing || x.Status.Value == ViewStatus.Shown);
+        } 
+        
         protected bool Remove(IView view)
         {
             if (view == null || !Contains(view))
@@ -252,14 +259,17 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// user defined actions triggered before any view closed
         /// </summary>
-        protected virtual void OnBeforeClose(IView view) { }
+        protected virtual void OnBeforeClose(IView view)
+        {
+        }
 
         /// <summary>
         /// user defined action on new view added to layout
         /// </summary>
-        protected virtual void OnViewAdded<T>(T view) where T : class, IView { }
+        protected virtual void OnViewAdded<T>(T view) where T : class, IView
+        {
+        }
 
         #endregion
-
     }
 }

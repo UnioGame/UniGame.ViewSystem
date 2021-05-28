@@ -13,6 +13,8 @@
 
         private IView _activeView;
 
+        public IView LastView => Views.LastOrDefault(x => x != _activeView);
+        
         public StackViewLayout(Transform layout, IBackgroundView background)
         {
             _background = background;
@@ -30,6 +32,11 @@
                 Subscribe(ActivateView).
                 AddTo(LifeTime);
             
+        }
+
+        protected override bool IsAnyViewActive()
+        {
+            return _activeView != null;
         }
 
         protected override void OnViewAdded<T>(T view) => ActivateView(view);

@@ -43,7 +43,9 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         public IObservable<IView> OnHiding  => LayoutController.OnHiding;
         
         public IObservable<IView> OnShowing  => LayoutController.OnShowing;
-        
+
+        public IReadOnlyReactiveProperty<bool> HasActiveView => LayoutController.HasActiveView;
+
         public ILifeTime LifeTime => LayoutController.LifeTime;
         
         #region public methods
