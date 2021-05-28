@@ -1,9 +1,11 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
     using UniModules.UniCore.Runtime.Rx.Extensions;
+    using UniModules.UniGame.Core.Runtime.Rx;
     using UniModules.UniGame.UiSystem.Runtime;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniRx;
+    using UnityEngine;
 
     public class SingleActiveScreenFlow : ViewFlowController
     {
@@ -11,14 +13,10 @@
         
         private int OpenWindowCount {
             get => _openWindowCount;
-            set {
-                _openWindowCount = value;
-                if (_openWindowCount < 0)
-                    _openWindowCount = 0;
-            }
+            set => _openWindowCount = value < 0 ? 0 : value;
         }
 
-        private readonly ReactiveProperty<bool> _screenSuspended = new ReactiveProperty<bool>(false);
+        private readonly RecycleReactiveProperty<bool> _screenSuspended = new RecycleReactiveProperty<bool>();
 
         protected override void OnActivate(IViewLayoutContainer layouts)
         {
@@ -26,39 +24,37 @@
             var windowController = layouts.GetLayout(ViewType.Window);
 
             screenController.
-                OnShown.
-                Subscribe(x => {
-                    UnityEngine.Debug.Log(x);
-                    windowController.CloseAll();
-                }).
+                OnShowing.
+                Subscribe(x => windowController.CloseAll()).
                 AddTo(windowController.LifeTime);
 
             windowController
-                .OnShown
+                .OnShowing
+                .Where(x => x is IScreenSuspendingWindow)
                 .Subscribe(view => {
-                    if (view is IScreenSuspendingWindow) {
-                        if(OpenWindowCount == 0) {
-                            _screenSuspended.Value = true;
-                        }
-                        OpenWindowCount++;
+                    if (OpenWindowCount == 0)
+                    {
+                        _screenSuspended.Value = true;
                     }
+                    OpenWindowCount++;
                 })
                 .AddTo(windowController.LifeTime);
 
-            windowController.OnHidden.Subscribe(view => {
-                if (view is IScreenSuspendingWindow) {
-                    OpenWindowCount--;
-                }
-            }).AddTo(LifeTime);
+            windowController.OnHidden
+                .Where(x => x is IScreenSuspendingWindow)
+                .Subscribe(view => OpenWindowCount--)
+                .AddTo(LifeTime);
 
-            windowController.OnClosed.Subscribe(view => {
-                if (view is IScreenSuspendingWindow) {
+            windowController.OnClosed
+                .Where(view => view is IScreenSuspendingWindow)
+                .ThrottleFrame(1)
+                .Subscribe(view => {
                     OpenWindowCount--;
-                    if (OpenWindowCount == 0) {
+                    if (OpenWindowCount == 0)
+                    {
                         _screenSuspended.Value = false;
                     }
-                }
-            });
+                });
 
             _screenSuspended
                 .Skip(1)

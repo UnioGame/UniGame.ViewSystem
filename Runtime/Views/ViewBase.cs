@@ -143,6 +143,7 @@ namespace UniGame.UiSystem.Runtime
             InitializeHandlers(model);
             
             BindLifeTimeActions(model);
+
             //custom initialization
             await OnInitialize(model);
         }
@@ -205,11 +206,9 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         private IEnumerator OnHide()
         {
-            _visibility.SetValueForce(false);
-
             if(!SetStatus(ViewStatus.Hiding))
                 yield break;
-
+            
             //wait until user defined closing operation complete
             yield return OnHidingProgress(_progressLifeTime);
 
@@ -222,10 +221,8 @@ namespace UniGame.UiSystem.Runtime
         private IEnumerator OnShow()
         {
             yield return this.WaitForEndOfFrame();
-            
-            _visibility.SetValueForce(true);
 
-            if(!SetStatus(ViewStatus.Showing))
+            if (!SetStatus(ViewStatus.Showing))
                 yield break;
 
             yield return OnShowProgress(_progressLifeTime);
@@ -243,7 +240,18 @@ namespace UniGame.UiSystem.Runtime
                 return false;
             }
 
+            switch (status)
+            {
+                case ViewStatus.Hidden:
+                    _visibility.Value = false;
+                    break;
+                case ViewStatus.Showing:
+                    _visibility.Value = true;
+                    break;
+            }
+
             _status.Value = status;
+
             return true;
         }
 
