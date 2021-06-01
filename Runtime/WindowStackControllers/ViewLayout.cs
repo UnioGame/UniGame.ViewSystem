@@ -20,15 +20,14 @@ namespace UniGame.UiSystem.Runtime
         private readonly ReactiveCollection<IView> _views = new ReactiveCollection<IView>();
         private readonly LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
 
-        private readonly Subject<IView> _onViewHidden;
-        private readonly Subject<IView> _onViewHiding;
-        private readonly Subject<IView> _onViewShown;
-        private readonly Subject<IView> _onViewShowing;
-        private readonly Subject<IView> _onBecameVisible;
-        private readonly Subject<IView> _onBecameHidden;
-        private readonly Subject<IView> _onViewClosed;
+        private readonly Subject<IView>                _onViewHidden;
+        private readonly Subject<IView>                _onViewHiding;
+        private readonly Subject<IView>                _onViewShown;
+        private readonly Subject<IView>                _onViewShowing;
+        private readonly Subject<IView>                _onBecameVisible;
+        private readonly Subject<IView>                _onBecameHidden;
+        private readonly Subject<IView>                _onViewClosed;
         private readonly RecycleReactiveProperty<bool> _hasActiveView;
-        private readonly RecycleReactiveProperty<ViewStatus> _viewStatus;
 
         protected IReadOnlyReactiveCollection<IView> Views => _views;
 
@@ -40,7 +39,6 @@ namespace UniGame.UiSystem.Runtime
 
         #region IViewStatus
 
-        public IReadOnlyReactiveProperty<ViewStatus> Status => _viewStatus;
         public IObservable<IView> OnHidden => _onViewHidden;
         public IObservable<IView> OnShown => _onViewShown;
         public IObservable<IView> OnHiding => _onViewHiding;
@@ -56,15 +54,14 @@ namespace UniGame.UiSystem.Runtime
 
         public ViewLayout()
         {
-            _onViewHidden = new Subject<IView>().AddTo(LifeTime);
-            _onViewHiding = new Subject<IView>().AddTo(LifeTime);
-            _onViewShown = new Subject<IView>().AddTo(LifeTime);
-            _onViewShowing = new Subject<IView>().AddTo(LifeTime);
+            _onViewHidden    = new Subject<IView>().AddTo(LifeTime);
+            _onViewHiding    = new Subject<IView>().AddTo(LifeTime);
+            _onViewShown     = new Subject<IView>().AddTo(LifeTime);
+            _onViewShowing   = new Subject<IView>().AddTo(LifeTime);
             _onBecameVisible = new Subject<IView>().AddTo(LifeTime);
-            _onBecameHidden = new Subject<IView>().AddTo(LifeTime);
-            _onViewClosed = new Subject<IView>().AddTo(LifeTime);
-            _hasActiveView = new RecycleReactiveProperty<bool>().AddTo(LifeTime);
-            _viewStatus = new RecycleReactiveProperty<ViewStatus>().AddTo(LifeTime);
+            _onBecameHidden  = new Subject<IView>().AddTo(LifeTime);
+            _onViewClosed    = new Subject<IView>().AddTo(LifeTime);
+            _hasActiveView   = new RecycleReactiveProperty<bool>().AddTo(LifeTime);
         }
 
         public void Dispose() => _lifeTime.Terminate();
@@ -160,6 +157,10 @@ namespace UniGame.UiSystem.Runtime
             return true;
         }
 
+        public virtual void Suspend(){}
+
+        public virtual void Resume(){}
+
         #endregion
 
         #region private methods
@@ -167,11 +168,19 @@ namespace UniGame.UiSystem.Runtime
         protected void AddView<TView>(TView view)
             where TView : class, IView
         {
-            var lifeTime = view.LifeTime;
-
             view.Status
                 .Subscribe(x => ViewStatusChanged(view, x))
-                .AddTo(lifeTime);
+                .AddTo(LifeTime);
+
+            view.IsVisible
+                .Where(x => x)
+                .Subscribe(x => _onBecameVisible.OnNext(view))
+                .AddTo(LifeTime);
+
+            view.IsVisible
+                .Where(x => !x)
+                .Subscribe(x => _onBecameHidden.OnNext(view))
+                .AddTo(LifeTime);
 
             Add(view);
         }
@@ -184,7 +193,6 @@ namespace UniGame.UiSystem.Runtime
             {
                 case ViewStatus.Hidden:
                     _onViewHidden.OnNext(view);
-                    _onBecameVisible.OnNext(view);
                     break;
                 case ViewStatus.Shown:
                     _onViewShown.OnNext(view);
@@ -195,7 +203,6 @@ namespace UniGame.UiSystem.Runtime
                     break;
                 case ViewStatus.Showing:
                     _onViewShowing.OnNext(view);
-                    _onBecameHidden.OnNext(view);
                     break;
                 case ViewStatus.Hiding:
                     _onViewHidden.OnNext(view);

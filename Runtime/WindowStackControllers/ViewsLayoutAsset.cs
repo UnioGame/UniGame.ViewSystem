@@ -6,7 +6,6 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
     using System.Collections.Generic;
     using Backgrounds.Abstract;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniModules.UniGame.UISystem.Runtime;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract;
     using UniRx;
@@ -31,8 +30,6 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         public IViewLayout LayoutController => _layout.Value;
 
         public Transform Layout => LayoutController.Layout;
-
-        public IReadOnlyReactiveProperty<ViewStatus> Status => LayoutController.Status;
         
         public IObservable<IView> OnHidden => LayoutController.OnHidden;
         
@@ -83,8 +80,20 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         public void ShowLast() => LayoutController.ShowLast();
 
+        public void Suspend()
+        {
+            if (_layoutCanvas != null)
+                _layoutCanvas.enabled = false;
+        }
+
+        public void Resume()
+        {
+            if (_layoutCanvas != null)
+                _layoutCanvas.enabled = true;
+        }
+
         #endregion
-        
+
         #region private methods
 
         protected virtual IViewLayout Create()

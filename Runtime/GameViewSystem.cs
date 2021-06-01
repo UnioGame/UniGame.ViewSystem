@@ -114,6 +114,11 @@ namespace UniGame.UiSystem.Runtime
             return await OpenView<ViewBase>(viewModel, viewType, ViewType.Overlay, skinTag, viewName);
         }
 
+        public async UniTask<IView> OpenEmptyView(ViewType layoutType)
+        {
+            return await OpenView<ViewBase>(new ViewModelBase(), typeof(EmptyView), layoutType);
+        }
+
         public T Get<T>() where T : class, IView
         {
             foreach (var controller in _viewLayouts.Controllers)

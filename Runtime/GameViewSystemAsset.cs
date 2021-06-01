@@ -64,6 +64,8 @@ namespace UniGame.UiSystem.Runtime
 
         public UniTask<IView> OpenOverlay(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null) => ViewSystem.OpenOverlay(viewModel, viewType, skinTag, viewName);
 
+        public UniTask<IView> OpenEmptyView(ViewType layoutType) => ViewSystem.OpenEmptyView(layoutType);
+
         public IViewLayout GetLayout(ViewType type) => ViewSystem.GetLayout(type);
 
         public T Get<T>() where T : class, IView

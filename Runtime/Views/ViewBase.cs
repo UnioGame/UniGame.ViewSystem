@@ -86,14 +86,6 @@ namespace UniGame.UiSystem.Runtime
         public IViewLayoutProvider Layout => _viewLayout;
 
         public IReadOnlyReactiveProperty<ViewStatus> Status => _status;
-        
-        public IObservable<IView> OnHidden  => SelectStatus(ViewStatus.Hidden);
-        public IObservable<IView> OnHiding => SelectStatus(ViewStatus.Hiding);
-        public IObservable<IView> OnShowing   => SelectStatus(ViewStatus.Showing);
-
-        public IObservable<IView> OnShown => SelectStatus(ViewStatus.Shown);
-
-        public IObservable<IView> OnClosed => SelectStatus(ViewStatus.Closed);
 
         /// <summary>
         /// Is View Active
