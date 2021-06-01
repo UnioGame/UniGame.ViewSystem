@@ -1,14 +1,20 @@
 ﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
+    using System;
     using System.Collections.Generic;
     using Core.Runtime.Interfaces;
     using UnityEngine;
 
     public interface IReadOnlyViewLayout : 
-        ILifeTimeContext,
-        IViewStatus
+        ILifeTimeContext
     {
-        Transform Layout { get; }
+        Transform          Layout    { get; }
+
+        IObservable<IView> OnHidden  { get; }
+        IObservable<IView> OnShown   { get; }
+        IObservable<IView> OnBeginHide  { get; }
+        IObservable<IView> OnBeginShow { get; }
+        IObservable<IView> OnClosed  { get; }
 
         bool Contains(IView view);
  

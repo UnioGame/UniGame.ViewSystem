@@ -1,7 +1,6 @@
 ﻿using UniModules.UniGame.Core.Runtime.Interfaces;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
-using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions;
 using UnityEngine.Scripting;
 
 [assembly: AlwaysLinkAssembly]

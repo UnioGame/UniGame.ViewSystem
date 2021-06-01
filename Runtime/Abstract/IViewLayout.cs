@@ -5,11 +5,11 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
     using System;
 
     public interface IViewLayout : 
-        IDisposable, 
+        IDisposable,
         IReadOnlyViewLayout
     {
         IReadOnlyReactiveProperty<bool> HasActiveView { get; }
-        
+
         void Push(IView view);
 
         void HideAll();
@@ -17,5 +17,8 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
         void CloseAll();
 
         void ShowLast();
+
+        void Suspend();
+        void Resume();
     }
 }
