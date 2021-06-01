@@ -12,8 +12,8 @@
 
         IObservable<IView> OnHidden  { get; }
         IObservable<IView> OnShown   { get; }
-        IObservable<IView> OnHiding  { get; }
-        IObservable<IView> OnShowing { get; }
+        IObservable<IView> OnBeginHide  { get; }
+        IObservable<IView> OnBeginShow { get; }
         IObservable<IView> OnClosed  { get; }
 
         bool Contains(IView view);

@@ -1,7 +1,6 @@
 ﻿using UniModules.UniGame.Core.Runtime.Interfaces;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
-using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions;
 using UnityEngine.Scripting;
 
 [assembly: AlwaysLinkAssembly]
@@ -112,11 +111,6 @@ namespace UniGame.UiSystem.Runtime
             string viewName = null)
         {
             return await OpenView<ViewBase>(viewModel, viewType, ViewType.Overlay, skinTag, viewName);
-        }
-
-        public async UniTask<IView> OpenEmptyView(ViewType layoutType)
-        {
-            return await OpenView<ViewBase>(new ViewModelBase(), typeof(EmptyView), layoutType);
         }
 
         public T Get<T>() where T : class, IView

@@ -22,14 +22,14 @@
 
             windowController.HasActiveView
                 .Where(x => x)
-                .CombineLatest(windowController.OnShowing, (hasView, view) => view)
+                .CombineLatest(windowController.OnBeginShow, (hasView, view) => view)
                 .Where(x => x is IScreenSuspendingWindow)
                 .Subscribe(x => _screenSuspended.Value = true)
                 .AddTo(windowController.LifeTime);
 
             windowController.HasActiveView
                 .Where(x => x)
-                .CombineLatest(windowController.OnShowing, (hasView, view) => view)
+                .CombineLatest(windowController.OnBeginShow, (hasView, view) => view)
                 .Where(x => !(x is IScreenSuspendingWindow))
                 .Subscribe(x => _screenSuspended.Value = false)
                 .AddTo(windowController.LifeTime);

@@ -122,16 +122,16 @@
 
         public static IObservable<TSource> OnHidden<TSource>(this TSource source)where TSource : IViewStatus 
             => GetObservable(source, ViewStatus.Hidden);
-        public static IObservable<TSource> OnHiding<TSource>(this TSource source) where TSource : IViewStatus 
+        public static IObservable<TSource> OnBeginHide<TSource>(this TSource source) where TSource : IViewStatus 
             => GetObservable(source, ViewStatus.Hiding);
-        public static IObservable<TSource> OnShowing<TSource>(this TSource source) where TSource : IViewStatus
+        public static IObservable<TSource> OnBeginShow<TSource>(this TSource source) where TSource : IViewStatus
             => GetObservable(source, ViewStatus.Showing);
         public static IObservable<TSource> OnShown<TSource>(this TSource source) where TSource : IViewStatus
             => GetObservable(source, ViewStatus.Shown);
         public static IObservable<TSource> OnClosed<TSource>(this TSource source) where TSource : IViewStatus 
             => GetObservable(source, ViewStatus.Closed);
 
-        private static IObservable<TSource> GetObservable<TSource>(TSource source, ViewStatus status) where TSource : IViewStatus
+        public static IObservable<TSource> GetObservable<TSource>(this TSource source, ViewStatus status) where TSource : IViewStatus
             =>  source.Status.Where(x => x == status).Select(x => source);
     }
 }

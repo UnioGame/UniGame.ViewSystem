@@ -5,7 +5,6 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
     using System;
     using Core.Runtime.Interfaces;
     using Cysharp.Threading.Tasks;
-    using UniModules.UniGame.UiSystem.Runtime;
 
     public interface IViewLayoutProvider : 
         ILifeTimeContext, 
@@ -20,7 +19,5 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
         UniTask<IView> OpenScreen(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null);
 
         UniTask<IView> OpenOverlay(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null);
-
-        UniTask<IView> OpenEmptyView(ViewType viewType);
     }
 }
