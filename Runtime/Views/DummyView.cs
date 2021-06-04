@@ -2,7 +2,6 @@
 {
     using System;
     using Cysharp.Threading.Tasks;
-    using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
@@ -10,15 +9,13 @@
 
     public sealed class DummyView : IView
     {
-        private readonly LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
-        
         private readonly ReactiveProperty<ViewStatus> _viewStatusProperty = new ReactiveProperty<ViewStatus>(ViewStatus.None);
         private readonly ReactiveProperty<bool> _isVisibleProperty = new ReactiveProperty<bool>(false);
         private readonly ReactiveProperty<bool> _isInitializedProperty = new ReactiveProperty<bool>(false);
 
         private static DummyView instance;
 
-        public ILifeTime LifeTime => _lifeTimeDefinition;
+        public ILifeTime LifeTime => UniModules.UniCore.Runtime.DataFlow.LifeTime.TerminatedLifetime;
 
         public IReadOnlyReactiveProperty<ViewStatus> Status => _viewStatusProperty;
 
@@ -39,12 +36,12 @@
 
         public void Destroy()
         {
-            _lifeTimeDefinition.Terminate();
+           // do nothing
         }
 
         public void Close()
         {
-            Destroy();
+            // do nothing
         }
 
         public void Show()
