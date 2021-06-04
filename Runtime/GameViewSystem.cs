@@ -4,7 +4,6 @@ using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
 using UnityEngine.Scripting;
 
 [assembly: AlwaysLinkAssembly]
-
 namespace UniGame.UiSystem.Runtime
 {
     using System;
@@ -41,7 +40,7 @@ namespace UniGame.UiSystem.Runtime
             IViewModelProvider viewModelProvider,
             IViewModelTypeMap modelTypeMap)
         {
-            _viewCreatedSubject = new Subject<IView>().AddTo(_lifeTimeDefinition);
+            _viewCreatedSubject = new Subject<IView>().AddTo(LifeTime);
 
             _viewFactory = viewFactory;
             _viewLayouts = viewLayouts;
@@ -161,6 +160,11 @@ namespace UniGame.UiSystem.Runtime
             string viewName = null,
             bool stayWorld = false)
         {
+            if (LifeTime.IsTerminated)
+            {
+                return DummyView.Create();
+            }
+
             var view = (await _viewFactory.Create(viewType, skinTag, parent, viewName, stayWorld));
 
             await InitializeView(view, viewModel);
@@ -172,9 +176,9 @@ namespace UniGame.UiSystem.Runtime
         /// create new view element
         /// </summary>
         /// <param name="viewModel">target element model data</param>
-        /// <param name="viewType">view type filter</param>
         /// <param name="skinTag">target element skin</param>
         /// <param name="parent">view parent</param>
+        /// <param name="stayWorld"></param>
         /// <returns>created view element</returns>
         public async UniTask<T> CreateView<T>(
             IViewModel viewModel,
@@ -183,7 +187,7 @@ namespace UniGame.UiSystem.Runtime
             bool stayWorld = false)
             where T : class, IView
         {
-            var view = await CreateView(viewModel, typeof(T), skinTag, parent, String.Empty, stayWorld) as T;
+            var view = await CreateView(viewModel, typeof(T), skinTag, parent, string.Empty, stayWorld) as T;
             return view;
         }
 
