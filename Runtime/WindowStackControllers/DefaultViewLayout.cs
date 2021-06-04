@@ -16,7 +16,7 @@
         public DefaultViewLayout(Transform layout, IBackgroundView background)
         {
             _background = background;
-            Layout = layout;
+            Layout      = layout;
 
             OnClosed.Where(x => x == _activeView).
                 Subscribe(HideView).
@@ -50,8 +50,8 @@
             
             var lastView = Views.LastOrDefault(x => x != view);
             //empty view stack or only active
-            if (lastView == null && _background != null) {
-                _background.Hide();
+            if (lastView == null) {
+                _background?.Hide();
             }
         }
 
@@ -66,9 +66,7 @@
             if(view.IsVisible.Value == false)
                 view.Show();
 
-            if(_background != null) {
-                _background.Show();
-            }
+            _background?.Show();
         }
     }
 }
