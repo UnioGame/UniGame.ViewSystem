@@ -10,6 +10,7 @@ namespace UniGame.UiSystem.Runtime
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
     using UniModules.UniCore.Runtime.DataFlow;
+    using UniModules.UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.UiSystem.Runtime;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
@@ -39,7 +40,7 @@ namespace UniGame.UiSystem.Runtime
             IViewModelProvider viewModelProvider,
             IViewModelTypeMap modelTypeMap)
         {
-            _viewCreatedSubject = new Subject<IView>();
+            _viewCreatedSubject = new Subject<IView>().AddTo(LifeTime);
 
             _viewFactory = viewFactory;
             _viewLayouts = viewLayouts;
