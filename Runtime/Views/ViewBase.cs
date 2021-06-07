@@ -272,10 +272,12 @@ namespace UniGame.UiSystem.Runtime
             yield break;
         }
 
-        private void StartProgressAction(ILifeTime lifeTime,Func<IEnumerator> action)
+        private void StartProgressAction(LifeTimeDefinition lifeTime,Func<IEnumerator> action)
         {
             if (lifeTime.IsTerminated) 
                 return;
+            
+            lifeTime.Release();
             //run animation immediately
             action().Execute(RoutineType.Update,true).AddTo(lifeTime);
         }
