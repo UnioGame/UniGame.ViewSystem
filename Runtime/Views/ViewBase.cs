@@ -149,9 +149,21 @@
         /// </summary>
         public void Show()
         {
+            var viewName = NullViewName;
+            if (this != null)
+                viewName = name;
+            
+#if UNITY_EDITOR || UNITY_DEBUG
+            if (!this)
+            {
+                GameLog.LogError($"You try to show {viewName} but it has destroy status yet");
+                return;
+            }
+#endif
+            
             if(_internalViewStatus == ViewStatus.Shown)
             {
-                GameLog.LogWarning($"You try to show {name} but it has showed status yet");
+                GameLog.LogWarning($"You try to show {viewName} but it has showed status yet");
                 return;
             }
 
@@ -165,9 +177,21 @@
         /// </summary>
         public void Hide()
         {
+            var viewName = NullViewName;
+            if (this != null)
+                viewName = name;
+            
+#if UNITY_EDITOR || UNITY_DEBUG
+            if (!this)
+            {
+                GameLog.LogError($"You try to hide {viewName} but it has destroy status yet");
+                return;
+            }
+#endif
+            
             if(_internalViewStatus == ViewStatus.Hidden)
             {
-                GameLog.LogWarning($"You try to hide {name} but it has hidden status yet");
+                GameLog.LogWarning($"You try to hide {viewName} but it has hidden status yet");
                 return;
             }
 
