@@ -156,7 +156,7 @@
 #if UNITY_EDITOR || UNITY_DEBUG
             if (!this)
             {
-                GameLog.LogError($"You try to show {viewName} but it has destroy status yet");
+                GameLog.LogWarning($"You try to show {viewName} but it has destroy status yet");
                 return;
             }
 #endif
@@ -184,7 +184,7 @@
 #if UNITY_EDITOR || UNITY_DEBUG
             if (!this)
             {
-                GameLog.LogError($"You try to hide {viewName} but it has destroy status yet");
+                GameLog.LogWarning($"You try to hide {viewName} but it has destroy status yet");
                 return;
             }
 #endif
@@ -212,7 +212,7 @@
 #if UNITY_EDITOR || UNITY_DEBUG
             if (!this)
             {
-                GameLog.LogError($"You try to close {viewName} but it has destroy status yet");
+                GameLog.LogWarning($"You try to close {viewName} but it has destroy status yet");
                 return;
             }
 #endif
