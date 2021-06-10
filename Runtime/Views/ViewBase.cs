@@ -1,10 +1,9 @@
-﻿using UniModules.UniRoutine.Runtime.Extension;
-
-namespace UniGame.UiSystem.Runtime
+﻿namespace UniGame.UiSystem.Runtime
 {
     using System;
     using System.Collections;
     using Cysharp.Threading.Tasks;
+    using JetBrains.Annotations;
     using UniCore.Runtime.ProfilerTools;
     using UniModules.UniCore.Runtime.Attributes;
     using UniModules.UniCore.Runtime.DataFlow;
@@ -16,7 +15,7 @@ namespace UniGame.UiSystem.Runtime
     using UniModules.UniGame.UISystem.Runtime;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniRx;
-    
+    using UniModules.UniRoutine.Runtime.Extension;
     using UnityEngine;
     using UnityEngine.EventSystems;
 
@@ -27,6 +26,7 @@ namespace UniGame.UiSystem.Runtime
 
         [ReadOnlyValue]
         [SerializeField]
+        [UsedImplicitly]
         private bool _isVisible;
 
         [ReadOnlyValue]
@@ -35,6 +35,8 @@ namespace UniGame.UiSystem.Runtime
         
         #endregion
 
+        private InternalViewStatus _internalViewStatus = InternalViewStatus.None;
+        
         private RectTransform _rectTransform;
         private Transform _transform;
         
@@ -143,18 +145,51 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// show active view
         /// </summary>
-        public void Show() => StartProgressAction(_progressLifeTime, OnShow);
+        public void Show()
+        {
+            if(_internalViewStatus == InternalViewStatus.Showed)
+            {
+                GameLog.LogWarning($"You try to show {name} but it has showed status yet");
+                return;
+            }
+
+            _internalViewStatus = InternalViewStatus.Showed;
+            
+            StartProgressAction(_progressLifeTime, OnShow);
+        }
 
         /// <summary>
         /// hide view without release it
         /// </summary>
-        public void Hide() => StartProgressAction(_progressLifeTime, OnHide);
+        public void Hide()
+        {
+            if(_internalViewStatus == InternalViewStatus.Hidden)
+            {
+                GameLog.LogWarning($"You try to hide {name} but it has hidden status yet");
+                return;
+            }
+
+            _internalViewStatus = InternalViewStatus.Hidden;
+            
+            StartProgressAction(_progressLifeTime, OnHide);
+        }
 
         /// <summary>
         /// end of view lifetime
         /// </summary>
-        public void Close() => StartProgressAction(_progressLifeTime, OnClose);
-        
+        public void Close()
+        {
+            if(_internalViewStatus == InternalViewStatus.Closed)
+            {
+                GameLog.LogWarning($"You try to close {name} but it has closed status yet");
+                return;
+            }
+
+            _internalViewStatus = InternalViewStatus.Closed;
+            
+            StartProgressAction(_progressLifeTime, OnClose);
+        }
+
         /// <summary>
         /// bind source stream to view action
         /// with View LifeTime context
@@ -222,7 +257,6 @@ namespace UniGame.UiSystem.Runtime
             SetStatus(ViewStatus.Shown);
         }
 
-
         protected virtual bool SetStatus(ViewStatus status)
         {
             if (_lifeTimeDefinition.IsTerminated)
@@ -286,8 +320,8 @@ namespace UniGame.UiSystem.Runtime
         {
             ViewModel = model;
             IsTerminated = false;
-            
-            _isVisible        = _visibility.Value;
+
+            _isVisible = _visibility.Value;
             
             _visibility.
                 Subscribe(x => _isVisible = x).
@@ -352,9 +386,16 @@ namespace UniGame.UiSystem.Runtime
 
         protected virtual void OnAwake()
         {
-            
         }
 
         #endregion
+
+        private enum InternalViewStatus
+        {
+            Showed,
+            Hidden,
+            Closed,
+            None
+        }
     }
 }
