@@ -181,7 +181,11 @@
         {
             if(_internalViewStatus == InternalViewStatus.Closed)
             {
-                GameLog.LogWarning($"You try to close {name} but it has closed status yet");
+                var viewName = "Null";
+                if (this != null)
+                    viewName = name;
+                
+                GameLog.LogWarning($"You try to close {viewName} but it has closed status yet");
                 return;
             }
 
