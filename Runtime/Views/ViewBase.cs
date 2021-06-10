@@ -223,11 +223,14 @@
                 Where(x => x == status).
                 Select(x => this);
         }
-        
+
         /// <summary>
         /// custom initialization methods
         /// </summary>
-        protected virtual async UniTask OnInitialize(IViewModel model) { }
+        protected virtual UniTask OnInitialize(IViewModel model)
+        {
+            return UniTask.CompletedTask;
+        }
         
         /// <summary>
         /// view closing process
