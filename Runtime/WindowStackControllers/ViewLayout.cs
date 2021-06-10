@@ -138,7 +138,8 @@ namespace UniGame.UiSystem.Runtime
             _views.Clear();
             foreach (var view in buffer)
             {
-                view.Close();
+                if(view != null)
+                    view.Close();
             }
 
             buffer.Despawn();

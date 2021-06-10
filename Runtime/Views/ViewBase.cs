@@ -1,10 +1,9 @@
-﻿using UniModules.UniRoutine.Runtime.Extension;
-
-namespace UniGame.UiSystem.Runtime
+﻿namespace UniGame.UiSystem.Runtime
 {
     using System;
     using System.Collections;
     using Cysharp.Threading.Tasks;
+    using JetBrains.Annotations;
     using UniCore.Runtime.ProfilerTools;
     using UniModules.UniCore.Runtime.Attributes;
     using UniModules.UniCore.Runtime.DataFlow;
@@ -16,17 +15,20 @@ namespace UniGame.UiSystem.Runtime
     using UniModules.UniGame.UISystem.Runtime;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniRx;
-    
+    using UniModules.UniRoutine.Runtime.Extension;
     using UnityEngine;
     using UnityEngine.EventSystems;
 
     public abstract class ViewBase : UIBehaviour, 
         IView, ILayoutFactoryView
     {
+        private const string NullViewName = "Null";
+        
         #region inspector
 
         [ReadOnlyValue]
         [SerializeField]
+        [UsedImplicitly]
         private bool _isVisible;
 
         [ReadOnlyValue]
@@ -35,6 +37,8 @@ namespace UniGame.UiSystem.Runtime
         
         #endregion
 
+        private ViewStatus _internalViewStatus = ViewStatus.None;
+        
         private RectTransform _rectTransform;
         private Transform _transform;
         
@@ -143,18 +147,36 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// show active view
         /// </summary>
-        public void Show() => StartProgressAction(_progressLifeTime, OnShow);
+        public void Show()
+        {
+            if(!SetInternalStatus(ViewStatus.Shown))
+                return;
+            
+            StartProgressAction(_progressLifeTime, OnShow);
+        }
 
         /// <summary>
         /// hide view without release it
         /// </summary>
-        public void Hide() => StartProgressAction(_progressLifeTime, OnHide);
+        public void Hide()
+        {
+            if(!SetInternalStatus(ViewStatus.Hidden))
+                return;
+            
+            StartProgressAction(_progressLifeTime, OnHide);
+        }
 
         /// <summary>
         /// end of view lifetime
         /// </summary>
-        public void Close() => StartProgressAction(_progressLifeTime, OnClose);
-        
+        public void Close()
+        {
+            if(!SetInternalStatus(ViewStatus.Closed))
+                return;
+            
+            StartProgressAction(_progressLifeTime, OnClose);
+        }
+
         /// <summary>
         /// bind source stream to view action
         /// with View LifeTime context
@@ -174,11 +196,14 @@ namespace UniGame.UiSystem.Runtime
                 Where(x => x == status).
                 Select(x => this);
         }
-        
+
         /// <summary>
         /// custom initialization methods
         /// </summary>
-        protected virtual async UniTask OnInitialize(IViewModel model) { }
+        protected virtual UniTask OnInitialize(IViewModel model)
+        {
+            return UniTask.CompletedTask;
+        }
         
         /// <summary>
         /// view closing process
@@ -221,7 +246,6 @@ namespace UniGame.UiSystem.Runtime
 
             SetStatus(ViewStatus.Shown);
         }
-
 
         protected virtual bool SetStatus(ViewStatus status)
         {
@@ -272,6 +296,29 @@ namespace UniGame.UiSystem.Runtime
             yield break;
         }
 
+        private bool SetInternalStatus(ViewStatus internalStatus)
+        {
+            var viewName = this != null ? name : NullViewName;
+
+#if UNITY_EDITOR || UNITY_DEBUG
+            if (!this)
+            {
+                GameLog.LogWarning($"You try to {internalStatus} {viewName} but it has destroy status yet");
+                return false;
+            }
+#endif
+
+            if(_internalViewStatus == internalStatus)
+            {
+                GameLog.LogWarning($"You try to {internalStatus} {viewName} but it has {internalStatus} status yet");
+                return false;
+            }
+
+            _internalViewStatus = internalStatus;
+
+            return true;
+        }
+
         private void StartProgressAction(LifeTimeDefinition lifeTime,Func<IEnumerator> action)
         {
             if (lifeTime.IsTerminated) 
@@ -286,8 +333,8 @@ namespace UniGame.UiSystem.Runtime
         {
             ViewModel = model;
             IsTerminated = false;
-            
-            _isVisible        = _visibility.Value;
+
+            _isVisible = _visibility.Value;
             
             _visibility.
                 Subscribe(x => _isVisible = x).
@@ -352,7 +399,6 @@ namespace UniGame.UiSystem.Runtime
 
         protected virtual void OnAwake()
         {
-            
         }
 
         #endregion
