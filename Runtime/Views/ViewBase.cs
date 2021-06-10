@@ -181,12 +181,20 @@
         /// </summary>
         public void Close()
         {
+            var viewName = NullViewName;
+            if (this != null)
+                viewName = name;
+            
+#if UNITY_EDITOR
+            if (!this)
+            {
+                GameLog.LogError($"You try to close {viewName} but it has destroy status yet");
+                return;
+            }
+#endif
+
             if(_internalViewStatus == ViewStatus.Closed)
             {
-                var viewName = NullViewName;
-                if (this != null)
-                    viewName = name;
-                
                 GameLog.LogWarning($"You try to close {viewName} but it has closed status yet");
                 return;
             }
