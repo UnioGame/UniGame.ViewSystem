@@ -3,10 +3,8 @@
     using System;
     using Core.Runtime.Interfaces;
 
-    public interface IViewModel: IDisposable, ILifeTimeContext
+    public interface IViewModel : IDisposable, ILifeTimeContext
     {
-
         public bool IsDisposeWithModel { get; }
-
     }
 }

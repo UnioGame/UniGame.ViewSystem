@@ -1,14 +1,14 @@
-using Cysharp.Threading.Tasks;
-using UniModules.UniGame.Context.Runtime.Connections;
-using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-using UniModules.UniGame.Core.Runtime.Interfaces;
-using UniModules.UniGame.ViewSystem.Runtime.Abstract;
-
 namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow.ViewModels
 {
+    using Cysharp.Threading.Tasks;
+    using UniModules.UniGame.Context.Runtime.Connections;
+    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+    using UniModules.UniGame.Core.Runtime.Interfaces;
+    using UniModules.UniGame.ViewSystem.Runtime.Abstract;
+    
     public class ContextViewModel : IContextViewModel
     {
-        private ContextConnection _context = new ContextConnection();
+        private readonly ContextConnection _context = new ContextConnection();
 
         public ILifeTime LifeTime => _context.LifeTime;
 
@@ -26,12 +26,11 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow.ViewModels
 
         #region private methods
         
-        protected virtual async UniTask OnInitializeContext(IContext context)
+        protected virtual UniTask OnInitializeContext(IContext context)
         {
-            
+            return UniTask.CompletedTask;
         }
 
         #endregion
-        
     }
 }

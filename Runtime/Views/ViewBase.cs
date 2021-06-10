@@ -149,25 +149,8 @@
         /// </summary>
         public void Show()
         {
-            var viewName = NullViewName;
-            if (this != null)
-                viewName = name;
-            
-#if UNITY_EDITOR || UNITY_DEBUG
-            if (!this)
-            {
-                GameLog.LogWarning($"You try to show {viewName} but it has destroy status yet");
+            if(!SetInternalStatus(ViewStatus.Shown))
                 return;
-            }
-#endif
-            
-            if(_internalViewStatus == ViewStatus.Shown)
-            {
-                GameLog.LogWarning($"You try to show {viewName} but it has showed status yet");
-                return;
-            }
-
-            _internalViewStatus = ViewStatus.Shown;
             
             StartProgressAction(_progressLifeTime, OnShow);
         }
@@ -177,25 +160,8 @@
         /// </summary>
         public void Hide()
         {
-            var viewName = NullViewName;
-            if (this != null)
-                viewName = name;
-            
-#if UNITY_EDITOR || UNITY_DEBUG
-            if (!this)
-            {
-                GameLog.LogWarning($"You try to hide {viewName} but it has destroy status yet");
+            if(!SetInternalStatus(ViewStatus.Hidden))
                 return;
-            }
-#endif
-            
-            if(_internalViewStatus == ViewStatus.Hidden)
-            {
-                GameLog.LogWarning($"You try to hide {viewName} but it has hidden status yet");
-                return;
-            }
-
-            _internalViewStatus = ViewStatus.Hidden;
             
             StartProgressAction(_progressLifeTime, OnHide);
         }
@@ -205,25 +171,8 @@
         /// </summary>
         public void Close()
         {
-            var viewName = NullViewName;
-            if (this != null)
-                viewName = name;
-            
-#if UNITY_EDITOR || UNITY_DEBUG
-            if (!this)
-            {
-                GameLog.LogWarning($"You try to close {viewName} but it has destroy status yet");
+            if(!SetInternalStatus(ViewStatus.Closed))
                 return;
-            }
-#endif
-
-            if(_internalViewStatus == ViewStatus.Closed)
-            {
-                GameLog.LogWarning($"You try to close {viewName} but it has closed status yet");
-                return;
-            }
-
-            _internalViewStatus = ViewStatus.Closed;
             
             StartProgressAction(_progressLifeTime, OnClose);
         }
@@ -345,6 +294,29 @@
         protected virtual IEnumerator OnHidingProgress(ILifeTime progressLifeTime)
         {
             yield break;
+        }
+
+        private bool SetInternalStatus(ViewStatus internalStatus)
+        {
+            var viewName = this != null ? name : NullViewName;
+
+#if UNITY_EDITOR || UNITY_DEBUG
+            if (!this)
+            {
+                GameLog.LogWarning($"You try to {internalStatus} {viewName} but it has destroy status yet");
+                return false;
+            }
+#endif
+
+            if(_internalViewStatus == internalStatus)
+            {
+                GameLog.LogWarning($"You try to {internalStatus} {viewName} but it has {internalStatus} status yet");
+                return false;
+            }
+
+            _internalViewStatus = internalStatus;
+
+            return true;
         }
 
         private void StartProgressAction(LifeTimeDefinition lifeTime,Func<IEnumerator> action)
