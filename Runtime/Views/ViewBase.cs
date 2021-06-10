@@ -22,6 +22,8 @@
     public abstract class ViewBase : UIBehaviour, 
         IView, ILayoutFactoryView
     {
+        private const string NullViewName = "Null";
+        
         #region inspector
 
         [ReadOnlyValue]
@@ -181,7 +183,7 @@
         {
             if(_internalViewStatus == ViewStatus.Closed)
             {
-                var viewName = "Null";
+                var viewName = NullViewName;
                 if (this != null)
                     viewName = name;
                 
