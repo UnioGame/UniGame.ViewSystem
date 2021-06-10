@@ -35,7 +35,7 @@
         
         #endregion
 
-        private InternalViewStatus _internalViewStatus = InternalViewStatus.None;
+        private ViewStatus _internalViewStatus = ViewStatus.None;
         
         private RectTransform _rectTransform;
         private Transform _transform;
@@ -147,13 +147,13 @@
         /// </summary>
         public void Show()
         {
-            if(_internalViewStatus == InternalViewStatus.Showed)
+            if(_internalViewStatus == ViewStatus.Shown)
             {
                 GameLog.LogWarning($"You try to show {name} but it has showed status yet");
                 return;
             }
 
-            _internalViewStatus = InternalViewStatus.Showed;
+            _internalViewStatus = ViewStatus.Shown;
             
             StartProgressAction(_progressLifeTime, OnShow);
         }
@@ -163,13 +163,13 @@
         /// </summary>
         public void Hide()
         {
-            if(_internalViewStatus == InternalViewStatus.Hidden)
+            if(_internalViewStatus == ViewStatus.Hidden)
             {
                 GameLog.LogWarning($"You try to hide {name} but it has hidden status yet");
                 return;
             }
 
-            _internalViewStatus = InternalViewStatus.Hidden;
+            _internalViewStatus = ViewStatus.Hidden;
             
             StartProgressAction(_progressLifeTime, OnHide);
         }
@@ -179,7 +179,7 @@
         /// </summary>
         public void Close()
         {
-            if(_internalViewStatus == InternalViewStatus.Closed)
+            if(_internalViewStatus == ViewStatus.Closed)
             {
                 var viewName = "Null";
                 if (this != null)
@@ -189,7 +189,7 @@
                 return;
             }
 
-            _internalViewStatus = InternalViewStatus.Closed;
+            _internalViewStatus = ViewStatus.Closed;
             
             StartProgressAction(_progressLifeTime, OnClose);
         }
@@ -393,13 +393,5 @@
         }
 
         #endregion
-
-        private enum InternalViewStatus
-        {
-            Showed,
-            Hidden,
-            Closed,
-            None
-        }
     }
 }
