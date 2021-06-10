@@ -185,7 +185,7 @@
             if (this != null)
                 viewName = name;
             
-#if UNITY_EDITOR
+#if UNITY_EDITOR || UNITY_DEBUG
             if (!this)
             {
                 GameLog.LogError($"You try to close {viewName} but it has destroy status yet");
