@@ -65,7 +65,7 @@
         public IReadOnlyReactiveProperty<bool> IsInitialized => _isInitialized;
         
         public GameObject Owner => gameObject;
-        
+
         /// <summary>
         /// View LifeTime
         /// </summary>
@@ -185,17 +185,22 @@
         {
             return this.Bind(source, _viewModelLifeTime, action,frameThrottle);
         }
-
-        #endregion public methods
-
-        #region private methods
-
+        
         public IObservable<IView> SelectStatus(ViewStatus status)
         {
             return _status.
                 Where(x => x == status).
                 Select(x => this);
         }
+
+        public override bool IsActive()
+        {
+            return base.IsActive() && (_status.Value == ViewStatus.Showing || _status.Value == ViewStatus.Shown);
+        }
+
+        #endregion public methods
+
+        #region private methods
 
         /// <summary>
         /// custom initialization methods
