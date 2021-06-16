@@ -1,7 +1,4 @@
-﻿using System;
-using UniModules.UniGame.Core.Runtime.Rx;
-
-namespace UniGame.UiSystem.Runtime
+﻿namespace UniGame.UiSystem.Runtime
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -14,6 +11,8 @@ namespace UniGame.UiSystem.Runtime
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniRx;
     using UnityEngine;
+    using System;
+    using UniModules.UniGame.Core.Runtime.Rx;
 
     public class ViewLayout : IViewLayout
     {
@@ -24,8 +23,6 @@ namespace UniGame.UiSystem.Runtime
         private readonly Subject<IView>                _onViewBeginHide;
         private readonly Subject<IView>                _onViewShown;
         private readonly Subject<IView>                _onViewBeginShow;
-        private readonly Subject<IView>                _onBecameVisible;
-        private readonly Subject<IView>                _onBecameHidden;
         private readonly Subject<IView>                _onViewClosed;
         private readonly RecycleReactiveProperty<bool> _hasActiveView;
 
@@ -45,9 +42,6 @@ namespace UniGame.UiSystem.Runtime
         public IObservable<IView> OnBeginShow => _onViewBeginShow;
         public IObservable<IView> OnClosed => _onViewClosed;
 
-        public IObservable<IView> OnBecameVisible => _onBecameVisible;
-        public IObservable<IView> OnBecameHidden => _onBecameHidden;
-
         #endregion
 
         #region public methods
@@ -55,11 +49,9 @@ namespace UniGame.UiSystem.Runtime
         public ViewLayout()
         {
             _onViewHidden    = new Subject<IView>().AddTo(LifeTime);
-            _onViewBeginHide    = new Subject<IView>().AddTo(LifeTime);
+            _onViewBeginHide = new Subject<IView>().AddTo(LifeTime);
             _onViewShown     = new Subject<IView>().AddTo(LifeTime);
-            _onViewBeginShow   = new Subject<IView>().AddTo(LifeTime);
-            _onBecameVisible = new Subject<IView>().AddTo(LifeTime);
-            _onBecameHidden  = new Subject<IView>().AddTo(LifeTime);
+            _onViewBeginShow = new Subject<IView>().AddTo(LifeTime);
             _onViewClosed    = new Subject<IView>().AddTo(LifeTime);
             _hasActiveView   = new RecycleReactiveProperty<bool>().AddTo(LifeTime);
         }
@@ -173,23 +165,12 @@ namespace UniGame.UiSystem.Runtime
                 .Subscribe(x => ViewStatusChanged(view, x))
                 .AddTo(LifeTime);
 
-            view.IsVisible
-                .Where(x => x)
-                .Subscribe(x => _onBecameVisible.OnNext(view))
-                .AddTo(LifeTime);
-
-            view.IsVisible
-                .Where(x => !x)
-                .Subscribe(x => _onBecameHidden.OnNext(view))
-                .AddTo(LifeTime);
-
             Add(view);
         }
 
         protected void ViewStatusChanged<TView>(TView view, ViewStatus status)
             where TView : class, IView
         {
-            
             switch (status)
             {
                 case ViewStatus.Hidden:
@@ -206,12 +187,11 @@ namespace UniGame.UiSystem.Runtime
                     _onViewBeginShow.OnNext(view);
                     break;
                 case ViewStatus.Hiding:
-                    _onViewHidden.OnNext(view);
+                    _onViewBeginHide.OnNext(view);
                     break;
             }
 
             _hasActiveView.Value = IsAnyViewActive();
-
         }
 
         protected virtual bool IsAnyViewActive()
