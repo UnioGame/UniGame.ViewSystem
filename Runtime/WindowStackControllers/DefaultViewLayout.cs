@@ -21,12 +21,12 @@
             OnClosed.Where(x => x == _activeView).
                 Subscribe(HideView).
                 AddTo(LifeTime);
-
-            OnBecameHidden.Where(x => x == _activeView).
+            
+            OnBeginHide.Where(x => x == _activeView).
                 Subscribe(HideView).
                 AddTo(LifeTime);
 
-            OnBecameVisible.Where(x => x != _activeView).
+            OnBeginShow.Where(x => x != _activeView).
                 Subscribe(ActivateView).
                 AddTo(LifeTime);
         }
@@ -47,10 +47,11 @@
         {
             //mark active view as empty
             _activeView = null;
-            
+
             var lastView = Views.LastOrDefault(x => x != view);
             //empty view stack or only active
-            if (lastView == null) {
+            if (lastView == null) 
+            {
                 _background?.Hide();
             }
         }
@@ -65,7 +66,7 @@
             //show view if it inactive
             if(view.IsVisible.Value == false)
                 view.Show();
-
+            
             _background?.Show();
         }
     }

@@ -25,20 +25,19 @@
                 .Subscribe(HideView)
                 .AddTo(LifeTime);
 
-            OnBecameHidden.Where(x => x == _activeView)
+            OnBeginHide.Where(x => x == _activeView)
                 .Subscribe(HideView)
                 .AddTo(LifeTime);
 
-            OnBecameVisible.Where(x => x != _activeView)
+            OnBeginShow.Where(x => x != _activeView)
                 .Subscribe(ActivateView)
                 .AddTo(LifeTime);
-
         }
 
         protected override bool IsAnyViewActive()
         {
-            return (_activeView != null && (_activeView.Status.Value == ViewStatus.Showing || _activeView.Status.Value == ViewStatus.Shown)) ||
-                   (LastView != null && (LastView.Status.Value == ViewStatus.Showing || LastView.Status.Value == ViewStatus.Shown));
+            return _activeView != null && (_activeView.Status.Value == ViewStatus.Showing || _activeView.Status.Value == ViewStatus.Shown) ||
+                   LastView != null && (LastView.Status.Value == ViewStatus.Showing || LastView.Status.Value == ViewStatus.Shown);
         }
 
         protected override void OnViewAdded<T>(T view)
@@ -71,8 +70,13 @@
             _activeView = null;
             
             var lastView = Views.LastOrDefault(x => x != view);
-            if (lastView == null) {
-                _background?.Hide();
+            if (lastView == null) 
+            {
+                if (_background != null) // can be UnityEngine.Object
+                {
+                    _background.Hide();
+                }
+
                 return;
             }
 
@@ -89,9 +93,9 @@
 
             UpdateTop(view);
 
-            if (_background != null && !_background.IsVisible.Value)
+            if (_background != null) // can be UnityEngine.Object
             {
-                _background?.Show();
+                _background.Show();
             }
         }
     }
