@@ -31,11 +31,6 @@
                 AddTo(LifeTime);
         }
 
-        protected override void OnViewAdded<T>(T view)
-        {
-            ActivateView(view);
-        }
-
         protected override void OnBeforeClose(IView view)
         {
             if (view == _activeView) {
