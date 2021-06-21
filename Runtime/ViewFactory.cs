@@ -14,6 +14,13 @@ namespace UniGame.UiSystem.Runtime
     
     using Object = UnityEngine.Object;
 
+    
+    
+    public static class ViewPoolMap
+    {
+        
+    }
+    
     public class ViewFactory : IViewFactory
     {
         private readonly AsyncLazy _readyStatus;
@@ -37,6 +44,7 @@ namespace UniGame.UiSystem.Runtime
             await _readyStatus;
 
             var viewLifeTime = LifeTime.Create();
+            //load view source by filter parameters
             var result       = await resourceProvider.LoadViewAsync<Component>(viewType,viewLifeTime,skinTag, viewName:viewName);
             //create view instance
             var view = Create(result, parent,stayWorldPosition);
@@ -59,6 +67,7 @@ namespace UniGame.UiSystem.Runtime
         protected virtual IView Create(Component asset, Transform parent = null, bool stayPosition = false)
         {
             if (asset == null) return null;
+            
             //create instance of view
             var view = Object.
                 Instantiate(asset.gameObject, parent,stayPosition).
