@@ -96,7 +96,7 @@
         /// </summary>
         public IReadOnlyReactiveProperty<bool> IsVisible => _visibility;
 
-        public bool IsTerminated { get; private set; }
+        public bool IsTerminated => _lifeTimeDefinition.IsTerminated;
 
         public IViewModel ViewModel { get; private set; }
 
@@ -107,7 +107,7 @@
         /// <summary>
         /// complete view lifetime immediately
         /// </summary>
-        public void Destroy() => _lifeTimeDefinition.Terminate();
+        public void Destroy() => _lifeTimeDefinition.Release();
         
         public void BindLayout(IViewLayoutProvider layoutProvider) => _viewLayout = layoutProvider;
 
@@ -337,7 +337,6 @@
         private void InitializeHandlers(IViewModel model)
         {
             ViewModel = model;
-            IsTerminated = false;
 
             _isVisible = _visibility.Value;
             
@@ -366,7 +365,7 @@
                     ViewModel.Cancel();
             });
             
-            _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Terminate);
+            _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Release);
         }
 
         private void InitialSetup()
@@ -380,7 +379,6 @@
             LifeTime.AddCleanUpAction(() => 
             {
                 _isInitialized.Value = false;
-                IsTerminated   = true;
                 ViewModel      = null;
                 SetStatus(ViewStatus.Closed);
                 _status.Release();

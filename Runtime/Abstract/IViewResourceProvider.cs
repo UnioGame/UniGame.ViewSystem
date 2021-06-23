@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
+﻿using UnityEngine.AddressableAssets;
+
+namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
     using System;
     using System.Collections.Generic;
@@ -14,6 +16,11 @@
     /// <typeparam name="TView">Base view type</typeparam>
     public interface IViewResourceProvider
     {
+        UniTask<AssetReferenceGameObject> GetViewReferenceAsync(
+            Type viewType,
+            string skinTag = "",
+            bool strongMatching = true,
+            string viewName = "");
         
         /// <summary>
         /// Load view by type and target skin tag

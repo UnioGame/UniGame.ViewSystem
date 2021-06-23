@@ -1,4 +1,5 @@
-﻿using UniModules.UniGame.Core.Runtime.Interfaces;
+﻿using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
+using UniModules.UniGame.Core.Runtime.Interfaces;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
 using UnityEngine.Scripting;
@@ -273,7 +274,7 @@ namespace UniGame.UiSystem.Runtime
             if (asset != null)
             {
                 var target = asset.gameObject;
-                UnityEngine.Object.Destroy(target);
+                target.Despawn();
             }
         }
 
