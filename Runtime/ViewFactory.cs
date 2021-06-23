@@ -1,4 +1,6 @@
 ﻿using UniModules.AddressableTools.Pooling;
+using UniModules.UniCore.Runtime.ObjectPool.Runtime;
+using UniModules.UniGame.AddressableTools.Runtime.Extensions;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -70,7 +72,11 @@ namespace UniGame.UiSystem.Runtime
         {
             if (asset.RuntimeKeyIsValid() == false) return null;
 
-            var gameObjectView = await asset.SpawnActiveAsync(lifeTime, parent, stayPosition);
+            var sourceView = await asset.LoadAssetTaskAsync(lifeTime);
+            var viewTransform = sourceView.transform;
+            var gameObjectView = sourceView.HasCustomPoolLifeTimeFor()
+                ? sourceView.SpawnActive(viewTransform.position, viewTransform.rotation, parent, stayPosition) 
+                : Object.Instantiate(sourceView, parent, stayPosition);
             //create instance of view
             var view = gameObjectView.GetComponent<IView>();
             return view;
