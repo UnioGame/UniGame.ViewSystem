@@ -271,11 +271,10 @@ namespace UniGame.UiSystem.Runtime
             //TODO move to pool
             var asset = view as Component;
 
-            if (asset != null)
-            {
-                var target = asset.gameObject;
-                target.Despawn();
-            }
+            if (asset == null) return;
+            
+            var target = asset.gameObject;
+            target.DespawnAsset();
         }
 
         #endregion

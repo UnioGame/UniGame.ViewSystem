@@ -372,18 +372,23 @@
         {
             _isInitialized.Value = true;
             _status.Value  = ViewStatus.None;
+            _internalViewStatus = ViewStatus.None;
             
             _viewModelLifeTime.AddTo(LifeTime);
             _progressLifeTime.AddTo(LifeTime);
             
-            LifeTime.AddCleanUpAction(() => 
-            {
-                _isInitialized.Value = false;
-                ViewModel      = null;
-                SetStatus(ViewStatus.Closed);
-                _status.Release();
-                _visibility.Release();
-            });
+            LifeTime.AddCleanUpAction(OnViewDestroy);
+        }
+
+        private void OnViewDestroy()
+        {
+            _viewLayout = null;
+            _isInitialized.Value = false;
+            ViewModel      = null;
+            SetStatus(ViewStatus.Closed);
+            _internalViewStatus = ViewStatus.Closed;
+            _status.Release();
+            _visibility.Release();
         }
 
         protected override void OnDisable()

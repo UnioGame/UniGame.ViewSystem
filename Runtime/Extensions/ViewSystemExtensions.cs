@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using UniGame.UiSystem.Runtime.Settings;
 using UniModules.UniCore.Runtime.DataFlow;
+using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
 using UniModules.UniGame.AddressableTools.Runtime.Extensions;
 using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
 using UniModules.UniGame.ViewSystem.Runtime.Settings;
@@ -36,13 +37,14 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
             return await settings.Warmup(gameObject.GetLifeTime());
         }
         
-        public static async UniTask<ILifeTime> Warmup(this IViewsSettings settings,ILifeTime lifeTime)
+        public static async UniTask<ILifeTime> Warmup(this IViewsSettings settings,ILifeTime lifeTime,int preloadCount = 0)
         {
             var viewHandles = settings.Views;
             foreach (var viewResource in viewHandles)
             {
                 var viewReference = viewResource.View;
                 var view = await viewReference.LoadGameObjectAssetTaskAsync(lifeTime);
+                view.AttachPoolToLifeTime(lifeTime, true, preloadCount);
             }
             return lifeTime;
         }
