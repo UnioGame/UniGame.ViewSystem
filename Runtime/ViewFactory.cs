@@ -17,13 +17,6 @@ namespace UniGame.UiSystem.Runtime
     using UniRx;
     
     using Object = UnityEngine.Object;
-
-    
-    
-    public static class ViewPoolMap
-    {
-        
-    }
     
     public class ViewFactory : IViewFactory
     {
