@@ -40,12 +40,16 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
         public static async UniTask<ILifeTime> Warmup(this IViewsSettings settings,ILifeTime lifeTime,int preloadCount = 0)
         {
             var viewHandles = settings.Views;
-            foreach (var viewResource in viewHandles)
+            
+            var views = await UniTask
+                .WhenAll(viewHandles.Select(x => x.View.LoadGameObjectAssetTaskAsync(lifeTime)))
+                .AttachExternalCancellation(lifeTime.TokenSource);
+            
+            foreach (var view in views)
             {
-                var viewReference = viewResource.View;
-                var view = await viewReference.LoadGameObjectAssetTaskAsync(lifeTime);
                 view.AttachPoolToLifeTime(lifeTime, true, preloadCount);
             }
+            
             return lifeTime;
         }
 
