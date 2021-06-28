@@ -44,6 +44,8 @@ namespace UniGame.UiSystem.Runtime.Settings
         [Space(2)]
         public SType ViewModelType;
 
+        public int PoolingPreloadCount = 1;
+        
         private string GetModelTypeName()
         {
             return $"ModelType : {ModelType?.Type?.GetFormattedName()}";

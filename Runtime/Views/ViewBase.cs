@@ -34,6 +34,10 @@
         [ReadOnlyValue]
         [SerializeField]
         private BoolRecycleReactiveProperty _isInitialized = new BoolRecycleReactiveProperty();
+
+        [ReadOnlyValue]
+        [SerializeField]
+        private ViewStatus _editorViewStatus = ViewStatus.None;
         
         #endregion
 
@@ -147,6 +151,9 @@
         /// <summary>
         /// show active view
         /// </summary>
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.Button]
+#endif
         public void Show()
         {
             if(!SetInternalStatus(ViewStatus.Shown))
@@ -158,6 +165,9 @@
         /// <summary>
         /// hide view without release it
         /// </summary>
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.Button]
+#endif
         public void Hide()
         {
             if(!SetInternalStatus(ViewStatus.Hidden))
@@ -169,6 +179,9 @@
         /// <summary>
         /// end of view lifetime
         /// </summary>
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.Button]
+#endif
         public void Close()
         {
             if(!SetInternalStatus(ViewStatus.Closed))
@@ -366,6 +379,11 @@
             });
             
             _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Release);
+
+
+#if UNITY_EDITOR
+            _status.Subscribe(x => this._editorViewStatus = x).AddTo(LifeTime);
+#endif
         }
 
         private void InitialSetup()

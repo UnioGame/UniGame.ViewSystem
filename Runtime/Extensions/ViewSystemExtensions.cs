@@ -42,15 +42,18 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
             var viewHandles = settings.Views;
             
             var views = await UniTask
-                .WhenAll(viewHandles.Select(x => x.View.LoadGameObjectAssetTaskAsync(lifeTime)))
+                .WhenAll(viewHandles.Select(x => WarmUpUiReference(x,lifeTime,preloadCount)))
                 .AttachExternalCancellation(lifeTime.TokenSource);
             
-            foreach (var view in views)
-            {
-                view.AttachPoolToLifeTime(lifeTime, true, preloadCount);
-            }
-            
             return lifeTime;
+        }
+
+        public static async UniTask<GameObject> WarmUpUiReference(UiViewReference reference, ILifeTime lifeTime,int preloadCount = 0)
+        {
+            var count = preloadCount <= 0 ? reference.PoolingPreloadCount : preloadCount;
+            var view = reference.View;
+            var asset = await view.CreatePool(lifeTime,count);
+            return asset;
         }
 
         private static async UniTask<ILifeTime> WarmupInternal(this AssetReferenceViewSettings settingsReference,object lifeTimeObject)
