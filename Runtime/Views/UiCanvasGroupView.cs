@@ -17,13 +17,15 @@ namespace UniGame.UiSystem.Runtime
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Required]
 #endif
-        [SerializeField] protected CanvasGroup canvasGroup;
+        [SerializeField] public CanvasGroup canvasGroup;
+
+        [SerializeField] public bool showByDefault = false;
         
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.FoldoutGroup(nameof(canvasGroup),false)]  
 #endif
         [SerializeField]
-        private CanvasGroupState hiddenState = new CanvasGroupState() {
+        public CanvasGroupState hiddenState = new CanvasGroupState() {
             Alpha = 0,
             BlockRaycasts = false,
             Interactable  = false
@@ -33,7 +35,7 @@ namespace UniGame.UiSystem.Runtime
         [Sirenix.OdinInspector.FoldoutGroup(nameof(canvasGroup),false)]  
 #endif 
         [SerializeField]
-        private CanvasGroupState visibleState = new CanvasGroupState() {
+        public CanvasGroupState visibleState = new CanvasGroupState() {
             Alpha = 1,
             BlockRaycasts = true,
             Interactable  = true
@@ -66,11 +68,12 @@ namespace UniGame.UiSystem.Runtime
         protected override void Awake()
         {
             base.Awake();
+            
             canvasGroup = canvasGroup == null ? 
                 GetComponent<CanvasGroup>() : 
                 canvasGroup;
             
-            canvasGroup.SetState(hiddenState);
+            canvasGroup.SetState(showByDefault ? visibleState : hiddenState);
         }
         
 #if UNITY_EDITOR
