@@ -1,4 +1,5 @@
-﻿using UniModules.UniGame.Core.Runtime.Interfaces;
+﻿using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
+using UniModules.UniGame.Core.Runtime.Interfaces;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
 using UnityEngine.Scripting;
@@ -254,6 +255,7 @@ namespace UniGame.UiSystem.Runtime
 
             //destroy view when lifetime terminated
             var viewLifeTime = view.LifeTime;
+            
             viewLifeTime.AddCleanUpAction(() => Destroy(view));
 
             //fire view data
@@ -269,11 +271,10 @@ namespace UniGame.UiSystem.Runtime
             //TODO move to pool
             var asset = view as Component;
 
-            if (asset != null)
-            {
-                var target = asset.gameObject;
-                UnityEngine.Object.Destroy(target);
-            }
+            if (asset == null) return;
+            
+            var target = asset.gameObject;
+            target.DespawnAsset();
         }
 
         #endregion

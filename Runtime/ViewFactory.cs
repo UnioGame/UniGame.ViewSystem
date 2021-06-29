@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿using UniModules.AddressableTools.Pooling;
+using UniModules.UniCore.Runtime.ObjectPool.Runtime;
+using UniModules.UniGame.AddressableTools.Runtime.Extensions;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace UniGame.UiSystem.Runtime
 {
@@ -13,7 +17,7 @@ namespace UniGame.UiSystem.Runtime
     using UniRx;
     
     using Object = UnityEngine.Object;
-
+    
     public class ViewFactory : IViewFactory
     {
         private readonly AsyncLazy _readyStatus;
@@ -37,9 +41,10 @@ namespace UniGame.UiSystem.Runtime
             await _readyStatus;
 
             var viewLifeTime = LifeTime.Create();
-            var result       = await resourceProvider.LoadViewAsync<Component>(viewType,viewLifeTime,skinTag, viewName:viewName);
+            //load view source by filter parameters
+            var result       = await resourceProvider.GetViewReferenceAsync(viewType,skinTag, viewName:viewName);
             //create view instance
-            var view = Create(result, parent,stayWorldPosition);
+            var view = await Create(result,viewLifeTime, parent,stayWorldPosition);
             
             //if loading failed release resource immediately
             if (view == null) {
@@ -56,13 +61,17 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// create view instance
         /// </summary>
-        protected virtual IView Create(Component asset, Transform parent = null, bool stayPosition = false)
+        protected virtual async UniTask<IView> Create(AssetReferenceGameObject asset,LifeTime lifeTime, Transform parent = null, bool stayPosition = false)
         {
-            if (asset == null) return null;
+            if (asset.RuntimeKeyIsValid() == false) return null;
+
+            var sourceView = await asset.LoadAssetTaskAsync(lifeTime);
+            var viewTransform = sourceView.transform;
+            var gameObjectView = sourceView.HasCustomPoolLifeTimeFor()
+                ? sourceView.SpawnActive(viewTransform.position, viewTransform.rotation, parent, stayPosition) 
+                : Object.Instantiate(sourceView, parent, stayPosition);
             //create instance of view
-            var view = Object.
-                Instantiate(asset.gameObject, parent,stayPosition).
-                GetComponent<IView>();
+            var view = gameObjectView.GetComponent<IView>();
             return view;
         }
     }

@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using UniGame.UiSystem.Runtime.Settings;
 using UniModules.UniCore.Runtime.DataFlow;
+using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
 using UniModules.UniGame.AddressableTools.Runtime.Extensions;
 using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
 using UniModules.UniGame.ViewSystem.Runtime.Settings;
@@ -36,15 +37,23 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
             return await settings.Warmup(gameObject.GetLifeTime());
         }
         
-        public static async UniTask<ILifeTime> Warmup(this IViewsSettings settings,ILifeTime lifeTime)
+        public static async UniTask<ILifeTime> Warmup(this IViewsSettings settings,ILifeTime lifeTime,int preloadCount = 0)
         {
             var viewHandles = settings.Views;
-            foreach (var viewResource in viewHandles)
-            {
-                var viewReference = viewResource.View;
-                var view = await viewReference.LoadGameObjectAssetTaskAsync(lifeTime);
-            }
+            
+            var views = await UniTask
+                .WhenAll(viewHandles.Select(x => WarmUpUiReference(x,lifeTime,preloadCount)))
+                .AttachExternalCancellation(lifeTime.TokenSource);
+            
             return lifeTime;
+        }
+
+        public static async UniTask<GameObject> WarmUpUiReference(UiViewReference reference, ILifeTime lifeTime,int preloadCount = 0)
+        {
+            var count = preloadCount >= reference.PoolingPreloadCount ? preloadCount : reference.PoolingPreloadCount;
+            var view  = reference.View;
+            var asset = await view.CreatePool(lifeTime,count);
+            return asset;
         }
 
         private static async UniTask<ILifeTime> WarmupInternal(this AssetReferenceViewSettings settingsReference,object lifeTimeObject)

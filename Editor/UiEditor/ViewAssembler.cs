@@ -1,4 +1,8 @@
-﻿using UniModules.UniGame.ViewSystem.Editor.UiEditor;
+﻿using UniModules.UniCore.Runtime.DataFlow;
+using UniModules.UniCore.Runtime.Rx.Extensions;
+using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+using UniModules.UniGame.ViewSystem.Editor.UiEditor;
+using UniRx;
 
 namespace UniGame.UiSystem.UI.Editor.UiEdito
 {
@@ -8,7 +12,23 @@ namespace UniGame.UiSystem.UI.Editor.UiEdito
     public static class ViewAssembler 
     {
         private static ViewsAssemblyBuilder settingsBuilder = new ViewsAssemblyBuilder();
-
+        private static LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
+        
+        public static ILifeTime LifeTime => (_lifeTime ??= new LifeTimeDefinition());
+        
+        [InitializeOnLoadMethod]
+        public static void Initialize()
+        {
+            _lifeTime ??= new LifeTimeDefinition();
+            _lifeTime?.Release();
+            
+            MessageBroker.Default
+                .Receive<SettingsRebuildMessage>()
+                .Where(x => x.ViewsSettings!=null)
+                .Subscribe(x => x.ViewsSettings.Build())
+                .AddTo(LifeTime);
+        }
+        
         [MenuItem(itemName:"UniGame/View System/Rebuild View Settings")]
         public static void RefreshUiSettings()
         {

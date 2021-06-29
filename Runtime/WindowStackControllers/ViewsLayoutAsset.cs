@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UniModules.UniGame.Core.Runtime.Attributes;
+using UnityEngine;
 
 namespace UniGame.UiSystem.Runtime.WindowStackControllers
 {
@@ -21,6 +22,10 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         private BackgroundFactory _backgroundFactory;
 
         [SerializeReference]
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.Required]
+#endif
+        [AssetFilter(typeof(ViewLayoutFactoryAbstract))]
         private ViewLayoutFactoryAbstract _layoutBehaviourFactory;
 
         #endregion

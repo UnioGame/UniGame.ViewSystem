@@ -85,7 +85,7 @@ namespace UniGame.UiSystem.Runtime
         public void Dispose() => gameViewSystem?.Dispose();
         
         #endregion
-
+        
         private void OnDestroy() => Dispose();
 
         private IGameViewSystem Create()

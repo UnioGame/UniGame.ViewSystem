@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using UniModules.UniGame.AddressableExtensions.Editor;
+using UniRx;
 #endif
 using UniModules.UniGame.Core.Runtime.ScriptableObjects;
 
@@ -65,6 +66,15 @@ namespace UniGame.UiSystem.Runtime.Settings
         {
             return this.GetAllAddressablesLabels();
         }
+
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.Button]
+#endif
+        private void Rebuild()
+        {
+                MessageBroker.Default.Publish(new SettingsRebuildMessage() {ViewsSettings = this});
+        }
+        
 #endif
     }
 }

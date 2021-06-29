@@ -34,6 +34,10 @@
         [ReadOnlyValue]
         [SerializeField]
         private BoolRecycleReactiveProperty _isInitialized = new BoolRecycleReactiveProperty();
+
+        [ReadOnlyValue]
+        [SerializeField]
+        private ViewStatus _editorViewStatus = ViewStatus.None;
         
         #endregion
 
@@ -96,7 +100,7 @@
         /// </summary>
         public IReadOnlyReactiveProperty<bool> IsVisible => _visibility;
 
-        public bool IsTerminated { get; private set; }
+        public bool IsTerminated => _lifeTimeDefinition.IsTerminated;
 
         public IViewModel ViewModel { get; private set; }
 
@@ -107,7 +111,7 @@
         /// <summary>
         /// complete view lifetime immediately
         /// </summary>
-        public void Destroy() => _lifeTimeDefinition.Terminate();
+        public void Destroy() => _lifeTimeDefinition.Release();
         
         public void BindLayout(IViewLayoutProvider layoutProvider) => _viewLayout = layoutProvider;
 
@@ -147,6 +151,9 @@
         /// <summary>
         /// show active view
         /// </summary>
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.Button]
+#endif
         public void Show()
         {
             if(!SetInternalStatus(ViewStatus.Shown))
@@ -158,6 +165,9 @@
         /// <summary>
         /// hide view without release it
         /// </summary>
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.Button]
+#endif
         public void Hide()
         {
             if(!SetInternalStatus(ViewStatus.Hidden))
@@ -169,6 +179,9 @@
         /// <summary>
         /// end of view lifetime
         /// </summary>
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.Button]
+#endif
         public void Close()
         {
             if(!SetInternalStatus(ViewStatus.Closed))
@@ -337,7 +350,6 @@
         private void InitializeHandlers(IViewModel model)
         {
             ViewModel = model;
-            IsTerminated = false;
 
             _isVisible = _visibility.Value;
             
@@ -366,26 +378,35 @@
                     ViewModel.Cancel();
             });
             
-            _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Terminate);
+            _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Release);
+
+
+#if UNITY_EDITOR
+            _status.Subscribe(x => this._editorViewStatus = x).AddTo(LifeTime);
+#endif
         }
 
         private void InitialSetup()
         {
             _isInitialized.Value = true;
             _status.Value  = ViewStatus.None;
+            _internalViewStatus = ViewStatus.None;
             
             _viewModelLifeTime.AddTo(LifeTime);
             _progressLifeTime.AddTo(LifeTime);
             
-            LifeTime.AddCleanUpAction(() => 
-            {
-                _isInitialized.Value = false;
-                IsTerminated   = true;
-                ViewModel      = null;
-                SetStatus(ViewStatus.Closed);
-                _status.Release();
-                _visibility.Release();
-            });
+            LifeTime.AddCleanUpAction(OnViewDestroy);
+        }
+
+        private void OnViewDestroy()
+        {
+            _viewLayout = null;
+            _isInitialized.Value = false;
+            ViewModel      = null;
+            SetStatus(ViewStatus.Closed);
+            _internalViewStatus = ViewStatus.Closed;
+            _status.Release();
+            _visibility.Release();
         }
 
         protected override void OnDisable()

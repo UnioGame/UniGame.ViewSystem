@@ -1,6 +1,7 @@
 ﻿using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
 using UniModules.UniGame.ViewSystem.Runtime.Extensions;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace UniGame.UiSystem.Runtime
 {
@@ -25,6 +26,20 @@ namespace UniGame.UiSystem.Runtime
         {
             _viewModelTypeMap.RegisterViewReference(sourceViews);
         }
+
+        public async UniTask<AssetReferenceGameObject> GetViewReferenceAsync(
+            Type viewType, 
+            string skinTag = "", 
+            bool strongMatching = true, 
+            string viewName = "")
+        {
+            var item = _viewModelTypeMap.FindView(viewType, skinTag, viewName, strongMatching);
+
+            if (item != null) return item.View;
+            
+            Debug.LogError($"{nameof(UiResourceProvider)} ITEM MISSING skin:{skinTag} type {viewType.Name}");
+            return null;
+        }
         
         public async UniTask<TView> LoadViewAsync<TView>(
             Type viewType, 
@@ -33,15 +48,8 @@ namespace UniGame.UiSystem.Runtime
             bool strongMatching = true, 
             string viewName = "") where TView : UnityEngine.Object
         {
-            var item = _viewModelTypeMap.FindView(viewType, skinTag, viewName, strongMatching);
-
-            if (item == null)
-            {
-                Debug.LogError($"{nameof(UiResourceProvider)} ITEM MISSING skin:{skinTag} type {viewType.Name}");
-                return null;
-            }
-
-            return await item.View.LoadAssetTaskAsync<TView>(lifeTime);
+            var item = await GetViewReferenceAsync(viewType, skinTag, strongMatching, viewName);
+            return await item.LoadAssetTaskAsync<TView>(lifeTime);
         }
 
         public List<UniTask<TView>> LoadViewsAsync<TView>(
