@@ -50,8 +50,8 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
 
         public static async UniTask<GameObject> WarmUpUiReference(UiViewReference reference, ILifeTime lifeTime,int preloadCount = 0)
         {
-            var count = preloadCount <= 0 ? reference.PoolingPreloadCount : preloadCount;
-            var view = reference.View;
+            var count = preloadCount >= reference.PoolingPreloadCount ? preloadCount : reference.PoolingPreloadCount;
+            var view  = reference.View;
             var asset = await view.CreatePool(lifeTime,count);
             return asset;
         }
