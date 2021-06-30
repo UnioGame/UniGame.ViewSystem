@@ -35,6 +35,12 @@ namespace UniGame.UiSystem.UI.Editor.UiEdito
             settingsBuilder.RebuildAll();
         }
         
+        [MenuItem(itemName:"UniGame/View System/Update Skin Tags")]
+        public static void RefreshSkinTags()
+        {
+            settingsBuilder.UpdateSkins();
+        }
+        
         public static void Build(this ViewsSettings settings)
         {
             if (settings == null)
