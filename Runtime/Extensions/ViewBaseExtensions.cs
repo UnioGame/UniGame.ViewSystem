@@ -2,6 +2,7 @@
 {
     using System;
     using Abstract;
+    using Core.Runtime.DataFlow.Interfaces;
     using Cysharp.Threading.Tasks;
     using global::UniGame.UiSystem.Runtime;
     using UniRx;
@@ -19,7 +20,12 @@
         /// <param name="viewName"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static async UniTask<T> CreateViewAsync<T>(this ViewBase source, IViewModel viewModel, string skinTag = null, Transform parent = null, string viewName = null) 
+        public static async UniTask<T> CreateViewAsync<T>(
+            this ViewBase source, 
+            IViewModel viewModel, 
+            string skinTag = null, 
+            Transform parent = null, 
+            string viewName = null) 
             where T : class, IView
         {
             return await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName) as T;
@@ -81,6 +87,30 @@
             return source.Layout.Get<T>();
         }
 
+        public static T DestroyWith<T>(this T view, ILifeTime lifeTime) where T : IView
+        {
+            lifeTime.AddCleanUpAction(view.Destroy);
+            return view;
+        }
+        
+        public static T CloseWith<T>(this T view, ILifeTime lifeTime) where T : IView
+        {
+            lifeTime.AddCleanUpAction(view.Close);
+            return view;
+        }
+        
+        public static T HideWith<T>(this T view, ILifeTime lifeTime) where T : IView
+        {
+            lifeTime.AddCleanUpAction(view.Hide);
+            return view;
+        }
+        
+        public static T ShowWith<T>(this T view, ILifeTime lifeTime) where T : IView
+        {
+            lifeTime.AddCleanUpAction(view.Show);
+            return view;
+        }
+        
         /// <summary>
         /// Add new child view to active view item.
         /// </summary>

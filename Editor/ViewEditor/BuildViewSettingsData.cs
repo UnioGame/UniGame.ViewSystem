@@ -52,10 +52,10 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
 
         public UiViewReference CreateViewReference(IView view, bool defaultView,bool overrideAddressables, string groupName)
         {
-            var assetView = view as MonoBehaviour;
+            var assetView  = view as MonoBehaviour;
             var gameObject = assetView.gameObject;
-            var assetPath = AssetDatabase.GetAssetPath(gameObject);
-            var tag = defaultView ? string.Empty : Path.GetFileName(Path.GetDirectoryName(assetPath));
+            var assetPath  = AssetDatabase.GetAssetPath(gameObject);
+            var tag        = GetSkinTag(view, defaultView);
 
             if (overrideAddressables || !gameObject.IsInAnyAddressableAssetGroup())
             {
@@ -94,6 +94,22 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
 
         public void Reset() => proceedViews.Clear();
 
+        public string GetSkinTag(IView view, bool defaultView)
+        {
+            if (!(view is MonoBehaviour assetView))
+                return string.Empty;
+
+            var gameObject = assetView.gameObject;
+
+            var skinOverride = gameObject.GetComponent<IViewSkinTag>();
+
+            if (defaultView) return skinOverride == null 
+                ? string.Empty : skinOverride.SkinTag;
+            
+            var assetPath  = AssetDatabase.GetAssetPath(gameObject);
+            return Path.GetFileName(Path.GetDirectoryName(assetPath));
+        }
+        
         private List<TView> LoadUiViews<TView>(IReadOnlyList<string> paths)
             where TView : class, IView
         {
