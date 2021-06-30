@@ -19,7 +19,12 @@
         /// <param name="viewName"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static async UniTask<T> CreateViewAsync<T>(this ViewBase source, IViewModel viewModel, string skinTag = null, Transform parent = null, string viewName = null) 
+        public static async UniTask<T> CreateViewAsync<T>(
+            this ViewBase source, 
+            IViewModel viewModel, 
+            string skinTag = null, 
+            Transform parent = null, 
+            string viewName = null) 
             where T : class, IView
         {
             return await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName) as T;

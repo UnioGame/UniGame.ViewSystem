@@ -6,6 +6,7 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
 {
     using System;
     using System.Collections.Generic;
+    using global::UniGame.ViewSystem.Editor.EditorAssets;
     using UniModules.UniGame.Core.EditorTools.Editor.AssetOperations;
     using Runtime.ContextFlow;
     using UnityEditor.AddressableAssets;
@@ -24,6 +25,7 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
             {
                 Reset,
                 RebuildViewSettings,
+                UpdateSkins
             };
 
             rebuildSettingsCommands = new List<IViewAssemblerCommand>()
@@ -63,6 +65,11 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
             ApplyViewSettingsPipeline(settings);
             
             settings.MarkDirty();
+        }
+
+        public void UpdateSkins()
+        {
+            ViewSystemEditorAsset.Asset.Validate();
         }
 
         private HashSet<ViewsSettings> GetSettings(ViewsSettings viewsSettings, HashSet<ViewsSettings> settings)

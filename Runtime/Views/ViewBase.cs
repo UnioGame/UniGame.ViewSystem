@@ -38,6 +38,10 @@
         [ReadOnlyValue]
         [SerializeField]
         private ViewStatus _editorViewStatus = ViewStatus.None;
+
+        [HideInInspector]
+        [SerializeField]
+        public string skinTag = string.Empty;
         
         #endregion
 
