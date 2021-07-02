@@ -30,6 +30,23 @@
         {
             return await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName) as T;
         }
+        
+        /// <summary>
+        /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
+        /// </summary>
+        public static async UniTask<T> CreateHiddenAsync<T>(
+            this ViewBase source, 
+            IViewModel viewModel, 
+            string skinTag = null, 
+            Transform parent = null, 
+            string viewName = null) 
+            where T : class, IView
+        {
+            var view = await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName) as T;
+            view.Hide();
+            return view;
+        }
+
 
         /// <summary>
         /// Create a new view and open it as window (see <see cref="IViewLayoutProvider.OpenWindow"/>).
