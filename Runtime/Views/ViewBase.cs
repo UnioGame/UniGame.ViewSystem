@@ -79,6 +79,8 @@
         /// </summary>
         public ILifeTime LifeTime => _lifeTimeDefinition;
 
+        public ILifeTime ModelLifeTime => _viewModelLifeTime;
+        
         /// <summary>
         /// view transform
         /// </summary>
