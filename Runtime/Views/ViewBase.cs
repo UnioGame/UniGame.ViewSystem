@@ -236,10 +236,15 @@
         /// <returns></returns>
         private IEnumerator OnClose()
         {
-            //wait until user defined closing operation complete
-            yield return OnCloseProgress(_progressLifeTime);
-
-            _lifeTimeDefinition.Release();
+            try
+            {
+                //wait until user defined closing operation complete
+                yield return OnCloseProgress(_progressLifeTime);
+            }
+            finally
+            {
+                _lifeTimeDefinition.Release();
+            }
         }
         
         /// <summary>
