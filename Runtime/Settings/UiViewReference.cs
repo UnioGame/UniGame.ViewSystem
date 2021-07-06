@@ -13,6 +13,9 @@ namespace UniGame.UiSystem.Runtime.Settings
 
     [Serializable]
     public class UiViewReference
+#if ODIN_INSPECTOR
+        : Sirenix.OdinInspector.ISearchFilterable
+#endif
     {
         public string AssetGUID = string.Empty;
 
@@ -90,5 +93,33 @@ namespace UniGame.UiSystem.Runtime.Settings
         }
         
 #endif
+        public bool IsMatch(string searchString)
+        {
+            var isMatch = AssetGUID.IndexOf(searchString, StringComparison.InvariantCultureIgnoreCase) >= 0;
+
+#if UNITY_EDITOR
+            var gameObject = View.editorAsset;
+            if (gameObject)
+            {
+                var gameObjectName = gameObject.name;
+                isMatch |= gameObjectName.IndexOf(searchString, StringComparison.InvariantCultureIgnoreCase) >= 0;
+            }
+            
+#endif
+            isMatch |= ViewName.IndexOf(searchString, StringComparison.InvariantCultureIgnoreCase) >= 0;
+            isMatch |= Tag.IndexOf(searchString, StringComparison.InvariantCultureIgnoreCase) >= 0;
+            isMatch |= Type.TypeName?.IndexOf(searchString, StringComparison.InvariantCultureIgnoreCase) >= 0;
+            isMatch |= ModelType.TypeName?.IndexOf(searchString, StringComparison.InvariantCultureIgnoreCase) >= 0;
+            isMatch |= ViewModelType.TypeName?.IndexOf(searchString, StringComparison.InvariantCultureIgnoreCase) >= 0;
+
+            return isMatch;
+        }
     }
+    
+#if !ODIN_INSPECTOR
+    public interface ISearchFilterable
+    {
+        
+    }
+#endif
 }
