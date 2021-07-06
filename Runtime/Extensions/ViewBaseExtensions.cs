@@ -30,7 +30,7 @@
         {
             return await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName) as T;
         }
-        
+
         /// <summary>
         /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
         /// </summary>
@@ -46,7 +46,29 @@
             view.Hide();
             return view;
         }
+        
 
+        /// <summary>
+        /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="viewModel"></param>
+        /// <param name="skinTag"></param>
+        /// <param name="parent"></param>
+        /// <param name="viewName"></param>
+        /// <typeparam name="T"></typeparam>
+        public static async UniTask<T> CreateNestedViewAsync<T>(
+            this ViewBase source, 
+            IViewModel viewModel, 
+            string skinTag = null, 
+            Transform parent = null, 
+            string viewName = null) 
+            where T : class, IView
+        {
+            var view = await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName) as T;
+            view.CloseWith(source.mo);
+            return view;
+        }
 
         /// <summary>
         /// Create a new view and open it as window (see <see cref="IViewLayoutProvider.OpenWindow"/>).
