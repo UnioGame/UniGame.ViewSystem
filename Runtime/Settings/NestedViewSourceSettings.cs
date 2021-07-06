@@ -10,6 +10,9 @@ namespace UniGame.UiSystem.Runtime.Settings
     {
         public bool awaitLoading = false;
 
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.DrawWithUnity]
+#endif
         public AssetReferenceViewSource viewSourceReference;
     }
 }

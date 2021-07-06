@@ -24,7 +24,7 @@ namespace UniGame.UiSystem.Runtime.Settings
         #region inspector
 
 #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.Searchable]        
+        [Sirenix.OdinInspector.Searchable]
 #endif
         [SerializeField] 
         public List<NestedViewSourceSettings> sources = new List<NestedViewSourceSettings>();
