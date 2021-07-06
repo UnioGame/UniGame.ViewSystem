@@ -19,6 +19,9 @@ namespace UniGame.UiSystem.Runtime
         
         public IReadOnlyReactiveProperty<bool> IsActive => _isActive;
 
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.Button]
+#endif
         public void Dispose() =>  _lifeTimeDefinition.Terminate();
     }
 }

@@ -354,6 +354,7 @@
                 return;
             
             lifeTime.Release();
+            
             //run animation immediately
             action().Execute(RoutineType.Update,true).AddTo(lifeTime);
         }

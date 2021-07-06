@@ -46,27 +46,94 @@
             view.Hide();
             return view;
         }
-        
+
 
         /// <summary>
         /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="viewModel"></param>
-        /// <param name="skinTag"></param>
-        /// <param name="parent"></param>
-        /// <param name="viewName"></param>
-        /// <typeparam name="T"></typeparam>
         public static async UniTask<T> CreateNestedViewAsync<T>(
+            this ViewBase source,
+            IViewModel viewModel,
+            string skinTag = null,
+            Transform parent = null,
+            string viewName = null,
+            bool stayWorld = false) 
+            where T : class, IView
+        {
+            return await CreateNestedViewAsync<T>(source, source.LifeTime, viewModel, skinTag, parent, viewName);
+        }
+        
+        /// <summary>
+        /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
+        /// </summary>
+        public static async UniTask<T> CreateNestedViewForModelAsync<T>(
             this ViewBase source, 
             IViewModel viewModel, 
-            string skinTag = null, 
+            string skinTag, 
             Transform parent = null, 
             string viewName = null) 
             where T : class, IView
         {
-            var view = await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName) as T;
-            view.CloseWith(source.mo);
+            return await CreateNestedViewAsync<T>(source, source.ModelLifeTime, viewModel, skinTag, parent, viewName);
+        }
+
+        /// <summary>
+        /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
+        /// </summary>
+        public static async UniTask<T> CreateNestedViewForModelAsync<T>(
+            this ViewBase source,
+            IViewModel viewModel,
+            Transform parent = null,
+            bool stayWorld = false)
+            where T : class, IView
+        {
+            return await CreateNestedViewAsync<T>(source, source.ModelLifeTime, viewModel, parent, stayWorld);
+        }
+        
+        /// <summary>
+        /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
+        /// </summary>
+        public static async UniTask<T> CreateNestedViewAsync<T>(
+            this ViewBase source,
+            IViewModel viewModel,
+            Transform parent = null,
+            bool stayWorld = false)
+            where T : class, IView
+        {
+            return await CreateNestedViewAsync<T>(source, source.LifeTime, viewModel, parent, stayWorld);
+        }
+
+        /// <summary>
+        /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
+        /// </summary>
+        public static async UniTask<T> CreateNestedViewAsync<T>(
+            this ViewBase source, 
+            ILifeTime lifeTime,
+            IViewModel viewModel, 
+            Transform parent = null,
+            bool stayWorld = false,
+            string skinTag = null,
+            string viewName = null) 
+            where T : class, IView
+        {
+            return await CreateNestedViewAsync<T>(source, lifeTime, viewModel, skinTag, parent, viewName, stayWorld);
+        }
+        
+        /// <summary>
+        /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
+        /// </summary>
+        public static async UniTask<T> CreateNestedViewAsync<T>(
+            this ViewBase source, 
+            ILifeTime lifeTime,
+            IViewModel viewModel, 
+            string skinTag = null, 
+            Transform parent = null, 
+            string viewName = null,
+            bool stayWorld = false) 
+            where T : class, IView
+        {
+            var view = await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName,stayWorld) as T;
+            view.CloseWith(lifeTime);
             return view;
         }
 
