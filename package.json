@@ -4,7 +4,7 @@
   "displayName": "UniGame Views System",
   "description": "MVVM Views system for Unity",
   "unity": "2019.2",
-  "version": "2021.2.20",
+  "version": "2021.3.0",
   "license": "MIT",
   "homepage": "https://github.com/UniGameTeam/UniGame.ViewSystem#readme",
   "keywords": [
@@ -15,10 +15,10 @@
   ],
   "dependencies": {
     "com.unity.localization": "0.10.0-preview",
-    "com.unigame.localization": "2021.2.19",
+    "com.unigame.localization": "2021.2.20",
     "com.unity.addressables": "1.17.17",
     "com.unity.textmeshpro": "2.1.6",
-    "com.unigame.coremodules": "2021.4.6"
+    "com.unigame.coremodules": "2021.4.7"
   },
   "repository": {
     "type": "git",
