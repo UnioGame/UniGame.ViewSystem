@@ -19,6 +19,9 @@ namespace UniGame.UiSystem.Runtime.Settings
     {
         public string AssetGUID = string.Empty;
 
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.DrawWithUnity]
+#endif
         [Space(2)] public AssetReferenceGameObject View;
 
         [Space(2)] public string ViewName;
