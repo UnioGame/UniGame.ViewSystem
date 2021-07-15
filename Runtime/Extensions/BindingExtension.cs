@@ -58,7 +58,15 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
         }
         
         #endregion
-        
+
+
+        public static async UniTask<TView> Bind<TView,TModel>(this TView view,TModel model, IView target) 
+            where TView : class, IView
+            where TModel : IViewModel
+        {
+            await target.Initialize(model);
+            return view;
+        }
         
         public static IDisposable Bind<T>(
             this IObservable<T> source, 
@@ -98,19 +106,26 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             IObservable<T> source, 
             Action<T> target, 
             int frameThrottle = 1)
-            where TSource : ILifeTimeContext
+            where TSource : IView
         {
-            source.Bind(target,frameThrottle).
-                AddTo(view.LifeTime);
+            source.Bind(target,frameThrottle).AddTo(view.ModelLifeTime);
             return view;
         }
         
+        public static IViewModel Bind<T>(
+            this IViewModel model,
+            IObservable<T> source, 
+            Action<T> target, 
+            int frameThrottle = 1)
+        {
+            source.Bind(target,frameThrottle).AddTo(model.LifeTime);
+            return model;
+        }
 
         public static TSource Bind<TSource, T>(this TSource view, IObservable<T> source, ILifeTime lifeTime, Action<T> target, int frameThrottle = 1) 
             where TSource : ILifeTimeContext
         {
             source.Bind(target, frameThrottle).AddTo(lifeTime);
-            
             return view;
         }
 

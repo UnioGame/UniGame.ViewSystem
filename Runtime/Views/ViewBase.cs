@@ -18,9 +18,10 @@
     using UniModules.UniRoutine.Runtime.Extension;
     using UnityEngine;
     using UnityEngine.EventSystems;
-
-    public abstract class ViewBase : UIBehaviour, 
-        IView, ILayoutFactoryView
+    
+    public abstract class ViewBase : 
+        UIBehaviour, 
+        ILayoutView
     {
         private const string NullViewName = "Null";
         
@@ -118,10 +119,20 @@
         /// complete view lifetime immediately
         /// </summary>
         public void Destroy() => _lifeTimeDefinition.Release();
-        
-        public void BindLayout(IViewLayoutProvider layoutProvider) => _viewLayout = layoutProvider;
 
-        public async UniTask Initialize(IViewModel model, IViewLayoutProvider layoutProvider)
+        public void BindLayout(IViewLayoutProvider layoutProvider)
+        {
+            _viewLayout = layoutProvider;
+        }
+
+        public IView BindNested(ILayoutView view, IViewModel model)
+        {
+            view?.BindLayout(_viewLayout);
+            view?.Initialize(model);
+            return this;
+        }
+
+        public async UniTask<IView> Initialize(IViewModel model, IViewLayoutProvider layoutProvider)
         {
             _isInitialized.Value = false;
             
@@ -129,9 +140,11 @@
             await Initialize(model);
 
             _isInitialized.Value = true;
+
+            return this;
         }
 
-        public async UniTask Initialize(IViewModel model, bool isViewOwner = false)
+        public async UniTask<IView> Initialize(IViewModel model, bool isViewOwner = false)
         {
             // save current state
             _isViewOwner = isViewOwner;
@@ -152,6 +165,8 @@
 
             //custom initialization
             await OnInitialize(model);
+
+            return this;
         }
 
         /// <summary>

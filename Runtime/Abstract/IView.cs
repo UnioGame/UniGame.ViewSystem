@@ -1,4 +1,5 @@
 ﻿using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+using UnityEngine;
 
 namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
@@ -6,6 +7,7 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
     using Core.Runtime.Interfaces;
     using Cysharp.Threading.Tasks;
     using UniRx;
+
 
     public interface IView : 
         ILifeTimeContext, 
@@ -27,6 +29,7 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
         /// </summary>
         bool IsTerminated { get; }
 
-        UniTask Initialize(IViewModel vm, bool isViewOwner = false);
+        UniTask<IView> Initialize(IViewModel vm, bool isViewOwner = false);
+
     }
 }
