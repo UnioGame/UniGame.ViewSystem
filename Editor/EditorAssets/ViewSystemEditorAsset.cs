@@ -37,16 +37,12 @@ namespace UniGame.ViewSystem.Editor.EditorAssets
             
             viewSkins.Clear();
             
-            foreach (var setting in viewSettings)
+            foreach (var skin in viewSettings
+                .SelectMany(x => x.Views)
+                .Select(x => x.Tag)
+                .Distinct())
             {
-                var skinsData = setting.Views
-                    .Select(x => x.Tag)
-                    .Distinct();
-                
-                foreach (var item in skinsData)
-                {
-                    AddSkin(item);
-                }
+                AddSkin(skin);
             }
         }
     }

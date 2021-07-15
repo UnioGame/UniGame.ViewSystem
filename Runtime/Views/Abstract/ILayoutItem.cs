@@ -2,7 +2,7 @@
 {
     using UniModules.UniGame.UISystem.Runtime.Abstract;
 
-    public interface ILayoutFactoryView
+    public interface ILayoutItem
     {
         void BindLayout(IViewLayoutProvider layouts);
     }

@@ -63,11 +63,10 @@
             return _viewStatusProperty.Where(x => x == status).Select(x => this);
         }
 
-        public UniTask Initialize(IViewModel vm, bool isViewOwner = false)
+        public UniTask<IView> Initialize(IViewModel vm, bool isViewOwner = false)
         {
             // do nothing
-            
-            return UniTask.CompletedTask;
+            return UniTask.FromResult<IView>(this);
         }
     }
 }

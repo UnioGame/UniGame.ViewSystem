@@ -93,6 +93,22 @@
         /// <summary>
         /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
         /// </summary>
+        public static async UniTask<T> ShowNestedViewAsync<T>(
+            this ViewBase source,
+            IViewModel viewModel,
+            Transform parent = null,
+            bool stayWorld = false)
+            where T : class, IView
+        {
+            var view = await CreateNestedViewAsync<T>(source, source.ModelLifeTime, viewModel, parent, stayWorld);
+            view.Show();
+            return view;
+        }
+        
+        
+        /// <summary>
+        /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
+        /// </summary>
         public static async UniTask<T> CreateNestedViewAsync<T>(
             this ViewBase source,
             IViewModel viewModel,
@@ -117,6 +133,39 @@
             where T : class, IView
         {
             return await CreateNestedViewAsync<T>(source, lifeTime, viewModel, skinTag, parent, viewName, stayWorld);
+        }
+        
+        /// <summary>
+        /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
+        /// </summary>
+        public static async UniTask<T> CreateViewAsync<T>(
+            this ViewBase source, 
+            IViewModel viewModel, 
+            Transform parent = null, 
+            string skinTag = null, 
+            string viewName = null,
+            bool stayWorld = false) 
+            where T : class, IView
+        {
+            var view = await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName,stayWorld) as T;
+            return view;
+        }
+        
+        /// <summary>
+        /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
+        /// </summary>
+        public static async UniTask<T> ShowViewAsync<T>(
+            this ViewBase source, 
+            IViewModel viewModel, 
+            Transform parent = null, 
+            string skinTag = null, 
+            string viewName = null,
+            bool stayWorld = false) 
+            where T : class, IView
+        {
+            var view = await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName,stayWorld) as T;
+            view.Show();
+            return view;
         }
         
         /// <summary>
