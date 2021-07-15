@@ -4,7 +4,7 @@
     using Runtime.Abstract;
     using UnityEngine;
 
-    public abstract class ViewLayoutFactoryAbstract : ScriptableObject, IViewLayoutFactory
+    public abstract class ViewLayoutType : ScriptableObject, IViewLayoutFactory
     {
         public abstract IViewLayout Create(Transform canvasPoint, IBackgroundView backgroundView);
     }

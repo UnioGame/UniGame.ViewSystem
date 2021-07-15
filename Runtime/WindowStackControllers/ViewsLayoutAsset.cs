@@ -16,17 +16,17 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         #region inspector
 
         [SerializeField]
-        private Canvas _layoutCanvas;
+        public Canvas _layoutCanvas;
 
         [SerializeField]
-        private BackgroundFactory _backgroundFactory;
+        public BackgroundFactory _backgroundFactory;
 
         [SerializeReference]
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Required]
 #endif
-        [AssetFilter(typeof(ViewLayoutFactoryAbstract))]
-        private ViewLayoutFactoryAbstract _layoutBehaviourFactory;
+        [AssetFilter(typeof(ViewLayoutType))]
+        public ViewLayoutType _layoutBehaviourFactory;
 
         #endregion
 

@@ -101,7 +101,7 @@ namespace UniGame.UiSystem.Runtime
             var viewLayoutContainer = new ViewStackLayoutsContainer(stackMap);
             var sceneFlowController = settings.FlowController;
 
-            var gameSystem = new GameViewSystem(factory, viewLayoutContainer, sceneFlowController,settings.viewsModelProviderSettings,settings.ViewModelTypeMap);
+            var gameSystem = new GameViewSystem(factory, viewLayoutContainer, sceneFlowController,settings.viewModelResolvers,settings.ViewModelTypeMap);
 
             gameSystem.TryMakeActive();
             

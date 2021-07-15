@@ -26,28 +26,6 @@
 
         #endregion
 
-        #region public methods
-
-        /// <summary>
-        /// bind source stream to view action
-        /// with View LifeTime context
-        /// </summary>
-        public void BindTo<T>(IObservable<T> source, Action<T> action)
-        {
-            BindToView(source, action);
-        }
-        
-        /// <summary>
-        /// bind source stream to view action
-        /// with View LifeTime context
-        /// </summary>
-        public void BindThrottleTo<T>(IObservable<T> source, Action<T> action,int frameThrottle = 1)
-        {
-            BindToView(source, action,frameThrottle);
-        }
-
-        #endregion
-
         protected sealed override async UniTask OnInitialize(IViewModel model)
         {
             await base.OnInitialize(model);

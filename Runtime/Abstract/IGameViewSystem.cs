@@ -7,7 +7,7 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
     public interface IGameViewSystem : 
         IDisposable, 
         IViewLayoutProvider,
-        IViewModelProvider
+        IViewModelResolver
     {
         void CloseAll();
     }

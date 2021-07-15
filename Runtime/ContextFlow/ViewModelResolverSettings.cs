@@ -12,21 +12,21 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
     /// Create View Model by requested type 
     /// </summary>
     [Serializable]
-    public class ViewModelFactorySettings : IViewModelProvider
+    public class ViewModelResolverSettings : IViewModelResolver
     {
         #region inspector
 
         public int modelFactoryTimeoutMs = 500;
         
-        public List<ProviderVariant> modelProviders = new List<ProviderVariant>();
+        public List<ViewModelResolverVariant> modelResolvers = new List<ViewModelResolverVariant>();
         
         #endregion
         
-        private List<IViewModelProvider> _runtimeFactories;
+        private List<IViewModelResolver> _runtimeFactories;
 
-        private IViewModelProvider _contextModelFactory;
+        private IViewModelResolver _contextModelFactory;
 
-        public IEnumerable<IViewModelProvider> Providers => _runtimeFactories;
+        public IEnumerable<IViewModelResolver> Providers => _runtimeFactories;
 
         public bool IsValid(Type modelType)
         {
@@ -36,10 +36,10 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
         public void Initialize()
         {
             _contextModelFactory = new ContextViewModelFactory();
-            _runtimeFactories = new List<IViewModelProvider>();
+            _runtimeFactories = new List<IViewModelResolver>();
             //register context provider as first
             _runtimeFactories.Add(_contextModelFactory);
-            _runtimeFactories.AddRange(modelProviders.Select(x => x.Value));
+            _runtimeFactories.AddRange(modelResolvers.Select(x => x.Value));
         }
 
         public async UniTask<IViewModel> Create(IContext context,Type type)

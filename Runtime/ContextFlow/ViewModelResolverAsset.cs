@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
 {
-    public abstract class ViewModelProviderAsset : 
+    public abstract class ViewModelResolverAsset : 
         ScriptableObject, 
-        IViewModelProvider
+        IViewModelResolver
     {
         public abstract bool IsValid(Type modelType);
         

@@ -54,7 +54,7 @@ namespace UniGame.UiSystem.Runtime.Settings
         
         private string GetModelTypeName()
         {
-            return $"ModelType : {ModelType?.Type?.GetFormattedName()}";
+            return $"ModelType : {ModelType.Type?.GetFormattedName()}";
         }
 
 #if ODIN_INSPECTOR
@@ -78,7 +78,7 @@ namespace UniGame.UiSystem.Runtime.Settings
             {
                 yield return new Sirenix.OdinInspector.ValueDropdownItem<SType>()
                 {
-                    Text = ModelType?.Type.Name,
+                    Text = ModelType.Type.Name,
                     Value = ModelType
                 };
                 yield break;

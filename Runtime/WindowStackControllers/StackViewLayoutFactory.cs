@@ -7,7 +7,7 @@
     using UnityEngine;
     
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/StackViewLayoutFactory", fileName = "StackViewLayoutFactory")]
-    public class StackViewLayoutFactory : ViewLayoutFactoryAbstract
+    public class StackViewLayoutFactory : ViewLayoutType
     {
         public override IViewLayout Create(Transform canvasPoint, IBackgroundView backgroundView)
         {

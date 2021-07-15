@@ -5,7 +5,7 @@ using UniModules.UniGame.UISystem.Runtime.Abstract;
 
 namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
 {
-    public interface IViewModelProvider
+    public interface IViewModelResolver
     {
         bool IsValid(Type modelType);
 

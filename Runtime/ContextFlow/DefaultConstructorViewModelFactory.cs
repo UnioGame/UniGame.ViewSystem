@@ -8,7 +8,7 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     
     [Serializable]
-    public class DefaultConstructorViewModelFactory : IViewModelProvider
+    public class DefaultConstructorViewModelFactory : IViewModelResolver
     {
         public bool IsValid(Type modelType)
         {

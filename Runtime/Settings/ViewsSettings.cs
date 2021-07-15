@@ -1,41 +1,26 @@
 #if UNITY_EDITOR
 using UniModules.UniGame.AddressableExtensions.Editor;
-using UniRx;
 #endif
-using UniModules.UniGame.Core.Runtime.ScriptableObjects;
 
 namespace UniGame.UiSystem.Runtime.Settings
 {
+    using UniModules.UniGame.Core.Runtime.ScriptableObjects;
+    using UniRx;
     using System.Collections.Generic;
     using UnityEngine;
-
+    
 #if ODIN_INSPECTOR
     using Sirenix.OdinInspector;
 #endif
-    
-    [CreateAssetMenu(menuName = "UniGame/ViewSystem/UiViewsSettings", fileName = "UiViewsSettings")]
+
+    [CreateAssetMenu(menuName = "UniGame/ViewSystem/UiViewsSettings", fileName = "ViewsSettings")]
     public class ViewsSettings : LifetimeScriptableObject, IViewsSettings
     {
+        private const string AddressablesGroup = "";
         public string sourceName;
-
-#if ODIN_INSPECTOR
-#if UNITY_EDITOR
-        [Sirenix.OdinInspector.ValueDropdown(nameof(GetLabels), ExcludeExistingValuesInList = true)]
-#endif
-#endif
-        public List<string> labels = new List<string>();
 
         [Header("Is Source will be filled on Update")]
         public bool isActive = true;
-
-        public bool applyAddressablesGroup = false;
-
-#if ODIN_INSPECTOR
-        [ShowIf(nameof(applyAddressablesGroup))]    
-#endif
-        [HideInInspector]
-        [Header("Name of target addressable group")]
-        public string addressableGroupName;
 
         [Space]
         [Header("Default views")]
@@ -50,9 +35,33 @@ namespace UniGame.UiSystem.Runtime.Settings
 #endif
         public List<string> uiViewsSkinFolders = new List<string>();
 
-        [Header("Registered Views")]
+
         [Space]
 #if ODIN_INSPECTOR
+        [BoxGroup(nameof(AddressablesGroup))]
+#endif
+        public bool applyAddressablesGroup = false;
+
+#if ODIN_INSPECTOR
+#if UNITY_EDITOR
+        [Sirenix.OdinInspector.ValueDropdown(nameof(GetLabels), ExcludeExistingValuesInList = true)]
+#endif
+        [ShowIf(nameof(applyAddressablesGroup))]
+        [BoxGroup(nameof(AddressablesGroup))]
+#endif
+        public List<string> labels = new List<string>();
+
+#if ODIN_INSPECTOR
+        [BoxGroup(nameof(AddressablesGroup))]
+        [ShowIf(nameof(applyAddressablesGroup))]
+#endif
+        [Header("Name of target addressable group")]
+        public string addressableGroupName;
+
+
+        [Header("Registered Views")]
+        [Space]
+#if ODIN_INSPECTOR_3
         [Sirenix.OdinInspector.Searchable]
 #endif
         public List<UiViewReference> uiViews = new List<UiViewReference>();
@@ -72,9 +81,9 @@ namespace UniGame.UiSystem.Runtime.Settings
 #endif
         private void Rebuild()
         {
-                MessageBroker.Default.Publish(new SettingsRebuildMessage() {ViewsSettings = this});
+            MessageBroker.Default.Publish(new SettingsRebuildMessage() {ViewsSettings = this});
         }
-        
+
 #endif
     }
 }

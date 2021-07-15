@@ -13,17 +13,17 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
     /// Create View Model by requested type 
     /// </summary>
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/Settings/ViewModelFactorySettings",fileName = nameof(ViewModelFactoryAsset))]
-    public class ViewModelFactoryAsset : LifetimeScriptableObject,IViewModelProvider
+    public class ViewModelFactoryAsset : LifetimeScriptableObject,IViewModelResolver
     {
         #region inspector
 
-        public List<ProviderVariant> modelProviders = new List<ProviderVariant>();
+        public List<ViewModelResolverVariant> modelProviders = new List<ViewModelResolverVariant>();
         
         #endregion
         
-        private IViewModelProvider _contextModelFactory;
+        private IViewModelResolver _contextModelFactory;
 
-        public IEnumerable<IViewModelProvider> Providers => modelProviders.Select(x => x.Value);
+        public IEnumerable<IViewModelResolver> Providers => modelProviders.Select(x => x.Value);
 
         public bool IsValid(Type modelType)
         {

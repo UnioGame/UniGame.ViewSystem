@@ -14,7 +14,7 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
 
     public class ViewsAssemblyBuilder
     {
-        private List<ViewModelFactorySettings> contextViewsMapSettings = new List<ViewModelFactorySettings>();
+        private List<ViewModelResolverSettings> contextViewsMapSettings = new List<ViewModelResolverSettings>();
         private AddressableAssetSettings addressableAssetSettings;
         private List<Action> rebuildCommands;
         private List<IViewAssemblerCommand> rebuildSettingsCommands;

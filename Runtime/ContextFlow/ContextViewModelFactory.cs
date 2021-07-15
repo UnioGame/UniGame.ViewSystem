@@ -11,7 +11,7 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
     using UnityEngine;
 
     [Serializable]
-    public class ContextViewModelFactory : IViewModelProvider
+    public class ContextViewModelFactory : IViewModelResolver
     {
         #region inspector
 
@@ -35,7 +35,7 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
     }
 
     [Serializable]
-    public class ContextApiViewModelFactory : IViewModelProvider
+    public class ContextApiViewModelFactory : IViewModelResolver
     {
         [SerializeField] private ContextViewModelFactory _contextViewModelFactory = new ContextViewModelFactory();
 

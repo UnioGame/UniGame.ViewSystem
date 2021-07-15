@@ -28,7 +28,7 @@ namespace UniGame.UiSystem.Runtime
         private readonly IViewFactory _viewFactory;
         private readonly IViewLayoutContainer _viewLayouts;
         private readonly IViewFlowController _flowController;
-        private readonly IViewModelProvider _viewModelProvider;
+        private readonly IViewModelResolver _viewModelResolver;
         private readonly IViewModelTypeMap _modelTypeMap;
         private readonly Subject<IView> _viewCreatedSubject;
 
@@ -38,7 +38,7 @@ namespace UniGame.UiSystem.Runtime
             IViewFactory viewFactory,
             IViewLayoutContainer viewLayouts,
             IViewFlowController flowController,
-            IViewModelProvider viewModelProvider,
+            IViewModelResolver viewModelResolver,
             IViewModelTypeMap modelTypeMap)
         {
             _viewCreatedSubject = new Subject<IView>().AddTo(LifeTime);
@@ -46,7 +46,7 @@ namespace UniGame.UiSystem.Runtime
             _viewFactory = viewFactory;
             _viewLayouts = viewLayouts;
             _flowController = flowController;
-            _viewModelProvider = viewModelProvider;
+            _viewModelResolver = viewModelResolver;
             _modelTypeMap = modelTypeMap;
 
             _flowController.Activate(_viewLayouts);
@@ -70,13 +70,13 @@ namespace UniGame.UiSystem.Runtime
 
         #region IViewModelProvider api
 
-        public bool IsValid(Type modelType) => _viewModelProvider.IsValid(modelType);
+        public bool IsValid(Type modelType) => _viewModelResolver.IsValid(modelType);
 
         public async UniTask<IViewModel> Create(IContext context, Type modelType)
         {
-            if (_viewModelProvider == null)
+            if (_viewModelResolver == null)
                 return null;
-            return await _viewModelProvider.Create(context,modelType);
+            return await _viewModelResolver.Create(context,modelType);
         }
         
         #endregion

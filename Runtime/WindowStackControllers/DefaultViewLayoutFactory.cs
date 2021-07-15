@@ -7,7 +7,7 @@
     using UnityEngine;
 
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/DefaultViewLayoutFactory", fileName = "DefaultViewLayoutFactory")]
-    public class DefaultViewLayoutFactory : ViewLayoutFactoryAbstract
+    public class DefaultViewLayoutFactory : ViewLayoutType
     {
         public override IViewLayout Create(Transform canvasPoint, IBackgroundView backgroundView)
         {

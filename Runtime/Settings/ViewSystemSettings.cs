@@ -18,34 +18,37 @@ namespace UniGame.UiSystem.Runtime.Settings
     /// <summary>
     /// Base View system settings. Contains info about all available view abd type info
     /// </summary>
-    [CreateAssetMenu(menuName = "UniGame/ViewSystem/Settings/ViewSystemSettings", fileName = nameof(ViewSystemSettings))]
+    [CreateAssetMenu(menuName = "UniGame/ViewSystem/ViewSystemSettings", fileName = nameof(ViewSystemSettings))]
     public class ViewSystemSettings : ViewsSettings, ICompletionStatus
     {
         #region inspector
 
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Searchable]
+        [Sirenix.OdinInspector.GUIColor(1f,0.55f,0.33f)]
 #endif
+        [Space]
+        [Header("Nested Views Sources")]
         [SerializeField] 
         public List<NestedViewSourceSettings> sources = new List<NestedViewSourceSettings>();
 
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.DrawWithUnity]
+        [Sirenix.OdinInspector.InlineEditor]
+        [Sirenix.OdinInspector.GUIColor(0.8f,0.8f,0.2f)]
 #endif
-        [Space]
-        [Tooltip("Layout Flow Behaviour")]
         [SerializeField]
         [AssetFilter(typeof(ViewFlowControllerAsset))]
         public ViewFlowControllerAsset layoutFlow;
 
-        [Space]
-        [Header("Model Factory Object")]
+        [Header("ViewModels dependency resolvers")]
         [SerializeField]
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.InlineProperty]
         [Sirenix.OdinInspector.HideLabel]
+        [Sirenix.OdinInspector.GUIColor(0.5f,0.8f,0.4f)]
 #endif
-        public ViewModelFactorySettings viewsModelProviderSettings = new ViewModelFactorySettings();
+        public ViewModelResolverSettings viewModelResolvers = new ViewModelResolverSettings();
 
         #endregion
 
@@ -84,7 +87,7 @@ namespace UniGame.UiSystem.Runtime.Settings
 
             uiResourceProvider.RegisterViewReferences(Views);
             
-            viewsModelProviderSettings?.Initialize();
+            viewModelResolvers?.Initialize();
             
             DownloadAllAsyncSources().Forget();
         }

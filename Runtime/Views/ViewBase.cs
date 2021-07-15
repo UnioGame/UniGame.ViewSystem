@@ -196,6 +196,25 @@
             StartProgressAction(_progressLifeTime, OnClose);
         }
 
+        
+        /// <summary>
+        /// bind source stream to view action
+        /// with View LifeTime context
+        /// </summary>
+        public IView BindTo<T>(IObservable<T> source, Action<T> action)
+        {
+            return BindToView(source, action);
+        }
+        
+        /// <summary>
+        /// bind source stream to view action
+        /// with View LifeTime context
+        /// </summary>
+        public IView BindThrottleTo<T>(IObservable<T> source, Action<T> action,int frameThrottle = 1)
+        {
+            return BindToView(source, action,frameThrottle);
+        }
+
         /// <summary>
         /// bind source stream to view action
         /// with View LifeTime context

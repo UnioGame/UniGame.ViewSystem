@@ -4,17 +4,20 @@ using System.IO;
 using UniGame.UiSystem.Runtime;
 using UniGame.UiSystem.Runtime.Settings;
 using UniGame.UiSystem.Runtime.ViewsFlow;
+using UniGame.UiSystem.Runtime.WindowStackControllers;
 using UniModules.UniCore.EditorTools.Editor.PrefabTools;
 using UniModules.UniCore.EditorTools.Editor.Utility;
 using UniModules.UniGame.Core.EditorTools.Editor.AssetOperations;
 using UniModules.UniGame.Core.EditorTools.Editor.Tools;
+using UniModules.UniGame.Core.Runtime.Attributes;
+using UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
 {
-    [CreateAssetMenu(menuName = "UniGame/ViewSystem/Editor/ViewSystem Settings",fileName = nameof(ViewSystemEditorSettings))]
+    [CreateAssetMenu(menuName = "UniGame/ViewSystem/Editor/Editor Template ViewSystemSettings",fileName = nameof(ViewSystemEditorSettings))]
     public class ViewSystemEditorSettings : ScriptableObject
     {
         
@@ -29,6 +32,11 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
 #endif
         public ViewFlowControllerAsset defaultFlowAsset;
 
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.Required]
+#endif
+        [AssetFilter(typeof(ViewLayoutType))]
+        public ViewLayoutType defaultLayoutType;
 
         
         public List<ViewFlowControllerAsset> GetFlowTypes()
@@ -77,10 +85,10 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
             var settingsAsset = settings.CopyAsset<ViewSystemSettings>(settings.name, path);
 
             settingsAsset.isActive = true;
-            settingsAsset.MarkDirty();
-            
             view.settings = settingsAsset;
+
             view.gameObject.MarkDirty();
+            settingsAsset.MarkDirty();
             
             AssetDatabase.Refresh();
         }

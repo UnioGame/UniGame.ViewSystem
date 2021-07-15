@@ -82,6 +82,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &1170653923612718213
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,8 +112,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2255a6df9791d6244a8e68a58b579d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layoutCanvas: {fileID: 1392593438177771758}
-  background: {fileID: 0}
+  _layoutCanvas: {fileID: 0}
+  _backgroundFactory: {fileID: 0}
+  _layoutBehaviourFactory: {fileID: 0}
 --- !u!1 &3973761838309414751
 GameObject:
   m_ObjectHideFlags: 0
@@ -195,6 +197,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &7927312230022430776
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,8 +227,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2255a6df9791d6244a8e68a58b579d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layoutCanvas: {fileID: 8926019249348193450}
-  background: {fileID: 0}
+  _layoutCanvas: {fileID: 0}
+  _backgroundFactory: {fileID: 0}
+  _layoutBehaviourFactory: {fileID: 0}
 --- !u!1 &5900889638523484577
 GameObject:
   m_ObjectHideFlags: 0
@@ -308,6 +312,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &4461706825524006870
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -337,8 +342,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2255a6df9791d6244a8e68a58b579d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layoutCanvas: {fileID: 2764613520174677588}
-  background: {fileID: 0}
+  _layoutCanvas: {fileID: 0}
+  _backgroundFactory: {fileID: 0}
+  _layoutBehaviourFactory: {fileID: 0}
 --- !u!1 &6800011537558981049
 GameObject:
   m_ObjectHideFlags: 0
@@ -385,7 +391,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccf3bfecb4f57d240a00e698b56d5d54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settings: {fileID: 0}
+  settings: {fileID: 11400000, guid: 34e95cd46455c054faf02eb8a96b0270, type: 2}
   layoutMap:
     keys: 010000000200000003000000
     values:

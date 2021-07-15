@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccf3bfecb4f57d240a00e698b56d5d54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settings: {fileID: 11400000, guid: 85ab1272fa5b3a24fb1e7281c4a7e129, type: 2}
+  settings: {fileID: 11400000, guid: 34e95cd46455c054faf02eb8a96b0270, type: 2}
   layoutMap:
     keys: 010000000200000003000000
     values:
@@ -170,7 +170,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _layoutCanvas: {fileID: 7387079579963990725}
   _backgroundFactory: {fileID: 0}
-  _layoutBehaviourFactory: {fileID: 11400000, guid: e8702b3b1f21d5546b6d4728d90c1e17, type: 2}
+  _layoutBehaviourFactory: {fileID: 11400000, guid: ed5763f3f29a7cb4c94abf0efef0d2fe, type: 2}
 --- !u!114 &1115454216375761744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,7 +185,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _layoutCanvas: {fileID: 7387079578710871638}
   _backgroundFactory: {fileID: 0}
-  _layoutBehaviourFactory: {fileID: 11400000, guid: e8702b3b1f21d5546b6d4728d90c1e17, type: 2}
+  _layoutBehaviourFactory: {fileID: 11400000, guid: ed5763f3f29a7cb4c94abf0efef0d2fe, type: 2}
 --- !u!114 &5413586547395399407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,7 +200,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _layoutCanvas: {fileID: 127793568177832887}
   _backgroundFactory: {fileID: 0}
-  _layoutBehaviourFactory: {fileID: 11400000, guid: 87be6e61bfdc8e547ad082b9c8d49a6a, type: 2}
+  _layoutBehaviourFactory: {fileID: 11400000, guid: 6d9bedbb270ccac448e317a8efa74c0b, type: 2}
 --- !u!114 &1652989200803567895
 MonoBehaviour:
   m_ObjectHideFlags: 0
