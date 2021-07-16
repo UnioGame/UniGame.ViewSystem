@@ -1,10 +1,9 @@
 ﻿namespace UniGame.UiSystem.Runtime.Backgrounds.Abstract
 {
-    using UniModules.UniGame.Core.Runtime.Interfaces;
     using UnityEngine;
 
-    public abstract class BackgroundFactory : MonoBehaviour, IFactory<IBackgroundView>
+    public abstract class BackgroundFactory : MonoBehaviour,IBackgroundFactory
     {
-        public abstract IBackgroundView Create();
+        public abstract IBackgroundView Create(Transform parent);
     }
 }

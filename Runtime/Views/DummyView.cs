@@ -1,4 +1,6 @@
-﻿namespace UniGame.UiSystem.Runtime
+﻿using UnityEngine;
+
+namespace UniGame.UiSystem.Runtime
 {
     using System;
     using Cysharp.Threading.Tasks;
@@ -19,6 +21,8 @@
 
         public IReadOnlyReactiveProperty<ViewStatus> Status => _viewStatusProperty;
 
+        public Transform Transform => null;
+        
         public ILifeTime ModelLifeTime => UniModules.UniCore.Runtime.DataFlow.LifeTime.TerminatedLifetime;
         
         public IReadOnlyReactiveProperty<bool> IsVisible     => _isVisibleProperty;

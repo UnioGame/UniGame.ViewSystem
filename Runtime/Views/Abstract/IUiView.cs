@@ -6,5 +6,6 @@
         where TViewModel : class, IViewModel
     {
         TViewModel    Model         { get; }
+        
     }
 }

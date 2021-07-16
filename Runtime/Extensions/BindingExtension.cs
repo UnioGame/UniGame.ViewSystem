@@ -20,6 +20,14 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
         
         #region ugui extensions
         
+        public static TView Bind<TView>(this TView view, Button source, Action<Unit> command, int frameThrottle = 0)
+            where TView : class,IView
+        {
+            Bind(source.OnClickAsObservable(),command,frameThrottle)
+                .AddTo(view.ModelLifeTime);
+            return view;
+        }
+        
         public static TView Bind<TView,TValue>(this TView view, IObservable<TValue> source, IReactiveCommand<TValue> command, int frameThrottle = 0)
             where TView : class,IView
         {

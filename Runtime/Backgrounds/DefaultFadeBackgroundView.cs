@@ -1,10 +1,6 @@
-﻿using System;
-
-namespace Taktika.UI.Backgrounds
+﻿namespace UniGame.ViewSystem.Backgrounds
 {
     using System.Collections;
-    using DG.Tweening;
-    using UniCore.Runtime.ProfilerTools;
     using UniGame.UiSystem.Runtime;
     using UniGame.UiSystem.Runtime.Backgrounds.Abstract;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
