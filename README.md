@@ -6,18 +6,19 @@ MVVM View System for Unity3D
 
 
 - [Overview](#overview)
-- [How To Install](#how-to-install)
 - [Getting Started](#getting-started)
 - [View System Settings](#view-system-settings)
-  - [Set Up Views Locations](#set-up-views-locations) 
+  - [SetUp Views Locations](#setup-views-locations) 
   - [Addressable Support](#addressable-support) 
   - [Nested View Sources](#nested-view-sources) 
+  - [Layouts Control](#layouts-control)
+  - [Settings Rebuild](#settings-rebuild)
 - [Skins Support](#skins-support)
 - [Pooling Support](#skins-support)
-- [Examples](#examples)
 - [API References](#api-references)
   - [Views & ViewModels](#views-&-viewmodels)
   - [Reactive Binding](#reactive-binding)
+- [Examples](#examples)
 - [License](#license)
 
 ## Overview
@@ -27,7 +28,7 @@ MVVM View System for Unity3D
 - based on Unity Addressables Resources
 - handle Addressables Resource lifetime
 
-## How To Install
+## Getting Started
 
 Add to your project manifiest by path [%UnityProject%]/Packages/manifiest.json new Scope:
 
@@ -50,19 +51,74 @@ and now install via Package Manager
 
 ![](https://github.com/UniGameTeam/UniGame.ViewSystem/blob/master/Readme/Assets/package_manager.png)
 
+## Getting Started
 
-## UI System Settings
+- Create View System Asset
+
+![](https://github.com/UniGameTeam/UniGame.ViewSystem/blob/master/Editor/GitAssets/view_asset_prefab.png)
+
+
+## View System Settings
 
 ### Create Settings
 
-
 ![](https://i.gyazo.com/15833fe0019b9570d68cab6ba20d3df6.png)
+
+
+### SetUp Views Locations
+
+Here you can initialize locations of views
+
+![](https://github.com/UniGameTeam/UniGame.ViewSystem/blob/master/Editor/GitAssets/views_setup.png)
+
+For skinned views. Skin name of view equal to it's parent folder. Your project views prefabs structure involve direct mapping into its skins 
+
+![](https://github.com/UniGameTeam/UniGame.ViewSystem/blob/master/Editor/GitAssets/skin-folders-names.png)
+
+
+### Addressable Support
+
+For now All views load at runtime through  <a href="https://docs.unity3d.com/Packages/com.unity.addressables@latest">Unity Addressable Asset system</a>
+
+By default if your views not registered as Addressable Asset when View System automatically register it into new Addressable Group With name equal to its ViewsSettings Source Name
+
+![](https://github.com/UniGameTeam/UniGame.ViewSystem/blob/master/Editor/GitAssets/view-settings-source-name1.png)
+
+You can enable Addressable Group Name override:
+
+- Enable "Apply Addressable Group" option
+- SetUp new views group name
+
+![](https://github.com/UniGameTeam/UniGame.ViewSystem/blob/master/Editor/GitAssets/views-addressable-override.png)
+
+### Nested View Sources
+
+View System Support additional "nested" view settings sources. All view from that sources will be registered into main View System when it loaded. All nested view settings loads async. If that't source must be loaded before the View System will be available its possible activate "Await Loading" option.
+
+![](https://github.com/UniGameTeam/UniGame.ViewSystem/blob/master/Editor/GitAssets/nested-settings-await.png)
+
+### Layouts Control
+
+"Layout Flow Control" asset control views behaviours between all layouts. View System support two flow behaviour out from the box.
+
+![](https://github.com/UniGameTeam/UniGame.ViewSystem/blob/master/Editor/GitAssets/views-flow-control.png)
+
+- DefaultFlow 
+
+Base flow controller with auto closing screens/windows when active scene changed
+
+- SingleViewFlow
+
+More complex flow with support 'IScreenSuspendingWindow' api. If View with 'IScreenSuspendingWindow' is open, when all current screens wills suspend and resume after it closed.
 
 ### Settings Rebuild
 
-Ui System supports auto settings rebuild . AssetPostprocessor will be triggered if any asset changed at project directory registered in Ui System Settings 
 
 You can manualy trigger rebuild:
+
+- Rebuild Command
+
+![](https://github.com/UniGameTeam/UniGame.ViewSystem/blob/master/Editor/GitAssets/view-settings-rebuild.png)
 
 - For All Settings
 
