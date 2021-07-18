@@ -132,10 +132,80 @@ You can manualy trigger rebuild:
 ## Skins Support
 ## Pooling Support
 
-### API References
+## API References
+
+
 ### Views & ViewModels
+
+
+
+
 ### Reactive Binding
 
+All base Bind extensions use ViewModelLifetime" thats allow auto disconnect from data streams when ViewModel changed
+
+Binding extensions allow you easy connect you view and data sources with rich set flow syntax and support Rx method and async/await semantics
+
+#### Bind To UGUI 
+
+Help methods to direct bind unity UGUI types to data streams
+
+- Button methods
+
+Bind Button to model action
+
+```cs
+
+public Bitton openChest;
+
+[Serializable]
+public class WindowViewModel : ViewModelBase
+{
+    public ReactiveCommand checkAction = new ReactiveCommand();
+    public IReactiveCommand<Unit> ChestAction => checkAction;
+}
+
+protected override UniTask OnViewInitialize(WindowViewModel model)
+{
+    this.Bind(openChest,model.ChestAction);
+    
+    return UniTask.CompletedTask;
+}
+
+```
+
+Bind Model to Button invoke
+
+
+```cs
+
+public Bitton openChest;
+
+[Serializable]
+public class WindowViewModel : ViewModelBase
+{
+    public ReactiveCommand checkAction = new ReactiveCommand();
+    public IReactiveCommand<Unit> ChestAction => checkAction;
+}
+
+protected override UniTask OnViewInitialize(WindowViewModel model)
+{
+    this.Bind(ChestAction,openChest);
+    
+    return UniTask.CompletedTask;
+}
+
+```
+
+- TextMeshPro methods
+
+- Image methods
+
+- LocaliztionString methods
+
+#### Behaviour bindings
+
+Allow you call show/hide/close and another actions with when views/data streams events occurs
 
 ## Examples
 
