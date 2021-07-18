@@ -19,8 +19,24 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
     {
         
         #region ugui extensions
+
+        public static TView Bind<TView,TValue>(this TView view, IObservable<TValue> source, Button command, int frameThrottle = 0)
+            where TView : class,IView
+        {
+            Bind(source,x => command.onClick?.Invoke(),frameThrottle)
+                .AddTo(view.ModelLifeTime);
+            return view;
+        }
         
         public static TView Bind<TView>(this TView view, Button source, Action<Unit> command, int frameThrottle = 0)
+            where TView : class,IView
+        {
+            Bind(source.OnClickAsObservable(),command,frameThrottle)
+                .AddTo(view.ModelLifeTime);
+            return view;
+        }
+        
+        public static TView Bind<TView>(this TView view, Button source, IReactiveCommand<Unit> command, int frameThrottle = 0)
             where TView : class,IView
         {
             Bind(source.OnClickAsObservable(),command,frameThrottle)
@@ -41,12 +57,18 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             return view.Bind(source, view.ModelLifeTime, x => image.sprite = x,frameThrottle);
         }
         
+        public static TView Bind<TView>(this TView view, IObservable<Sprite> source, Button button, int frameThrottle = 0)
+            where TView : class,IView
+        {
+            return view.Bind(source, view.ModelLifeTime, x => button.image.sprite = x,frameThrottle);
+        }
+        
         public static TView Bind<TView>(this TView view, IObservable<string> source, TextMeshProUGUI text, int frameThrottle = 0)
             where TView : class,IView
         {
             return view.Bind(source, view.ModelLifeTime, x => text.text = x,frameThrottle);
         }
-        
+
         public static TView Bind<TView>(this TView view, IObservable<string> source, TextMeshPro text, int frameThrottle = 0)
             where TView : class,IView
         {
