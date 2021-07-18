@@ -208,8 +208,6 @@ public class WindowViewModel : ViewModelBase
     public ReactiveProperty<string> value = new ReactiveProperty<string>();
     
     public IObservable<string> Label => label;
-    
-    public ReactiveProperty<string> labelValue = new ReactiveProperty<string>();
     public IObservable<string> Value => value;
 }
 
