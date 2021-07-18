@@ -156,7 +156,7 @@ Bind Button to model action
 
 ```cs
 
-public Bitton openChest;
+public Button openChest;
 
 [Serializable]
 public class WindowViewModel : ViewModelBase
@@ -179,7 +179,7 @@ Bind Model to Button invoke
 
 ```cs
 
-public Bitton openChest;
+public Button openChest;
 
 [Serializable]
 public class WindowViewModel : ViewModelBase
@@ -190,7 +190,7 @@ public class WindowViewModel : ViewModelBase
 
 protected override UniTask OnViewInitialize(WindowViewModel model)
 {
-    this.Bind(ChestAction,openChest);
+    this.Bind(model.ChestAction,openChest);
     
     return UniTask.CompletedTask;
 }
@@ -198,6 +198,33 @@ protected override UniTask OnViewInitialize(WindowViewModel model)
 ```
 
 - TextMeshPro methods
+
+```cs
+
+[Serializable]
+public class WindowViewModel : ViewModelBase
+{
+    public ReactiveProperty<string> label = new ReactiveProperty<string>();
+    public ReactiveProperty<string> value = new ReactiveProperty<string>();
+    
+    public IObservable<string> Label => label;
+    
+    public ReactiveProperty<string> labelValue = new ReactiveProperty<string>();
+    public IObservable<string> Value => value;
+}
+
+public TextMeshProUGUI label;
+public TextMeshProUGUI value;
+
+protected override UniTask OnViewInitialize(WindowViewModel model)
+{
+    this.Bind(model.Label,label)
+        .Bind(model.Value,value);
+    
+    return UniTask.CompletedTask;
+}
+
+```
 
 - Image methods
 
