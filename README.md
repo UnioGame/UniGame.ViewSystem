@@ -131,6 +131,23 @@ You can manualy trigger rebuild:
 
 
 ## Skins Support
+Different flavours of the same view type can be created by utilizing skins. When a skin tag is provided on view creation the corresponding skin is instantiated (if it's been registered prior to it). Skin tag can be provided as a string or a variable of SkinId type (which allows choosing one of the registered tags from a dropdown list and implicitly converts it to a string)
+```cs
+void ExampleFunc(SkinId largeDemoView) {
+  await gameViewSystem.OpenWindow<DemoView>(ViewModel, "SmallDemoView");
+  await gameViewSystem.OpenWindow<DemoView>(ViewModel, largeDemoView);
+}
+```
+### Skins via folders
+Place views of the same type in separate folders and add them to the UI Views Skin Folders list in view system settings. After rebuilding the views will be added to the views registry with folder names as their skin tags
+![](https://github.com/UniGameTeam/UniGame.ViewSystem/blob/master/Editor/GitAssets/skin-folders-names.png)
+
+### Skins via component
+Add View Skin Component to a prefab to turn it into a skin. To add a new skin tag enter it into Skin Tag Name field and press Invoke, an existing tag can be chosen from the Skin Tag dropdown list. No need to specify skin folders in view system settings
+![image](https://user-images.githubusercontent.com/72013166/126639139-974d1458-7c14-490d-8b6a-4f3c1de33fa5.png)
+![image](https://user-images.githubusercontent.com/72013166/126639300-bcc028a7-5070-4e78-9495-6d76c0ffc3b1.png)
+
+
 ## Pooling Support
 
 ## API References
