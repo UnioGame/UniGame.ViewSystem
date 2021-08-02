@@ -1,22 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using UniGame.UiSystem.Runtime;
 using UniGame.UiSystem.Runtime.Settings;
 using UniGame.UiSystem.Runtime.ViewsFlow;
-using UniGame.UiSystem.Runtime.WindowStackControllers;
-using UniModules.UniCore.EditorTools.Editor.PrefabTools;
-using UniModules.UniCore.EditorTools.Editor.Utility;
-using UniModules.UniGame.Core.EditorTools.Editor.AssetOperations;
-using UniModules.UniGame.Core.EditorTools.Editor.Tools;
-using UniModules.UniGame.Core.Runtime.Attributes;
-using UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract;
-using UnityEditor;
-using UnityEngine;
-using Object = UnityEngine.Object;
+using UniModules.Editor;
 
 namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
 {
+    using System;
+    using System.Collections.Generic;
+    using UniModules.Editor;
+    using UniModules.UniGame.Core.Runtime.Attributes;
+    using UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract;
+    using UnityEditor;
+    using UnityEngine;
+    using Object = UnityEngine.Object;
+    
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/Editor/Editor Template ViewSystemSettings",fileName = nameof(ViewSystemEditorSettings))]
     public class ViewSystemEditorSettings : ScriptableObject
     {

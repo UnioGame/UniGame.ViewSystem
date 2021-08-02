@@ -5,7 +5,7 @@ namespace UniGame.ViewSystem.Editor.EditorAssets
 {
     using System.Linq;
     using UiSystem.Runtime.Settings;
-    using UniModules.UniGame.Core.EditorTools.Editor.AssetOperations;
+    using UniModules.Editor;
 
     [GeneratedAssetInfo(location:"ViewSystem/Editor")]
     public class ViewSystemEditorAsset : GeneratedAsset<ViewSystemEditorAsset>

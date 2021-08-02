@@ -7,9 +7,9 @@ using System;
 #endif
 public struct SkinId
 {
-    public string id;
-    
-    
+
+    #region static data
+
     public static implicit operator string(SkinId v)
     {
         return v.id;
@@ -19,10 +19,14 @@ public struct SkinId
     {
         return new SkinId() { id = v };
     }
-    
+
+    #endregion    
+
+    public string id;
+
     public override string ToString() => id;
 
-    public override int GetHashCode() => id.GetHashCode();
+    public override int GetHashCode() => string.IsNullOrEmpty(id) ? 0 :  id.GetHashCode();
 
     public SkinId FromString(string value)
     {
@@ -34,6 +38,6 @@ public struct SkinId
     {
         if (!(obj is SkinId skinId))
             return false;
-        return id.Equals(skinId.id);
+        return !string.IsNullOrEmpty(id) && id.Equals(skinId.id);
     }
 }

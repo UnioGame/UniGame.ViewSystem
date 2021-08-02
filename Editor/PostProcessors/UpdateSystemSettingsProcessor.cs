@@ -8,7 +8,7 @@ namespace UniGame.UiSystem.Editor.PostProcessors
     using UI.Editor.UiEdito;
     using UniCore.Runtime.ProfilerTools;
     using UniModules.UniCore.Runtime.Utils;
-    using UniModules.UniGame.Core.EditorTools.Editor.AssetOperations;
+    using UniModules.Editor;
     using UnityEngine;
 
     public class UpdateSystemSettingsProcessor : UnityEditor.AssetModificationProcessor

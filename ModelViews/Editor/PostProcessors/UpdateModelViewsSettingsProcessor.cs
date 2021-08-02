@@ -9,7 +9,7 @@ namespace UniGame.UiSystem.ModelViews.Editor.PostProcessors
     using UiSystem.Runtime;
     using UniModules.UniCore.Runtime.ReflectionUtils;
     using UniModules.UniCore.Runtime.Utils;
-    using UniModules.UniGame.Core.EditorTools.Editor.AssetOperations;
+    using UniModules.Editor;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UnityEditor;
 

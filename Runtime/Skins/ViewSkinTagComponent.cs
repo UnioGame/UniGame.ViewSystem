@@ -1,4 +1,5 @@
 using System;
+using UniRx;
 using UnityEngine;
 
 public class ViewSkinTagComponent : MonoBehaviour, IViewSkinTag
@@ -16,6 +17,9 @@ public class ViewSkinTagComponent : MonoBehaviour, IViewSkinTag
     {
         var newSkin = new SkinId() {id = skinTagName};
         skinTag = newSkin;
+        
+        //rebuild view system update skin id's list
+        MessageBroker.Default.Publish(new SettingsRebuildMessage());
     }
     
 }
