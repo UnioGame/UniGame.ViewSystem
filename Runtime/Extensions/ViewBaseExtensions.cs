@@ -170,6 +170,7 @@
         
         /// <summary>
         /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
+        /// And close it with target lifetime
         /// </summary>
         public static async UniTask<T> CreateNestedViewAsync<T>(
             this ViewBase source, 
@@ -183,6 +184,41 @@
         {
             var view = await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName,stayWorld) as T;
             view.CloseWith(lifeTime);
+            return view;
+        }
+        
+        /// <summary>
+        /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
+        /// </summary>
+        public static async UniTask<T> CreateChildViewAsync<T>(
+            this ViewBase source,
+            IViewModel viewModel, 
+            Transform parent = null,
+            string skinTag = null,
+            string viewName = null,
+            bool stayWorld = false) 
+            where T : class, IView
+        {
+            parent = parent ? parent : source.Transform;
+            var view = await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName,stayWorld) as T;
+            source.AddAsChild(view,parent,stayWorld);
+            return view;
+        }
+        
+        /// <summary>
+        /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
+        /// </summary>
+        public static async UniTask<T> ShowChildViewAsync<T>(
+            this ViewBase source,
+            IViewModel viewModel, 
+            Transform parent = null, 
+            string skinTag = null, 
+            string viewName = null,
+            bool stayWorld = false) 
+            where T : class, IView
+        {
+            var view = await CreateChildViewAsync<T>(source,viewModel, parent,skinTag, viewName,stayWorld);
+            view.Show();
             return view;
         }
 
@@ -288,16 +324,17 @@
         /// <param name="newParent"></param>
         /// <param name="worldPositionStays"></param>
         /// <returns>Return current view.</returns>
-        public static void AddAsChild<T>(this ViewBase source, T view, Transform newParent, bool worldPositionStays = false) where T : ViewBase
+        public static void AddAsChild<T>(this IView source, T view, Transform newParent, bool worldPositionStays = false)
+            where T : IView
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
             if (view == null)
                 throw new ArgumentNullException(nameof(source));
             
-            var viewTransform  = view.transform;
+            var viewTransform  = view.Transform;
 
-            if (viewTransform == null || viewTransform.parent == newParent)
+            if (viewTransform == null)
                 throw new InvalidOperationException("Cannot add view as a child because it's the parent!");
 
             view.Owner.layer = source.Owner.layer;
