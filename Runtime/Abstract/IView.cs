@@ -14,8 +14,9 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
         IViewStatus, 
         IViewCommands
     {
-        
-        public Transform Transform { get; }
+        public GameObject Owner { get; }
+
+        public Transform  Transform { get; }
         
         ILifeTime ModelLifeTime { get; }
         
