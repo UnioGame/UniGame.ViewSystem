@@ -23,7 +23,7 @@
         public static async UniTask<T> CreateViewAsync<T>(
             this ViewBase source, 
             IViewModel viewModel, 
-            string skinTag = null, 
+            string skinTag, 
             Transform parent = null, 
             string viewName = null) 
             where T : class, IView
