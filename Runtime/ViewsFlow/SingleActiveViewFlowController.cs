@@ -41,11 +41,9 @@
 
             _screenSuspended
                 .Skip(1)
-                .Subscribe(x =>
-                {
-                    if (x) screenController.Suspend();
-                    else screenController.Resume();
-                })
+                .WhenTrue(x => screenController.Suspend())
+                .WhenFalse(x => screenController.Resume())
+                .Subscribe()
                 .AddTo(windowController.LifeTime);
         }
     }

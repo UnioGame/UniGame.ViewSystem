@@ -40,14 +40,16 @@
         [SerializeField]
         private ViewStatus _editorViewStatus = ViewStatus.None;
 
+        [ReadOnlyValue]
+        [SerializeField]
+        private ViewStatus _internalViewStatus = ViewStatus.None;
+        
         [HideInInspector]
         [SerializeField]
         public string skinTag = string.Empty;
         
         #endregion
 
-        private ViewStatus _internalViewStatus = ViewStatus.None;
-        
         private RectTransform _rectTransform;
         private Transform _transform;
         
@@ -139,13 +141,13 @@
             BindLayout(layoutProvider);
             await Initialize(model);
 
-            _isInitialized.Value = true;
-
             return this;
         }
 
         public async UniTask<IView> Initialize(IViewModel model, bool isViewOwner = false)
         {
+            _isInitialized.Value = false;
+            
             // save current state
             _isViewOwner = isViewOwner;
             
@@ -165,6 +167,8 @@
 
             //custom initialization
             await OnInitialize(model);
+            
+            _isInitialized.Value = true;
 
             return this;
         }
@@ -194,6 +198,9 @@
             if(!SetInternalStatus(ViewStatus.Hidden))
                 return;
             
+            if(!SetStatus(ViewStatus.Hiding))
+                return;
+
             StartProgressAction(_progressLifeTime, OnHide);
         }
 
@@ -286,9 +293,6 @@
         /// </summary>
         private IEnumerator OnHide()
         {
-            if(!SetStatus(ViewStatus.Hiding))
-                yield break;
-            
             //wait until user defined closing operation complete
             yield return OnHidingProgress(_progressLifeTime);
 
@@ -310,9 +314,9 @@
             SetStatus(ViewStatus.Shown);
         }
 
-        protected virtual bool SetStatus(ViewStatus status)
+        protected bool SetStatus(ViewStatus status)
         {
-            if (_lifeTimeDefinition.IsTerminated)
+            if (_lifeTimeDefinition.IsTerminated || _internalViewStatus == ViewStatus.Closed)
             {
                 _status.Value     = ViewStatus.Closed;
                 _visibility.Value = false;
@@ -425,8 +429,7 @@
             });
             
             _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Release);
-
-
+        
 #if UNITY_EDITOR
             _status.Subscribe(x => this._editorViewStatus = x).AddTo(LifeTime);
 #endif
@@ -449,10 +452,11 @@
             _viewLayout = null;
             _isInitialized.Value = false;
             ViewModel      = null;
-            SetStatus(ViewStatus.Closed);
-            _internalViewStatus = ViewStatus.Closed;
             _status.Release();
             _visibility.Release();
+
+            _internalViewStatus = ViewStatus.Closed;
+            SetStatus(ViewStatus.Closed);
         }
 
         protected override void OnDisable()

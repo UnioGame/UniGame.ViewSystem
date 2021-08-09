@@ -191,7 +191,8 @@
                     break;
             }
 
-            _hasActiveView.SetValueForce(IsAnyViewActive());
+            var hasActiveView = IsAnyViewActive();
+            _hasActiveView.SetValueForce(hasActiveView);
         }
 
         protected virtual bool IsAnyViewActive()
