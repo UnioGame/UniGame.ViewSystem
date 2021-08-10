@@ -201,7 +201,11 @@
         {
             parent = parent ? parent : source.Transform;
             var view = await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName,stayWorld) as T;
-            source.AddAsChild(view,parent,stayWorld);
+            
+            var viewTransform = view.Transform;
+            view.Owner.layer         = source.Owner.layer;
+            viewTransform.localScale = Vector3.one;
+            
             return view;
         }
         

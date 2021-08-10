@@ -120,7 +120,7 @@
         /// <summary>
         /// complete view lifetime immediately
         /// </summary>
-        public void Destroy() => _lifeTimeDefinition.Release();
+        public void Destroy() => _lifeTimeDefinition.Terminate();
 
         public void BindLayout(IViewLayoutProvider layoutProvider)
         {
@@ -136,8 +136,6 @@
 
         public async UniTask<IView> Initialize(IViewModel model, IViewLayoutProvider layoutProvider)
         {
-            _isInitialized.Value = false;
-            
             BindLayout(layoutProvider);
             await Initialize(model);
 
@@ -146,8 +144,6 @@
 
         public async UniTask<IView> Initialize(IViewModel model, bool isViewOwner = false)
         {
-            _isInitialized.Value = false;
-            
             // save current state
             _isViewOwner = isViewOwner;
             
@@ -215,7 +211,7 @@
             if(!SetInternalStatus(ViewStatus.Closed))
                 return;
             
-            StartProgressAction(_progressLifeTime, OnClose,_lifeTimeDefinition.Release);
+            StartProgressAction(_progressLifeTime, OnClose, Destroy);
         }
         
         /// <summary>
@@ -439,6 +435,8 @@
 
         private void InitialSetup()
         {
+            _lifeTimeDefinition.Release();
+            
             _isInitialized.Value = true;
             _status.Value  = ViewStatus.None;
             _internalViewStatus = ViewStatus.None;
@@ -451,12 +449,13 @@
 
         private void OnViewDestroy()
         {
-            _internalViewStatus = ViewStatus.Closed;
+            _isInitialized.Value = false;
+
+            SetInternalStatus(ViewStatus.Closed);
             SetStatus(ViewStatus.Closed);
             
-            _viewLayout = null;
-            _isInitialized.Value = false;
-            ViewModel      = null;
+            ViewModel            = null;
+            _viewLayout          = null;
             
             _status.Release();
             _visibility.Release();
@@ -470,7 +469,7 @@
 
         protected sealed override void OnDestroy()
         {
-            _lifeTimeDefinition.Terminate();
+            Destroy();
             base.OnDestroy();
         }
 
