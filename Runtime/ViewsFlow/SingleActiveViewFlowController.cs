@@ -16,27 +16,21 @@
             var windowController = layouts.GetLayout(ViewType.Window);
 
             screenController.HasActiveView
-                .Where(x => x)
-                .Subscribe(x => windowController.CloseAll())
+                .WhenTrue(x => windowController.CloseAll())
+                .Subscribe()
                 .AddTo(windowController.LifeTime);
 
             windowController.HasActiveView
                 .Where(x => x)
                 .CombineLatest(windowController.OnBeginShow, (hasView, view) => view)
-                .Where(x => x is IScreenSuspendingWindow)
-                .Subscribe(x => _screenSuspended.Value = true)
+                .When(x => x is IScreenSuspendingWindow,x => _screenSuspended.Value = true)
+                .When(x => !(x is IScreenSuspendingWindow),x => _screenSuspended.Value = false)
+                .Subscribe()
                 .AddTo(windowController.LifeTime);
 
             windowController.HasActiveView
-                .Where(x => x)
-                .CombineLatest(windowController.OnBeginShow, (hasView, view) => view)
-                .Where(x => !(x is IScreenSuspendingWindow))
-                .Subscribe(x => _screenSuspended.Value = false)
-                .AddTo(windowController.LifeTime);
-
-            windowController.HasActiveView
-                .Where(x => !x)
-                .Subscribe(x => _screenSuspended.Value = false)
+                .WhenFalse(x => _screenSuspended.Value = false)
+                .Subscribe()
                 .AddTo(windowController.LifeTime);
 
             _screenSuspended

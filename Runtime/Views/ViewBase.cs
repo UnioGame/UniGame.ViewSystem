@@ -215,9 +215,8 @@
             if(!SetInternalStatus(ViewStatus.Closed))
                 return;
             
-            StartProgressAction(_progressLifeTime, OnClose);
+            StartProgressAction(_progressLifeTime, OnClose,_lifeTimeDefinition.Release);
         }
-
         
         /// <summary>
         /// bind source stream to view action
@@ -261,7 +260,7 @@
         #endregion public methods
 
         #region private methods
-
+        
         /// <summary>
         /// custom initialization methods
         /// </summary>
@@ -277,15 +276,7 @@
         /// <returns></returns>
         private IEnumerator OnClose()
         {
-            try
-            {
-                //wait until user defined closing operation complete
-                yield return OnCloseProgress(_progressLifeTime);
-            }
-            finally
-            {
-                _lifeTimeDefinition.Release();
-            }
+            yield return OnCloseProgress(_progressLifeTime);
         }
         
         /// <summary>
@@ -374,7 +365,9 @@
                 return false;
             }
 #endif
-
+            if (_internalViewStatus == ViewStatus.Closed)
+                return false;
+            
             if(_internalViewStatus == internalStatus)
             {
                 GameLog.LogWarning($"You try to {internalStatus} {viewName} but it has {internalStatus} status yet");
@@ -386,15 +379,24 @@
             return true;
         }
 
-        private void StartProgressAction(LifeTimeDefinition lifeTime,Func<IEnumerator> action)
+        private void StartProgressAction(LifeTimeDefinition lifeTime,Func<IEnumerator> action,Action finallyAction = null,RoutineType routineType = RoutineType.Update)
         {
+#if UNITY_EDITOR
+            if (action == null)
+            {
+                Debug.LogError($"VIEW {name} {GetType().Name} Progress action is NULL");
+                return;
+            }
+#endif
+            
             if (lifeTime.IsTerminated) 
                 return;
-            
             lifeTime.Release();
             
             //run animation immediately
-            action().Execute(RoutineType.Update,true).AddTo(lifeTime);
+            action().Execute(routineType,true)
+                .WithFinally(finallyAction)
+                .AddTo(lifeTime);
         }
 
         private void InitializeHandlers(IViewModel model)
@@ -449,14 +451,15 @@
 
         private void OnViewDestroy()
         {
+            _internalViewStatus = ViewStatus.Closed;
+            SetStatus(ViewStatus.Closed);
+            
             _viewLayout = null;
             _isInitialized.Value = false;
             ViewModel      = null;
+            
             _status.Release();
             _visibility.Release();
-
-            _internalViewStatus = ViewStatus.Closed;
-            SetStatus(ViewStatus.Closed);
         }
 
         protected override void OnDisable()
@@ -468,9 +471,7 @@
         protected sealed override void OnDestroy()
         {
             _lifeTimeDefinition.Terminate();
-            
             base.OnDestroy();
-            GameLog.LogFormat("View {0} Destroyed",name);
         }
 
         protected virtual void OnAwake()
