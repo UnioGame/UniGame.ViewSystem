@@ -3,7 +3,7 @@ using System;
 [Serializable]
 #if ODIN_INSPECTOR
 [Sirenix.OdinInspector.InlineProperty]
-[Sirenix.OdinInspector.ValueDropdown("@UniGame.ViewSystem.Editor.EditorAssets.ViewSystemEditorAsset.GetSkins()")]
+[Sirenix.OdinInspector.ValueDropdown("@UniGame.ViewSystem.Editor.EditorAssets.ViewSystemEditorAsset.GetSkins()",IsUniqueList = true)]
 #endif
 public struct SkinId
 {
