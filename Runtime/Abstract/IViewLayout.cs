@@ -10,6 +10,8 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
     {
         IReadOnlyReactiveProperty<bool> HasActiveView { get; }
 
+        void ApplyIntent<T>() where T : IView;
+        
         void Push(IView view);
 
         void HideAll();

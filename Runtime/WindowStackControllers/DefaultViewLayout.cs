@@ -1,5 +1,6 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
+    using System;
     using System.Linq;
     using Backgrounds.Abstract;
     using UniModules.UniCore.Runtime.Rx.Extensions;
@@ -7,6 +8,7 @@
     using UniRx;
     using UnityEngine;
 
+    [Serializable]
     public class DefaultViewLayout : ViewLayout
     {
         private readonly IBackgroundView _background;

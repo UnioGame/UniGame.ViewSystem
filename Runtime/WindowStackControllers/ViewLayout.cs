@@ -14,16 +14,18 @@
     using System;
     using UniModules.UniGame.Core.Runtime.Rx;
 
+    [Serializable]
     public class ViewLayout : IViewLayout
     {
-        private readonly ReactiveCollection<IView> _views = new ReactiveCollection<IView>();
-        private readonly LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
+        private readonly ReactiveCollection<IView> _views    = new ReactiveCollection<IView>();
+        private readonly LifeTimeDefinition        _lifeTime = new LifeTimeDefinition();
 
         private readonly Subject<IView>                _onViewHidden;
         private readonly Subject<IView>                _onViewBeginHide;
         private readonly Subject<IView>                _onViewShown;
         private readonly Subject<IView>                _onViewBeginShow;
         private readonly Subject<IView>                _onViewClosed;
+        private readonly Subject<Type>                 _onViewIntent;
         private readonly RecycleReactiveProperty<bool> _hasActiveView;
 
         protected IReadOnlyReactiveCollection<IView> Views => _views;
@@ -36,12 +38,13 @@
 
         #region IViewStatus
 
-        public IObservable<IView> OnHidden => _onViewHidden;
-        public IObservable<IView> OnShown => _onViewShown;
+        public IObservable<IView> OnHidden    => _onViewHidden;
+        public IObservable<IView> OnShown     => _onViewShown;
         public IObservable<IView> OnBeginHide => _onViewBeginHide;
         public IObservable<IView> OnBeginShow => _onViewBeginShow;
-        public IObservable<IView> OnClosed => _onViewClosed;
-
+        public IObservable<IView> OnClosed    => _onViewClosed;
+        public IObservable<Type>  OnIntent    => _onViewIntent;
+        
         #endregion
 
         #region public methods
@@ -53,12 +56,18 @@
             _onViewShown     = new Subject<IView>().AddTo(LifeTime);
             _onViewBeginShow = new Subject<IView>().AddTo(LifeTime);
             _onViewClosed    = new Subject<IView>().AddTo(LifeTime);
+            _onViewIntent    = new Subject<Type>().AddTo(LifeTime);
             _hasActiveView   = new RecycleReactiveProperty<bool>().AddTo(LifeTime);
         }
 
         public void Dispose() => _lifeTime.Terminate();
 
         public bool Contains(IView view) => _views.Contains(view);
+
+        public void ApplyIntent<T>() where T : IView
+        {
+            _onViewIntent.OnNext(typeof(T));
+        }
 
         /// <summary>
         /// add view to controller
@@ -130,7 +139,7 @@
             _views.Clear();
             foreach (var view in buffer)
             {
-                if(view != null)
+                if (view != null)
                     view.Close();
             }
 
@@ -150,9 +159,13 @@
             return true;
         }
 
-        public virtual void Suspend(){}
+        public virtual void Suspend()
+        {
+        }
 
-        public virtual void Resume(){}
+        public virtual void Resume()
+        {
+        }
 
         #endregion
 
@@ -198,8 +211,8 @@
         protected virtual bool IsAnyViewActive()
         {
             return _views.Count > 0 && _views.Any(x => x.Status.Value == ViewStatus.Showing || x.Status.Value == ViewStatus.Shown);
-        } 
-        
+        }
+
         protected bool Remove(IView view)
         {
             if (view == null || !Contains(view))

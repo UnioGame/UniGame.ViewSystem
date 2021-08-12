@@ -1,5 +1,6 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
+    using System;
     using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.UiSystem.Runtime;
@@ -8,6 +9,7 @@
     using UniRx;
     using UnityEngine.SceneManagement;
     
+    [Serializable]
     public class ViewFlowController : IViewFlowController
     {
         private readonly LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();

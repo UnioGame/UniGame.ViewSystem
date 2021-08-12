@@ -16,6 +16,8 @@
         IObservable<IView> OnBeginShow { get; }
         IObservable<IView> OnClosed  { get; }
 
+        IObservable<Type> OnIntent { get; }
+
         bool Contains(IView view);
  
         TView Get<TView>() where TView :class, IView;

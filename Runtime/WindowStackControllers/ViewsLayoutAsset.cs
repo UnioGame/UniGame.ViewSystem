@@ -40,8 +40,10 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         
         public IObservable<IView> OnShown => LayoutController.OnShown;
         
-        public IObservable<IView> OnClosed  => LayoutController.OnClosed;
+        public IObservable<IView> OnClosed => LayoutController.OnClosed;
         
+        public IObservable<Type>  OnIntent => LayoutController.OnIntent;
+
         public IObservable<IView> OnBeginHide  => LayoutController.OnBeginHide;
         
         public IObservable<IView> OnBeginShow  => LayoutController.OnBeginShow;
@@ -64,6 +66,11 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         public void HideAll()
         {
             LayoutController.HideAll();
+        }
+
+        public void ApplyIntent<T>() where T : IView
+        {
+            LayoutController.ApplyIntent<T>();
         }
 
         public void Push(IView view)

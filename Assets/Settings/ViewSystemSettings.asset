@@ -13,17 +13,17 @@ MonoBehaviour:
   m_Name: ViewSystemSettings
   m_EditorClassIdentifier: 
   sourceName: GameViewSystemSettings
-  labels: []
   isActive: 0
-  applyAddressablesGroup: 0
-  addressableGroupName: 
   uiViewsDefaultFolders: []
   uiViewsSkinFolders: []
   uiViews: []
+  applyAddressablesGroup: 0
+  labels: []
+  addressableGroupName: 
   sources: []
   layoutFlow: {fileID: 11400000, guid: c22cfe04dc8dc9e43b8b9b36576fab63, type: 2}
-  viewsModelProviderSettings:
+  viewModelResolvers:
     modelFactoryTimeoutMs: 500
-    modelProviders: []
+    modelResolvers: []
   references:
     version: 1

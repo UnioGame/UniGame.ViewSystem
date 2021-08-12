@@ -61,6 +61,7 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         public IObservable<IView> ViewCreated => _viewCreatedSubject;
 
+
         #region public methods
 
         /// <summary>
@@ -234,7 +235,9 @@ namespace UniGame.UiSystem.Runtime
         {
             var layout = _viewLayouts.GetLayout(layoutType);
             var parent = layout?.Layout;
-
+            
+            layout?.ApplyIntent<T>();
+            
             var view = await CreateView(viewModel, viewType, skinTag, parent, viewName);
 
             layout?.Push(view);

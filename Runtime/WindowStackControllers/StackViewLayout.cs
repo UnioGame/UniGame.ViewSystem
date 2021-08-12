@@ -29,9 +29,15 @@
                 .Subscribe(HideView)
                 .AddTo(LifeTime);
 
+            // OnIntent
+            //     .Select(x => _activeView)
+            //     .Subscribe(HideView)
+            //     .AddTo(LifeTime);
+            
             OnBeginShow.Where(x => x != _activeView)
                 .Subscribe(ActivateView)
                 .AddTo(LifeTime);
+            
         }
 
         protected override bool IsAnyViewActive()
