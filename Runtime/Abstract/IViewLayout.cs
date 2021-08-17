@@ -8,7 +8,7 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
         IDisposable,
         IReadOnlyViewLayout
     {
-        IReadOnlyReactiveProperty<bool> HasActiveView { get; }
+        IReadOnlyReactiveProperty<IView> ActiveView { get; }
 
         void ApplyIntent<T>() where T : IView;
         

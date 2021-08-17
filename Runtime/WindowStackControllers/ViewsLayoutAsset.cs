@@ -47,9 +47,7 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         public IObservable<IView> OnBeginHide  => LayoutController.OnBeginHide;
         
         public IObservable<IView> OnBeginShow  => LayoutController.OnBeginShow;
-
-        public IReadOnlyReactiveProperty<bool> HasActiveView => LayoutController.HasActiveView;
-
+        
         public ILifeTime LifeTime => LayoutController.LifeTime;
         
         #region public methods
@@ -67,6 +65,8 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         {
             LayoutController.HideAll();
         }
+
+        public IReadOnlyReactiveProperty<IView> ActiveView => LayoutController.ActiveView;
 
         public void ApplyIntent<T>() where T : IView
         {

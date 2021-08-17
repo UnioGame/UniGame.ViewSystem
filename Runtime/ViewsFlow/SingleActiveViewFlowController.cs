@@ -10,7 +10,7 @@
     [Serializable]
     public class SingleActiveScreenFlow : ViewFlowController
     {
-        private static   Type                          suspendType      = typeof(IScreenSuspendingWindow);
+        private static Type suspendType = typeof(IScreenSuspendingWindow);
         private readonly RecycleReactiveProperty<bool> _screenSuspended = new RecycleReactiveProperty<bool>();
 
         protected override void OnActivate(IViewLayoutContainer layouts)
@@ -18,26 +18,23 @@
             var screenController = layouts.GetLayout(ViewType.Screen);
             var windowController = layouts.GetLayout(ViewType.Window);
 
-            screenController.HasActiveView
-                .WhenTrue(x => windowController.CloseAll())
+            screenController.ActiveView
+                .Where(v => v != null)
+                .Do(_ => windowController.CloseAll())
                 .Subscribe()
                 .AddTo(windowController.LifeTime);
 
-            // windowController.OnIntent
-            //     .When(x => suspendType.IsAssignableFrom(x),x => _screenSuspended.Value = true)
-            //     .Subscribe()
-            //     .AddTo(windowController.LifeTime);
-            
-            windowController.HasActiveView
-                .Where(x => x)
+            windowController.ActiveView
+                .Where(x => x != null)
                 .CombineLatest(windowController.OnBeginShow, (hasView, view) => view)
-                .When(x => x is IScreenSuspendingWindow,x => _screenSuspended.Value = true,
+                .When(x => x is IScreenSuspendingWindow, x => _screenSuspended.Value = true,
                     x => _screenSuspended.Value = false)
                 .Subscribe()
                 .AddTo(windowController.LifeTime);
 
-            windowController.HasActiveView
-                .WhenFalse(x => _screenSuspended.Value = false)
+            windowController.ActiveView
+                .Where(v=>v == null)
+                .Do(_ => _screenSuspended.Value = false)
                 .Subscribe()
                 .AddTo(windowController.LifeTime);
 

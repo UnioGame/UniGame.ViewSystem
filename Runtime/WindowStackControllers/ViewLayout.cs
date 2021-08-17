@@ -26,16 +26,14 @@
         private readonly Subject<IView>                _onViewBeginShow;
         private readonly Subject<IView>                _onViewClosed;
         private readonly Subject<Type>                 _onViewIntent;
-        private readonly RecycleReactiveProperty<bool> _hasActiveView;
+        private readonly ReactiveProperty<IView> _activeView;
 
         protected IReadOnlyReactiveCollection<IView> Views => _views;
 
         public Transform Layout { get; protected set; }
 
         public ILifeTime LifeTime => _lifeTime;
-
-        public virtual IReadOnlyReactiveProperty<bool> HasActiveView => _hasActiveView;
-
+        
         #region IViewStatus
 
         public IObservable<IView> OnHidden    => _onViewHidden;
@@ -44,7 +42,8 @@
         public IObservable<IView> OnBeginShow => _onViewBeginShow;
         public IObservable<IView> OnClosed    => _onViewClosed;
         public IObservable<Type>  OnIntent    => _onViewIntent;
-        
+        public IReadOnlyReactiveProperty<IView> ActiveView => _activeView;
+
         #endregion
 
         #region public methods
@@ -57,7 +56,16 @@
             _onViewBeginShow = new Subject<IView>().AddTo(LifeTime);
             _onViewClosed    = new Subject<IView>().AddTo(LifeTime);
             _onViewIntent    = new Subject<Type>().AddTo(LifeTime);
-            _hasActiveView   = new RecycleReactiveProperty<bool>().AddTo(LifeTime);
+            _activeView = new ReactiveProperty<IView>(null).AddTo(LifeTime);
+
+            _views.ObserveAdd().Do(e => { _activeView.Value = e.Value; }).Subscribe().AddTo(LifeTime);
+            _views.ObserveRemove().Do(e =>
+            {
+                if (_views.Count > 0)
+                    _activeView.Value = Views.Last();
+                else
+                    _activeView.Value = null;
+            }).Subscribe().AddTo(LifeTime);
         }
 
         public void Dispose() => _lifeTime.Terminate();
@@ -177,13 +185,13 @@
             view.Status
                 .Subscribe(x => ViewStatusChanged(view, x))
                 .AddTo(LifeTime);
-
             Add(view);
         }
 
         protected void ViewStatusChanged<TView>(TView view, ViewStatus status)
             where TView : class, IView
         {
+            Debug.Log($"ViewLayout.ViewStatusChanged : {view.GetType().Name} :: status = {status.ToString()}");
             switch (status)
             {
                 case ViewStatus.Hidden:
@@ -203,14 +211,11 @@
                     _onViewBeginHide.OnNext(view);
                     break;
             }
-
-            var hasActiveView = IsAnyViewActive();
-            _hasActiveView.SetValueForce(hasActiveView);
         }
 
         protected virtual bool IsAnyViewActive()
         {
-            return _views.Count > 0 && _views.Any(x => x.Status.Value == ViewStatus.Showing || x.Status.Value == ViewStatus.Shown);
+            return _activeView.HasValue;
         }
 
         protected bool Remove(IView view)
