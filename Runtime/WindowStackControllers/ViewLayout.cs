@@ -66,6 +66,7 @@
                 else
                     _activeView.Value = null;
             }).Subscribe().AddTo(LifeTime);
+            _views.ObserveReset().Do(_ => _activeView.Value = null).Subscribe().AddTo(LifeTime);
         }
 
         public void Dispose() => _lifeTime.Terminate();
