@@ -12,16 +12,34 @@ namespace UniGame.UiSystem.Runtime
     {
         private readonly LifeTimeDefinition   _lifeTimeDefinition = new LifeTimeDefinition();
         private readonly BoolReactiveProperty _isActive           = new BoolReactiveProperty(true);
+        private          bool                 _disposeWithModel   = false;
 
         public  ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
 
-        public virtual bool IsDisposeWithModel => true;
+        public virtual bool IsDisposeWithModel => _disposeWithModel;
         
         public IReadOnlyReactiveProperty<bool> IsActive => _isActive;
+
+        public IViewModel DisposeByModel(bool disposeWithModel)
+        {
+            _disposeWithModel = disposeWithModel;
+            return this;
+        }
 
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Button]
 #endif
-        public void Dispose() =>  _lifeTimeDefinition.Terminate();
+        public void Dispose()
+        {
+            if (_lifeTimeDefinition.IsTerminated)
+                return;
+            _lifeTimeDefinition.Terminate();
+            GC.SuppressFinalize(this);
+        }
+
+        ~ViewModelBase()
+        {
+            _lifeTimeDefinition.Terminate();
+        }
     }
 }
