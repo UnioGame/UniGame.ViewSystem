@@ -16,13 +16,17 @@ namespace UniGame.UiSystem.Runtime
 
         public  ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
 
-        public virtual bool IsDisposeWithModel => _disposeWithModel;
+        public virtual bool IsDisposeWithModel
+        {
+            get => _disposeWithModel;
+            protected set => _disposeWithModel = value;
+        }
         
         public IReadOnlyReactiveProperty<bool> IsActive => _isActive;
 
         public IViewModel DisposeByModel(bool disposeWithModel)
         {
-            _disposeWithModel = disposeWithModel;
+            IsDisposeWithModel = disposeWithModel;
             return this;
         }
 
