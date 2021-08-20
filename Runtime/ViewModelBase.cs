@@ -12,7 +12,7 @@ namespace UniGame.UiSystem.Runtime
     {
         private readonly LifeTimeDefinition   _lifeTimeDefinition = new LifeTimeDefinition();
         private readonly BoolReactiveProperty _isActive           = new BoolReactiveProperty(true);
-        private          bool                 _disposeWithModel   = false;
+        private          bool                 _disposeWithModel   = true;
 
         public  ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
 

@@ -15,7 +15,8 @@ namespace UniGame.UiSystem.Runtime
         private readonly ReactiveProperty<bool> _isVisibleProperty = new ReactiveProperty<bool>(false);
         private readonly ReactiveProperty<bool> _isInitializedProperty = new ReactiveProperty<bool>(false);
 
-        private static DummyView instance;
+        private static EmptyViewModel emptyViewModel = new EmptyViewModel();
+        private static DummyView      instance;
 
         public ILifeTime LifeTime => UniModules.UniCore.Runtime.DataFlow.LifeTime.TerminatedLifetime;
 
@@ -28,6 +29,7 @@ namespace UniGame.UiSystem.Runtime
         
         public IReadOnlyReactiveProperty<bool> IsVisible     => _isVisibleProperty;
         public IReadOnlyReactiveProperty<bool> IsInitialized => _isInitializedProperty;
+        public IViewModel                      ViewModel     => emptyViewModel;
 
         public IView BindToView<T>(IObservable<T> source, Action<T> action, int frameThrottle = 0) => this;
 

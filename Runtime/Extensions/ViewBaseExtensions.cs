@@ -288,6 +288,17 @@
             return view;
         }
         
+                
+        public static TView CloseWithModel<TView>(this TView view)
+            where TView : IView
+        {
+            if (view.LifeTime.IsTerminated || view.ViewModel == null) return view;
+            var viewModel = view.ViewModel;
+            view.CloseWith(viewModel.LifeTime);
+            return view;
+        }
+
+        
         public static T CloseWith<T>(this T view, ILifeTime lifeTime) where T : IView
         {
             lifeTime.AddCleanUpAction(view.Close);

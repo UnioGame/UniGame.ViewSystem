@@ -2,6 +2,7 @@
 {
     using Abstract;
     using Cysharp.Threading.Tasks;
+    using Extensions;
     using UniCore.Runtime.Extension;
     using UniRx;
     using UnityEngine;
@@ -25,7 +26,7 @@
                 .Where(x => x)
                 .AwaitFirstAsync(view.LifeTime);
         }
-        
+
         public static async UniTask AwaitStatusAsync(this IView view,ViewStatus status)
         {
             if (view == null || view.LifeTime.IsTerminated)

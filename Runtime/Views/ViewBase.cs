@@ -57,6 +57,7 @@
         private readonly LifeTimeDefinition _progressLifeTime   = new LifeTimeDefinition();
         private readonly LifeTimeDefinition _viewModelLifeTime   = new LifeTimeDefinition();
 
+
         /// <summary>
         /// ui element visibility status
         /// </summary>

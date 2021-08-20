@@ -24,6 +24,8 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
 
         IReadOnlyReactiveProperty<bool> IsInitialized { get; }
 
+        public IViewModel ViewModel { get; }
+        
         IObservable<IView> SelectStatus(ViewStatus status);
 
         IView BindToView<T>(IObservable<T> source, Action<T> action, int frameThrottle = 0);
