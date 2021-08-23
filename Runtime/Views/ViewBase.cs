@@ -159,7 +159,6 @@
             }
 
             InitializeHandlers(model);
-            
             BindLifeTimeActions(model);
 
             //custom initialization
@@ -417,7 +416,7 @@
                 modelLifeTime.ComposeCleanUp(_viewModelLifeTime, () =>
                 {
                     if (Equals(ViewModel, model))
-                        Close();
+                        Destroy();
                 });
             }
 
