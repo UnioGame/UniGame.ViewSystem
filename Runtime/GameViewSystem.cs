@@ -270,8 +270,6 @@ namespace UniGame.UiSystem.Runtime
         private void Destroy(IView view)
         {
             view.Destroy();
-
-            //TODO move to pool
             var asset = view as Component;
 
             if (asset == null) return;
