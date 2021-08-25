@@ -131,6 +131,26 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
                 Subscribe(x => target.Execute(x));
         }
         
+        public static TSource Bind<TSource>(
+            this TSource view,
+            ILifeTime lifeTime, 
+            Action target)
+            where TSource : IView
+        {
+            lifeTime.AddCleanUpAction(target);
+            return view;
+        }
+        
+        public static TSource Bind<TSource>(
+            this TSource view,
+            ILifeTime lifeTime, 
+            IDisposable target)
+            where TSource : IView
+        {
+            lifeTime.AddDispose(target);
+            return view;
+        }
+        
         public static TSource Bind<TSource,T>(
             this TSource view,
             IObservable<T> source, 
