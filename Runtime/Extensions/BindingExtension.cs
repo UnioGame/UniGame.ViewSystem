@@ -12,6 +12,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
 {
     using Core.Runtime.DataFlow.Interfaces;
     using global::UniCore.Runtime.ProfilerTools;
+    using UISystem.Runtime.Extensions;
     using UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.Core.Runtime.Interfaces;
 
@@ -148,6 +149,16 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             where TSource : IView
         {
             lifeTime.AddDispose(target);
+            return view;
+        }
+        
+        public static TSource BindClose<TSource,TView>(
+            this TSource view,
+            TView source)
+            where TSource : IView
+            where TView : IView
+        {
+            source.CloseWith(view.ModelLifeTime);
             return view;
         }
         

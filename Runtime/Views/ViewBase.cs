@@ -139,7 +139,8 @@
         {
             BindLayout(layoutProvider);
             await Initialize(model);
-
+            BindLayout(layoutProvider);
+            
             return this;
         }
 
