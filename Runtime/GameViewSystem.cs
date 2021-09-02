@@ -90,13 +90,18 @@ namespace UniGame.UiSystem.Runtime
             return ViewCreated.OfType<IView, TView>();
         }
 
-        public async UniTask<IView> Create(IViewModel viewModel, Type viewType, string skinTag = "",
-            Transform parent = null, string viewName = null, bool stayWorld = false)
+        public async UniTask<IView> Create(IViewModel viewModel, Type viewType, 
+            string skinTag = "",
+            Transform parent = null, 
+            string viewName = null,
+            bool stayWorld = false,
+            ILifeTime ownerLifeTime = null)
         {
-            return await CreateView(viewModel, viewType, skinTag, parent, viewName, stayWorld);
+            return await CreateView(viewModel, viewType, skinTag, parent, viewName, stayWorld,ownerLifeTime);
         }
 
-        public async UniTask<IView> OpenWindow(IViewModel viewModel, Type viewType, string skinTag = "",
+        public async UniTask<IView> OpenWindow(IViewModel viewModel, Type viewType, 
+            string skinTag = "",
             string viewName = null)
         {
             var view = await CreateViewAndPushToLayout<ViewBase>(viewModel, viewType, ViewType.Window, skinTag, viewName);
@@ -177,6 +182,7 @@ namespace UniGame.UiSystem.Runtime
         /// <param name="parent">view parent</param>
         /// <param name="viewName"></param>
         /// <param name="stayWorld"></param>
+        /// <param name="ownerLifeTime"></param>
         /// <returns>created view element</returns>
         public async UniTask<IView> CreateView(
             IViewModel viewModel,
@@ -184,17 +190,21 @@ namespace UniGame.UiSystem.Runtime
             string skinTag = "",
             Transform parent = null,
             string viewName = null,
-            bool stayWorld = false)
+            bool stayWorld = false,
+            ILifeTime ownerLifeTime = null)
         {
-            if (LifeTime.IsTerminated)
+            var lifeTime = ownerLifeTime ?? LifeTime;
+            if (lifeTime.IsTerminated)
+                return DummyView.Create();
+            
+            var view = await _viewFactory.Create(viewType, skinTag, parent, viewName, stayWorld);
+            if (lifeTime.IsTerminated)
             {
+                Destroy(view);
                 return DummyView.Create();
             }
-
-            var view = (await _viewFactory.Create(viewType, skinTag, parent, viewName, stayWorld));
-
+            
             await InitializeView(view, viewModel);
-
             return view;
         }
 
@@ -205,15 +215,17 @@ namespace UniGame.UiSystem.Runtime
         /// <param name="skinTag">target element skin</param>
         /// <param name="parent">view parent</param>
         /// <param name="stayWorld"></param>
+        /// <param name="ownerLifeTime"></param>
         /// <returns>created view element</returns>
         public async UniTask<T> CreateView<T>(
             IViewModel viewModel,
             string skinTag = "",
             Transform parent = null,
-            bool stayWorld = false)
+            bool stayWorld = false,
+            ILifeTime ownerLifeTime = null)
             where T : class, IView
         {
-            var view = await CreateView(viewModel, typeof(T), skinTag, parent, string.Empty, stayWorld) as T;
+            var view = await CreateView(viewModel, typeof(T), skinTag, parent, string.Empty, stayWorld,ownerLifeTime) as T;
             return view;
         }
 
@@ -230,7 +242,8 @@ namespace UniGame.UiSystem.Runtime
             Type viewType,
             ViewType layoutType,
             string skinTag = "",
-            string viewName = null)
+            string viewName = null,
+            ILifeTime ownerLifeTime = null)
             where T : class, IView
         {
             var layout = _viewLayouts.GetLayout(layoutType);
@@ -238,7 +251,7 @@ namespace UniGame.UiSystem.Runtime
             
             layout?.ApplyIntent<T>();
             
-            var view = await CreateView(viewModel, viewType, skinTag, parent, viewName);
+            var view = await CreateView(viewModel, viewType, skinTag, parent, viewName,false,ownerLifeTime);
 
             layout?.Push(view);
 
@@ -251,15 +264,14 @@ namespace UniGame.UiSystem.Runtime
         private async UniTask<T> InitializeView<T>(T view, IViewModel viewModel)
             where T : IView
         {
+            //destroy view when lifetime terminated
+            var viewLifeTime = view.LifeTime;
+            viewLifeTime.AddCleanUpAction(() => Destroy(view));
+            
             if (view is ILayoutItem factoryView)
                 factoryView.BindLayout(this);
 
             await view.Initialize(viewModel);
-
-            //destroy view when lifetime terminated
-            var viewLifeTime = view.LifeTime;
-            
-            viewLifeTime.AddCleanUpAction(() => Destroy(view));
 
             //fire view data
             _viewCreatedSubject.OnNext(view);

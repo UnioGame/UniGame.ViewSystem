@@ -1,21 +1,17 @@
-﻿using UniModules.AddressableTools.Pooling;
-using UniModules.UniCore.Runtime.ObjectPool.Runtime;
-using UniModules.UniGame.AddressableTools.Runtime.Extensions;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
-
-namespace UniGame.UiSystem.Runtime
+﻿namespace UniGame.UiSystem.Runtime
 {
+    using UniModules.UniCore.Runtime.ObjectPool.Runtime;
+    using UniModules.UniGame.AddressableTools.Runtime.Extensions;
+    using UnityEngine;
+    using UnityEngine.AddressableAssets;
     using System;
-    using Addressables.Reactive;
     using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
-    using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
-    using UniModules.UniCore.Runtime.Rx.Extensions;
+    using UniModules.UniGame.Core.Runtime.Common;
+    using UniModules.UniGame.Core.Runtime.DataFlow.Extensions;
+    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
-    using UniRx;
-    
     using Object = UnityEngine.Object;
     
     public class ViewFactory : IViewFactory
@@ -40,39 +36,59 @@ namespace UniGame.UiSystem.Runtime
         {
             await _readyStatus;
 
-            var viewLifeTime = LifeTime.Create();
+            var viewDisposable = new DisposableLifetime();
+            viewDisposable.Initialize();
+            
             //load view source by filter parameters
             var result       = await resourceProvider.GetViewReferenceAsync(viewType,skinTag, viewName:viewName);
             //create view instance
-            var view = await Create(result,viewLifeTime, parent,stayWorldPosition);
+            var viewResult   = await Create(result,viewDisposable.LifeTime, parent,stayWorldPosition);
+            var view         = viewResult.View;
+            var viewLifeTime = viewResult.AssetLifeTime;
             
             //if loading failed release resource immediately
             if (view == null) {
-                viewLifeTime.Despawn();
-                GameLog.LogError($"Factory {this.GetType().Name} View of Type {viewType?.Name} not loaded");
+                viewDisposable.Dispose();
+                GameLog.LogError($"Factory {this.GetType().Name} View of Type {viewType?.Name} not loaded or cancelled");
                 return null;
             }
 
-            view.LifeTime.AddCleanUpAction(() => viewLifeTime.Despawn());
-
+            viewLifeTime.AddDispose(viewDisposable);
             return view;
         }
         
         /// <summary>
         /// create view instance
         /// </summary>
-        protected virtual async UniTask<IView> Create(AssetReferenceGameObject asset,LifeTime lifeTime, Transform parent = null, bool stayPosition = false)
+        protected virtual async UniTask<ViewResult> Create(AssetReferenceGameObject asset,ILifeTime lifeTime, Transform parent = null, bool stayPosition = false)
         {
-            if (asset.RuntimeKeyIsValid() == false) return null;
+            if (asset.RuntimeKeyIsValid() == false) return new ViewResult();
 
             var sourceView = await asset.LoadAssetTaskAsync(lifeTime);
+            
+            //operation was cancelled
+            if(sourceView == null) return new ViewResult();
+            
             var viewTransform = sourceView.transform;
             var gameObjectView = sourceView.HasCustomPoolLifeTimeFor()
                 ? sourceView.SpawnActive(viewTransform.position, viewTransform.rotation, parent, stayPosition) 
                 : Object.Instantiate(sourceView, parent, stayPosition);
+            
             //create instance of view
-            var view = gameObjectView.GetComponent<IView>();
-            return view;
+            var view          = gameObjectView.GetComponent<IView>();
+            var assetLifeTime = gameObjectView.GetAssetLifeTime();
+            
+            return new ViewResult()
+            {
+                View = view,
+                AssetLifeTime = assetLifeTime
+            };
+        }
+        
+        public struct ViewResult
+        {
+            public IView     View;
+            public ILifeTime AssetLifeTime;
         }
     }
 }

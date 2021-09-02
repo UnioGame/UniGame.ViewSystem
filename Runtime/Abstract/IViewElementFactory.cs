@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
+﻿using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+
+namespace UniModules.UniGame.UISystem.Runtime.Abstract
 {
     using System;
     using Cysharp.Threading.Tasks;
@@ -12,6 +14,7 @@
             string skinTag = "",
             Transform parent = null,
             string viewName = null,
-            bool stayWorldPosition = false);
+            bool stayWorldPosition = false,
+            ILifeTime ownerLifeTime = null);
     }
 }
