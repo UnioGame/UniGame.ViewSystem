@@ -264,15 +264,15 @@ namespace UniGame.UiSystem.Runtime
         private async UniTask<T> InitializeView<T>(T view, IViewModel viewModel)
             where T : IView
         {
-            //destroy view when lifetime terminated
-            var viewLifeTime = view.LifeTime;
-            viewLifeTime.AddCleanUpAction(() => Destroy(view));
-            
             if (view is ILayoutItem factoryView)
                 factoryView.BindLayout(this);
 
             await view.Initialize(viewModel);
 
+            //destroy view when lifetime terminated
+            var viewLifeTime = view.LifeTime;
+            viewLifeTime.AddCleanUpAction(() => Destroy(view));
+            
             //fire view data
             _viewCreatedSubject.OnNext(view);
 
