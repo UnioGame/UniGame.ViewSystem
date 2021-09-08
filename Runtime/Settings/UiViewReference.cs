@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UniModules.UniGame.AddressableTools.Runtime.AssetReferencies;
 using UniModules.UniGame.ViewSystem.Editor.UiEditor;
 
 namespace UniGame.UiSystem.Runtime.Settings
@@ -51,7 +52,9 @@ namespace UniGame.UiSystem.Runtime.Settings
         public SType ViewModelType;
 
         public int PoolingPreloadCount = 1;
-        
+
+        public List<AssetReferenceSpriteAtlas> Atlases = new List<AssetReferenceSpriteAtlas>();
+
         private string GetModelTypeName()
         {
             return $"ModelType : {ModelType.Type?.GetFormattedName()}";

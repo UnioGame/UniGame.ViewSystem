@@ -41,7 +41,7 @@ namespace UniGame.UiSystem.Runtime.Settings
 
         [Header("Registered Views")]
 #if ODIN_INSPECTOR_3
-        [Sirenix.OdinInspector.Searchable]
+        [Searchable]
 #endif
 #if ODIN_INSPECTOR
         [BoxGroup(nameof(ViewsGroup))]
