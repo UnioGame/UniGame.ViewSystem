@@ -15,6 +15,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
     using UISystem.Runtime.Extensions;
     using UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.Core.Runtime.Interfaces;
+    using Object = UnityEngine.Object;
 
     public static class BindingExtension
     {
@@ -170,6 +171,32 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             where TSource : IView
         {
             source.Bind(target,frameThrottle).AddTo(view.ModelLifeTime);
+            return view;
+        }
+        
+        public static TSource BindWhere<TSource,T>(
+            this TSource view,
+            Func<bool> predicate,
+            IObservable<T> source, 
+            Action<T> target, 
+            int frameThrottle = 1)
+            where TSource : IView
+        {
+            if(predicate != null && predicate())
+                source.Bind(target,frameThrottle).AddTo(view.ModelLifeTime);
+            return view;
+        }
+        
+        public static TSource BindWhere<TSource,T>(
+            this TSource view,
+            Object indicator,
+            IObservable<T> source, 
+            Action<T> target, 
+            int frameThrottle = 1)
+            where TSource : IView
+        {
+            if(indicator)
+                source.Bind(target,frameThrottle).AddTo(view.ModelLifeTime);
             return view;
         }
         
