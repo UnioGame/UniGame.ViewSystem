@@ -211,7 +211,7 @@
         {
             if(!SetInternalStatus(ViewStatus.Closed))
                 return;
-            
+
             StartProgressAction(_progressLifeTime, OnClose, Destroy);
         }
         
