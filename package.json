@@ -15,10 +15,10 @@
   ],
   "dependencies": {
     "com.unity.localization": "0.10.0-preview",
-    "com.unigame.localization": "2021.2.29",
-    "com.unity.addressables": "1.17.17",
+    "com.unigame.localization": "2021.2.30",
+    "com.unity.addressables": "1.18.15",
     "com.unity.textmeshpro": "2.1.6",
-    "com.unigame.coremodules": "2021.5.4"
+    "com.unigame.coremodules": "2021.6.0"
   },
   "repository": {
     "type": "git",
