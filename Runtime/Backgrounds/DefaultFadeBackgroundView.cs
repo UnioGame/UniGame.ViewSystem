@@ -1,7 +1,7 @@
 ﻿namespace UniGame.ViewSystem.Backgrounds
 {
     using System.Collections;
-    using UniGame.UiSystem.Runtime;
+    using UiSystem.Runtime;
     using UniGame.UiSystem.Runtime.Backgrounds.Abstract;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UnityEngine;
@@ -12,12 +12,12 @@
         public float duration = 0.3f;
 
         
-        protected override IEnumerator OnHidingProgress(ILifeTime progressLifeTime)
+        protected override IEnumerator OnHidingProgressOverride(ILifeTime progressLifeTime)
         {
             yield return AnimateFade(1, 0, duration);
         }
 
-        protected override IEnumerator OnShowProgress(ILifeTime progressLifeTime)
+        protected override IEnumerator OnShowProgressOverride(ILifeTime progressLifeTime)
         {
             yield return AnimateFade(0, 1, duration);
         }
