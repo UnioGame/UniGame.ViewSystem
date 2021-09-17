@@ -72,30 +72,24 @@ namespace UniGame.UiSystem.Runtime
         protected sealed override IEnumerator OnCloseProgress(ILifeTime progressLifeTime)
         {
             canvasGroup.blocksRaycasts = hiddenState.BlockRaycasts;
-            
-            yield return base.OnCloseProgress(progressLifeTime);
             yield return OnCloseProgressOverride(progressLifeTime);
         }
 
         protected sealed override IEnumerator OnHidingProgress(ILifeTime progressLifeTime)
         {
             canvasGroup.blocksRaycasts = hiddenState.BlockRaycasts;
-            
-            yield return base.OnHidingProgress(progressLifeTime);
             yield return OnHidingProgressOverride(progressLifeTime);
         }
 
         protected sealed override IEnumerator OnShowProgress(ILifeTime progressLifeTime)
         {
             canvasGroup.blocksRaycasts = visibleState.BlockRaycasts;
-            
-            yield return base.OnShowProgress(progressLifeTime);
             yield return OnShowProgressOverride(progressLifeTime);
         }
 
         protected virtual IEnumerator OnCloseProgressOverride(ILifeTime progressLifeTime)
         {
-            yield break;
+            yield return OnHidingProgress(progressLifeTime);
         }
 
         protected virtual IEnumerator OnHidingProgressOverride(ILifeTime progressLifeTime)
