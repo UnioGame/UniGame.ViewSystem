@@ -12,16 +12,34 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
 {
     using Core.Runtime.DataFlow.Interfaces;
     using global::UniCore.Runtime.ProfilerTools;
+    using global::UniGame.Localization.Runtime.UniModules.UniGame.Localization.Runtime;
     using UISystem.Runtime.Extensions;
     using UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.Core.Runtime.Interfaces;
+    using UnityEngine.Localization;
     using Object = UnityEngine.Object;
 
     public static class BindingExtension
     {
         
         #region ugui extensions
-
+        
+        public static TView Bind<TView>(this TView view, LocalizedString source, Action<string> command, int frameThrottle = 0)
+            where TView : class,IView
+        {
+            if (source == null) return view;
+            
+            Bind(source.AsObservable(),command,frameThrottle)
+                .AddTo(view.ModelLifeTime);
+            return view;
+        }
+        
+        public static TView Bind<TView>(this TView view, LocalizedString source, TextMeshProUGUI text, int frameThrottle = 0)
+            where TView : class,IView
+        {
+            return Bind(view, source, x => text.text = x, frameThrottle);
+        }
+        
         public static TView Bind<TView,TValue>(this TView view, IObservable<TValue> source, Button command, int frameThrottle = 0)
             where TView : class,IView
         {
@@ -33,6 +51,8 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
         public static TView Bind<TView>(this TView view, Button source, Action<Unit> command, int frameThrottle = 0)
             where TView : class,IView
         {
+            if (!source) return view;
+            
             Bind(source.OnClickAsObservable(),command,frameThrottle)
                 .AddTo(view.ModelLifeTime);
             return view;
@@ -41,6 +61,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
         public static TView Bind<TView>(this TView view, Button source, IReactiveCommand<Unit> command, int frameThrottle = 0)
             where TView : class,IView
         {
+            if (!source) return view;
             Bind(source.OnClickAsObservable(),command,frameThrottle)
                 .AddTo(view.ModelLifeTime);
             return view;
