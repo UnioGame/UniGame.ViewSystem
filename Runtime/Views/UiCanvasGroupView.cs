@@ -64,10 +64,7 @@ namespace UniGame.UiSystem.Runtime
             await OnViewInitialize(model);
         }
 
-        protected virtual UniTask OnViewInitialize(TWindowModel model)
-        {
-            return UniTask.CompletedTask;
-        }
+        protected virtual UniTask OnViewInitialize(TWindowModel model) => UniTask.CompletedTask;
 
         protected sealed override IEnumerator OnCloseProgress(ILifeTime progressLifeTime)
         {
