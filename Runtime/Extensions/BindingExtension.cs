@@ -195,10 +195,11 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             return view;
         }
         
-        public static TSource BindWhere<TSource,T>(
+        
+        public static TSource Bind<TSource,T>(
             this TSource view,
-            Func<bool> predicate,
             IObservable<T> source, 
+            Func<bool> predicate,
             Action<T> target, 
             int frameThrottle = 1)
             where TSource : IView
@@ -206,6 +207,17 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             if(predicate != null && predicate())
                 source.Bind(target,frameThrottle).AddTo(view.ModelLifeTime);
             return view;
+        }
+        
+        public static TSource BindWhen<TSource,T>(
+            this TSource view,
+            IObservable<T> source, 
+            Func<bool> predicate,
+            Action<T> target, 
+            int frameThrottle = 1)
+            where TSource : IView
+        {
+            return Bind(view, source, predicate, target, frameThrottle);
         }
         
         public static TSource BindWhere<TSource,T>(
