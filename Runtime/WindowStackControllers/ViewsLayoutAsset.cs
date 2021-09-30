@@ -68,11 +68,6 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         public IReadOnlyReactiveProperty<IView> ActiveView => LayoutController.ActiveView;
 
-        public void ApplyIntent<T>() where T : IView
-        {
-            LayoutController.ApplyIntent<T>();
-        }
-
         public void Push(IView view)
         {
             LayoutController.Push(view);

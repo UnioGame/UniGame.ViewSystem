@@ -249,8 +249,6 @@ namespace UniGame.UiSystem.Runtime
             var layout = _viewLayouts.GetLayout(layoutType);
             var parent = layout?.Layout;
             
-            layout?.ApplyIntent<T>();
-            
             var view = await CreateView(viewModel, viewType, skinTag, parent, viewName,false,ownerLifeTime);
 
             layout?.Push(view);
