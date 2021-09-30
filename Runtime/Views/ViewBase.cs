@@ -92,7 +92,6 @@
             _rectTransform:
             _rectTransform = transform as RectTransform;
 
-        
         /// <summary>
         /// view transform
         /// </summary>
@@ -114,6 +113,10 @@
 
         public IViewModel ViewModel { get; private set; }
 
+#if ODIN_INSPECTOR
+        public bool IsCommandsAction => Application.isPlaying;
+#endif
+        
         #endregion public properties
 
         #region public methods
@@ -175,6 +178,7 @@
         /// </summary>
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Button]
+        [Sirenix.OdinInspector.EnableIf("IsCommandsAction")]
 #endif
         public void Show()
         {
@@ -189,6 +193,7 @@
         /// </summary>
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Button]
+        [Sirenix.OdinInspector.EnableIf("IsCommandsAction")]
 #endif
         public void Hide()
         {
@@ -206,6 +211,7 @@
         /// </summary>
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Button]
+        [Sirenix.OdinInspector.EnableIf("IsCommandsAction")]
 #endif
         public void Close()
         {
