@@ -36,6 +36,7 @@
                 if (uiAsset) {
                     Object.Destroy(uiAsset.gameObject);
                 }
+                uiSystemAsset = null;
             });
                         
             uiSystemAsset = uiAsset.ViewSystem;
