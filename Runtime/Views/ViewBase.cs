@@ -61,7 +61,7 @@
         /// <summary>
         /// ui element visibility status
         /// </summary>
-        private readonly BoolRecycleReactiveProperty _visibility = new BoolRecycleReactiveProperty();
+        private readonly BoolRecycleReactiveProperty _visibility = new BoolRecycleReactiveProperty(false);
 
         /// <summary>
         /// view statuses reactions
@@ -320,9 +320,11 @@
             switch (status)
             {
                 case ViewStatus.Hidden:
+                case ViewStatus.Closed:
                     _visibility.Value = false;
                     break;
                 case ViewStatus.Showing:
+                case ViewStatus.Shown:
                     _visibility.Value = true;
                     break;
             }
