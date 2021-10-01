@@ -7,6 +7,7 @@
     using Cysharp.Threading.Tasks;
     using global::UniGame.ModelViewsMap.Runtime.Settings;
     using global::UniGame.UiSystem.Runtime;
+    using UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.AddressableTools.Runtime.Extensions;
     
     using UnityEngine;
@@ -30,12 +31,16 @@
             var uiSystem = await uiSystemSource.LoadGameObjectAssetTaskAsync(LifeTime);
 
             var uiAsset = Instantiate(uiSystem);
+            
             DontDestroyOnLoad(uiAsset.gameObject);
 
-            LifeTime.AddCleanUpAction(() => {
-                if (uiAsset) {
-                    Object.Destroy(uiAsset.gameObject);
-                }
+            LifeTime.AddCleanUpAction(() =>
+            {
+                if (!uiAsset)
+                    return;
+                
+                uiSystemAsset.Cancel();
+                Object.Destroy(uiAsset.gameObject);
                 uiSystemAsset = null;
             });
                         
