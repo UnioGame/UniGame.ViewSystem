@@ -107,7 +107,7 @@ namespace UniGame.UiSystem.Runtime
                 GetComponent<CanvasGroup>() : 
                 canvasGroup;
             
-            canvasGroup.SetState(showByDefault ? visibleState : hiddenState);
+            //canvasGroup.SetState(showByDefault ? visibleState : hiddenState);
         }
         
 #if UNITY_EDITOR
