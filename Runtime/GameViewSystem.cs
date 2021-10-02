@@ -87,7 +87,12 @@ namespace UniGame.UiSystem.Runtime
         public IObservable<TView> ObserveView<TView>()
             where TView : class, IView
         {
-            return ViewCreated.OfType<IView, TView>();
+            var observable = ViewCreated.OfType<IView, TView>();
+            var view       = Get<TView>();
+            observable = view == null
+                ? observable
+                : observable.Merge(Observable.Return(view));
+            return observable;
         }
 
         public async UniTask<IView> Create(IViewModel viewModel, Type viewType, 
