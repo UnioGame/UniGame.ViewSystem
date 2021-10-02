@@ -20,16 +20,16 @@
         [SerializeField] 
         private AssetReferenceUiSystem uiSystemSource;
 
-        private static IGameViewSystem uiSystemAsset;
+        private static IGameViewSystem viewSystemAsset;
+        private static GameObject viewSystemObject;
         
         public async UniTask<IGameViewSystem> LoadSystem()
         {
-            if (uiSystemAsset != null) {
-                return uiSystemAsset;
+            if (viewSystemAsset != null && viewSystemObject!=null) {
+                return viewSystemAsset;
             }
             
             var uiSystem = await uiSystemSource.LoadGameObjectAssetTaskAsync(LifeTime);
-
             var uiAsset = Instantiate(uiSystem);
             
             DontDestroyOnLoad(uiAsset.gameObject);
@@ -39,18 +39,18 @@
                 if (!uiAsset)
                     return;
                 
-                uiSystemAsset.Cancel();
-                Object.Destroy(uiAsset.gameObject);
-                uiSystemAsset = null;
+                viewSystemAsset.Cancel();
+                Destroy(uiAsset.gameObject);
+                viewSystemAsset = null;
             });
                         
-            uiSystemAsset = uiAsset.ViewSystem;
-            return uiSystemAsset;
+            viewSystemAsset = uiAsset.ViewSystem;
+            return viewSystemAsset;
         }
         
         public sealed override async UniTask<IContext> RegisterAsync(IContext context)
         {
-            var uiSystem = await LoadSystem();
+            var uiSystem = await LoadSystem().AttachExternalCancellation(LifeTime.TokenSource);
             context.Publish(uiSystem);
             return context;
         }
