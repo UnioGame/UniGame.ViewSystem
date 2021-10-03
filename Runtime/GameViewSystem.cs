@@ -202,8 +202,12 @@ namespace UniGame.UiSystem.Runtime
             if (lifeTime.IsTerminated)
                 return DummyView.Create();
             
-            var view = await _viewFactory.Create(viewType, skinTag, parent, viewName, stayWorld);
-            if (lifeTime.IsTerminated)
+            var viewResult = await _viewFactory.Create(viewType, skinTag, parent, viewName, stayWorld)
+                .AttachExternalCancellation(LifeTime.TokenSource)
+                .SuppressCancellationThrow();
+
+            var view = viewResult.Result;
+            if (viewResult.IsCanceled)
             {
                 Destroy(view);
                 return DummyView.Create();
@@ -284,9 +288,10 @@ namespace UniGame.UiSystem.Runtime
 
         private void Destroy(IView view)
         {
+            if (view == null) return;
+            
             view.Destroy();
             var asset = view as Component;
-
             if (asset == null) return;
             
             var target = asset.gameObject;
