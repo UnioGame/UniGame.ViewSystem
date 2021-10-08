@@ -191,6 +191,21 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             return view;
         }
         
+        public static TSource BindUpdate<TSource>(
+            this TSource view,
+            Func<bool> predicate, 
+            Action<long> target, 
+            int frameThrottle = 1)
+            where TSource : IView
+        {
+            Observable.EveryLateUpdate()
+                .Where(x => predicate())
+                .Bind(target,frameThrottle)
+                .AddTo(view.ModelLifeTime);
+            
+            return view;
+        }
+        
         public static TSource Bind<TSource,T>(
             this TSource view,
             IObservable<T> source, 
