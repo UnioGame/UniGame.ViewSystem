@@ -74,7 +74,7 @@ namespace UniGame.UiSystem.Runtime.Settings
             }
         }
 
-        public void Initialize()
+        public async UniTask Initialize()
         {
             if (isStarted) return;
 
@@ -83,13 +83,11 @@ namespace UniGame.UiSystem.Runtime.Settings
 
             FlowController = layoutFlow.Create();
 
-            uiResourceProvider = uiResourceProvider ?? new UiResourceProvider();
-
+            uiResourceProvider ??= new UiResourceProvider();
             uiResourceProvider.RegisterViewReferences(Views);
-            
             viewModelResolvers?.Initialize();
             
-            DownloadAllAsyncSources().Forget();
+            await DownloadAllAsyncSources();
         }
 
         #endregion
@@ -101,16 +99,12 @@ namespace UniGame.UiSystem.Runtime.Settings
             IsComplete = false;
 
             foreach (var source in sources.Where(x => !x.awaitLoading))
-            {
                 LoadAsyncSource(source.viewSourceReference).Forget();
-            }
-
+            
             //load ui views async
             foreach (var viewSource in sources.Where(x => x.awaitLoading))
-            {
                 await LoadAsyncSource(viewSource.viewSourceReference);
-            }
-
+            
             IsComplete = true;
         }
 

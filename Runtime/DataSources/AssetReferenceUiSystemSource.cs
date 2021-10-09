@@ -6,7 +6,7 @@ namespace UniModules.UniGame.UISystem.Runtime.DataSources
 
     [Serializable]
     public class AssetReferenceUiSystemSource : 
-        AssetReferenceT<UiSystemSource>
+        AssetReferenceT<ViewSystemSource>
     {
         public AssetReferenceUiSystemSource(string guid) : base(guid)
         {

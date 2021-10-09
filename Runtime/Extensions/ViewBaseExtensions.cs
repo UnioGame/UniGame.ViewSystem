@@ -307,13 +307,13 @@
         
         public static T HideWith<T>(this T view, ILifeTime lifeTime) where T : IView
         {
-            lifeTime.AddCleanUpAction(view.Hide);
+            lifeTime.AddCleanUpAction(() => view.Hide());
             return view;
         }
         
         public static T ShowWith<T>(this T view, ILifeTime lifeTime) where T : IView
         {
-            lifeTime.AddCleanUpAction(view.Show);
+            lifeTime.AddCleanUpAction(() => view.Show());
             return view;
         }
         

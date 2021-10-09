@@ -12,6 +12,7 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
     using UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract;
     using UnityEditor;
     using UnityEngine;
+    using UnityEngine.AddressableAssets;
     using Object = UnityEngine.Object;
     
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/Editor/Editor Template ViewSystemSettings",fileName = nameof(ViewSystemEditorSettings))]
@@ -82,7 +83,7 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
             var settingsAsset = settings.CopyAsset<ViewSystemSettings>(settings.name, path);
 
             settingsAsset.isActive = true;
-            view.settings = settingsAsset;
+            view.settings = new AssetReferenceT<ViewSystemSettings>(settingsAsset.GetGUID());
 
             view.gameObject.MarkDirty();
             settingsAsset.MarkDirty();

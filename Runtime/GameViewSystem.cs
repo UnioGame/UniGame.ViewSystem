@@ -115,8 +115,7 @@ namespace UniGame.UiSystem.Runtime
             return view;
         }
 
-        public async UniTask<IView> OpenScreen(IViewModel viewModel, Type viewType, string skinTag = "",
-            string viewName = null)
+        public async UniTask<IView> OpenScreen(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
         {
             var view = await CreateViewAndPushToLayout<ViewBase>(viewModel, viewType, ViewType.Screen, skinTag, viewName);
             view.Show();
@@ -124,8 +123,7 @@ namespace UniGame.UiSystem.Runtime
             return view;
         }
 
-        public async UniTask<IView> OpenOverlay(IViewModel viewModel, Type viewType, string skinTag = "",
-            string viewName = null)
+        public async UniTask<IView> OpenOverlay(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
         {
             var view = await CreateViewAndPushToLayout<ViewBase>(viewModel, viewType, ViewType.Overlay, skinTag, viewName);
             view.Show();
