@@ -53,11 +53,10 @@ namespace UniGame.ModelViewsMap.Runtime.Settings
         
         #region public methods
 
-        public async UniTask<IGameViewSystem> Initialize()
+        public async UniTask<IGameViewSystem> Initialize(IContext context)
         {
             var source = await uiViewSystemSource.LoadAssetTaskAsync(LifeTime);
-            
-            var uiSystem = await source.LoadSystem();
+            var uiSystem = await source.CreateAsync(context);
 
             ModelsViewsFlow.Initialize(uiSystem,this);
             
@@ -66,7 +65,7 @@ namespace UniGame.ModelViewsMap.Runtime.Settings
         
         public override async UniTask<IContext> RegisterAsync(IContext context)
         {
-            var uiSystem = await Initialize();
+            var uiSystem = await Initialize(context);
             context.Publish(uiSystem);
             return context;
         }

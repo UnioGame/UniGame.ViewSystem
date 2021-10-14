@@ -9,9 +9,14 @@ namespace UniGame.UiSystem.Runtime
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
     using Settings;
+    using UniModules.UniCore.Runtime.DataFlow;
+    using UniModules.UniCore.Runtime.Rx.Extensions;
+    using UniModules.UniGame.AddressableTools.Runtime.Extensions;
     using UniModules.UniGame.UiSystem.Runtime;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using UnityEngine.AddressableAssets;
+    using Object = Object;
 
     public class GameViewSystemAsset : MonoBehaviour, IGameViewSystem
     {
@@ -20,16 +25,17 @@ namespace UniGame.UiSystem.Runtime
         
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Required]
-        [Sirenix.OdinInspector.InlineEditor]
+        [Sirenix.OdinInspector.DrawWithUnity]
 #endif
-        public ViewSystemSettings settings;
+        public AssetReferenceT<ViewSystemSettings> settings;
         
         [Space]
         public ViewLayoutMap layoutMap = new ViewLayoutMap();
 
         #endregion
 
-        private IGameViewSystem gameViewSystem;
+        private IGameViewSystem    _gameViewSystem;
+        private LifeTimeDefinition _lifeTime;
 
         #region IViewModelProvider api
 
@@ -45,9 +51,11 @@ namespace UniGame.UiSystem.Runtime
         
         public IObservable<IView> ViewCreated => ViewSystem.ViewCreated;
         
-        public IGameViewSystem    ViewSystem  => gameViewSystem ?? (gameViewSystem = Create());
+        public IGameViewSystem ViewSystem => _gameViewSystem;
 
-        public ILifeTime LifeTime => ViewSystem.LifeTime;
+        public bool IsReady => _gameViewSystem != null;
+
+        public ILifeTime LifeTime => _lifeTime;
 
         public IEnumerable<IViewLayout> Controllers => ViewSystem.Controllers;
         
@@ -77,33 +85,42 @@ namespace UniGame.UiSystem.Runtime
             return ViewSystem.Get<T>();
         }
 
-        public void CloseAll()
-        {
-            ViewSystem.CloseAll();
-        }
+        public void CloseAll() => ViewSystem.CloseAll();
 
-        public void Dispose() => gameViewSystem?.Dispose();
-        
+        public void Dispose() => _lifeTime.Terminate();
+
         #endregion
         
+        private void Awake()
+        {
+            _lifeTime = new LifeTimeDefinition();
+            
+            Create().AttachExternalCancellation(_lifeTime.TokenSource).Forget();
+        }
+
         private void OnDestroy() => Dispose();
 
-        private IGameViewSystem Create()
+        private async UniTask<IGameViewSystem> Create()
         {
-            settings.Initialize();
+            var settingsAsset = await settings.LoadAssetTaskAsync(LifeTime);
+            settingsAsset = Object.Instantiate(settingsAsset);
+            settingsAsset.DestroyWith(LifeTime);
+            
+            await settingsAsset.Initialize();
 
-            var factory  = new ViewFactory(new AsyncLazy(() => settings.WaitForInitialize()),settings.ResourceProvider);
+            var factory  = new ViewFactory(new AsyncLazy(settingsAsset.WaitForInitialize),settingsAsset.ResourceProvider);
             var stackMap = new Dictionary<ViewType, IViewLayout>(4);
-            foreach (var item in layoutMap) {
+            
+            foreach (var item in layoutMap)
                 stackMap[item.Key] = item.Value;
-            }
             
             var viewLayoutContainer = new ViewStackLayoutsContainer(stackMap);
-            var sceneFlowController = settings.FlowController;
+            var sceneFlowController = settingsAsset.FlowController;
 
-            var gameSystem = new GameViewSystem(factory, viewLayoutContainer, sceneFlowController,settings.viewModelResolvers,settings.ViewModelTypeMap);
-
+            var gameSystem = new GameViewSystem(factory, viewLayoutContainer, sceneFlowController,settingsAsset.viewModelResolvers,settingsAsset.ViewModelTypeMap);
             gameSystem.TryMakeActive();
+
+            _gameViewSystem = gameSystem.AddTo(LifeTime);
             
             return gameSystem;
         }
