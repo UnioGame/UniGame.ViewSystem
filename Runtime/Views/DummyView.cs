@@ -57,7 +57,10 @@ namespace UniGame.UiSystem.Runtime
 
         public IView Show() => this;
 
-        public IView Hide() => this;
+        public void Hide()
+        {
+            
+        }
 
         public IObservable<IView> SelectStatus(ViewStatus status)
         {

@@ -105,7 +105,7 @@
 
         public IView Show() => View?.Show();
 
-        public IView Hide() => View?.Hide();
+        public void Hide() => View?.Hide();
 
         #endregion
 

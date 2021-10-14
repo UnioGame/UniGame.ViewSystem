@@ -5,6 +5,6 @@
         void  Destroy();
         void  Close();
         IView Show();
-        IView Hide();
+        void Hide();
     }
 }

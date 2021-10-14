@@ -196,17 +196,15 @@
         [Sirenix.OdinInspector.Button]
         [Sirenix.OdinInspector.EnableIf("IsCommandsAction")]
 #endif
-        public IView Hide()
+        public void Hide()
         {
             if(!SetInternalStatus(ViewStatus.Hidden))
-                return this;
+                return;
             
             if(!SetStatus(ViewStatus.Hiding))
-                return this;
+                return;
 
             StartProgressAction(_progressLifeTime, OnHide);
-
-            return this;
         }
 
         /// <summary>
