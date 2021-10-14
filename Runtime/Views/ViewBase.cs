@@ -180,12 +180,13 @@
         [Sirenix.OdinInspector.Button]
         [Sirenix.OdinInspector.EnableIf("IsCommandsAction")]
 #endif
-        public void Show()
+        public IView Show()
         {
             if(!SetInternalStatus(ViewStatus.Shown))
-                return;
+                return this;
             
             StartProgressAction(_progressLifeTime, OnShow);
+            return this;
         }
 
         /// <summary>

@@ -2,9 +2,9 @@
 {
     public interface IViewCommands
     {
-        void Destroy();
-        void Close();
-        void Show();
+        void  Destroy();
+        void  Close();
+        IView Show();
         void Hide();
     }
 }

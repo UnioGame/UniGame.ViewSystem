@@ -87,7 +87,12 @@ namespace UniGame.UiSystem.Runtime
         public IObservable<TView> ObserveView<TView>()
             where TView : class, IView
         {
-            return ViewCreated.OfType<IView, TView>();
+            var observable = ViewCreated.OfType<IView, TView>();
+            var view       = Get<TView>();
+            observable = view == null
+                ? observable
+                : observable.Merge(Observable.Return(view));
+            return observable;
         }
 
         public async UniTask<IView> Create(IViewModel viewModel, Type viewType, 
@@ -110,8 +115,7 @@ namespace UniGame.UiSystem.Runtime
             return view;
         }
 
-        public async UniTask<IView> OpenScreen(IViewModel viewModel, Type viewType, string skinTag = "",
-            string viewName = null)
+        public async UniTask<IView> OpenScreen(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
         {
             var view = await CreateViewAndPushToLayout<ViewBase>(viewModel, viewType, ViewType.Screen, skinTag, viewName);
             view.Show();
@@ -119,8 +123,7 @@ namespace UniGame.UiSystem.Runtime
             return view;
         }
 
-        public async UniTask<IView> OpenOverlay(IViewModel viewModel, Type viewType, string skinTag = "",
-            string viewName = null)
+        public async UniTask<IView> OpenOverlay(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
         {
             var view = await CreateViewAndPushToLayout<ViewBase>(viewModel, viewType, ViewType.Overlay, skinTag, viewName);
             view.Show();
@@ -197,8 +200,12 @@ namespace UniGame.UiSystem.Runtime
             if (lifeTime.IsTerminated)
                 return DummyView.Create();
             
-            var view = await _viewFactory.Create(viewType, skinTag, parent, viewName, stayWorld);
-            if (lifeTime.IsTerminated)
+            var viewResult = await _viewFactory.Create(viewType, skinTag, parent, viewName, stayWorld)
+                .AttachExternalCancellation(LifeTime.TokenSource)
+                .SuppressCancellationThrow();
+
+            var view = viewResult.Result;
+            if (viewResult.IsCanceled)
             {
                 Destroy(view);
                 return DummyView.Create();
@@ -279,9 +286,10 @@ namespace UniGame.UiSystem.Runtime
 
         private void Destroy(IView view)
         {
+            if (view == null) return;
+            
             view.Destroy();
             var asset = view as Component;
-
             if (asset == null) return;
             
             var target = asset.gameObject;
