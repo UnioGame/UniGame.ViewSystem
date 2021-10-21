@@ -64,6 +64,11 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             return view.Bind(source, x => command(), frameThrottle);
         }
         
+        public static TView Bind<TView,TValue>(this TView view, IObservable<TValue> source, Action command, int frameThrottle = 0)
+            where TView : class,IView
+        {
+            return view.Bind(source, x => command(), frameThrottle);
+        }
         
         public static TView Bind<TView>(this TView view, Button source, IReactiveCommand<Unit> command, int frameThrottle = 0)
             where TView : class,IView
