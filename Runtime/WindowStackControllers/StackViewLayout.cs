@@ -21,13 +21,14 @@
             _background = background;
             Layout      = layout;
 
-            OnClosed.Where(x => x == _activeView)
-                .Subscribe(HideView)
-                .AddTo(LifeTime);
+            OnClosed.When(x => x == _activeView, HideView)
+                    .When(_ => _activeView == null, _ => UpdateActiveView())
+                    .Subscribe()
+                    .AddTo(LifeTime);
 
             OnBeginHide.Where(x => x == _activeView)
-                .Subscribe(HideView)
-                .AddTo(LifeTime);
+                       .Subscribe(HideView)
+                       .AddTo(LifeTime);
 
             // OnIntent
             //     .Select(x => _activeView)
@@ -35,8 +36,8 @@
             //     .AddTo(LifeTime);
             
             OnBeginShow.Where(x => x != _activeView)
-                .Subscribe(ActivateView)
-                .AddTo(LifeTime);
+                       .Subscribe(ActivateView)
+                       .AddTo(LifeTime);
             
         }
 
@@ -71,6 +72,14 @@
             Add(view);
         }
 
+        private void UpdateActiveView()
+        {
+            if(Views.Count == 0)
+                return;
+
+            ActivateView(Views.Last());
+        }
+
         private void HideView(IView view)
         {
             _activeView = null;
@@ -79,10 +88,8 @@
             if (lastView == null) 
             {
                 if (_background != null) // can be UnityEngine.Object
-                {
                     _background.Hide();
-                }
-
+                
                 return;
             }
 
@@ -100,9 +107,7 @@
             UpdateTop(view);
 
             if (_background != null) // can be UnityEngine.Object
-            {
                 _background.Show();
-            }
         }
     }
 }
