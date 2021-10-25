@@ -45,6 +45,6 @@
         /// <summary>
         /// custom initialization methods
         /// </summary>
-        protected virtual async UniTask OnInitialize(TViewModel model) { }
+        protected virtual UniTask OnInitialize(TViewModel model) => UniTask.CompletedTask;
     }
 }
