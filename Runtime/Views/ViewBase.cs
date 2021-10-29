@@ -219,6 +219,12 @@
             if(!SetInternalStatus(ViewStatus.Closed))
                 return;
 
+            if (_status.Value == ViewStatus.Hidden)
+            {
+                Destroy();
+                return;
+            }
+            
             StartProgressAction(_progressLifeTime, OnClose, Destroy);
         }
         
