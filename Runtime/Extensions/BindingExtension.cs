@@ -89,12 +89,15 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
         public static TView Bind<TView>(this TView view, IObservable<Sprite> source, Image image, int frameThrottle = 0)
             where TView : class,IView
         {
-            return view.Bind(source, view.ModelLifeTime, x => image.sprite = x,frameThrottle);
+            return !image ? view : view.Bind(source, view.ModelLifeTime, x => image.sprite = x,frameThrottle);
         }
         
         public static TView Bind<TView>(this TView view, IObservable<Sprite> source, Button button, int frameThrottle = 0)
             where TView : class,IView
         {
+            if (!button || !button.image)
+                return view;
+            
             return view.Bind(source, view.ModelLifeTime, x => button.image.sprite = x,frameThrottle);
         }
         
