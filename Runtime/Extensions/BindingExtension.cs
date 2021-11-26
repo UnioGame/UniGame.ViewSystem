@@ -77,7 +77,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
                 .AddTo(view.ModelLifeTime);
             return view;
         }
-        
+
         public static TView Bind<TView>(this TView view, Button source, Action command, int frameThrottle = 0)
             where TView : class,IView
         {
@@ -95,6 +95,15 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
         {
             if (!source) return view;
             Bind(source.OnClickAsObservable(),command,frameThrottle)
+                .AddTo(view.ModelLifeTime);
+            return view;
+        }
+        
+        public static TView Bind<TView>(this TView view, IObservable<bool> source, Button button, int frameThrottle = 0)
+            where TView : class,IView
+        {
+            if (!button) return view;
+            Bind(source,x => button.interactable = x,frameThrottle)
                 .AddTo(view.ModelLifeTime);
             return view;
         }

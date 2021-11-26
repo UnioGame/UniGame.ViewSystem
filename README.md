@@ -272,6 +272,9 @@ https://github.com/UniGameTeam/UniGame.ViewSystem.Examples
 
 ![](https://github.com/UniGameTeam/UniGame.UISystem/blob/master/Readme/Assets/skins_views.gif)
 
+### Real Project Demo
+
+![](https://github.com/UniGameTeam/UniGame.ViewSystem/blob/master/Editor/GitAssets/game-hud.gif)
 
 ## License
 
