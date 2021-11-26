@@ -10,6 +10,7 @@ using UnityEngine.UI;
 
 namespace UniModules.UniGame.UiSystem.Runtime.Extensions
 {
+    using System.Collections.Generic;
     using Core.Runtime.DataFlow.Interfaces;
     using global::UniCore.Runtime.ProfilerTools;
     using global::UniGame.Localization.Runtime.UniModules.UniGame.Localization.Runtime;
@@ -31,6 +32,25 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             
             Bind(source.AsObservable(),command,frameThrottle)
                 .AddTo(view.ModelLifeTime);
+            return view;
+        }
+        
+        public static TView Bind<TView,TValue>(this TView view, IEnumerable<TValue> source, Action<TValue> action)
+            where TView : class,IView
+        {
+            if (source == null || action == null) return view;
+
+            foreach (var value in source)
+                action(value);
+            
+            return view;
+        }
+        
+        public static TView Bind<TView,TValue>(this TView view, TValue source, Action<TValue> action)
+            where TView : class,IView
+        {
+            if (source == null || action == null) return view;
+            action(source);
             return view;
         }
         
