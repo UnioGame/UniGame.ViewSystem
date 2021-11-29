@@ -14,6 +14,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
     using Core.Runtime.DataFlow.Interfaces;
     using global::UniCore.Runtime.ProfilerTools;
     using global::UniGame.Localization.Runtime.UniModules.UniGame.Localization.Runtime;
+    using global::UniGame.UiSystem.Runtime;
     using UISystem.Runtime.Extensions;
     using UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.Core.Runtime.Interfaces;
@@ -252,6 +253,17 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
         {
             source.Bind(target,frameThrottle).AddTo(view.ModelLifeTime);
             return view;
+        }
+        
+        public static TSource Bind<TSource,T>(
+            this TSource view,
+            IObservable<T> source, 
+            ViewBase target, 
+            int frameThrottle = 1)
+            where TSource : ViewBase
+            where T : IViewModel
+        {
+            return view.Bind(source, x => target.Initialize(x, view.Layout).AttachExternalCancellation(view.ModelLifeTime.TokenSource).Forget(),frameThrottle);
         }
         
         
