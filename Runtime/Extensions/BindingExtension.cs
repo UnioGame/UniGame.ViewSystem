@@ -46,15 +46,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             
             return view;
         }
-        
-        public static TView Bind<TView,TValue>(this TView view, TValue source, Action<TValue> action)
-            where TView : class,IView
-        {
-            if (source == null || action == null) return view;
-            action(source);
-            return view;
-        }
-        
+
         public static TView Bind<TView>(this TView view, LocalizedString source, TextMeshProUGUI text, int frameThrottle = 0)
             where TView : class,IView
         {
@@ -69,20 +61,24 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             return view;
         }
         
-        public static TView Bind<TView>(this TView view, Button source, Action<Unit> command, int frameThrottle = 0)
-            where TView : class,IView
+        public static TView Bind<TView>(this TView view, Button source, Action<Unit> command,int throttleInMilliseconds = 0)
+            where           TView : class,IView
         {
             if (!source) return view;
+
+            var clickObservable = throttleInMilliseconds <= 0
+                ? source.OnClickAsObservable()
+                : source.OnClickAsObservable().ThrottleFirst(TimeSpan.FromMilliseconds(throttleInMilliseconds));
             
-            Bind(source.OnClickAsObservable(),command,frameThrottle)
+            Bind(clickObservable,command,0)
                 .AddTo(view.ModelLifeTime);
             return view;
         }
 
-        public static TView Bind<TView>(this TView view, Button source, Action command, int frameThrottle = 0)
+        public static TView Bind<TView>(this TView view, Button source, Action command, int throttleInMilliseconds = 0)
             where TView : class,IView
         {
-            return view.Bind(source, x => command(), frameThrottle);
+            return view.Bind(source, x => command(), throttleInMilliseconds);
         }
         
         public static TView Bind<TView,TValue>(this TView view, IObservable<TValue> source, Action command, int frameThrottle = 0)
