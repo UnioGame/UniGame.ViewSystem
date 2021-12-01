@@ -251,15 +251,30 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             return view;
         }
         
+        public static TSource BindClose<TSource,T>(
+            this TSource view,
+            IView target)
+            where TSource : IView
+            where T : IViewModel
+        {
+            target.CloseWith(view.ModelLifeTime);
+            return view;
+        }
+        
         public static TSource Bind<TSource,T>(
             this TSource view,
             IObservable<T> source, 
             ViewBase target, 
+            bool closeWith = false,
             int frameThrottle = 1)
             where TSource : ViewBase
             where T : IViewModel
         {
-            return view.Bind(source, x => target.Initialize(x, view.Layout).AttachExternalCancellation(view.ModelLifeTime.TokenSource).Forget(),frameThrottle);
+            if (closeWith) view.BindClose(target);
+            
+            return view.Bind(source, 
+                x => target.Initialize(x, view.Layout).AttachExternalCancellation(view.ModelLifeTime.TokenSource).Forget(),
+                frameThrottle);
         }
         
         
