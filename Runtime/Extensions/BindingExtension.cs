@@ -13,11 +13,13 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
     using System.Collections.Generic;
     using Core.Runtime.DataFlow.Interfaces;
     using global::UniCore.Runtime.ProfilerTools;
+    using global::UniGame.Addressables.Reactive;
     using global::UniGame.Localization.Runtime.UniModules.UniGame.Localization.Runtime;
     using global::UniGame.UiSystem.Runtime;
     using UISystem.Runtime.Extensions;
     using UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.Core.Runtime.Interfaces;
+    using UnityEngine.AddressableAssets;
     using UnityEngine.Localization;
     using UniUiSystem.Runtime.Utils;
     using Object = UnityEngine.Object;
@@ -116,7 +118,22 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
         public static TView Bind<TView>(this TView view, IObservable<Sprite> source, Image image, int frameThrottle = 0)
             where TView : class,IView
         {
-            return !image ? view : view.Bind(source, view.ModelLifeTime, x => image.sprite = x,frameThrottle);
+            return !image ? view : view.Bind(source.Where(x => x!=null), view.ModelLifeTime, x => image.sprite = x,frameThrottle);
+        }
+        
+        public static TView Bind<TView>(this TView view, AssetReferenceT<Sprite> source, Image image, int frameThrottle = 0)
+            where TView : class,IView
+        {
+            if (source.RuntimeKeyIsValid() == false) return view;
+            return !image ? view : view.Bind(source.ToObservable(view.ModelLifeTime), image,frameThrottle);
+        }
+
+        public static TView Bind<TView,TValue>(this TView view, AssetReferenceT<TValue> source, Action<TValue> action, int frameThrottle = 0)
+            where TView : class,IView
+            where TValue : Object
+        {
+            if (source.RuntimeKeyIsValid() == false || action == null) return view;
+            return view.Bind(source.ToObservable(view.ModelLifeTime), action,frameThrottle);
         }
         
         public static TView Bind<TView>(this TView view, IObservable<Sprite> source, Button button, int frameThrottle = 0)
