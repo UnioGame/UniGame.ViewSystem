@@ -148,12 +148,13 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
         public static TView Bind<TView>(this TView view, IObservable<string> source, TextMeshProUGUI text, int frameThrottle = 0)
             where TView : class,IView
         {
-            return view.Bind(source, view.ModelLifeTime, x => text.text = x,frameThrottle);
+            return view.Bind(source, view.ModelLifeTime, x => text.SetValue(x),frameThrottle);
         }
 
         public static TView Bind<TView>(this TView view, IObservable<string> source, TextMeshPro text, int frameThrottle = 0)
             where TView : class,IView
         {
+            if (!text) return view;
             return view.Bind(source, view.ModelLifeTime, x => text.text = x,frameThrottle);
         }
 
