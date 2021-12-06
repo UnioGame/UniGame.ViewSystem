@@ -156,17 +156,18 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
         {
             return view.Bind(source, view.ModelLifeTime, x => text.text = x,frameThrottle);
         }
-        
+
         public static TView Bind<TView>(this TView view, IObservable<int> source, TextMeshPro text, int frameThrottle = 0)
             where TView : class,IView
         {
             return view.Bind(source, view.ModelLifeTime, x => text.text = x.ToStringFromCache(),frameThrottle);
         }
         
-        public static TView Bind<TView>(this TView view, IObservable<int> source,Func<int,string> format, TextMeshProUGUI text, int frameThrottle = 0)
+        public static TView Bind<TView,TValue>(this TView view, IObservable<TValue> source,Func<TValue,string> format, TextMeshProUGUI text, int frameThrottle = 0)
             where           TView : class,IView
         {
-            return view.Bind(source, view.ModelLifeTime, x => format(x),frameThrottle);
+            var stringObservable = source.Select(format);
+            return view.Bind(stringObservable, text,frameThrottle);
         }
         
         public static TView Bind<TView>(this TView view, IObservable<int> source, TextMeshProUGUI text, int frameThrottle = 0)
