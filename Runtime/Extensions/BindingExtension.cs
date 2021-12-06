@@ -19,6 +19,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
     using UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.Core.Runtime.Interfaces;
     using UnityEngine.Localization;
+    using UniUiSystem.Runtime.Utils;
     using Object = UnityEngine.Object;
 
     public static class BindingExtension
@@ -145,15 +146,27 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             return view.Bind(source, view.ModelLifeTime, x => text.text = x.ToStringFromCache(),frameThrottle);
         }
         
+        public static TView Bind<TView>(this TView view, IObservable<int> source,Func<int,string> format, TextMeshProUGUI text, int frameThrottle = 0)
+            where           TView : class,IView
+        {
+            return view.Bind(source, view.ModelLifeTime, x => format(x),frameThrottle);
+        }
+        
         public static TView Bind<TView>(this TView view, IObservable<int> source, TextMeshProUGUI text, int frameThrottle = 0)
             where TView : class,IView
         {
-            return view.Bind(source, view.ModelLifeTime, x => text.text = x.ToStringFromCache(),frameThrottle);
+            return view.Bind(source, view.ModelLifeTime, x => text.SetValue(x.ToStringFromCache()),frameThrottle);
         }
         
         #endregion
 
 
+        public static TView Bind<TView,TValue>(this TView view, IObservable<TValue> source, IObserver<TValue> observer, int frameThrottle = 0)
+            where TView : class,IView
+        {
+            return view.Bind(source, view.ModelLifeTime, observer.OnNext,frameThrottle);
+        }
+        
         public static async UniTask<TView> Bind<TView,TModel>(this TView view,TModel model, IView target) 
             where TView : class, IView
             where TModel : IViewModel
