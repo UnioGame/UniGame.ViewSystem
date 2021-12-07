@@ -108,6 +108,14 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             return view;
         }
         
+        public static TView Bind<TView>(this TView view, IObservable<bool> source, CanvasGroup group, int frameThrottle = 0)
+            where TView : class,IView
+        {
+            if (!group) return view;
+            Bind(source,x => group.interactable = x,frameThrottle).AddTo(view.ModelLifeTime);
+            return view;
+        }
+        
         public static TView Bind<TView,TValue>(this TView view, IObservable<TValue> source, IReactiveCommand<TValue> command, int frameThrottle = 0)
             where TView : class,IView
         {
