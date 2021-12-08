@@ -205,7 +205,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
         public static IDisposable Bind<T>(
             this IObservable<T> source, 
             Action<T> target, 
-            int frameThrottle = 1)
+            int frameThrottle = 0)
         {
             if (source != null)
                 return frameThrottle < 1
@@ -219,7 +219,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
         public static IDisposable Bind<T>(
             this IObservable<T> source, 
             IReactiveCommand<T> target, 
-            int frameThrottle = 1)
+            int frameThrottle = 0)
         {
             if(source == null)
                 return Disposable.Empty;
@@ -269,7 +269,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             this TSource view,
             Func<bool> predicate, 
             Action<long> target, 
-            int frameThrottle = 1)
+            int frameThrottle = 0)
             where TSource : IView
         {
             Observable.EveryLateUpdate()
@@ -284,7 +284,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             this TSource view,
             IObservable<T> source, 
             Action<T> target, 
-            int frameThrottle = 1)
+            int frameThrottle = 0)
             where TSource : IView
         {
             source.Bind(target,frameThrottle).AddTo(view.ModelLifeTime);
@@ -306,7 +306,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             IObservable<T> source, 
             ViewBase target, 
             bool closeWith = false,
-            int frameThrottle = 1)
+            int frameThrottle = 0)
             where TSource : ViewBase
             where T : IViewModel
         {
@@ -323,7 +323,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             IObservable<T> source, 
             Func<bool> predicate,
             Action<T> target, 
-            int frameThrottle = 1)
+            int frameThrottle = 0)
             where TSource : IView
         {
             if(predicate != null && predicate())
@@ -336,7 +336,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             IObservable<T> source, 
             Func<bool> predicate,
             Action<T> target, 
-            int frameThrottle = 1)
+            int frameThrottle = 0)
             where TSource : IView
         {
             return Bind(view, source, predicate, target, frameThrottle);
@@ -347,7 +347,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             Object indicator,
             IObservable<T> source, 
             Action<T> target, 
-            int frameThrottle = 1)
+            int frameThrottle = 0)
             where TSource : IView
         {
             if(indicator)
@@ -359,13 +359,13 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             this IViewModel model,
             IObservable<T> source, 
             Action<T> target, 
-            int frameThrottle = 1)
+            int frameThrottle = 0)
         {
             source.Bind(target,frameThrottle).AddTo(model.LifeTime);
             return model;
         }
 
-        public static TSource Bind<TSource, T>(this TSource view, IObservable<T> source, ILifeTime lifeTime, Action<T> target, int frameThrottle = 1) 
+        public static TSource Bind<TSource, T>(this TSource view, IObservable<T> source, ILifeTime lifeTime, Action<T> target, int frameThrottle = 0) 
             where TSource : ILifeTimeContext
         {
             source.Bind(target, frameThrottle).AddTo(lifeTime);
