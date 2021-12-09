@@ -83,7 +83,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
         {
             return view.Bind(source, x => command(), throttleInMilliseconds);
         }
-        
+
         public static TView Bind<TView,TValue>(this TView view, IObservable<TValue> source, Action command, int frameThrottle = 0)
             where TView : class,IView
         {
@@ -126,7 +126,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
         public static TView Bind<TView>(this TView view, IObservable<Sprite> source, Image image, int frameThrottle = 0)
             where TView : class,IView
         {
-            return !image ? view : view.Bind(source.Where(x => x!=null), view.ModelLifeTime, x => image.sprite = x,frameThrottle);
+            return !image ? view : view.Bind(source.Where(x => x!=null), x => image.sprite = x);
         }
         
         public static TView Bind<TView>(this TView view, AssetReferenceT<Sprite> source, Image image, int frameThrottle = 0)
@@ -150,26 +150,32 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             if (!button || !button.image)
                 return view;
             
-            return view.Bind(source, view.ModelLifeTime, x => button.image.sprite = x,frameThrottle);
+            return view.Bind(source, x => button.image.sprite = x,frameThrottle);
         }
         
         public static TView Bind<TView>(this TView view, IObservable<string> source, TextMeshProUGUI text, int frameThrottle = 0)
             where TView : class,IView
         {
-            return view.Bind(source, view.ModelLifeTime, x => text.SetValue(x),frameThrottle);
+            return view.Bind(source,x => text.SetValue(x),frameThrottle);
+        }
+        
+        public static TView Bind<TView>(this TView view, IObservable<string> source, TMP_Text text, int frameThrottle = 0)
+            where TView : class,IView
+        {
+            return !text ? view : view.Bind(source,x => text.text = x,frameThrottle);
         }
 
         public static TView Bind<TView>(this TView view, IObservable<string> source, TextMeshPro text, int frameThrottle = 0)
             where TView : class,IView
         {
             if (!text) return view;
-            return view.Bind(source, view.ModelLifeTime, x => text.text = x,frameThrottle);
+            return view.Bind(source, x => text.text = x,frameThrottle);
         }
 
         public static TView Bind<TView>(this TView view, IObservable<int> source, TextMeshPro text, int frameThrottle = 0)
             where TView : class,IView
         {
-            return view.Bind(source, view.ModelLifeTime, x => text.text = x.ToStringFromCache(),frameThrottle);
+            return view.Bind(source, x => text.text = x.ToStringFromCache(),frameThrottle);
         }
         
         public static TView Bind<TView,TValue>(this TView view, IObservable<TValue> source,Func<TValue,string> format, TextMeshProUGUI text, int frameThrottle = 0)
@@ -182,7 +188,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
         public static TView Bind<TView>(this TView view, IObservable<int> source, TextMeshProUGUI text, int frameThrottle = 0)
             where TView : class,IView
         {
-            return view.Bind(source, view.ModelLifeTime, x => text.SetValue(x.ToStringFromCache()),frameThrottle);
+            return view.Bind(source, x => text.SetValue(x.ToStringFromCache()),frameThrottle);
         }
         
         #endregion
@@ -191,7 +197,13 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
         public static TView Bind<TView,TValue>(this TView view, IObservable<TValue> source, IObserver<TValue> observer, int frameThrottle = 0)
             where TView : class,IView
         {
-            return view.Bind(source, view.ModelLifeTime, observer.OnNext,frameThrottle);
+            return view.Bind(source, observer.OnNext,frameThrottle);
+        }
+        
+        public static TView Bind<TView,TValue>(this TView view, IObservable<TValue> source, IObserver<Unit> observer, int frameThrottle = 0)
+            where TView : class,IView
+        {
+            return view.Bind(source,x => observer.OnNext(Unit.Default),frameThrottle);
         }
         
         public static async UniTask<TView> Bind<TView,TModel>(this TView view,TModel model, IView target) 

@@ -275,7 +275,7 @@ namespace UniGame.UiSystem.Runtime
             await view.Initialize(viewModel);
 
             //destroy view when lifetime terminated
-            var viewLifeTime = view.LifeTime;
+            var viewLifeTime = view.ViewLifeTime;
             viewLifeTime.AddCleanUpAction(() => Destroy(view));
             
             //fire view data

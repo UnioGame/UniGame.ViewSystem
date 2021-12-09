@@ -229,33 +229,6 @@
             StartProgressAction(_progressLifeTime, OnClose, Destroy);
         }
         
-        /// <summary>
-        /// bind source stream to view action
-        /// with View LifeTime context
-        /// </summary>
-        public IView BindTo<T>(IObservable<T> source, Action<T> action)
-        {
-            return BindToView(source, action);
-        }
-        
-        /// <summary>
-        /// bind source stream to view action
-        /// with View LifeTime context
-        /// </summary>
-        public IView BindThrottleTo<T>(IObservable<T> source, Action<T> action,int frameThrottle = 1)
-        {
-            return BindToView(source, action,frameThrottle);
-        }
-
-        /// <summary>
-        /// bind source stream to view action
-        /// with View LifeTime context
-        /// </summary>
-        public IView BindToView<T>(IObservable<T> source, Action<T> action, int frameThrottle = 0)
-        {
-            return this.Bind(source, _viewModelLifeTime, action,frameThrottle);
-        }
-        
         public IObservable<IView> SelectStatus(ViewStatus status)
         {
             return _status.

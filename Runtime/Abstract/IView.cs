@@ -30,8 +30,6 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
         
         IObservable<IView> SelectStatus(ViewStatus status);
 
-        IView BindToView<T>(IObservable<T> source, Action<T> action, int frameThrottle = 0);
-        
         /// <summary>
         /// is view lifetime finished
         /// </summary>

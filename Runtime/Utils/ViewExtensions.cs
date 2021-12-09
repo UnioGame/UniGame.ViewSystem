@@ -20,20 +20,20 @@
 
         public static async UniTask AwaitIsReadyAsync(this IView view)
         {
-            if (view == null || view.LifeTime.IsTerminated)
+            if (view == null || view.ViewLifeTime.IsTerminated)
                 return;
             await view.IsInitialized
                 .Where(x => x)
-                .AwaitFirstAsync(view.LifeTime);
+                .AwaitFirstAsync(view.ViewLifeTime);
         }
 
         public static async UniTask AwaitStatusAsync(this IView view,ViewStatus status)
         {
-            if (view == null || view.LifeTime.IsTerminated)
+            if (view == null || view.ViewLifeTime.IsTerminated)
                 return;
             await view.Status
                 .Where(x => x == status)
-                .AwaitFirstAsync(view.LifeTime);
+                .AwaitFirstAsync(view.ViewLifeTime);
         }
         
     }
