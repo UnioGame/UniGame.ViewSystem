@@ -26,7 +26,8 @@ namespace UniGame.UiSystem.Runtime
         public Transform  Transform => null;
         
         public ILifeTime ModelLifeTime => UniModules.UniCore.Runtime.DataFlow.LifeTime.TerminatedLifetime;
-        
+        public ILifeTime ViewLifeTime  => UniModules.UniCore.Runtime.DataFlow.LifeTime.TerminatedLifetime;
+
         public IReadOnlyReactiveProperty<bool> IsVisible     => _isVisibleProperty;
         public IReadOnlyReactiveProperty<bool> IsInitialized => _isInitializedProperty;
         public IViewModel                      ViewModel     => emptyViewModel;

@@ -10,7 +10,7 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
 
 
     public interface IView : 
-        ILifeTimeContext, 
+        //ILifeTimeContext, 
         IViewStatus, 
         IViewCommands
     {
@@ -19,6 +19,8 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
         public Transform  Transform { get; }
         
         ILifeTime ModelLifeTime { get; }
+        
+        ILifeTime ViewLifeTime { get; }
         
         IReadOnlyReactiveProperty<bool> IsVisible { get; }
 

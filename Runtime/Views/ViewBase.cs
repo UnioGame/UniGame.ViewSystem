@@ -84,7 +84,8 @@
         public ILifeTime LifeTime => _lifeTimeDefinition;
 
         public ILifeTime ModelLifeTime => _viewModelLifeTime;
-        
+        public ILifeTime ViewLifeTime  => _lifeTimeDefinition;
+
         /// <summary>
         /// view transform
         /// </summary>
