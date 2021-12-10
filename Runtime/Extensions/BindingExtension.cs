@@ -358,7 +358,7 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             where TSource : IView
         {
             Observable.Interval(interval)
-                .Where(x => predicate())
+                .Where(x => view != null && view.LifeTime.IsTerminated == false && predicate())
                 .Bind(x => target(),0)
                 .AddTo(view.ModelLifeTime);
             

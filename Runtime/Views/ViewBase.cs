@@ -126,7 +126,11 @@
         /// <summary>
         /// complete view lifetime immediately
         /// </summary>
-        public void Destroy() => _lifeTimeDefinition.Terminate();
+        public void Destroy()
+        {
+            _lifeTimeDefinition.Terminate();
+            _viewModelLifeTime.Terminate();
+        }
 
         public void BindLayout(IViewLayoutProvider layoutProvider)
         {
