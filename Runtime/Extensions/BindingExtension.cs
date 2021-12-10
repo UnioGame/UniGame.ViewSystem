@@ -24,6 +24,13 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
     using UniUiSystem.Runtime.Utils;
     using Object = UnityEngine.Object;
 
+#if ENABLE_DOTWEEN
+    
+    using DG.Tweening;
+    using DoTweenRoutines.Runtime;
+    
+#endif
+    
     public static class BindingExtension
     {
         
@@ -73,8 +80,8 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
                 ? source.OnClickAsObservable()
                 : source.OnClickAsObservable().ThrottleFirst(TimeSpan.FromMilliseconds(throttleInMilliseconds));
             
-            Bind(clickObservable,command,0)
-                .AddTo(view.ModelLifeTime);
+            Bind(clickObservable,command,0).AddTo(view.ModelLifeTime);
+            
             return view;
         }
 
@@ -83,19 +90,44 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
         {
             return view.Bind(source, x => command(), throttleInMilliseconds);
         }
+        
+        public static TView Bind<TView>(this TView view, Toggle source, IReactiveProperty<bool> value)
+            where TView : class,IView
+        {
+            if (!source) return view;
+            
+            return view.Bind(source.OnValueChangedAsObservable(), value);
+        }
 
+        public static TView Bind<TView,TValue>(this TView view, IObservable<TValue> source, IReactiveProperty<TValue> value)
+            where TView : class,IView
+        {
+            return view.Bind(source, x => value.Value = x);
+        }
+        
         public static TView Bind<TView,TValue>(this TView view, IObservable<TValue> source, Action command, int frameThrottle = 0)
             where TView : class,IView
         {
             return view.Bind(source, x => command(), frameThrottle);
         }
         
-        public static TView Bind<TView>(this TView view, Button source, IReactiveCommand<Unit> command, int frameThrottle = 0)
+        public static TView Bind<TView>(this TView view, Button source, IReactiveCommand<Unit> command, int throttleInMilliseconds = 0)
+            where TView : class,IView
+        {
+            return Bind(view, source, () => command.Execute(Unit.Default), TimeSpan.FromMilliseconds(throttleInMilliseconds));
+        }
+        
+        public static TView Bind<TView>(this TView view, Button source, Action command, TimeSpan throttleTime)
             where TView : class,IView
         {
             if (!source) return view;
-            Bind(source.OnClickAsObservable(),command,frameThrottle)
-                .AddTo(view.ModelLifeTime);
+            
+            var clickObservable = throttleTime.TotalMilliseconds <= 0 
+                ? source.OnClickAsObservable()
+                : source.OnClickAsObservable().ThrottleFirst(throttleTime);
+            
+            Bind(clickObservable,x => command(),0).AddTo(view.ModelLifeTime);
+            
             return view;
         }
         
@@ -103,8 +135,15 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             where TView : class,IView
         {
             if (!button) return view;
-            Bind(source,x => button.interactable = x,frameThrottle)
-                .AddTo(view.ModelLifeTime);
+            Bind(source,x => button.interactable = x,frameThrottle).AddTo(view.ModelLifeTime);
+            return view;
+        }
+        
+        public static TView Bind<TView>(this TView view, IObservable<bool> source, Toggle toggle)
+            where TView : class,IView
+        {
+            if (!toggle) return view;
+            Bind(source,x => toggle.isOn = x).AddTo(view.ModelLifeTime);
             return view;
         }
         
@@ -292,6 +331,48 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             return view;
         }
         
+        public static TSource BindIntervalUpdate<TSource>(
+            this TSource view,
+            TimeSpan interval,
+            Action target)
+            where TSource : IView
+        {
+            Observable.Interval(interval)
+                .Bind(x => target(),0)
+                .AddTo(view.ModelLifeTime);
+            
+            return view;
+        }
+
+        public static TSource BindIntervalUpdate<TSource>(
+            this TSource view,
+            TimeSpan interval,
+            Action target,
+            Func<bool> predicate)
+            where TSource : IView
+        {
+            Observable.Interval(interval)
+                .Where(x => predicate())
+                .Bind(x => target(),0)
+                .AddTo(view.ModelLifeTime);
+            
+            return view;
+        }
+
+                
+        public static TSource BindIntervalUpdate<TSource,TValue>(
+            this TSource view,
+            TimeSpan interval,
+            Func<TValue> source,
+            Action<TValue> target,
+            Func<bool> predicate = null)
+            where TSource : IView
+        {
+            if (predicate != null)
+                return BindIntervalUpdate(view, interval, () => target(source()), predicate);
+            return BindIntervalUpdate(view, interval, () => target(source()));
+        }
+
         public static TSource Bind<TSource,T>(
             this TSource view,
             IObservable<T> source, 
@@ -302,6 +383,22 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             source.Bind(target,frameThrottle).AddTo(view.ModelLifeTime);
             return view;
         }
+
+#if ENABLE_DOTWEEN
+
+        public static TSource Bind<TSource>(
+            this TSource view,
+            Sequence sequence)
+            where TSource : IView
+        {
+            if (sequence == null)
+                return view;
+            
+            view.ModelLifeTime.AddCleanUpAction(() =>sequence?.Kill());
+            return view;
+        }
+         
+#endif
         
         public static TSource BindClose<TSource,T>(
             this TSource view,
@@ -329,6 +426,35 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
                 frameThrottle);
         }
         
+        
+        public static TSource Bind<TSource,T>(
+            this TSource view,
+            IObservable<T> source, 
+            Func<T,UniTask> asyncAction)
+            where TSource : ViewBase
+        {
+            return view.Bind(source, x => asyncAction(x).AttachExternalCancellation(view.ModelLifeTime.TokenSource).Forget());
+        }
+        
+        public static TSource Bind<TSource,T,TTaskValue>(
+            this TSource view,
+            IObservable<T> source, 
+            Func<T,UniTask<TTaskValue>> asyncAction)
+            where TSource : ViewBase
+            where T : IViewModel
+        {
+            return view.Bind(source, x => asyncAction(x).AttachExternalCancellation(view.ModelLifeTime.TokenSource).Forget());
+        }
+        
+        public static TSource BindToWindow<TSource>(
+            this TSource view,
+            IObservable<IViewModel> source,
+            Type viewType)
+            where TSource : ViewBase
+        {
+            return view.Bind(source, x => view.OpenAsWindowAsync(x,viewType));
+        }
+
         
         public static TSource Bind<TSource,T>(
             this TSource view,

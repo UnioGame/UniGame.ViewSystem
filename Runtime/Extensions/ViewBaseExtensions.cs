@@ -242,6 +242,21 @@
         }
 
         /// <summary>
+        /// Create a new view and open it as window (see <see cref="IViewLayoutProvider.OpenWindow"/>).
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="viewModel"></param>
+        /// <param name="viewType"></param>
+        /// <param name="skinTag"></param>
+        /// <param name="viewName"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static async UniTask<IView> OpenAsWindowAsync(this ViewBase source, IViewModel viewModel,Type viewType, string skinTag = null, string viewName = null)
+        {
+            return await source.Layout.OpenWindow(viewModel, viewType, skinTag, viewName);
+        }
+
+        /// <summary>
         /// Create a new view and open it as screen (see <see cref="IViewLayoutProvider.OpenScreen"/>).
         /// </summary>
         /// <param name="source"></param>

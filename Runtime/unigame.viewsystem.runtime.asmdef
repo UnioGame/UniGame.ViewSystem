@@ -2,6 +2,7 @@
     "name": "unigame.viewsystem.runtime",
     "rootNamespace": "",
     "references": [
+        "GUID:44d9baad577bf8e44bc1a019ded352e3",
         "GUID:8e4577c9194c10845984cf27eb974fd1",
         "GUID:d471970753975834d8890bf4a0eef571",
         "GUID:7aa076d38fb14aa448159faea36ca289",
