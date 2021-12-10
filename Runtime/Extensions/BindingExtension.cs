@@ -98,6 +98,12 @@ namespace UniModules.UniGame.UiSystem.Runtime.Extensions
             
             return view.Bind(source.OnValueChangedAsObservable(), value);
         }
+        
+        public static TView Bind<TView>(this TView view, Toggle source, Action<bool> value)
+            where TView : class,IView
+        {
+            return !source ? view : view.Bind(source.OnValueChangedAsObservable(), value);
+        }
 
         public static TView Bind<TView,TValue>(this TView view, IObservable<TValue> source, IReactiveProperty<TValue> value)
             where TView : class,IView
