@@ -10,7 +10,7 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
 
 
     public interface IView : 
-        //ILifeTimeContext, 
+        ILifeTimeContext, 
         IViewStatus, 
         IViewCommands
     {

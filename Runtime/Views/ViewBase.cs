@@ -434,7 +434,7 @@
             _viewModelLifeTime.AddTo(LifeTime);
             _progressLifeTime.AddTo(LifeTime);
             
-            LifeTime.AddCleanUpAction(OnViewDestroy);
+            ViewLifeTime.AddCleanUpAction(OnViewDestroy);
         }
 
         private void OnViewDestroy()
