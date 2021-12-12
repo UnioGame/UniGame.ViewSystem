@@ -424,7 +424,7 @@
             _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Release);
         
 #if UNITY_EDITOR
-            _status.Subscribe(x => this._editorViewStatus = x).AddTo(LifeTime);
+            _status.Subscribe(x => this._editorViewStatus = x).AddTo(ViewLifeTime);
 #endif
         }
 
@@ -436,8 +436,8 @@
             _status.Value  = ViewStatus.None;
             _internalViewStatus = ViewStatus.None;
             
-            _viewModelLifeTime.AddTo(LifeTime);
-            _progressLifeTime.AddTo(LifeTime);
+            _viewModelLifeTime.AddTo(ViewLifeTime);
+            _progressLifeTime.AddTo(ViewLifeTime);
             
             ViewLifeTime.AddCleanUpAction(OnViewDestroy);
         }

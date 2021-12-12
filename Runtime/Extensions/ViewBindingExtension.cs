@@ -14,6 +14,7 @@
     using global::UniGame.UiSystem.Runtime;
     using UnityEngine.AddressableAssets;
     using UnityEngine.Localization;
+    using UnityEngine.Localization.Components;
     using Object = UnityEngine.Object;
     
     public static class ViewBindingExtension
@@ -21,20 +22,32 @@
         
         #region ugui extensions
         
-        public static TView Bind<TView>(this TView view, LocalizedString source, Action<string> command, int frameThrottle = 0)
+        public static TView Bind<TView>(this TView view, LocalizedString source, Action<string> command)
             where TView : class,IView
         {
-            if (source == null) return view;
-            return view.Bind(source.AsObservable(), command);
+            return source == null ? view : view.Bind(source.AsObservable(), command);
         }
 
         public static TView Bind<TView>(this TView view, LocalizedString source, TextMeshProUGUI text)
             where TView : class,IView
         {
-            return Bind(view, source, x => text.text = x);
+            return source == null ? view : view.Bind(source.AsObservable(), text);
+        }
+        
+        public static TView Bind<TView>(this TView view, LocalizeStringEvent source, TextMeshProUGUI text)
+            where TView : class,IView
+        {
+            return source == null || source.StringReference == null || source.StringReference.IsEmpty
+                ? view : view.Bind(source.StringReference.AsObservable(), text);
+        }
+        
+        public static TView Bind<TView>(this TView view, LocalizeStringEvent source, Action<string> command)
+            where TView : class,IView
+        {
+            return source == null || source.StringReference == null || source.StringReference.IsEmpty
+                ? view : view.Bind(source.StringReference.AsObservable(), command);
         }
 
-        
         public static TView Bind<TView>(this TView view, AssetReferenceT<Sprite> source, Image image)
             where TView : class,IView
         {
