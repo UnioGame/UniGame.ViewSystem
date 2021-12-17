@@ -18,17 +18,19 @@
         /// <param name="skinTag"></param>
         /// <param name="parent"></param>
         /// <param name="viewName"></param>
+        /// <param name="stayWorld"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static async UniTask<T> CreateViewAsync<T>(
             this ViewBase source, 
             IViewModel viewModel, 
-            string skinTag, 
+            string skinTag = null, 
             Transform parent = null, 
-            string viewName = null) 
+            string viewName = null,
+            bool stayWorld = false) 
             where T : class, IView
         {
-            return await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName) as T;
+            return await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName, stayWorld) as T;
         }
 
         /// <summary>
@@ -133,22 +135,6 @@
             where T : class, IView
         {
             return await CreateNestedViewAsync<T>(source, lifeTime, viewModel, skinTag, parent, viewName, stayWorld);
-        }
-        
-        /// <summary>
-        /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
-        /// </summary>
-        public static async UniTask<T> CreateViewAsync<T>(
-            this ViewBase source, 
-            IViewModel viewModel, 
-            Transform parent = null, 
-            string skinTag = null, 
-            string viewName = null,
-            bool stayWorld = false) 
-            where T : class, IView
-        {
-            var view = await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName,stayWorld) as T;
-            return view;
         }
         
         /// <summary>
