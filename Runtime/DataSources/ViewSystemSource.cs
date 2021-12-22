@@ -7,6 +7,7 @@
     using Core.Runtime.Extension;
     using Core.Runtime.Interfaces;
     using Cysharp.Threading.Tasks;
+    using global::UniCore.Runtime.ProfilerTools;
     using global::UniGame.ModelViewsMap.Runtime.Settings;
     using global::UniGame.UiSystem.Runtime;
     using UniCore.Runtime.Rx.Extensions;
@@ -27,6 +28,9 @@
 
         protected override async UniTask<IGameViewSystem> CreateInternalAsync(IContext context)
         {
+            var startDate = DateTime.Now;
+            GameLog.Log($"{nameof(IGameViewSystem)} {nameof(ViewSystemSource)} Start { DateTime.Now.ToLongTimeString()}");
+            
             var viewSystemAsset = await viewSystemSource.LoadGameObjectAssetTaskAsync(LifeTime);
             var viewObject = Instantiate(viewSystemAsset.gameObject);
             var viewAsset  = viewObject.GetComponent<GameViewSystemAsset>();
@@ -34,7 +38,13 @@
             DontDestroyOnLoad(viewObject);
             viewObject.DestroyWith(LifeTime);
 
+            var time = DateTime.Now - startDate;
+            GameLog.Log($"{nameof(IGameViewSystem)} {nameof(ViewSystemSource)} Duration Before {time.TotalMilliseconds} Start { DateTime.Now.ToLongTimeString()}");
+            
             await UniTask.WaitUntil(() => viewAsset.IsReady == true);
+            
+            time = DateTime.Now - startDate;
+            GameLog.Log($"{nameof(IGameViewSystem)} {nameof(ViewSystemSource)} Duration Ready {time.TotalMilliseconds} Start { DateTime.Now.ToLongTimeString()}");
             
             return viewAsset;
         }

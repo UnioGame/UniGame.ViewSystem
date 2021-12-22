@@ -119,6 +119,8 @@ namespace UniGame.UiSystem.Runtime.Settings
         {
             try
             {
+                GameLog.Log($"{nameof(IGameViewSystem)} {name} {nameof(DownloadAllAsyncSources)} STARTED");
+                
                 var settingsAsset = await reference.LoadAssetTaskAsync(LifeTime);
                 if (!settingsAsset)
                 {
@@ -130,6 +132,8 @@ namespace UniGame.UiSystem.Runtime.Settings
                 settings.DestroyWith(LifeTime);
 
                 uiResourceProvider.RegisterViewReferences(settings.Views);
+                
+                GameLog.Log($"{nameof(IGameViewSystem)} {name} {nameof(DownloadAllAsyncSources)} STARTED");
             }
             catch (Exception e)
             {
