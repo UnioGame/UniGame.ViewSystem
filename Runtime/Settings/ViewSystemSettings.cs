@@ -14,6 +14,7 @@ namespace UniGame.UiSystem.Runtime.Settings
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UnityEngine;
     using ViewsFlow;
+    using Object = UnityEngine.Object;
 
     /// <summary>
     /// Base View system settings. Contains info about all available view abd type info
@@ -98,12 +99,18 @@ namespace UniGame.UiSystem.Runtime.Settings
         {
             IsComplete = false;
 
+            GameLog.Log($"{nameof(IGameViewSystem)} {name} {nameof(DownloadAllAsyncSources)} STARTED");
+            
             foreach (var source in sources.Where(x => !x.awaitLoading))
                 LoadAsyncSource(source.viewSourceReference).Forget();
+
+            var syncSettings = sources
+                .Where(x => x.awaitLoading)
+                .Select(x => LoadAsyncSource(x.viewSourceReference));
+
+            await UniTask.WhenAll(syncSettings);
             
-            //load ui views async
-            foreach (var viewSource in sources.Where(x => x.awaitLoading))
-                await LoadAsyncSource(viewSource.viewSourceReference);
+            GameLog.Log($"{nameof(IGameViewSystem)} {name} {nameof(DownloadAllAsyncSources)} COMPLETE");
             
             IsComplete = true;
         }
@@ -112,16 +119,17 @@ namespace UniGame.UiSystem.Runtime.Settings
         {
             try
             {
-                var settings = await reference.LoadAssetTaskAsync(LifeTime);
-
-                if (!settings)
+                var settingsAsset = await reference.LoadAssetTaskAsync(LifeTime);
+                if (!settingsAsset)
                 {
                     GameLog.LogError($"UiManagerSettings Load EMPTY Settings {reference.AssetGUID}");
                     return;
                 }
                 
-                uiResourceProvider.RegisterViewReferences(settings.Views);
+                var settings = Object.Instantiate(settingsAsset);
+                settings.DestroyWith(LifeTime);
 
+                uiResourceProvider.RegisterViewReferences(settings.Views);
             }
             catch (Exception e)
             {

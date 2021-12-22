@@ -9,6 +9,7 @@ namespace UniGame.UiSystem.Runtime
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
     using Settings;
+    using UniCore.Runtime.ProfilerTools;
     using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.AddressableTools.Runtime.Extensions;
@@ -102,6 +103,8 @@ namespace UniGame.UiSystem.Runtime
 
         private async UniTask<IGameViewSystem> Create()
         {
+            GameLog.Log($"{nameof(IGameViewSystem)} {name} CreateSystem STARTED {DateTime.Now.ToLongTimeString()}");
+            
             var settingsAsset = await settings.LoadAssetTaskAsync(LifeTime);
             settingsAsset = Object.Instantiate(settingsAsset);
             settingsAsset.DestroyWith(LifeTime);
