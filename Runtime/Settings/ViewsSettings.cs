@@ -6,13 +6,15 @@ namespace UniGame.UiSystem.Runtime.Settings
     using UniModules.UniGame.Core.Runtime.ScriptableObjects;
     using UniRx;
     using System.Collections.Generic;
+    using UniModules.UniGame.AddressableTools.Runtime.AssetReferencies;
     using UnityEngine;
+    using UnityEngine.AddressableAssets;
 #if ODIN_INSPECTOR
     using Sirenix.OdinInspector;
 
 #endif
 
-    [CreateAssetMenu(menuName = "UniGame/ViewSystem/UiViewsSettings", fileName = "ViewsSettings")]
+    [CreateAssetMenu(menuName = "UniGame/ViewSystem/" + nameof(ViewsSettings), fileName = nameof(ViewsSettings))]
     public class ViewsSettings : LifetimeScriptableObject, IViewsSettings
     {
         private const string ViewsGroup = "views";
@@ -31,6 +33,13 @@ namespace UniGame.UiSystem.Runtime.Settings
 #endif
         public List<string> uiViewsDefaultFolders = new List<string>();
 
+        [Header("View Assets Sources")]
+#if ODIN_INSPECTOR
+        [GUIColor(nameof(ViewsBackgroundColor))]
+        [BoxGroup(nameof(ViewsGroup))]
+#endif
+        public List<AssetReferenceGameObject> viewsAssetsSources = new List<AssetReferenceGameObject>();
+        
         [Header("Skins folder")]
 #if ODIN_INSPECTOR
         [GUIColor(nameof(ViewsBackgroundColor))]

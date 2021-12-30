@@ -24,9 +24,10 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
             previousReferences.AddRange(settings.uiViews);
             settings.uiViews.Clear();
 
-            var skinsFolders = settings.uiViewsSkinFolders;
+            var skinsFolders   = settings.uiViewsSkinFolders;
             var defaultFolders = settings.uiViewsDefaultFolders;
-
+            var assetsSources  = settings.viewsAssetsSources;
+            
             var groupName = string.IsNullOrEmpty(settings.sourceName)
                 ? settings.name
                 : settings.sourceName;
@@ -40,6 +41,16 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
             if (defaultFolders.Count > 0)
             {
                 var views = LoadUiViews<IView>(defaultFolders);
+                views.ForEach(x => AddView(settings, x, true, groupName));
+            }
+            
+            if (assetsSources.Count > 0)
+            {
+                var views = assetsSources.Where(x => x.editorAsset != null)
+                    .Select(x => x.editorAsset)
+                    .Select(x => x.GetComponent<IView>())
+                    .Where(x => x != null)
+                    .ToList();
                 views.ForEach(x => AddView(settings, x, true, groupName));
             }
 
@@ -143,7 +154,7 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
             var assetView = view as MonoBehaviour;
             if (assetView == null)
             {
-                GameLog.LogError($"View at Path not Unity Asset with View Type {defaultView}");
+                GameLog.LogError($"View at group : {groupName} not Unity Asset with View Type {defaultView}");
                 return;
             }
 
