@@ -109,7 +109,7 @@ namespace UniGame.UiSystem.Runtime
             string skinTag = "",
             string viewName = null)
         {
-            var view = await CreateViewAndPushToLayout<ViewBase>(viewModel, viewType, ViewType.Window, skinTag, viewName);
+            var view = await CreateViewAndPushToLayout<IView>(viewModel, viewType, ViewType.Window, skinTag, viewName);
             view.Show();
 
             return view;
@@ -117,7 +117,7 @@ namespace UniGame.UiSystem.Runtime
 
         public async UniTask<IView> OpenScreen(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
         {
-            var view = await CreateViewAndPushToLayout<ViewBase>(viewModel, viewType, ViewType.Screen, skinTag, viewName);
+            var view = await CreateViewAndPushToLayout<IView>(viewModel, viewType, ViewType.Screen, skinTag, viewName);
             view.Show();
 
             return view;
@@ -125,7 +125,7 @@ namespace UniGame.UiSystem.Runtime
 
         public async UniTask<IView> OpenOverlay(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
         {
-            var view = await CreateViewAndPushToLayout<ViewBase>(viewModel, viewType, ViewType.Overlay, skinTag, viewName);
+            var view = await CreateViewAndPushToLayout<IView>(viewModel, viewType, ViewType.Overlay, skinTag, viewName);
             view.Show();
 
             return view;
@@ -133,17 +133,17 @@ namespace UniGame.UiSystem.Runtime
 
         public async UniTask<IView> CreateWindow(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
         {
-            return await CreateViewAndPushToLayout<ViewBase>(viewModel, viewType, ViewType.Window, skinTag, viewName);
+            return await CreateViewAndPushToLayout<IView>(viewModel, viewType, ViewType.Window, skinTag, viewName);
         }
 
         public async UniTask<IView> CreateScreen(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
         {
-            return await CreateViewAndPushToLayout<ViewBase>(viewModel, viewType, ViewType.Screen, skinTag, viewName);
+            return await CreateViewAndPushToLayout<IView>(viewModel, viewType, ViewType.Screen, skinTag, viewName);
         }
 
         public async UniTask<IView> CreateOverlay(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
         {
-            return await CreateViewAndPushToLayout<ViewBase>(viewModel, viewType, ViewType.Overlay, skinTag, viewName);
+            return await CreateViewAndPushToLayout<IView>(viewModel, viewType, ViewType.Overlay, skinTag, viewName);
         }
 
         public T Get<T>() where T : class, IView

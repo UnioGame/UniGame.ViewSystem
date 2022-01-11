@@ -302,19 +302,29 @@
         
         public static T CloseWith<T>(this T view, ILifeTime lifeTime) where T : IView
         {
-            lifeTime.AddCleanUpAction(view.Close);
+            if (view != null)
+            {
+                lifeTime.AddCleanUpAction(view.Close);
+            }
+
             return view;
         }
         
         public static T HideWith<T>(this T view, ILifeTime lifeTime) where T : IView
         {
-            lifeTime.AddCleanUpAction(() => view.Hide());
+            if (view != null)
+            {
+                lifeTime.AddCleanUpAction(view.Hide);
+            }
             return view;
         }
         
         public static T ShowWith<T>(this T view, ILifeTime lifeTime) where T : IView
         {
-            lifeTime.AddCleanUpAction(() => view.Show());
+            if (view != null)
+            {
+                lifeTime.AddCleanUpAction(() => view.Show());
+            }
             return view;
         }
         
