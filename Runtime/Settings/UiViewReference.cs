@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using UniModules.UniGame.AddressableTools.Runtime.AssetReferencies;
+using UniModules.UniGame.CoreModules.UniGame.AddressableTools.Runtime.AssetReferencies;
 using UniModules.UniGame.ViewSystem.Editor.UiEditor;
 
 namespace UniGame.UiSystem.Runtime.Settings

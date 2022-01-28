@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UniModules.UniGame.CoreModules.UniGame.AddressableTools.Runtime.Extensions;
+using UnityEngine;
 
 namespace UniGame.ModelViewsMap.Runtime.Settings
 {
@@ -10,7 +11,6 @@ namespace UniGame.ModelViewsMap.Runtime.Settings
     using UiSystem.ModelViews.Runtime.Flow;
     using UiSystem.Runtime;
     using UniModules.UniCore.Runtime.Attributes;
-    using UniModules.UniGame.AddressableTools.Runtime.Extensions;
     using UniModules.UniGame.Core.Runtime.SerializableType;
     using UniModules.UniGame.Context.Runtime.Abstract;
     using UniModules.UniGame.Core.Runtime.Interfaces;

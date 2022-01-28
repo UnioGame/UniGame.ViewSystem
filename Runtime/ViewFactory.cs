@@ -1,7 +1,8 @@
-﻿namespace UniGame.UiSystem.Runtime
+﻿using UniModules.UniGame.CoreModules.UniGame.AddressableTools.Runtime.Extensions;
+
+namespace UniGame.UiSystem.Runtime
 {
     using UniModules.UniCore.Runtime.ObjectPool.Runtime;
-    using UniModules.UniGame.AddressableTools.Runtime.Extensions;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
     using System;

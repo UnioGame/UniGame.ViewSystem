@@ -6,7 +6,6 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
     using System.Collections.Generic;
     using Core.Runtime.DataFlow.Interfaces;
     using Cysharp.Threading.Tasks;
-    using global::UniGame.Addressables.Reactive;
     using UnityEngine;
     using Object = UnityEngine.Object;
 

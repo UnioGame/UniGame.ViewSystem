@@ -1,8 +1,9 @@
-﻿namespace UniGame.ModelViewsMap.Runtime.Settings
+﻿using UniModules.UniGame.CoreModules.UniGame.AddressableTools.Runtime.AssetReferencies;
+
+namespace UniGame.ModelViewsMap.Runtime.Settings
 {
     using System;
     using UiSystem.Runtime;
-    using UniModules.UniGame.AddressableTools.Runtime.AssetReferencies;
 
     [Serializable]
     public class AssetReferenceUiSystem : AssetReferenceComponent<GameViewSystemAsset>

@@ -1,12 +1,12 @@
+using UniModules.UniGame.CoreModules.UniGame.AddressableTools.Editor.Extensions;
+
 namespace UniGame.UiSystem.Runtime.Settings
 {
 #if UNITY_EDITOR
-    using UniModules.UniGame.AddressableExtensions.Editor;
 #endif
     using UniModules.UniGame.Core.Runtime.ScriptableObjects;
     using UniRx;
     using System.Collections.Generic;
-    using UniModules.UniGame.AddressableTools.Runtime.AssetReferencies;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
 #if ODIN_INSPECTOR

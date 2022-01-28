@@ -1,4 +1,5 @@
-﻿using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
+﻿using UniModules.UniGame.CoreModules.UniGame.AddressableTools.Runtime.Extensions;
+using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
 using UniModules.UniGame.ViewSystem.Runtime.Extensions;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -10,7 +11,6 @@ namespace UniGame.UiSystem.Runtime
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using Settings;
-    using UniModules.UniGame.AddressableTools.Runtime.Extensions;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;

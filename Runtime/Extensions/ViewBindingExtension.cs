@@ -1,15 +1,16 @@
-﻿namespace UniModules.Rx.Extensions
+﻿using UniModules.UniGame.CoreModules.UniGame.AddressableTools.Runtime.Extensions;
+using UniModules.UniGame.CoreModules.UniGame.AddressableTools.Runtime.Rx;
+
+namespace UniModules.Rx.Extensions
 {
     using System;
     using Cysharp.Threading.Tasks;
     using TMPro;
-    using UniModules.UniGame.AddressableTools.Runtime.Extensions;
     using UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniGame.UISystem.Runtime.Abstract;
     using UniModules.UniGame.UISystem.Runtime.Extensions;
     using UnityEngine;
     using UnityEngine.UI;
-    using global::UniGame.Addressables.Reactive;
     using global::UniGame.Localization.Runtime.UniModules.UniGame.Localization.Runtime;
     using global::UniGame.UiSystem.Runtime;
     using UnityEngine.AddressableAssets;

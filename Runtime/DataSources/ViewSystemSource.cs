@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniGame.UISystem.Runtime.DataSources
+﻿using UniModules.UniGame.CoreModules.UniGame.AddressableTools.Runtime.Extensions;
+
+namespace UniModules.UniGame.UISystem.Runtime.DataSources
 {
     using System;
     using System.Threading;
@@ -12,8 +14,6 @@
     using global::UniGame.UiSystem.Runtime;
     using UniCore.Runtime.Rx.Extensions;
     using UniGameFlow.GameFlow.Runtime.Services;
-    using UniModules.UniGame.AddressableTools.Runtime.Extensions;
-    
     using UnityEngine;
     using UnityEngine.Serialization;
 

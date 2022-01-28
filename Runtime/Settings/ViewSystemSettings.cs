@@ -1,4 +1,5 @@
-﻿using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
+﻿using UniModules.UniGame.CoreModules.UniGame.AddressableTools.Runtime.Extensions;
+using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
 
 namespace UniGame.UiSystem.Runtime.Settings
 {
@@ -9,7 +10,6 @@ namespace UniGame.UiSystem.Runtime.Settings
     using System;
     using System.Collections.Generic;
     using UniCore.Runtime.ProfilerTools;
-    using UniModules.UniGame.AddressableTools.Runtime.Extensions;
     using UniModules.UniGame.Core.Runtime.Attributes;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
     using UnityEngine;

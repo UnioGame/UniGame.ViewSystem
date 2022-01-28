@@ -1,8 +1,9 @@
+using UniModules.UniGame.CoreModules.UniGame.AddressableTools.Runtime.Attributes;
+
 namespace UniModules.UniGame.UiSystem.Runtime.Settings
 {
     using System;
     using System.Collections.Generic;
-    using AddressableTools.Runtime.Attributes;
     using UnityEngine.AddressableAssets;
 
     [Serializable]
