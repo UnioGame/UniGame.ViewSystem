@@ -4,7 +4,7 @@ using System.Linq;
 using UniCore.Runtime.ProfilerTools;
 using UniGame.UiSystem.Runtime.Settings;
 using UniModules.Editor;
-using UniModules.UniGame.CoreModules.UniGame.AddressableTools.Editor.Extensions;
+using UniModules.UniGame.AddressableExtensions.Editor;
 using UniModules.UniGame.UISystem.Runtime.Abstract;
 using UnityEditor;
 using UnityEngine;
