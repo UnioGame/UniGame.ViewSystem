@@ -1,4 +1,4 @@
-﻿using UniModules.UniGame.CoreModules.UniGame.AddressableTools.Runtime.Extensions;
+﻿using UniModules.UniGame.AddressableTools.Runtime.Extensions;
 using UniModules.UniGame.CoreModules.UniGame.AddressableTools.Runtime.Rx;
 
 namespace UniModules.Rx.Extensions

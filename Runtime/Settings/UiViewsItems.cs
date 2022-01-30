@@ -1,4 +1,4 @@
-using UniModules.UniGame.CoreModules.UniGame.AddressableTools.Runtime.Attributes;
+using UniModules.UniGame.AddressableTools.Runtime.Attributes;
 
 namespace UniModules.UniGame.UiSystem.Runtime.Settings
 {

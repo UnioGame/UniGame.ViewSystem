@@ -1,4 +1,4 @@
-﻿using UniModules.UniGame.CoreModules.UniGame.AddressableTools.Runtime.Extensions;
+﻿using UniModules.UniGame.AddressableTools.Runtime.Extensions;
 using UnityEngine;
 
 namespace UniGame.ModelViewsMap.Runtime.Settings

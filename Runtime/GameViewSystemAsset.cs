@@ -1,5 +1,5 @@
 ﻿using UniModules.UniGame.Core.Runtime.Interfaces;
-using UniModules.UniGame.CoreModules.UniGame.AddressableTools.Runtime.Extensions;
+using UniModules.UniGame.AddressableTools.Runtime.Extensions;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions;
 using UnityEngine;
