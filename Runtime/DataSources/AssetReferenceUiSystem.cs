@@ -1,4 +1,4 @@
-﻿using UniModules.UniGame.CoreModules.UniGame.AddressableTools.Runtime.AssetReferencies;
+﻿using UniModules.UniGame.AddressableTools.Runtime.AssetReferencies;
 
 namespace UniGame.ModelViewsMap.Runtime.Settings
 {
