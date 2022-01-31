@@ -1,4 +1,5 @@
-﻿using UniModules.UniGame.Core.Runtime.Interfaces;
+﻿using UniModules.UniGame.AddressableTools.Runtime.Extensions;
+using UniModules.UniGame.Core.Runtime.Interfaces;
 using UniModules.UniGame.SerializableContext.Runtime.Addressables;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions;

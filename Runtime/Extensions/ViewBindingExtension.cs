@@ -1,5 +1,6 @@
 ﻿using UniModules.UniGame.SerializableContext.Runtime.Addressables;
 using UniGame.Addressables.Reactive;
+using UniModules.UniGame.AddressableTools.Runtime.Extensions;
 
 namespace UniModules.Rx.Extensions
 {

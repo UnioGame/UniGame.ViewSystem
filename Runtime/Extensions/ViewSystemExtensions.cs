@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using UniGame.UiSystem.Runtime.Settings;
 using UniModules.UniCore.Runtime.DataFlow;
 using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
+using UniModules.UniGame.AddressableTools.Runtime.Extensions;
 using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
 using UniModules.UniGame.SerializableContext.Runtime.Addressables;
 using UniModules.UniGame.ViewSystem.Runtime.Settings;
