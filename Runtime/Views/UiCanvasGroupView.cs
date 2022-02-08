@@ -1,5 +1,6 @@
 namespace UniGame.UiSystem.Runtime
 {
+    using System;
     using System.Collections;
     using Cysharp.Threading.Tasks;
     using UniModules.UniCore.Runtime.Rx.Extensions;
@@ -47,11 +48,13 @@ namespace UniGame.UiSystem.Runtime
 
         public sealed override CanvasGroup CanvasGroup => canvasGroup;
 
+        protected IDisposable VisibilityHandler;
+
         protected sealed override async UniTask OnInitialize(TWindowModel model)
         {
             await base.OnInitialize(model);
 
-            IsVisible.
+            VisibilityHandler = IsVisible.
                 Where(x => x).
                 Subscribe(x => canvasGroup.SetState(visibleState)).
                 AddTo(LifeTime);
