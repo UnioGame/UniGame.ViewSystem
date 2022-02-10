@@ -102,7 +102,10 @@ namespace UniGame.UiSystem.Runtime
             bool stayWorld = false,
             ILifeTime ownerLifeTime = null)
         {
-            return await CreateView(viewModel, viewType, skinTag, parent, viewName, stayWorld,ownerLifeTime);
+            var view = await CreateView(viewModel, viewType, skinTag, parent, viewName, stayWorld,ownerLifeTime);
+            //fire view data
+            _viewCreatedSubject.OnNext(view);
+            return view;
         }
 
         public async UniTask<IView> OpenWindow(IViewModel viewModel, Type viewType, 
@@ -233,6 +236,9 @@ namespace UniGame.UiSystem.Runtime
             where T : class, IView
         {
             var view = await CreateView(viewModel, typeof(T), skinTag, parent, string.Empty, stayWorld,ownerLifeTime) as T;
+
+            //fire view data
+            _viewCreatedSubject.OnNext(view);
             return view;
         }
 
@@ -259,6 +265,8 @@ namespace UniGame.UiSystem.Runtime
             var view = await CreateView(viewModel, viewType, skinTag, parent, viewName,false,ownerLifeTime);
 
             layout?.Push(view);
+            //fire view data
+            _viewCreatedSubject.OnNext(view);
 
             return view as T;
         }
@@ -277,9 +285,6 @@ namespace UniGame.UiSystem.Runtime
             //destroy view when lifetime terminated
             var viewLifeTime = view.ViewLifeTime;
             viewLifeTime.AddCleanUpAction(() => Destroy(view));
-            
-            //fire view data
-            _viewCreatedSubject.OnNext(view);
 
             return view;
         }
