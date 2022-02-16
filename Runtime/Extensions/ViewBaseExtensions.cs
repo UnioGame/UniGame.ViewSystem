@@ -44,9 +44,9 @@
             string viewName = null) 
             where T : class, IView
         {
-            var view = await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName) as T;
+            var view = await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName);
             view.Hide();
-            return view;
+            return view as T;
         }
 
 

@@ -10,6 +10,7 @@ namespace UniGame.UiSystem.Runtime
     using System;
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
+    using UniCore.Runtime.ProfilerTools;
     using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.UiSystem.Runtime;
@@ -203,13 +204,27 @@ namespace UniGame.UiSystem.Runtime
             if (lifeTime.IsTerminated)
                 return DummyView.Create();
             
-            var viewResult = await _viewFactory.Create(viewType, skinTag, parent, viewName, stayWorld)
-                .AttachExternalCancellation(LifeTime.TokenSource)
-                .SuppressCancellationThrow();
-
-            var view = viewResult.Result;
-            if (viewResult.IsCanceled)
+            var   failed = false;
+            IView view = null;
+            
+            try
             {
+                var viewResult = await _viewFactory.Create(viewType, skinTag, parent, viewName, stayWorld)
+                    .AttachExternalCancellation(LifeTime.TokenSource)
+                    .SuppressCancellationThrow();
+
+                failed = viewResult.IsCanceled;
+                view = viewResult.Result;
+            }
+            catch (Exception e)
+            {
+                GameLog.LogError(e);
+                failed = true;
+            }
+            
+            if (failed)
+            {
+                GameLog.LogError($"ViewSystem: Try Create view with type: {viewType.Name} | skin:{skinTag} | parent: {parent}: name: {viewName} FAILED");
                 Destroy(view);
                 return DummyView.Create();
             }
