@@ -7,6 +7,7 @@ namespace UniGame.UiSystem.Runtime
     using UnityEngine;
     using UnityEngine.AddressableAssets;
     using System;
+    using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
     using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
@@ -18,15 +19,19 @@ namespace UniGame.UiSystem.Runtime
     
     public class ViewFactory : IViewFactory
     {
-        private readonly AsyncLazy _readyStatus;
-        private readonly IViewResourceProvider resourceProvider;
-        
+        private readonly AsyncLazy                      _readyStatus;
+        private readonly IViewResourceProvider          _resourceProvider;
+        private readonly Dictionary<string, GameObject> _assetReferenceMap;
+
         public ViewFactory(
             AsyncLazy readyStatus,
             IViewResourceProvider viewResourceProvider)
         {
-            _readyStatus = readyStatus;
-            resourceProvider = viewResourceProvider;
+            _assetReferenceMap = new Dictionary<string, GameObject>();
+            
+            _readyStatus       = readyStatus;
+            _resourceProvider = viewResourceProvider;
+            _resourceProvider = viewResourceProvider;
         }
 
         public async UniTask<IView> Create(
@@ -42,7 +47,7 @@ namespace UniGame.UiSystem.Runtime
             viewDisposable.Initialize();
             
             //load view source by filter parameters
-            var result       = await resourceProvider.GetViewReferenceAsync(viewType,skinTag, viewName:viewName);
+            var result       = await _resourceProvider.GetViewReferenceAsync(viewType,skinTag, viewName:viewName);
             //create view instance
             var viewResult   = await Create(result,viewDisposable.LifeTime, parent,stayWorldPosition);
             var view         = viewResult.View;
@@ -66,7 +71,7 @@ namespace UniGame.UiSystem.Runtime
         {
             if (asset.RuntimeKeyIsValid() == false) return new ViewResult();
 
-            var sourceView = await asset.LoadAssetTaskAsync(lifeTime);
+            var sourceView = await LoadAssetReferenceAsset(asset, lifeTime); // await asset.LoadAssetTaskAsync(lifeTime);
             
             //operation was cancelled
             if(sourceView == null) return new ViewResult();
@@ -86,7 +91,17 @@ namespace UniGame.UiSystem.Runtime
                 AssetLifeTime = assetLifeTime
             };
         }
-        
+
+        protected async UniTask<GameObject> LoadAssetReferenceAsset(AssetReferenceGameObject asset,ILifeTime lifeTime)
+        {
+            if (_assetReferenceMap.TryGetValue(asset.AssetGUID, out var gameObject) && gameObject != null)
+                return gameObject;
+            
+            var sourceView = await asset.LoadAssetTaskAsync(lifeTime);
+            _assetReferenceMap[asset.AssetGUID] = sourceView;
+            return sourceView;
+        }
+
         public struct ViewResult
         {
             public IView     View;
