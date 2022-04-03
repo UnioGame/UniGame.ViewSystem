@@ -38,7 +38,7 @@ Add to your project manifiest by path [%UnityProject%]/Packages/manifiest.json n
   "scopedRegistries": [
    {
       "name": "UniGame",
-      "url": "http://packages.unigame.pro:4873/",
+      "url": "http://package.unigame.pro:4873/",
       "scopes": [
         "com.unigame"
       ]
