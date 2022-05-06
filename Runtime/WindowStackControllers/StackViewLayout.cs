@@ -23,11 +23,11 @@
 
             OnClosed.When(x => x == _activeView, HideView)
                     .When(_ => _activeView == null, _ => UpdateActiveView())
-                    .Subscribe()
+                    .RxSubscribe()
                     .AddTo(LifeTime);
 
             OnBeginHide.Where(x => x == _activeView)
-                       .Subscribe(HideView)
+                       .RxSubscribe(HideView)
                        .AddTo(LifeTime);
 
             // OnIntent
@@ -36,7 +36,7 @@
             //     .AddTo(LifeTime);
             
             OnBeginShow.Where(x => x != _activeView)
-                       .Subscribe(ActivateView)
+                       .RxSubscribe(ActivateView)
                        .AddTo(LifeTime);
             
         }

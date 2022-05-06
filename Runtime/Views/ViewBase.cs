@@ -397,7 +397,7 @@
             _isVisible = _visibility.Value;
             
             _visibility.
-                Subscribe(x => _isVisible = x).
+                RxSubscribe(x => _isVisible = x).
                 AddTo(_lifeTimeDefinition);
             
         }
@@ -424,7 +424,7 @@
             _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Release);
         
 #if UNITY_EDITOR
-            _status.Subscribe(x => this._editorViewStatus = x).AddTo(ViewLifeTime);
+            _status.RxSubscribe(x => this._editorViewStatus = x).AddTo(ViewLifeTime);
 #endif
         }
 

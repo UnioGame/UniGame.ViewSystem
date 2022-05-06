@@ -60,11 +60,11 @@
             _lifeTime.AddCleanUpAction(CleanUp);
             _lifeTime.AddCleanUpAction(_viewLifeTime.Release);
 
-            _rxStatus.Subscribe(x => _notifyCommand.Execute()).
+            _rxStatus.RxSubscribe(x => _notifyCommand.Execute()).
                 AddTo(_lifeTime);
 
             _notifyCommand.
-                Subscribe(x => Notify()).
+                RxSubscribe(x => Notify()).
                 AddTo(_lifeTime);
             
             _observable.Value = this;
@@ -135,7 +135,7 @@
                 Where(x => x == ViewStatus.Closed).
                 Do(x => _view = null).
                 Do(x => _viewLifeTime.Release()).
-                Subscribe().
+                RxSubscribe().
                 AddTo(_viewLifeTime);
 
             _rxStatus.SetValueForce(view.Status.Value);
