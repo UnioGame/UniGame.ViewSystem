@@ -25,13 +25,13 @@ namespace UniGame.UiSystem.UI.Editor.UiEdito
             MessageBroker.Default
                 .Receive<SettingsRebuildMessage>()
                 .Where(x => x.ViewsSettings!=null)
-                .Subscribe(x => x.ViewsSettings.Build())
+                .RxSubscribe(x => x.ViewsSettings.Build())
                 .AddTo(LifeTime);
             
             MessageBroker.Default
                 .Receive<SettingsRebuildMessage>()
                 .Where(x => x.ViewsSettings==null)
-                .Subscribe(x => RefreshUiSettings())
+                .RxSubscribe(x => RefreshUiSettings())
                 .AddTo(LifeTime);
         }
         

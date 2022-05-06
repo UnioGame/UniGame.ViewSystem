@@ -53,12 +53,12 @@ namespace UniGame.UiSystem.Runtime
 
             IsVisible.
                 Where(x => x).
-                Subscribe(x => canvasGroup.SetState(visibleState)).
+                RxSubscribe(x => canvasGroup.SetState(visibleState)).
                 AddTo(LifeTime);
             
             IsVisible.
                 Where(x => !x).
-                Subscribe(x => canvasGroup.SetState(hiddenState)).
+                RxSubscribe(x => canvasGroup.SetState(hiddenState)).
                 AddTo(LifeTime);
 
             await OnViewInitialize(model);
