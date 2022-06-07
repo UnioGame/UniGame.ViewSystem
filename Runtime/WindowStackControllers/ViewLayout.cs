@@ -58,15 +58,15 @@
             _onViewIntent    = new Subject<Type>().AddTo(LifeTime);
             _activeView = new ReactiveProperty<IView>(null).AddTo(LifeTime);
 
-            _views.ObserveAdd().Do(e => { _activeView.Value = e.Value; }).RxSubscribe().AddTo(LifeTime);
+            _views.ObserveAdd().Do(e => { _activeView.Value = e.Value; }).Subscribe().AddTo(LifeTime);
             _views.ObserveRemove().Do(e =>
             {
                 if (_views.Count > 0)
                     _activeView.Value = Views.Last();
                 else
                     _activeView.Value = null;
-            }).RxSubscribe().AddTo(LifeTime);
-            _views.ObserveReset().Do(_ => _activeView.Value = null).RxSubscribe().AddTo(LifeTime);
+            }).Subscribe().AddTo(LifeTime);
+            _views.ObserveReset().Do(_ => _activeView.Value = null).Subscribe().AddTo(LifeTime);
         }
 
         public void Dispose() => _lifeTime.Terminate();
@@ -184,7 +184,7 @@
             where TView : class, IView
         {
             view.Status
-                .RxSubscribe(x => ViewStatusChanged(view, x))
+                .Subscribe(x => ViewStatusChanged(view, x))
                 .AddTo(LifeTime);
             Add(view);
         }

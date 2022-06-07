@@ -21,7 +21,7 @@
             screenController.ActiveView
                 .Where(v => v != null)
                 .Do(_ => windowController.CloseAll())
-                .RxSubscribe()
+                .Subscribe()
                 .AddTo(windowController.LifeTime);
 
             windowController.ActiveView
@@ -29,20 +29,20 @@
                 .CombineLatest(windowController.OnBeginShow, (hasView, view) => view)
                 .When(x => x is IScreenSuspendingWindow, x => _screenSuspended.Value = true,
                     x => _screenSuspended.Value = false)
-                .RxSubscribe()
+                .Subscribe()
                 .AddTo(windowController.LifeTime);
 
             windowController.ActiveView
                 .Where(v=>v == null)
                 .Do(_ => _screenSuspended.Value = false)
-                .RxSubscribe()
+                .Subscribe()
                 .AddTo(windowController.LifeTime);
 
             _screenSuspended
                 .Skip(1)
                 .WhenTrue(x => screenController.Suspend())
                 .WhenFalse(x => screenController.Resume())
-                .RxSubscribe()
+                .Subscribe()
                 .AddTo(windowController.LifeTime);
         }
     }

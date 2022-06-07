@@ -62,19 +62,19 @@
             Observable.FromEvent(
                     x => SceneManager.activeSceneChanged += OnSceneActivate,
                     x => SceneManager.activeSceneChanged -= OnSceneActivate).
-                RxSubscribe().
+                Subscribe().
                 AddTo(LifeTime);
 
             Observable.FromEvent(
                     x => SceneManager.sceneLoaded += OnSceneLoaded,
                     x => SceneManager.sceneLoaded -= OnSceneLoaded).
-                RxSubscribe().
+                Subscribe().
                 AddTo(LifeTime);
 
             Observable.FromEvent(
                     x => SceneManager.sceneUnloaded += OnSceneUnloaded,
                     x => SceneManager.sceneUnloaded -= OnSceneUnloaded).
-                RxSubscribe().
+                Subscribe().
                 AddTo(LifeTime);
         }
 

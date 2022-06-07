@@ -21,15 +21,15 @@
             Layout      = layout;
 
             OnClosed.Where(x => x == _activeView).
-                RxSubscribe(HideView).
+                Subscribe(HideView).
                 AddTo(LifeTime);
             
             OnBeginHide.Where(x => x == _activeView).
-                RxSubscribe(HideView).
+                Subscribe(HideView).
                 AddTo(LifeTime);
 
             OnBeginShow.Where(x => x != _activeView).
-                RxSubscribe(ActivateView).
+                Subscribe(ActivateView).
                 AddTo(LifeTime);
         }
 

@@ -56,12 +56,12 @@ namespace UniGame.UiSystem.Runtime
 
             VisibilityHandler = IsVisible.
                 Where(x => x).
-                RxSubscribe(x => canvasGroup.SetState(visibleState)).
+                Subscribe(x => canvasGroup.SetState(visibleState)).
                 AddTo(LifeTime);
             
             IsVisible.
                 Where(x => !x).
-                RxSubscribe(x => canvasGroup.SetState(hiddenState)).
+                Subscribe(x => canvasGroup.SetState(hiddenState)).
                 AddTo(LifeTime);
 
             await OnViewInitialize(model);
