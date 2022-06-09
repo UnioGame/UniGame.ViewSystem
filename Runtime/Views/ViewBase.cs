@@ -1,4 +1,6 @@
-﻿namespace UniGame.UiSystem.Runtime
+﻿using UniModules.UniCore.Runtime.Extension;
+
+namespace UniGame.UiSystem.Runtime
 {
     using System;
     using System.Collections;
@@ -417,8 +419,7 @@
 
             _viewModelLifeTime.AddCleanUpAction(() =>
             {
-                if (_isViewOwner)
-                    ViewModel.Cancel();
+                if (_isViewOwner) ViewModel.Cancel();
             });
             
             _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Release);

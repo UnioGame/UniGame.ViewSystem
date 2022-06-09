@@ -18,7 +18,8 @@
     "com.unigame.localization": "2021.3.13",
     "com.unity.addressables": "1.19.14",
     "com.unity.textmeshpro": "2.1.6",
-    "com.unigame.coremodules": "2022.1.16"
+    "com.unigame.coremodules": "2022.1.16",
+    "com.unigame.rx": "2021.0.34"
   },
   "repository": {
     "type": "git",
