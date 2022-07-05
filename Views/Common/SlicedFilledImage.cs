@@ -1,5 +1,5 @@
 ﻿// Source: https://gist.github.com/yasirkula/391fa12bc173acdf5ac48c466f180708
-namespace Taktika.UI.Common
+namespace UniGame.UI.Common
 {
     using System;
 	using System.Collections.Generic;
