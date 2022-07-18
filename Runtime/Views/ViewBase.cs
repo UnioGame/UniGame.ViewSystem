@@ -9,9 +9,7 @@ namespace UniGame.UiSystem.Runtime
     using UniCore.Runtime.ProfilerTools;
     using UniModules.UniCore.Runtime.Attributes;
     using UniModules.UniCore.Runtime.DataFlow;
-    using UniModules.UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.Core.Runtime.Rx;
-    using UniModules.UniGame.UiSystem.Runtime.Extensions;
     using UniModules.UniRoutine.Runtime;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime;
@@ -20,6 +18,10 @@ namespace UniGame.UiSystem.Runtime
     using UniModules.UniRoutine.Runtime.Extension;
     using UnityEngine;
     using UnityEngine.EventSystems;
+
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+#endif
     
     public abstract class ViewBase : 
         UIBehaviour, 
@@ -74,6 +76,8 @@ namespace UniGame.UiSystem.Runtime
 
         private bool _isViewOwner;
         
+        protected bool IsCommandsAction => Application.isPlaying;
+        
         #region public properties
 
         public IReadOnlyReactiveProperty<bool> IsInitialized => _isInitialized;
@@ -117,10 +121,6 @@ namespace UniGame.UiSystem.Runtime
 
         public IViewModel ViewModel { get; private set; }
 
-#if ODIN_INSPECTOR
-        public bool IsCommandsAction => Application.isPlaying;
-#endif
-        
         #endregion public properties
 
         #region public methods
@@ -185,8 +185,8 @@ namespace UniGame.UiSystem.Runtime
         /// show active view
         /// </summary>
 #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.Button]
-        [Sirenix.OdinInspector.EnableIf("IsCommandsAction")]
+        [Button]
+        [ShowIf(nameof(IsCommandsAction))]
 #endif
         public IView Show()
         {
@@ -201,8 +201,8 @@ namespace UniGame.UiSystem.Runtime
         /// hide view without release it
         /// </summary>
 #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.Button]
-        [Sirenix.OdinInspector.EnableIf("IsCommandsAction")]
+        [Button]
+        [ShowIf(nameof(IsCommandsAction))]
 #endif
         public void Hide()
         {
@@ -219,8 +219,8 @@ namespace UniGame.UiSystem.Runtime
         /// end of view lifetime
         /// </summary>
 #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.Button]
-        [Sirenix.OdinInspector.EnableIf("IsCommandsAction")]
+        [Button]
+        [ShowIf(nameof(IsCommandsAction))]
 #endif
         public void Close()
         {
@@ -425,7 +425,7 @@ namespace UniGame.UiSystem.Runtime
             _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Release);
         
 #if UNITY_EDITOR
-            _status.Subscribe(x => this._editorViewStatus = x).AddTo(ViewLifeTime);
+            _status.Subscribe(x => _editorViewStatus = x).AddTo(ViewLifeTime);
 #endif
         }
 

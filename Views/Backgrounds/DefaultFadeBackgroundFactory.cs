@@ -1,17 +1,17 @@
 ﻿using Cysharp.Threading.Tasks;
-using Taktika.UI.Backgrounds;
+using UniGame.Views.Backgrounds;
 
 namespace UniGame.ViewSystem.Backgrounds
 {
     using UniGame.UiSystem.Runtime.Backgrounds.Abstract;
     using UnityEngine;
 
-    public class DefaultBackgroundFactory : BackgroundFactory
+    public class DefaultFadeBackgroundFactory : BackgroundFactory
     {
         [SerializeField]
         public DefaultFadeBackgroundView backgroundView;
 
-        public bool createInstance = true;
+        public bool createInstance = false;
 
         private DefaultFadeBackgroundView _view;
         
