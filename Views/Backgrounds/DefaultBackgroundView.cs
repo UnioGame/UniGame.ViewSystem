@@ -6,11 +6,11 @@
     using UiSystem.Runtime;
     using UniGame.UiSystem.Runtime.Backgrounds.Abstract;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniModules.UniGame.DoTweenRoutines.Runtime;
     using UnityEngine;
 
 #if ENABLE_DOTWEEN
     using DG.Tweening;
+    using UniModules.UniGame.DoTweenRoutines.Runtime;
 #endif
     
     public class DefaultBackgroundView : UiCanvasGroupView<IBackgroundViewModel>, IBackgroundView
