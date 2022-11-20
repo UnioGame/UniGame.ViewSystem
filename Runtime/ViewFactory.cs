@@ -1,4 +1,5 @@
-﻿using UniModules.UniGame.AddressableTools.Runtime.Extensions;
+﻿using UniGame.Utils;
+using UniModules.UniGame.AddressableTools.Runtime.Extensions;
 using UniModules.UniGame.SerializableContext.Runtime.Addressables;
 
 namespace UniGame.UiSystem.Runtime
@@ -47,7 +48,8 @@ namespace UniGame.UiSystem.Runtime
             viewDisposable.Initialize();
             
             //load view source by filter parameters
-            var result       = await _resourceProvider.GetViewReferenceAsync(viewType,skinTag, viewName:viewName);
+            var result       = await _resourceProvider
+                .GetViewReferenceAsync(viewType,skinTag, viewName:viewName);
             //create view instance
             var viewResult   = await Create(result,viewDisposable.LifeTime, parent,stayWorldPosition);
             var view         = viewResult.View;
@@ -67,20 +69,23 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// create view instance
         /// </summary>
-        protected virtual async UniTask<ViewResult> Create(AssetReferenceGameObject asset,ILifeTime lifeTime, Transform parent = null, bool stayPosition = false)
+        protected virtual async UniTask<ViewResult> Create(AssetReferenceGameObject asset,
+            ILifeTime lifeTime,
+            Transform parent = null,
+            bool stayPosition = false)
         {
             if (asset.RuntimeKeyIsValid() == false) return new ViewResult();
 
             var sourceView = await LoadAssetReferenceAsset(asset, lifeTime); // await asset.LoadAssetTaskAsync(lifeTime);
-            
+
             //operation was cancelled
             if(sourceView == null) return new ViewResult();
-            
+
             var viewTransform = sourceView.transform;
             var gameObjectView = sourceView.HasCustomPoolLifeTimeFor()
                 ? sourceView.SpawnActive(viewTransform.position, viewTransform.rotation, parent, stayPosition) 
                 : Object.Instantiate(sourceView, parent, stayPosition);
-            
+
             //create instance of view
             var view          = gameObjectView.GetComponent<IView>();
             var assetLifeTime = gameObjectView.GetAssetLifeTime();

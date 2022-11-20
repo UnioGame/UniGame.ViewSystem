@@ -209,7 +209,8 @@ namespace UniGame.UiSystem.Runtime
             
             try
             {
-                var viewResult = await _viewFactory.Create(viewType, skinTag, parent, viewName, stayWorld)
+                var viewResult = await _viewFactory
+                    .Create(viewType, skinTag, parent, viewName, stayWorld)
                     .AttachExternalCancellation(LifeTime.TokenSource)
                     .SuppressCancellationThrow();
 
@@ -277,9 +278,16 @@ namespace UniGame.UiSystem.Runtime
             var layout = _viewLayouts.GetLayout(layoutType);
             var parent = layout?.Layout;
             
-            var view = await CreateView(viewModel, viewType, skinTag, parent, viewName,false,ownerLifeTime);
+            var view = await CreateView(viewModel, 
+                viewType, 
+                skinTag, 
+                parent,
+                viewName,
+                stayWorld:false,
+                ownerLifeTime);
 
             layout?.Push(view);
+            
             //fire view data
             _viewCreatedSubject.OnNext(view);
 

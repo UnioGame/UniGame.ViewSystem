@@ -81,7 +81,7 @@
 
         protected override IEnumerator OnShowProgressOverride(ILifeTime progressLifeTime)
         {
-            canvasGroup.SetState(visibleState);
+            CanvasGroup.SetState(visibleState);
             
             if (_nestedAnimatedViews.Any())
             {
