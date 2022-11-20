@@ -45,22 +45,23 @@
         private int _showStateHash;
         private int _hideStateHash;
 
-        protected override void Awake()
+        protected override void OnAwake()
         {
-            base.Awake();
+            base.OnAwake();
 
-            _animator = _animator == null ? GetComponent<Animator>() : _animator;
-            _animator.enabled = false;
+            _animator = _animator == null 
+                ? GetComponent<Animator>() 
+                : _animator;
             
+            _animator.enabled = false;
             _showStateHash = Animator.StringToHash(_showStateName);
             _hideStateHash = Animator.StringToHash(_hideStateName);
         }
         
 #if UNITY_EDITOR
-        protected override void OnValidate()
+        protected override void OnViewValidate()
         {
-            base.OnValidate();
-            
+            base.OnViewValidate();
             _animator = _animator == null ? GetComponent<Animator>() : _animator;
         }
 #endif

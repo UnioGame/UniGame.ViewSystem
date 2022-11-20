@@ -24,7 +24,7 @@ namespace UniGame.UiSystem.Runtime
 #endif
     
     public abstract class ViewBase : 
-        UIBehaviour, 
+        MonoBehaviour, 
         ILayoutView
     {
         private const string NullViewName = "Null";
@@ -167,7 +167,6 @@ namespace UniGame.UiSystem.Runtime
             //calls one per lifetime
             if (!_isInitialized.Value) {
                 InitialSetup();
-                OnAwake();
             }
 
             InitializeHandlers(model);
@@ -243,9 +242,10 @@ namespace UniGame.UiSystem.Runtime
                 Select(x => this);
         }
 
-        public override bool IsActive()
+        public bool IsActive()
         {
-            return base.IsActive() && (_status.Value == ViewStatus.Showing || _status.Value == ViewStatus.Shown);
+            return isActiveAndEnabled && 
+                   _status.Value is ViewStatus.Showing or ViewStatus.Shown;
         }
 
         #endregion public methods
@@ -432,11 +432,9 @@ namespace UniGame.UiSystem.Runtime
         private void InitialSetup()
         {
             _lifeTimeDefinition.Release();
-            
             _isInitialized.Value = true;
             _status.Value  = ViewStatus.None;
             _internalViewStatus = ViewStatus.None;
-            
             _viewModelLifeTime.AddTo(ViewLifeTime);
             _progressLifeTime.AddTo(ViewLifeTime);
             
@@ -457,21 +455,17 @@ namespace UniGame.UiSystem.Runtime
             _visibility.Release();
         }
 
-        protected override void OnDisable()
-        {
-            _progressLifeTime.Release();
-            base.OnDisable();
-        }
+        protected void OnDisable() => _progressLifeTime.Release();
 
-        protected sealed override void OnDestroy()
-        {
-            Destroy();
-            base.OnDestroy();
-        }
+        protected void OnDestroy() => Destroy();
 
-        protected virtual void OnAwake()
-        {
-        }
+        protected void Awake() => OnAwake();
+
+        protected virtual void OnAwake() { }
+
+        protected void OnValidate() => OnViewValidate();
+
+        protected virtual void OnViewValidate() {}
 
         #endregion
     }

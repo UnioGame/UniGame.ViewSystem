@@ -102,9 +102,9 @@ namespace UniGame.UiSystem.Runtime
             yield break;
         }
 
-        protected override void Awake()
+        protected override void OnAwake()
         {
-            base.Awake();
+            base.OnAwake();
             
             canvasGroup = canvasGroup == null ? 
                 GetComponent<CanvasGroup>() : 
@@ -114,9 +114,9 @@ namespace UniGame.UiSystem.Runtime
         }
         
 #if UNITY_EDITOR
-        protected override void OnValidate()
+        protected override void OnViewValidate()
         {
-            base.OnValidate();
+            base.OnViewValidate();
             canvasGroup = canvasGroup == null ? 
                 GetComponent<CanvasGroup>() : 
                 canvasGroup;
