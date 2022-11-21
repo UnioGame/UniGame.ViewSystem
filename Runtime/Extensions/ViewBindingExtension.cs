@@ -120,7 +120,6 @@ namespace UniModules.Rx.Extensions
                     .Forget());
         }
 
-        
         public static TSource BindToWindow<TSource>(
             this TSource view,
             IObservable<IViewModel> source,
