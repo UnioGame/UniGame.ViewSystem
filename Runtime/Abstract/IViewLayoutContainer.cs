@@ -11,5 +11,10 @@
         /// get controller of target view type 
         /// </summary>
         IViewLayout GetLayout(ViewType type);
+
+        /// <summary>
+        /// get layout by string id
+        /// </summary>
+        IViewLayout GetLayout(string id);
     }
 }

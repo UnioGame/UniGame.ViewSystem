@@ -171,6 +171,7 @@ namespace UniGame.UiSystem.Runtime
         public IEnumerable<IViewLayout> Controllers => _viewLayouts.Controllers;
 
         public IViewLayout GetLayout(ViewType type) => _viewLayouts.GetLayout(type);
+        public IViewLayout GetLayout(string id) => _viewLayouts.GetLayout(id);
 
         #endregion
 

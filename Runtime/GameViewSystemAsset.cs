@@ -1,6 +1,5 @@
 ﻿using UniModules.UniGame.AddressableTools.Runtime.Extensions;
 using UniModules.UniGame.Core.Runtime.Interfaces;
-using UniModules.UniGame.SerializableContext.Runtime.Addressables;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions;
 using UnityEngine;
@@ -13,7 +12,6 @@ namespace UniGame.UiSystem.Runtime
     using Settings;
     using UniCore.Runtime.ProfilerTools;
     using UniModules.UniCore.Runtime.DataFlow;
-    using UniModules.UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.UiSystem.Runtime;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.UISystem.Runtime.Abstract;
@@ -81,6 +79,7 @@ namespace UniGame.UiSystem.Runtime
         public UniTask<IView> CreateOverlay(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null) => ViewSystem.CreateOverlay(viewModel, viewType, skinTag, viewName);
 
         public IViewLayout GetLayout(ViewType type) => ViewSystem.GetLayout(type);
+        public IViewLayout GetLayout(string id) => ViewSystem.GetLayout(id);
 
         public T Get<T>() where T : class, IView
         {
