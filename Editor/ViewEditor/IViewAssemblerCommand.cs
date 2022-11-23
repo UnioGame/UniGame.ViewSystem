@@ -1,5 +1,5 @@
 ﻿using UniGame.UiSystem.Runtime.Settings;
-using UniModules.UniGame.Core.Runtime.Interfaces;
+using UniGame.Core.Runtime;
 
 namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
 {

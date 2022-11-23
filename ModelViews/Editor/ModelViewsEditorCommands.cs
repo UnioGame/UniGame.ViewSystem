@@ -3,7 +3,7 @@ using UniGame.ModelViewsMap.Runtime.Settings;
 using UniGame.UiSystem.Runtime;
 using UniModules.UniCore.Runtime.ReflectionUtils;
 using UniModules.Editor;
-using UniModules.UniGame.UISystem.Runtime.Abstract;
+using UniGame.ViewSystem.Runtime;
 using UniModules.UniGame.ViewSystem.Editor.UiEditor;
 using UnityEditor;
 using UnityEngine;

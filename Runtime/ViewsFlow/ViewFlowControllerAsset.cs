@@ -1,6 +1,6 @@
 ﻿namespace UniGame.UiSystem.Runtime.ViewsFlow
 {
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
     using UnityEngine;
 
 #if ODIN_INSPECTOR

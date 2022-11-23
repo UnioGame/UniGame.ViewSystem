@@ -4,9 +4,9 @@ namespace UniGame.UiSystem.Runtime
 {
     using System;
     using Cysharp.Threading.Tasks;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+    using Core.Runtime;
     using UniModules.UniGame.UISystem.Runtime;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
     using UniRx;
 
     public sealed class DummyView : IView

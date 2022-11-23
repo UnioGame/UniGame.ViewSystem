@@ -5,7 +5,7 @@ using UniCore.Runtime.ProfilerTools;
 using UniGame.UiSystem.Runtime.Settings;
 using UniModules.Editor;
 using UniModules.UniGame.AddressableExtensions.Editor;
-using UniModules.UniGame.UISystem.Runtime.Abstract;
+using UniGame.ViewSystem.Runtime;
 using UnityEditor;
 using UnityEngine;
 

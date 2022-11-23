@@ -1,10 +1,10 @@
-namespace Taktika.Tests.UnitTests.Editor.ViewSystem
+namespace UniGame.Tests.UnitTests.Editor.ViewSystem
 {
     using System.Collections.Generic;
     using UniGame.UiSystem.Runtime.Settings;
     using NUnit.Framework;
     using UniGame.UiSystem.Runtime;
-    using UniModules.UniGame.Core.Runtime.SerializableType;
+    using UniGame.Core.Runtime.SerializableType;
     using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
     using UnityEngine.AddressableAssets;
 

@@ -1,9 +1,9 @@
 using System;
 using Cysharp.Threading.Tasks;
 using UniGame.UiSystem.Runtime.Settings;
-using UniModules.UniGame.Core.Runtime.Interfaces;
+using UniGame.Core.Runtime;
 using UniModules.UniGame.UiSystem.Runtime;
-using UniModules.UniGame.UISystem.Runtime.Abstract;
+using UniGame.ViewSystem.Runtime;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
 using UniModules.UniGame.ViewSystem.Runtime.Extensions;
 using UnityEngine;

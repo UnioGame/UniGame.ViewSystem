@@ -1,8 +1,8 @@
 ﻿namespace UniModules.UniGame.UISystem.Runtime.Extensions
 {
     using System;
-    using Abstract;
-    using Core.Runtime.DataFlow.Interfaces;
+    using global::UniGame.ViewSystem.Runtime;
+    using global::UniGame.Core.Runtime;
     using Cysharp.Threading.Tasks;
     using global::UniGame.UiSystem.Runtime;
     using UniRx;

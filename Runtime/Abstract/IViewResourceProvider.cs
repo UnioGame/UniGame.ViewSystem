@@ -1,12 +1,11 @@
 ﻿using UnityEngine.AddressableAssets;
 
-namespace UniModules.UniGame.UISystem.Runtime.Abstract
+namespace UniGame.ViewSystem.Runtime
 {
     using System;
     using System.Collections.Generic;
-    using Core.Runtime.DataFlow.Interfaces;
+    using global::UniGame.Core.Runtime;
     using Cysharp.Threading.Tasks;
-    using UnityEngine;
     using Object = UnityEngine.Object;
 
     /// <summary>

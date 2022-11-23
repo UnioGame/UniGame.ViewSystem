@@ -1,6 +1,6 @@
 ﻿using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
 
-namespace UniModules.UniGame.UISystem.Runtime.Abstract
+namespace UniGame.ViewSystem.Runtime
 {
     using System;
 

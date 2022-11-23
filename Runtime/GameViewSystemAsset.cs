@@ -1,5 +1,4 @@
-﻿using UniModules.UniGame.AddressableTools.Runtime.Extensions;
-using UniModules.UniGame.Core.Runtime.Interfaces;
+﻿using UniGame.AddressableTools.Runtime;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions;
 using UnityEngine;
@@ -13,8 +12,8 @@ namespace UniGame.UiSystem.Runtime
     using UniCore.Runtime.ProfilerTools;
     using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniGame.UiSystem.Runtime;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using Core.Runtime;
+    using ViewSystem.Runtime;
     using UnityEngine.AddressableAssets;
     using Object = Object;
 

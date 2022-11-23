@@ -1,4 +1,4 @@
-﻿using UniModules.UniGame.AddressableTools.Runtime.Extensions;
+﻿using UniGame.AddressableTools.Runtime;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -10,8 +10,8 @@ namespace UniGame.UiSystem.Runtime
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using Settings;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using Core.Runtime;
+    using ViewSystem.Runtime;
     using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
 
     public class UiResourceProvider : 

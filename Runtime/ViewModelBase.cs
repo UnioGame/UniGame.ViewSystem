@@ -3,8 +3,8 @@
 namespace UniGame.UiSystem.Runtime
 {
     using UniModules.UniCore.Runtime.DataFlow;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using Core.Runtime;
+    using ViewSystem.Runtime;
     using UniRx;
 
     [Serializable]

@@ -3,10 +3,9 @@ namespace UniGame.UiSystem.Runtime
     using System;
     using System.Collections;
     using Cysharp.Threading.Tasks;
-    using UniModules.UniCore.Runtime.Rx.Extensions;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+    using Core.Runtime;
     using UniModules.UniUiSystem.Runtime.Utils;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
     using UniRx;
     using UnityEngine;
 

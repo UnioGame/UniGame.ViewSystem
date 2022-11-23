@@ -4,7 +4,7 @@
     using UniModules.UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.Core.Runtime.Rx;
     using UniModules.UniGame.UiSystem.Runtime;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
     using UniRx;
 
     [Serializable]

@@ -1,5 +1,5 @@
 ﻿using UniModules.UniCore.Runtime.DataFlow;
-using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+using UniGame.Core.Runtime;
 using UniModules.UniGame.ViewSystem.Editor.UiEditor;
 using UniRx;
 

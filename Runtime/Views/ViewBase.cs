@@ -7,17 +7,16 @@ namespace UniGame.UiSystem.Runtime
     using Cysharp.Threading.Tasks;
     using JetBrains.Annotations;
     using UniCore.Runtime.ProfilerTools;
-    using UniModules.UniCore.Runtime.Attributes;
+    using UniCore.Runtime.Attributes;
     using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniGame.Core.Runtime.Rx;
     using UniModules.UniRoutine.Runtime;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+    using Core.Runtime;
     using UniModules.UniGame.UISystem.Runtime;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
     using UniRx;
     using UniModules.UniRoutine.Runtime.Extension;
     using UnityEngine;
-    using UnityEngine.EventSystems;
 
 #if ODIN_INSPECTOR
     using Sirenix.OdinInspector;

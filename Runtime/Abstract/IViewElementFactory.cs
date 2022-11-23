@@ -1,6 +1,6 @@
-﻿using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+﻿using UniGame.Core.Runtime;
 
-namespace UniModules.UniGame.UISystem.Runtime.Abstract
+namespace UniGame.ViewSystem.Runtime
 {
     using System;
     using Cysharp.Threading.Tasks;

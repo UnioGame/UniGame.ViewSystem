@@ -1,10 +1,10 @@
-﻿using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+﻿using UniModules.UniGame.UISystem.Runtime;
 using UnityEngine;
 
-namespace UniModules.UniGame.UISystem.Runtime.Abstract
+namespace UniGame.ViewSystem.Runtime
 {
     using System;
-    using Core.Runtime.Interfaces;
+    using global::UniGame.Core.Runtime;
     using Cysharp.Threading.Tasks;
     using UniRx;
 

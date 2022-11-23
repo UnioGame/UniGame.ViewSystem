@@ -2,7 +2,7 @@
 {
     using UnityEngine;
 
-    [CreateAssetMenu(menuName = "Taktika/Ui/UiAssetGroup", fileName = "UiAssetGroup")]
+    [CreateAssetMenu(menuName = "UniGame/ViewSystem/UiAssetGroup", fileName = "UiAssetGroup")]
     public class UiAssetGroup : ScriptableObject
     {
 

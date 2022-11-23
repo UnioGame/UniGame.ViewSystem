@@ -9,8 +9,8 @@
 #endif
     using UniGame.Routines.Runtime.Extension;
     using UniGame.UiSystem.Runtime;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using Core.Runtime;
+    using ViewSystem.Runtime;
     using UniModules.UniUiSystem.Runtime.Utils;
     using UnityEngine;
 

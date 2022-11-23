@@ -1,6 +1,6 @@
 ﻿using System;
 using UniGame.UiSystem.Runtime;
-using UniModules.UniGame.UISystem.Runtime.Abstract;
+using UniGame.ViewSystem.Runtime;
 
 namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
 {

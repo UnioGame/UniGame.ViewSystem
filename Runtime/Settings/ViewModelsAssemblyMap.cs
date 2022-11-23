@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UniModules.UniCore.Runtime.ReflectionUtils;
 using UniModules.UniCore.Runtime.Utils;
-using UniModules.UniGame.Core.Runtime.SerializableType;
+using UniGame.Core.Runtime.SerializableType;
 
 namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
 {

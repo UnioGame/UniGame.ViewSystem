@@ -1,4 +1,5 @@
-﻿using UniModules.UniGame.AddressableTools.Runtime.Extensions;
+﻿using UniGame.AddressableTools.Runtime;
+using UniGame.Context.Runtime;
 using UnityEngine;
 
 namespace UniGame.ModelViewsMap.Runtime.Settings
@@ -7,19 +8,17 @@ namespace UniGame.ModelViewsMap.Runtime.Settings
     using System.Collections.Generic;
     using System.Linq;
     using Cysharp.Threading.Tasks;
-    using Taktika.GameRuntime.Types;
+    using GameRuntime.Types;
     using UiSystem.ModelViews.Runtime.Flow;
-    using UiSystem.Runtime;
-    using UniModules.UniCore.Runtime.Attributes;
-    using UniModules.UniGame.Core.Runtime.SerializableType;
-    using UniModules.UniGame.Context.Runtime.Abstract;
-    using UniModules.UniGame.Core.Runtime.Interfaces;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
-    using UniModules.UniGame.UISystem.Runtime.DataSources;
+    using UniCore.Runtime.Attributes;
+    using Core.Runtime.SerializableType;
+    using Core.Runtime;
+    using ViewSystem.Runtime;
+    using ViewSystem.Runtime.DataSources;
     
 
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/ModelViewsModuleSettings", fileName = "ModelViewsModuleSettings")]
-    public class ModelViewsModuleSettings : AsyncContextDataSource, IModelViewsSettings
+    public class ModelViewsModuleSettings : AsyncSource, IModelViewsSettings
     {
         private static List<SType> _emptyList = new List<SType>();
 

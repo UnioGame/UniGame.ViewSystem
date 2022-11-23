@@ -1,6 +1,6 @@
 ﻿namespace UniGame.UiSystem.Runtime.ViewsFlow
 {
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
     using UnityEngine;
 
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/Flow/SingleScreenFlow",fileName = nameof(SingleActiveScreenFlow))]

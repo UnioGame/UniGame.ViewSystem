@@ -1,7 +1,7 @@
-﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
+﻿namespace UniGame.ViewSystem.Runtime
 {
     using System;
-    using Core.Runtime.Interfaces;
+    using global::UniGame.Core.Runtime;
     using Cysharp.Threading.Tasks;
     using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
 

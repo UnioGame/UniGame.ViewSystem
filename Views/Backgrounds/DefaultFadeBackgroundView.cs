@@ -3,7 +3,7 @@
     using System.Collections;
     using UiSystem.Runtime;
     using UniGame.UiSystem.Runtime.Backgrounds.Abstract;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+    using Core.Runtime;
     using UnityEngine;
 
     public class DefaultFadeBackgroundView : UiCanvasGroupView<IBackgroundViewModel>, IBackgroundView

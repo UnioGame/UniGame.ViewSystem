@@ -1,9 +1,7 @@
-﻿using UnityEngine;
-
-namespace UniGame.UiSystem.ModelViews.Runtime.Flow
+﻿namespace UniGame.UiSystem.ModelViews.Runtime.Flow
 {
     using System;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
 
 
     public static class FlowCommands 

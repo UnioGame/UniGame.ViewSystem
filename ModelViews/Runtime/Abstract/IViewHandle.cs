@@ -1,9 +1,9 @@
 ﻿namespace UniGame.UiSystem.ModelViews.Runtime.Flow
 {
     using System;
-    using UniModules.UniGame.Core.Runtime.Interfaces;
+    using Core.Runtime;
     using UniModules.UniGame.UISystem.Runtime;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
     using UniRx;
 
     public interface IViewHandle : 

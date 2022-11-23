@@ -1,6 +1,6 @@
 ﻿using UniGame.UiSystem.Runtime;
 
-namespace UniModules.UniGame.UISystem.Runtime.Abstract
+namespace UniGame.ViewSystem.Runtime
 {
     public interface ILayoutView:
         IView, 

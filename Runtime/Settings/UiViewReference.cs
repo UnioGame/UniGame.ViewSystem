@@ -1,14 +1,14 @@
 using System.Collections.Generic;
-using UniModules.UniGame.AddressableTools.Runtime.AssetReferencies;
+using UniGame.AddressableTools.Runtime;
 using UniModules.UniGame.ViewSystem.Editor.UiEditor;
 
 namespace UniGame.UiSystem.Runtime.Settings
 {
     using System;
     using UniModules.UniCore.Runtime.ReflectionUtils;
-    using UniModules.UniGame.Core.Runtime.SerializableType;
-    using UniModules.UniGame.Core.Runtime.SerializableType.Attributes;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using Core.Runtime.SerializableType;
+    using Core.Runtime.SerializableType.Attributes;
+    using ViewSystem.Runtime;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
 

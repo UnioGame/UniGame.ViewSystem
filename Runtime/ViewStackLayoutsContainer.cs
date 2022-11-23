@@ -5,7 +5,7 @@ namespace UniGame.UiSystem.Runtime
 {
     using System.Collections.Generic;
     using UniModules.UniGame.UiSystem.Runtime;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
 
     public class ViewStackLayoutsContainer : IViewLayoutContainer
     {

@@ -1,5 +1,4 @@
-﻿using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
-using UniModules.UniGame.Core.Runtime.Interfaces;
+﻿using UniGame.Runtime.ObjectPool.Extensions;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
 using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
 using UnityEngine.Scripting;
@@ -12,10 +11,9 @@ namespace UniGame.UiSystem.Runtime
     using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
     using UniModules.UniCore.Runtime.DataFlow;
-    using UniModules.UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.UiSystem.Runtime;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using Core.Runtime;
+    using ViewSystem.Runtime;
     using UniRx;
     using UnityEngine;
 

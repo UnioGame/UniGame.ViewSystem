@@ -2,7 +2,7 @@
 {
     using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
     using UniRx;
     using UnityEngine;
     

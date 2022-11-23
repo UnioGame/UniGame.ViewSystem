@@ -3,7 +3,7 @@ namespace UniGame.UiSystem.Runtime.Settings
 #if UNITY_EDITOR
     using UniModules.UniGame.AddressableExtensions.Editor;
 #endif
-    using UniModules.UniGame.Core.Runtime.ScriptableObjects;
+    using Core.Runtime.ScriptableObjects;
     using UniRx;
     using System.Collections.Generic;
     using UnityEngine;
