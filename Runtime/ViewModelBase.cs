@@ -41,9 +41,6 @@ namespace UniGame.UiSystem.Runtime
             GC.SuppressFinalize(this);
         }
 
-        ~ViewModelBase()
-        {
-            _lifeTimeDefinition.Terminate();
-        }
+        ~ViewModelBase()  => _lifeTimeDefinition.Terminate();
     }
 }
