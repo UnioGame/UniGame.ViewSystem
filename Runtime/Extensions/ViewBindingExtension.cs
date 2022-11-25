@@ -1,7 +1,7 @@
 ﻿using UniGame.Addressables.Reactive;
 using UniGame.AddressableTools.Runtime;
 
-namespace UniModules.Rx.Extensions
+namespace UniGame.Rx.Runtime.Extensions
 {
     using System;
     using Cysharp.Threading.Tasks;

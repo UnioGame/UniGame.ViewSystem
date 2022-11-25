@@ -1,7 +1,7 @@
 using System;
 using Cysharp.Threading.Tasks;
 using UniGame.UiSystem.Runtime;
-using UniModules.Rx.Extensions;
+using UniGame.Rx.Runtime.Extensions;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;

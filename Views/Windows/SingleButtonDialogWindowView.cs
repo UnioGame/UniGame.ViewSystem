@@ -1,7 +1,8 @@
 using Cysharp.Threading.Tasks;
 using UniGame.UiSystem.Runtime;
-using UniModules.Rx.Extensions;
+using UniGame.Rx.Runtime.Extensions;
 using UnityEngine.UI;
+using UniGame.Rx.Runtime.Extensions;
 
 public class SingleButtonDialogWindowView : WindowView<IDialogViewModel>
 {
