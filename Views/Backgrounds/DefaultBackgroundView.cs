@@ -71,7 +71,7 @@
                 KawaseBlurGlobalSettings.EnableBlur();
 
             var sequence  = DOTween.Sequence();
-            var fadeTween = canvasGroup.DOFade(1.0f, _duration);
+            var fadeTween = CanvasGroup.DOFade(1.0f, _duration);
 
             sequence.Join(fadeTween);
             
@@ -81,7 +81,7 @@
         private Sequence GetHideSequence()
         {
             var sequence  = DOTween.Sequence();
-            var fadeTween = canvasGroup.DOFade(0.0f, _duration);
+            var fadeTween = CanvasGroup.DOFade(0.0f, _duration);
 
             sequence.Join(fadeTween)
                 .OnComplete(() =>
