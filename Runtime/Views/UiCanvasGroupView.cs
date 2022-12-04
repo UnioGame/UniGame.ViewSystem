@@ -59,6 +59,8 @@ namespace UniGame.UiSystem.Runtime
                 AddTo(LifeTime);
 
             await OnViewInitialize(model);
+            
+            if (showByDefault) Show();
         }
 
         protected virtual UniTask OnViewInitialize(TWindowModel model) => UniTask.CompletedTask;

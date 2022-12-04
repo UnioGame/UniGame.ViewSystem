@@ -48,7 +48,7 @@ namespace UniGame.Rx.Runtime.Extensions
             return source == null || source.StringReference == null || source.StringReference.IsEmpty
                 ? view : view.Bind(source.StringReference.AsObservable(), command);
         }
-
+        
         public static TView Bind<TView>(this TView view, AssetReferenceT<Sprite> source, Image image)
             where TView : class,IView
         {
@@ -114,9 +114,11 @@ namespace UniGame.Rx.Runtime.Extensions
         {
             if (closeWith) view.BindClose(target);
             
-            return view.Bind(source, x => target.Initialize(x, view.Layout)
+            view.Bind(source, x => target.Initialize(x, view.Layout)
                     .AttachExternalCancellation(view.ModelLifeTime.TokenSource)
                     .Forget());
+
+            return view;
         }
 
         public static TSource BindToWindow<TSource>(
