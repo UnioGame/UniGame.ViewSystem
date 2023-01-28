@@ -9,7 +9,7 @@ using UniGame.ViewSystem.Runtime;
 using UnityEditor;
 using UnityEngine;
 
-namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
+namespace UniModules.UniGame.ViewSystem
 {
     public class BuildViewSettingsData : IViewAssemblerCommand
     {
@@ -82,12 +82,10 @@ namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
             }
 
             var viewType = view.GetType();
-            var viewInterface = viewType.GetInterfaces()
-                .FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == ViewSystemConstants.BaseViewType);
 
-            var modelsArgs = viewInterface.GetGenericArguments();
-            var modelType = modelsArgs.FirstOrDefault();
-            var viewModelType = ViewModelsAssemblyMap.GetFirstAssignable(modelType);
+            var modelType = ViewSystemUtils.GetModelTypeByView(viewType);
+            
+            var viewModelType = ViewSystemUtils.GetFirstAssignable(modelType);
                 
             var viewDescription = new UiViewReference()
             {

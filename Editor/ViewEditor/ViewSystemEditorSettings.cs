@@ -3,7 +3,7 @@ using UniGame.UiSystem.Runtime.Settings;
 using UniGame.UiSystem.Runtime.ViewsFlow;
 using UniModules.Editor;
 
-namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
+namespace UniModules.UniGame.ViewSystem
 {
     using System;
     using System.Collections.Generic;

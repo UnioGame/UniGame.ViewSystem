@@ -4,7 +4,7 @@ using UniGame.UiSystem.Runtime;
 using UniModules.UniCore.Runtime.ReflectionUtils;
 using UniModules.Editor;
 using UniGame.ViewSystem.Runtime;
-using UniModules.UniGame.ViewSystem.Editor.UiEditor;
+using UniModules.UniGame.ViewSystem;
 using UnityEditor;
 using UnityEngine;
 

@@ -1,6 +1,6 @@
 ﻿using UniGame.UiSystem.Runtime.Settings;
 
-namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
+namespace UniModules.UniGame.ViewSystem
 {
     public class ViewCleanerCommand  :IViewAssemblerCommand
     {

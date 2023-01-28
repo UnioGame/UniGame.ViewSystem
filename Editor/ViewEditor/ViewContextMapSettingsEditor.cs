@@ -1,5 +1,5 @@
 ﻿
-namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
+namespace UniModules.UniGame.ViewSystem
 {
     using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
     using UnityEditor;

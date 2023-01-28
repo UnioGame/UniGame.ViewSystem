@@ -95,7 +95,8 @@ namespace UniGame.UiSystem.Runtime
         {
             _lifeTime = new LifeTimeDefinition();
             
-            Create().AttachExternalCancellation(_lifeTime.TokenSource).Forget();
+            Create().AttachExternalCancellation(_lifeTime.TokenSource)
+                .Forget();
         }
 
         private void OnDestroy() => Dispose();

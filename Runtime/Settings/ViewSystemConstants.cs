@@ -2,7 +2,7 @@
 using UniGame.UiSystem.Runtime;
 using UniGame.ViewSystem.Runtime;
 
-namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
+namespace UniModules.UniGame.ViewSystem
 {
     public static class ViewSystemConstants
     {

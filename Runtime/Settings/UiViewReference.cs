@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UniGame.AddressableTools.Runtime;
-using UniModules.UniGame.ViewSystem.Editor.UiEditor;
+using UniModules.UniGame.ViewSystem;
 
 namespace UniGame.UiSystem.Runtime.Settings
 {
@@ -12,41 +13,45 @@ namespace UniGame.UiSystem.Runtime.Settings
     using UnityEngine;
     using UnityEngine.AddressableAssets;
 
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+#endif
+    
     [Serializable]
     public class UiViewReference
 #if ODIN_INSPECTOR
-        : Sirenix.OdinInspector.ISearchFilterable
+        : ISearchFilterable
 #endif
     {
         public string AssetGUID = string.Empty;
 
 #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.DrawWithUnity]
+        [DrawWithUnity]
 #endif
         [Space(2)] public AssetReferenceGameObject View;
 
         [Space(2)] public string ViewName;
 
 #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.GUIColor(g: 1.0f, r: 1.0f, b: 0.5f)]
+        [GUIColor(g: 1.0f, r: 1.0f, b: 0.5f)]
 #endif
         [Space(2)]
         public string Tag = string.Empty;
 
 #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.DrawWithUnity]
+        [DrawWithUnity]
 #endif
         [STypeFilter(typeof(IView))]
         public SType Type;
 
 #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.ValueDropdown(nameof(GetModelValue))]
+        [ValueDropdown(nameof(GetModelValue))]
 #endif
         public SType ModelType;
 
         //type of view model
 #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.ValueDropdown(nameof(GetModelDropdowns))]
+        [ValueDropdown(nameof(GetModelDropdowns))]
 #endif
         [Space(2)]
         public SType ViewModelType;
@@ -62,9 +67,9 @@ namespace UniGame.UiSystem.Runtime.Settings
 
 #if ODIN_INSPECTOR
 
-        private IEnumerable<Sirenix.OdinInspector.ValueDropdownItem<SType>> GetModelValue()
+        public IEnumerable<ValueDropdownItem<SType>> GetModelValue()
         {
-            yield return new Sirenix.OdinInspector.ValueDropdownItem<SType>()
+            yield return new ValueDropdownItem<SType>()
             {
                 Text = ModelType.Type == null 
                     ? "(empty)" 
@@ -73,29 +78,9 @@ namespace UniGame.UiSystem.Runtime.Settings
             };
         }
         
-        private IEnumerable<Sirenix.OdinInspector.ValueDropdownItem<SType>> GetModelDropdowns()
+        private IEnumerable<ValueDropdownItem<SType>> GetModelDropdowns()
         {
-            var type = ModelType.Type;
-            
-            if (type == null || (!type.IsAbstract && !type.IsInterface))
-            {
-                yield return new Sirenix.OdinInspector.ValueDropdownItem<SType>()
-                {
-                    Text = ModelType.Type.Name,
-                    Value = ModelType
-                };
-                yield break;
-            }
-
-            var items = ViewModelsAssemblyMap.GetValue(ModelType);
-            foreach (var item in items)
-            {
-                yield return new Sirenix.OdinInspector.ValueDropdownItem<SType>()
-                {
-                    Text = item.Type.Name,
-                    Value = item
-                };
-            }
+            return ViewSystemUtils.GetModelSTypeVariants(ModelType.Type);
         }
         
 #endif
