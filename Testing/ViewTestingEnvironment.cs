@@ -46,8 +46,6 @@ namespace Modules.UniModules.UniGame.ViewSystem.Testing
         public ILifeTime LifeTime => this.GetLifeTime();
         
 #if UNITY_EDITOR
-
-        private ViewTestWindow _window;
         
         [GUIColor(0.1f,0.9f,0.2f)]
         [Button(ButtonSizes.Large)]
@@ -61,13 +59,9 @@ namespace Modules.UniModules.UniGame.ViewSystem.Testing
                 viewSystem = _gameViewSystem
             };
             
-            _window = ViewTestWindow.OpenWindow(_editorSettings);
+            ViewTestWindow.OpenWindow(_editorSettings);
         }
-        
-        private void OnDestroy()
-        {
-            _window?.Close();
-        }
+
 #endif
 
         private void Start()

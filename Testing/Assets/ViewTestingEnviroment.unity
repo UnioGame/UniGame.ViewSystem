@@ -726,6 +726,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1962894398513771542, guid: ed36fdeca59d7b448a4e45d06cde111b,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2345952356887941836, guid: ed36fdeca59d7b448a4e45d06cde111b,
         type: 3}
       propertyPath: m_Pivot.x
@@ -861,11 +866,41 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5121621954318692177, guid: ed36fdeca59d7b448a4e45d06cde111b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6396792900569431558, guid: ed36fdeca59d7b448a4e45d06cde111b,
         type: 3}
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 771127443}
+    - target: {fileID: 6882607415555356978, guid: ed36fdeca59d7b448a4e45d06cde111b,
+        type: 3}
+      propertyPath: amount
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6882607415555356978, guid: ed36fdeca59d7b448a4e45d06cde111b,
+        type: 3}
+      propertyPath: createAtStart
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6943268243742579028, guid: ed36fdeca59d7b448a4e45d06cde111b,
+        type: 3}
+      propertyPath: amount
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6943268243742579028, guid: ed36fdeca59d7b448a4e45d06cde111b,
+        type: 3}
+      propertyPath: createAtStart
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7238385162353342230, guid: ed36fdeca59d7b448a4e45d06cde111b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7430207198599175776, guid: ed36fdeca59d7b448a4e45d06cde111b,
         type: 3}
       propertyPath: m_Material
@@ -941,6 +976,11 @@ PrefabInstance:
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 1821928872}
+    - target: {fileID: 8999227825036976501, guid: ed36fdeca59d7b448a4e45d06cde111b,
+        type: 3}
+      propertyPath: createAtStart
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: ed36fdeca59d7b448a4e45d06cde111b, type: 3}
