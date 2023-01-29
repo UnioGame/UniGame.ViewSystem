@@ -45,10 +45,10 @@ namespace Modules.UniModules.UniGame.ViewSystem.Testing.Editor
 
         public void Initialize(ViewEditorData editorData)
         {
+            settings = editorData.settings;
+            
             _editorData = editorData;
             _viewSystemSettings = settings.viewSettings;
-            
-            settings = editorData.settings;
         }
 
         [Button]
