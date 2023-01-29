@@ -1,6 +1,5 @@
 using System;
 using Cysharp.Threading.Tasks;
-using Modules.UniModules.UniGame.ViewSystem.Testing.Editor;
 using Sirenix.OdinInspector;
 using UniGame.Core.Runtime;
 using UniGame.UiSystem.Runtime;
@@ -8,6 +7,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 
 #if UNITY_EDITOR
+using Modules.UniModules.UniGame.ViewSystem.Testing.Editor;
 using UnityEditor;
 #endif
 
@@ -27,11 +27,14 @@ namespace Modules.UniModules.UniGame.ViewSystem.Testing
         [HideLabel]
         public ViewTestEnvironmentSettings settings;
 
+        public bool autoOpenToolWindow = true;
+        
         #endregion
 
         private ViewEditorData _editorSettings = new ViewEditorData();
         private bool _isInitialized = false;
         private GameViewSystemAsset _gameViewSystem;
+        private ViewTestWindow _editorWindow;
         
         public bool IsPlaying => Application.isPlaying;
 
@@ -43,6 +46,9 @@ namespace Modules.UniModules.UniGame.ViewSystem.Testing
         public ILifeTime LifeTime => this.GetLifeTime();
         
 #if UNITY_EDITOR
+
+        private ViewTestWindow _window;
+        
         [GUIColor(0.1f,0.9f,0.2f)]
         [Button(ButtonSizes.Large)]
         [EnableIf(nameof(IsReady))]
@@ -55,7 +61,12 @@ namespace Modules.UniModules.UniGame.ViewSystem.Testing
                 viewSystem = _gameViewSystem
             };
             
-            ViewTestWindow.OpenWindow(_editorSettings);
+            _window = ViewTestWindow.OpenWindow(_editorSettings);
+        }
+        
+        private void OnDestroy()
+        {
+            _window?.Close();
         }
 #endif
 
@@ -63,6 +74,7 @@ namespace Modules.UniModules.UniGame.ViewSystem.Testing
         {
             Initialize();
         }
+
 
         [Button(ButtonSizes.Large)]
         [EnableIf(nameof(IsReadyToInitialize))]
@@ -82,6 +94,8 @@ namespace Modules.UniModules.UniGame.ViewSystem.Testing
             _gameViewSystem.AddTo(LifeTime);
             
             _isInitialized = true;
+            
+            if(autoOpenToolWindow) OpenWindow();
         }
     }
 }

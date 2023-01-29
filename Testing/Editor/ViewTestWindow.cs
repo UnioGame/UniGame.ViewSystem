@@ -12,10 +12,11 @@ namespace Modules.UniModules.UniGame.ViewSystem.Testing.Editor
     {
         #region static data
         
-        public static void OpenWindow(ViewEditorData settings)
+        public static ViewTestWindow OpenWindow(ViewEditorData settings)
         {
             var window = CreateWindow<ViewTestWindow>();
             window.Initialize(settings);
+            return window;
         }
         
         #endregion

@@ -14,11 +14,14 @@ namespace Modules.UniModules.UniGame.ViewSystem.Testing.Editor
     public class ViewTestingEditor : ScriptableObject
     {
         private const string NotFoundViewMessage = "ViewType not found in target settings";
-        private ViewTestEnvironmentSettings _settings;
-        private ViewEditorData _editorData;
-        private ViewSystemSettings _viewSystemSettings;
-        private IView _activeObject;
-        
+
+        #region inspector
+
+        [BoxGroup(nameof(settings))]
+        [InlineEditor(InlineEditorObjectFieldModes.CompletelyHidden)]
+        [HideLabel]
+        public ViewTestEnvironmentSettings settings;
+
         /// <summary>
         /// type of target view
         /// </summary>
@@ -34,11 +37,18 @@ namespace Modules.UniModules.UniGame.ViewSystem.Testing.Editor
         [ReadOnly]
         public string message;
         
+        #endregion
+        
+        private ViewEditorData _editorData;
+        private ViewSystemSettings _viewSystemSettings;
+        private IView _activeObject;
+
         public void Initialize(ViewEditorData editorData)
         {
             _editorData = editorData;
-            _settings = editorData.settings;
-            _viewSystemSettings = _settings.viewSettings;
+            _viewSystemSettings = settings.viewSettings;
+            
+            settings = editorData.settings;
         }
 
         [Button]
@@ -60,7 +70,7 @@ namespace Modules.UniModules.UniGame.ViewSystem.Testing.Editor
             var viewSystem = _editorData.viewSystem;
             var canvas = _editorData.canvas;
             
-            var viewData = _settings.viewsData;
+            var viewData = settings.viewsData;
             var target = viewData
                 .FirstOrDefault(x => x.viewType.Equals(this.viewType));
             
@@ -101,7 +111,7 @@ namespace Modules.UniModules.UniGame.ViewSystem.Testing.Editor
         { 
             if (useOnlyDefinedTypes)
             {
-                foreach (var data in _settings.viewsData)
+                foreach (var data in settings.viewsData)
                 {
                     var dataType = data.viewType;
                     yield return new ValueDropdownItem<SType>()
@@ -112,6 +122,7 @@ namespace Modules.UniModules.UniGame.ViewSystem.Testing.Editor
                 }
                 yield break;
             }
+            
             var baseType = typeof(IView);
             var types = baseType.GetAssignableTypes();
             foreach (var type in types)
