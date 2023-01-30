@@ -64,6 +64,13 @@ namespace Modules.UniModules.UniGame.ViewSystem.Testing
 
 #endif
 
+        private void OnDestroy()
+        {
+#if UNITY_EDITOR
+            EditorWindow.GetWindow<ViewTestWindow>().Close();
+#endif
+        }
+
         private void Start()
         {
             Initialize();

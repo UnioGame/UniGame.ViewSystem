@@ -13,30 +13,36 @@ namespace Modules.UniModules.UniGame.ViewSystem.Testing.Editor
 {
     public class ViewTestingEditor : ScriptableObject
     {
+        private const string EditorTabGroupKey = "Editor";
+        private const string SettingsTabGroupKey = "Settings";
         private const string NotFoundViewMessage = "ViewType not found in target settings";
 
         #region inspector
 
-        [BoxGroup(nameof(settings))]
-        [InlineEditor(InlineEditorObjectFieldModes.CompletelyHidden)]
-        [HideLabel]
-        public ViewTestEnvironmentSettings settings;
-
+        [TabGroup(EditorTabGroupKey)]
         /// <summary>
         /// type of target view
         /// </summary>
         [ValueDropdown(nameof(GetViewTypes))]
         public SType viewType;
 
+        [TabGroup(EditorTabGroupKey)]
         public bool useOnlyDefinedTypes = true;
         
+        [TabGroup(EditorTabGroupKey)]
         public ViewShownType viewShownType = ViewShownType.None;
         
+        [TabGroup(EditorTabGroupKey)]
         [InfoBox("info")]
         [Multiline(lines:2)]
         [ReadOnly]
         public string message;
         
+        [TabGroup(SettingsTabGroupKey)]
+        [InlineEditor(InlineEditorObjectFieldModes.CompletelyHidden)]
+        [HideLabel]
+        public ViewTestEnvironmentSettings settings;
+
         #endregion
         
         private ViewEditorData _editorData;

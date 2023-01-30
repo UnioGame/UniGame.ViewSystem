@@ -14,7 +14,7 @@ namespace Modules.UniModules.UniGame.ViewSystem.Testing.Editor
         
         public static ViewTestWindow OpenWindow(ViewEditorData settings)
         {
-            var window = CreateWindow<ViewTestWindow>();
+            var window = GetWindow<ViewTestWindow>();
             window.Initialize(settings);
             return window;
         }
