@@ -293,7 +293,7 @@
         public static TView CloseWithModel<TView>(this TView view)
             where TView : IView
         {
-            if (view.ModelLifeTime.IsTerminated || view.ViewModel == null) return view;
+            if (view.LifeTime.IsTerminated || view.ViewModel == null) return view;
             var viewModel = view.ViewModel;
             view.CloseWith(viewModel.LifeTime);
             return view;

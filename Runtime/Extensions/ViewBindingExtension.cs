@@ -53,7 +53,7 @@ namespace UniGame.Rx.Runtime.Extensions
             where TView : class,IView
         {
             if (source.RuntimeKeyIsValid() == false) return view;
-            return !image ? view : view.Bind(source.ToObservable(view.ModelLifeTime), image);
+            return !image ? view : view.Bind(source.ToObservable(view.LifeTime), image);
         }
         
         public static TView Bind<TView,TValue>(this TView view, AssetReferenceT<TValue> source, Action<TValue> action)
@@ -90,7 +90,7 @@ namespace UniGame.Rx.Runtime.Extensions
             where TSource : IView
             where TView : IView
         {
-            source.CloseWith(view.ModelLifeTime);
+            source.CloseWith(view.LifeTime);
             return view;
         }
         
@@ -100,7 +100,7 @@ namespace UniGame.Rx.Runtime.Extensions
             where TSource : IView
             where T : IViewModel
         {
-            target.CloseWith(view.ModelLifeTime);
+            target.CloseWith(view.LifeTime);
             return view;
         }
         

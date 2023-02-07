@@ -1,30 +1,23 @@
-﻿using UniModules.UniCore.Runtime.Extension;
-
-namespace UniGame.UiSystem.Runtime
+﻿namespace UniGame.UiSystem.Runtime
 {
     using System;
     using System.Collections;
     using Cysharp.Threading.Tasks;
     using JetBrains.Annotations;
-    using UniCore.Runtime.ProfilerTools;
+    using Sirenix.OdinInspector;
     using UniCore.Runtime.Attributes;
+    using UniCore.Runtime.ProfilerTools;
+    using UniGame.Core.Runtime;
+    using UniGame.ViewSystem.Runtime;
     using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniGame.Core.Runtime.Rx;
-    using UniModules.UniRoutine.Runtime;
-    using Core.Runtime;
     using UniModules.UniGame.UISystem.Runtime;
-    using ViewSystem.Runtime;
-    using UniRx;
+    using UniModules.UniRoutine.Runtime;
     using UniModules.UniRoutine.Runtime.Extension;
+    using UniRx;
     using UnityEngine;
-
-#if ODIN_INSPECTOR
-    using Sirenix.OdinInspector;
-#endif
     
-    public abstract class ViewBase : 
-        MonoBehaviour,
-        ILayoutView
+    public abstract class View : MonoBehaviour ,IView
     {
         private const string NullViewName = "Null";
         
@@ -53,13 +46,13 @@ namespace UniGame.UiSystem.Runtime
         
         #endregion
 
+        private IViewModel _viewModel;
         private RectTransform _rectTransform;
         private Transform _transform;
         
         private readonly LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
         private readonly LifeTimeDefinition _progressLifeTime   = new LifeTimeDefinition();
-        private readonly LifeTimeDefinition _viewModelLifeTime   = new LifeTimeDefinition();
-        
+
         /// <summary>
         /// ui element visibility status
         /// </summary>
@@ -85,10 +78,8 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// View LifeTime
         /// </summary>
-        public virtual ILifeTime LifeTime => _viewModelLifeTime;
+        public virtual ILifeTime LifeTime => _lifeTimeDefinition;
 
-        public ILifeTime ModelLifeTime => _viewModelLifeTime;
-        
         public ILifeTime ViewLifeTime  => _lifeTimeDefinition;
 
         /// <summary>
@@ -98,6 +89,8 @@ namespace UniGame.UiSystem.Runtime
             _rectTransform:
             _rectTransform = transform as RectTransform;
 
+        public IViewModel ViewModel { get; }
+        
         /// <summary>
         /// view transform
         /// </summary>
@@ -117,65 +110,49 @@ namespace UniGame.UiSystem.Runtime
 
         public bool IsTerminated => _lifeTimeDefinition.IsTerminated;
 
-        public IViewModel ViewModel { get; private set; }
 
         #endregion public properties
 
         #region public methods
 
+        public virtual async UniTask<IView> Initialize(IViewModel vm, bool ownViewModel = false)
+        {
+            //restart view lifetime
+            _progressLifeTime.Release();
+
+            //calls one per lifetime
+            if (!_isInitialized.Value)
+                InitialSetup();
+            
+            _viewModel = vm;
+            _isVisible = _visibility.Value;
+            _visibility.
+                Subscribe(x => _isVisible = x).
+                AddTo(_lifeTimeDefinition);
+            
+#if UNITY_EDITOR
+            _status.Subscribe(x => _editorViewStatus = x).AddTo(ViewLifeTime);
+#endif
+
+            //custom initialization
+            await OnInitialize();
+            
+            _isInitialized.Value = true;
+
+            return this;
+        }
+        
         /// <summary>
         /// complete view lifetime immediately
         /// </summary>
         public void Destroy()
         {
             _lifeTimeDefinition.Terminate();
-            _viewModelLifeTime.Terminate();
         }
 
         public void BindLayout(IViewLayoutProvider layoutProvider)
         {
             _viewLayout = layoutProvider;
-        }
-
-        public IView BindNested(ILayoutView view, IViewModel model)
-        {
-            view?.BindLayout(_viewLayout);
-            view?.Initialize(model);
-            return this;
-        }
-
-        public async UniTask<IView> Initialize(IViewModel model, IViewLayoutProvider layoutProvider)
-        {
-            BindLayout(layoutProvider);
-            await Initialize(model);
-            BindLayout(layoutProvider);
-            
-            return this;
-        }
-
-        public async UniTask<IView> Initialize(IViewModel model, bool ownViewModel = false)
-        {
-            // save current state
-            _isViewOwner = ownViewModel;
-            
-            //restart view lifetime
-            _viewModelLifeTime.Release();
-            _progressLifeTime.Release();
-
-            //calls one per lifetime
-            if (!_isInitialized.Value) {
-                InitialSetup();
-            }
-
-            InitializeHandlers(model);
-            BindLifeTimeActions(model);
-
-            //custom initialization
-            await OnInitialize(model);
-            
-            _isInitialized.Value = true;
-
-            return this;
         }
 
         /// <summary>
@@ -253,7 +230,7 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// custom initialization methods
         /// </summary>
-        protected virtual UniTask OnInitialize(IViewModel model)
+        protected virtual UniTask OnInitialize()
         {
             return UniTask.CompletedTask;
         }
@@ -390,49 +367,12 @@ namespace UniGame.UiSystem.Runtime
                 .AddTo(lifeTime);
         }
 
-        private void InitializeHandlers(IViewModel model)
-        {
-            ViewModel = model;
-
-            _isVisible = _visibility.Value;
-            
-            _visibility.
-                Subscribe(x => _isVisible = x).
-                AddTo(_lifeTimeDefinition);
-        }
-        
-        private void BindLifeTimeActions(IViewModel model)
-        {
-            //bind model lifetime to local
-            var modelLifeTime = model.LifeTime;
-            if (model.IsDisposeWithModel)
-            {
-                modelLifeTime.ComposeCleanUp(_viewModelLifeTime, () =>
-                {
-                    if (Equals(ViewModel, model))
-                        Destroy();
-                });
-            }
-
-            _viewModelLifeTime.AddCleanUpAction(() =>
-            {
-                if (_isViewOwner) ViewModel.Cancel();
-            });
-            
-            _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Release);
-        
-#if UNITY_EDITOR
-            _status.Subscribe(x => _editorViewStatus = x).AddTo(ViewLifeTime);
-#endif
-        }
-
         private void InitialSetup()
         {
             _lifeTimeDefinition.Release();
             _isInitialized.Value = true;
             _status.Value  = ViewStatus.None;
             _internalViewStatus = ViewStatus.None;
-            _viewModelLifeTime.AddTo(ViewLifeTime);
             _progressLifeTime.AddTo(ViewLifeTime);
             
             ViewLifeTime.AddCleanUpAction(OnViewDestroy);
@@ -445,9 +385,7 @@ namespace UniGame.UiSystem.Runtime
             SetInternalStatus(ViewStatus.Closed);
             SetStatus(ViewStatus.Closed);
             
-            ViewModel            = null;
             _viewLayout          = null;
-            
             _status.Release();
             _visibility.Release();
         }

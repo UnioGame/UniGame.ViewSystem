@@ -3,7 +3,7 @@
 namespace UniGame.ViewSystem.Runtime
 {
     public interface ILayoutView:
-        IView, 
+        IModelView, 
         ILayoutItem
     {
         IView BindNested(ILayoutView view, IViewModel model);
