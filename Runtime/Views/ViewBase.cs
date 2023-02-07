@@ -86,7 +86,7 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// View LifeTime
         /// </summary>
-        public ILifeTime LifeTime => _viewModelLifeTime;
+        public virtual ILifeTime LifeTime => _viewModelLifeTime;
 
         public ILifeTime ModelLifeTime => _viewModelLifeTime;
         

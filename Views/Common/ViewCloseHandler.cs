@@ -64,7 +64,8 @@ namespace UniGame.UI.Components
 
         private void HandleBackButton()
         {
-            if(Input.GetKeyDown(KeyCode.Escape) && (_view.Status.Value == ViewStatus.Showing || _view.Status.Value == ViewStatus.Shown))
+            if(Input.GetKeyDown(KeyCode.Escape) && 
+               (_view.Status.Value == ViewStatus.Showing || _view.Status.Value == ViewStatus.Shown))
                 _view.Close();
         }
     }
