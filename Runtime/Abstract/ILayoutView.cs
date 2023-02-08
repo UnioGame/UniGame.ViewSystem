@@ -2,10 +2,12 @@
 
 namespace UniGame.ViewSystem.Runtime
 {
+    using Cysharp.Threading.Tasks;
+
     public interface ILayoutView:
         IModelView, 
         ILayoutItem
     {
-        IView BindNested(ILayoutView view, IViewModel model);
+        UniTask<IView> BindNested(ILayoutView view, IViewModel model);
     }
 }

@@ -13,6 +13,7 @@ namespace UniGame.UiSystem.Runtime
     using UniModules.UniRoutine.Runtime;
     using Core.Runtime;
     using UniModules.UniGame.UISystem.Runtime;
+    using UniModules.UniGame.UISystem.Runtime.Extensions;
     using ViewSystem.Runtime;
     using UniRx;
     using UniModules.UniRoutine.Runtime.Extension;
@@ -27,22 +28,29 @@ namespace UniGame.UiSystem.Runtime
         ILayoutView
     {
         private const string NullViewName = "Null";
+        private const string RuntimeInfo = "runtime info";
         
         #region inspector
 
+        [ShowIf(nameof(IsCommandsAction))]
+        [BoxGroup(RuntimeInfo)]
         [ReadOnlyValue]
         [SerializeField]
         [UsedImplicitly]
         private bool _isVisible;
 
+        [HideInInspector]
         [ReadOnlyValue]
         [SerializeField]
         private BoolRecycleReactiveProperty _isInitialized = new BoolRecycleReactiveProperty();
 
+        [ShowIf(nameof(IsCommandsAction))]
+        [BoxGroup(RuntimeInfo)]
         [ReadOnlyValue]
         [SerializeField]
         private ViewStatus _editorViewStatus = ViewStatus.None;
 
+        [HideInInspector]
         [ReadOnlyValue]
         [SerializeField]
         private ViewStatus _internalViewStatus = ViewStatus.None;
@@ -137,10 +145,13 @@ namespace UniGame.UiSystem.Runtime
             _viewLayout = layoutProvider;
         }
 
-        public IView BindNested(ILayoutView view, IViewModel model)
+        public async UniTask<IView> BindNested(ILayoutView view, IViewModel model)
         {
-            view?.BindLayout(_viewLayout);
-            view?.Initialize(model);
+            if (view == null) return this;
+            
+            view.BindLayout(_viewLayout);
+            await view.Initialize(model);
+            
             return this;
         }
 
@@ -149,7 +160,7 @@ namespace UniGame.UiSystem.Runtime
             BindLayout(layoutProvider);
             await Initialize(model);
             BindLayout(layoutProvider);
-            
+
             return this;
         }
 
