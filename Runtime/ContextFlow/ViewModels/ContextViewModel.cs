@@ -1,4 +1,4 @@
-namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow.ViewModels
+namespace UniGame.ViewSystem.Runtime.ViewModels
 {
     using Cysharp.Threading.Tasks;
     using UniModules.UniGame.Context.Runtime.Connections;

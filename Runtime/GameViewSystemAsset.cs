@@ -1,10 +1,9 @@
-﻿using UniGame.AddressableTools.Runtime;
-using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
-using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions;
-using UnityEngine;
-
-namespace UniGame.UiSystem.Runtime
+﻿namespace UniGame.UiSystem.Runtime
 {
+    using UniGame.AddressableTools.Runtime;
+    using UniGame.ViewSystem.Runtime.Abstract;
+    using UniGame.ViewSystem.Runtime.Extensions;
+    using UnityEngine;
     using System;
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
@@ -15,16 +14,18 @@ namespace UniGame.UiSystem.Runtime
     using Core.Runtime;
     using ViewSystem.Runtime;
     using UnityEngine.AddressableAssets;
-    using Object = Object;
-
+    using Object = UnityEngine.Object;
+    
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+#endif
     public class GameViewSystemAsset : MonoBehaviour, IGameViewSystem
     {
-        
         #region inspector data
         
 #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.Required]
-        [Sirenix.OdinInspector.DrawWithUnity]
+        [Required]
+        [DrawWithUnity]
 #endif
         public AssetReferenceT<ViewSystemSettings> settings;
         
@@ -106,7 +107,7 @@ namespace UniGame.UiSystem.Runtime
             GameLog.Log($"{nameof(IGameViewSystem)} {name} CreateSystem STARTED {DateTime.Now.ToLongTimeString()}");
             
             var settingsAsset = await settings.LoadAssetTaskAsync(LifeTime);
-            settingsAsset = Object.Instantiate(settingsAsset);
+            settingsAsset = Instantiate(settingsAsset);
             settingsAsset.DestroyWith(LifeTime);
             
             await settingsAsset.Initialize();
@@ -120,7 +121,11 @@ namespace UniGame.UiSystem.Runtime
             var viewLayoutContainer = new ViewStackLayoutsContainer(stackMap);
             var sceneFlowController = settingsAsset.FlowController;
 
-            var gameSystem = new GameViewSystem(factory, viewLayoutContainer, sceneFlowController,settingsAsset.viewModelResolvers,settingsAsset.ViewModelTypeMap);
+            var gameSystem = new GameViewSystem(factory, viewLayoutContainer, 
+                sceneFlowController,
+                settingsAsset.viewModelResolver,
+                settingsAsset.ViewModelTypeMap);
+            
             gameSystem.TryMakeActive();
 
             _gameViewSystem = gameSystem.AddTo(LifeTime);

@@ -1,6 +1,6 @@
 ﻿using UniGame.Runtime.ObjectPool.Extensions;
-using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
-using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
+using UniGame.ViewSystem.Runtime;
+using UniGame.ViewSystem.Runtime.Abstract;
 using UnityEngine.Scripting;
 
 [assembly: AlwaysLinkAssembly]

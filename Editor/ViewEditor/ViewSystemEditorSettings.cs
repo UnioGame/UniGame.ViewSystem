@@ -7,6 +7,7 @@ namespace UniModules.UniGame.ViewSystem
 {
     using System;
     using System.Collections.Generic;
+    using global::UniGame.ViewSystem.Runtime;
     using UniModules.Editor;
     using UniModules.UniGame.Core.Runtime.Attributes;
     using UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract;
@@ -18,12 +19,13 @@ namespace UniModules.UniGame.ViewSystem
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/Editor/Editor Template ViewSystemSettings",fileName = nameof(ViewSystemEditorSettings))]
     public class ViewSystemEditorSettings : ScriptableObject
     {
-        
         public Object prototypeFolder;
 
         public ViewSystemSettings viewSystemSettingsAsset;
 
         public GameObject viewPrefab;
+
+        public ViewModelResolverSettings viewModelResolver;
 
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.ValueDropdown(nameof(GetFlowTypes))]
@@ -78,7 +80,7 @@ namespace UniModules.UniGame.ViewSystem
         {
             var viewSystemPrefab = ViewEditorSettings.viewPrefab;
             var settings = ViewEditorSettings.viewSystemSettingsAsset;
-            
+
             var view = viewSystemPrefab.CopyAsset<GameViewSystemAsset>(viewSystemPrefab.name,path);
             var settingsAsset = settings.CopyAsset<ViewSystemSettings>(settings.name, path);
 

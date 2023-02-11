@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UniGame.UiSystem.Runtime.Settings;
 
-namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract
+namespace UniGame.ViewSystem.Runtime.Abstract
 {
     public interface IViewModelTypeMap
     {

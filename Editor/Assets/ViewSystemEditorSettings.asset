@@ -13,7 +13,10 @@ MonoBehaviour:
   m_Name: ViewSystemEditorSettings
   m_EditorClassIdentifier: 
   prototypeFolder: {fileID: 102900000, guid: 3c8989b1f4edac6479cba3f1ca6742f2, type: 3}
-  viewSystemSettingsAsset: {fileID: 11400000, guid: 34e95cd46455c054faf02eb8a96b0270, type: 2}
-  viewPrefab: {fileID: 7387079578667170277, guid: cbb186b66f51e0844a835be6e43d55e6, type: 3}
+  viewSystemSettingsAsset: {fileID: 11400000, guid: 34e95cd46455c054faf02eb8a96b0270,
+    type: 2}
+  viewPrefab: {fileID: 7387079578667170277, guid: cbb186b66f51e0844a835be6e43d55e6,
+    type: 3}
+  viewModelFactory: {fileID: 11400000, guid: 20f709556179e1d429e0cb352e944f70, type: 2}
   defaultFlowAsset: {fileID: 11400000, guid: c22cfe04dc8dc9e43b8b9b36576fab63, type: 2}
   defaultLayoutType: {fileID: 11400000, guid: 3b063ea60dca1d6449cc6838450bbf68, type: 2}

@@ -8,13 +8,13 @@ namespace UniModules.UniGame.ViewSystem
     using System.Collections.Generic;
     using global::UniGame.ViewSystem.Editor.EditorAssets;
     using UniModules.Editor;
-    using Runtime.ContextFlow;
+    using global::UniGame.ViewSystem.Runtime;
     using UnityEditor.AddressableAssets;
     using UnityEditor.AddressableAssets.Settings;
 
     public class ViewsAssemblyBuilder
     {
-        private List<ViewModelResolverSettings> contextViewsMapSettings = new List<ViewModelResolverSettings>();
+        private List<ViewModelResolver> contextViewsMapSettings = new List<ViewModelResolver>();
         private AddressableAssetSettings addressableAssetSettings;
         private List<Action> rebuildCommands;
         private List<IViewAssemblerCommand> rebuildSettingsCommands;

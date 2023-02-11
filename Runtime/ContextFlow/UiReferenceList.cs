@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UniGame.UiSystem.Runtime.Settings;
 
-namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
+namespace UniGame.ViewSystem.Runtime
 {
     [Serializable]
 #if ODIN_INSPECTOR

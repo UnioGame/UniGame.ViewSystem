@@ -1,5 +1,5 @@
 ﻿using UniGame.AddressableTools.Runtime;
-using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
+using UniGame.ViewSystem.Runtime.Abstract;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -12,7 +12,6 @@ namespace UniGame.UiSystem.Runtime
     using Settings;
     using Core.Runtime;
     using ViewSystem.Runtime;
-    using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
 
     public class UiResourceProvider : 
         IViewResourceProvider, 

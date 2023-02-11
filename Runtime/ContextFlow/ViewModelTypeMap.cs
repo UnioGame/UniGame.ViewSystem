@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using UniGame.UiSystem.Runtime.Settings;
-using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
+using UniGame.ViewSystem.Runtime.Abstract;
 using UniModules.UniGame.ViewSystem.Runtime.Extensions;
 using UnityEngine;
 
-namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
+namespace UniGame.ViewSystem.Runtime
 {
+    using Abstract;
+
     [Serializable]
     public class ViewModelTypeMap : IViewModelTypeMap
     {

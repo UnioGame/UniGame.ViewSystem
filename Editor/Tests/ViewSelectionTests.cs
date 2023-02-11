@@ -5,7 +5,7 @@ namespace UniGame.Tests.UnitTests.Editor.ViewSystem
     using NUnit.Framework;
     using UniGame.UiSystem.Runtime;
     using UniGame.Core.Runtime.SerializableType;
-    using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
+    using UniGame.ViewSystem.Runtime;
     using UnityEngine.AddressableAssets;
 
     public class ViewSelectionTests

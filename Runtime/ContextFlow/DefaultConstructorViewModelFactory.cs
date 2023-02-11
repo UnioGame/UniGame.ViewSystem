@@ -1,5 +1,5 @@
 ﻿
-namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
+namespace UniGame.ViewSystem.Runtime
 {
     using System;
     using Cysharp.Threading.Tasks;
@@ -12,7 +12,9 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
     {
         public bool IsValid(Type modelType)
         {
-            var result = !modelType.IsAbstract && !modelType.IsInterface && modelType.HasDefaultConstructor();
+            var result = !modelType.IsAbstract && 
+                         !modelType.IsInterface && 
+                         modelType.HasDefaultConstructor();
             return result;
         }
 

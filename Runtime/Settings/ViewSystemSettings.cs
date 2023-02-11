@@ -1,12 +1,11 @@
 ﻿using UniGame.AddressableTools.Runtime;
-using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
+using UniGame.ViewSystem.Runtime.Abstract;
 
 namespace UniGame.UiSystem.Runtime.Settings
 {
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using Core.Runtime;
-    using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
     using System;
     using System.Collections.Generic;
     using UniCore.Runtime.ProfilerTools;
@@ -16,6 +15,10 @@ namespace UniGame.UiSystem.Runtime.Settings
     using ViewsFlow;
     using Object = UnityEngine.Object;
 
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+#endif
+    
     /// <summary>
     /// Base View system settings. Contains info about all available view abd type info
     /// </summary>
@@ -25,8 +28,9 @@ namespace UniGame.UiSystem.Runtime.Settings
         #region inspector
 
 #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.Searchable]
-        [Sirenix.OdinInspector.GUIColor(1f,0.55f,0.33f)]
+        [TabGroup(SettingsTabKey)]
+        [Searchable]
+        [GUIColor(1f,0.55f,0.33f)]
 #endif
         [Space]
         [Header("Nested Views Sources")]
@@ -34,22 +38,25 @@ namespace UniGame.UiSystem.Runtime.Settings
         public List<NestedViewSourceSettings> sources = new List<NestedViewSourceSettings>();
 
 #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.DrawWithUnity]
-        [Sirenix.OdinInspector.InlineEditor]
-        [Sirenix.OdinInspector.GUIColor(0.8f,0.8f,0.2f)]
+        [TabGroup(SettingsTabKey)]
+        [DrawWithUnity]
+        [InlineEditor]
+        [GUIColor(0.8f,0.8f,0.2f)]
 #endif
         [SerializeField]
         [AssetFilter(typeof(ViewFlowControllerAsset))]
         public ViewFlowControllerAsset layoutFlow;
 
-        [Header("ViewModels dependency resolvers")]
+        [Space(8)]
+        [Header("ViewModels Resolver")]
         [SerializeField]
 #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.InlineProperty]
-        [Sirenix.OdinInspector.HideLabel]
-        [Sirenix.OdinInspector.GUIColor(0.5f,0.8f,0.4f)]
+        [TabGroup(SettingsTabKey)]
+        [InlineProperty]
+        [HideLabel]
+        [GUIColor(0.5f,0.8f,0.4f)]
 #endif
-        public ViewModelResolverSettings viewModelResolvers = new ViewModelResolverSettings();
+        public ViewModelResolver viewModelResolver = new ViewModelResolver();
 
         #endregion
 
@@ -86,7 +93,7 @@ namespace UniGame.UiSystem.Runtime.Settings
 
             uiResourceProvider ??= new UiResourceProvider();
             uiResourceProvider.RegisterViewReferences(Views);
-            viewModelResolvers?.Initialize();
+            viewModelResolver?.Initialize();
             
             await DownloadAllAsyncSources();
         }
@@ -128,7 +135,7 @@ namespace UniGame.UiSystem.Runtime.Settings
                     return;
                 }
                 
-                var settings = Object.Instantiate(settingsAsset);
+                var settings = Instantiate(settingsAsset);
                 settings.DestroyWith(LifeTime);
 
                 uiResourceProvider.RegisterViewReferences(settings.Views);

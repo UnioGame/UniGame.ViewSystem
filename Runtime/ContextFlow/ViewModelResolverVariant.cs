@@ -1,10 +1,11 @@
 ﻿using System;
 using UniModules.UniGame.Core.Runtime.Common;
 
-namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
+namespace UniGame.ViewSystem.Runtime
 {
     [Serializable]
-    public class ViewModelResolverVariant : VariantValue<IViewModelResolver, ViewModelResolverAsset, IViewModelResolver>
+    public class ViewModelResolverVariant 
+        : VariantValue<IViewModelResolver, ViewModelResolverAsset, IViewModelResolver>
     {
         
     }

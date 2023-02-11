@@ -4,7 +4,7 @@ using UniGame.Core.Runtime;
 using UniGame.ViewSystem.Runtime;
 using UnityEngine;
 
-namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
+namespace UniGame.ViewSystem.Runtime
 {
     public abstract class ViewModelResolverAsset : 
         ScriptableObject, 

@@ -16,50 +16,59 @@ namespace UniGame.UiSystem.Runtime.Settings
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/" + nameof(ViewsSettings), fileName = nameof(ViewsSettings))]
     public class ViewsSettings : LifetimeScriptableObject, IViewsSettings
     {
-        private const string ViewsGroup = "views";
-        private const string AddressablesGroup = "";
+        public const string ViewTabKey = "Views";
+        public const string SettingsTabKey = "Settings";
+
         private static Color ViewsBackgroundColor = new Color(0.7f, 0.9f, 0.9f);
+        
+#if ODIN_INSPECTOR
+        [PropertyOrder(-1)]
+#endif
         public string sourceName;
 
         [Header("Is Source will be filled on Update")]
+#if ODIN_INSPECTOR
+        [PropertyOrder(-1)]
+#endif
         public bool isActive = true;
 
         [Header("Default views")]
 #if ODIN_INSPECTOR
+        [TabGroup(SettingsTabKey)]
         [FolderPath]
         [GUIColor(nameof(ViewsBackgroundColor))]
-        [BoxGroup(nameof(ViewsGroup))]
 #endif
         public List<string> uiViewsDefaultFolders = new List<string>();
 
         [Header("View Assets Sources")]
 #if ODIN_INSPECTOR
+        [TabGroup(SettingsTabKey)]
         [GUIColor(nameof(ViewsBackgroundColor))]
-        [BoxGroup(nameof(ViewsGroup))]
 #endif
         public List<AssetReferenceGameObject> viewsAssetsSources = new List<AssetReferenceGameObject>();
         
         [Header("Skins folder")]
 #if ODIN_INSPECTOR
+        [TabGroup(SettingsTabKey)]
         [GUIColor(nameof(ViewsBackgroundColor))]
-        [BoxGroup(nameof(ViewsGroup))]
+        //[BoxGroup(nameof(ViewsGroup))]
         [FolderPath]
 #endif
         public List<string> uiViewsSkinFolders = new List<string>();
 
         [Header("Registered Views")]
-#if ODIN_INSPECTOR_3
-        [Searchable]
-#endif
 #if ODIN_INSPECTOR
-        [BoxGroup(nameof(ViewsGroup))]
+        [TabGroup(ViewTabKey)]
+        [Searchable]
+        //[BoxGroup(nameof(ViewsGroup))]
         [GUIColor(nameof(ViewsBackgroundColor))]
+        [PropertyOrder(-1)]
 #endif
         public List<UiViewReference> uiViews = new List<UiViewReference>();
 
         [Space]
 #if ODIN_INSPECTOR
-        [BoxGroup(nameof(AddressablesGroup))]
+        [TabGroup(SettingsTabKey)]
 #endif
         public bool applyAddressablesGroup = false;
 
@@ -67,13 +76,13 @@ namespace UniGame.UiSystem.Runtime.Settings
 #if UNITY_EDITOR
         [ValueDropdown(nameof(GetLabels), ExcludeExistingValuesInList = true)]
 #endif
+        [TabGroup(SettingsTabKey)]
         [ShowIf(nameof(applyAddressablesGroup))]
-        [BoxGroup(nameof(AddressablesGroup))]
 #endif
         public List<string> labels = new List<string>();
 
 #if ODIN_INSPECTOR
-        [BoxGroup(nameof(AddressablesGroup))]
+        [TabGroup(SettingsTabKey)]
         [ShowIf(nameof(applyAddressablesGroup))]
 #endif
         [Header("Name of target addressable group")]
@@ -90,7 +99,8 @@ namespace UniGame.UiSystem.Runtime.Settings
         }
 
 #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.Button]
+        [Sirenix.OdinInspector.Button(ButtonSizes.Large)]
+        [GUIColor(0.3f,0.8f,0.4f)]
 #endif
         private void Rebuild()
         {

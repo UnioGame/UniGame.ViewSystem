@@ -4,12 +4,14 @@ using UniGame.UiSystem.Runtime.Settings;
 using UniGame.Core.Runtime;
 using UniModules.UniGame.UiSystem.Runtime;
 using UniGame.ViewSystem.Runtime;
-using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
+using UniGame.ViewSystem.Runtime.Abstract;
 using UniModules.UniGame.ViewSystem.Runtime.Extensions;
 using UnityEngine;
 
-namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions
+namespace UniGame.ViewSystem.Runtime.Extensions
 {
+    using Abstract;
+
     public static class ViewsFactoryExtensions
     {
         
