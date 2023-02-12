@@ -89,6 +89,8 @@ namespace UniGame.UiSystem.Runtime
         public IReadOnlyReactiveProperty<bool> IsInitialized => _isInitialized;
         
         public GameObject Owner => gameObject;
+        
+        public GameObject GameObject => gameObject;
 
         /// <summary>
         /// View LifeTime
@@ -182,7 +184,7 @@ namespace UniGame.UiSystem.Runtime
             BindLifeTimeActions(model);
 
             //custom initialization
-            await OnInitialize(model);
+            OnInitialize(model).Forget();
             
             _isInitialized.Value = true;
 

@@ -3,6 +3,7 @@
 namespace UniGame.ViewSystem.Runtime
 {
     using System;
+    using Cysharp.Threading.Tasks;
 
     public interface IGameViewSystem : 
         IDisposable, 
@@ -10,6 +11,8 @@ namespace UniGame.ViewSystem.Runtime
         IViewModelResolver
     {
         void CloseAll();
+
+        UniTask<T> InitializeView<T>(T view, IViewModel viewModel) where T : IView;
     }
 
 }

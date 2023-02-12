@@ -103,7 +103,7 @@ namespace UniGame.ViewSystem.Runtime.Extensions
             var modelReference = views.SelectReference(skinTag, viewName);
             var modelType = modelReference.ViewModelType;
             
-            var model = await viewSystem.Create(context,modelType);
+            var model = await viewSystem.CreateViewModel(context,modelType);
 
             return viewLayoutType switch
             {

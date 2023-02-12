@@ -22,10 +22,10 @@ namespace UniGame.ViewSystem.Runtime
         public bool IsValid(Type modelType) => _defaultConstructorFactory.IsValid(modelType) &&
                                                AssignableTypeValidator<IContextViewModel>.Validate(modelType);
 
-        public async UniTask<IViewModel> Create(IContext context, Type type)
+        public async UniTask<IViewModel> CreateViewModel(IContext context, Type type)
         {
             var lifeTime = context.LifeTime;
-            var viewModel = await _defaultConstructorFactory.Create(context, type);
+            var viewModel = await _defaultConstructorFactory.CreateViewModel(context, type);
             var model = viewModel as IContextViewModel;
             await model.InitializeContextAsync(context)
                 .AttachExternalCancellation(lifeTime.AsCancellationToken());
@@ -44,9 +44,9 @@ namespace UniGame.ViewSystem.Runtime
             return result;
         }
 
-        public UniTask<IViewModel> Create(IContext context, Type modelType)
+        public UniTask<IViewModel> CreateViewModel(IContext context, Type modelType)
         {
-            return _contextViewModelFactory.Create(context, modelType);
+            return _contextViewModelFactory.CreateViewModel(context, modelType);
         }
     }
 }

@@ -23,6 +23,7 @@ namespace UniGame.UiSystem.Runtime
         public IReadOnlyReactiveProperty<ViewStatus> Status => _viewStatusProperty;
 
         public GameObject Owner     => null;
+        public GameObject GameObject => null;
         public Transform  Transform => null;
         
         public ILifeTime ModelLifeTime => UniModules.UniCore.Runtime.DataFlow.LifeTime.TerminatedLifetime;

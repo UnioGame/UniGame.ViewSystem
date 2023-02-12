@@ -12,6 +12,6 @@ namespace UniGame.ViewSystem.Runtime
     {
         public abstract bool IsValid(Type modelType);
         
-        public abstract UniTask<IViewModel> Create(IContext context,Type modelType);
+        public abstract UniTask<IViewModel> CreateViewModel(IContext context,Type modelType);
     }
 }

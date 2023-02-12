@@ -72,11 +72,11 @@ namespace UniGame.UiSystem.Runtime
 
         public bool IsValid(Type modelType) => _viewModelResolver.IsValid(modelType);
 
-        public async UniTask<IViewModel> Create(IContext context, Type modelType)
+        public async UniTask<IViewModel> CreateViewModel(IContext context, Type modelType)
         {
             if (_viewModelResolver == null)
                 return null;
-            return await _viewModelResolver.Create(context,modelType);
+            return await _viewModelResolver.CreateViewModel(context,modelType);
         }
         
         #endregion
@@ -296,7 +296,7 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// Initialize View with model data
         /// </summary>
-        private async UniTask<T> InitializeView<T>(T view, IViewModel viewModel)
+        public async UniTask<T> InitializeView<T>(T view, IViewModel viewModel)
             where T : IView
         {
             if (view is ILayoutItem factoryView)

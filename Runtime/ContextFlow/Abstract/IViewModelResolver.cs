@@ -9,6 +9,6 @@ namespace UniGame.ViewSystem.Runtime
     {
         bool IsValid(Type modelType);
 
-        public UniTask<IViewModel> Create(IContext context,Type modelType);
+        public UniTask<IViewModel> CreateViewModel(IContext context,Type modelType);
     }
 }

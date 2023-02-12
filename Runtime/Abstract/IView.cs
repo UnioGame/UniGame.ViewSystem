@@ -15,6 +15,8 @@ namespace UniGame.ViewSystem.Runtime
         IViewCommands
     {
         public GameObject Owner { get; }
+        
+        public GameObject GameObject { get; }
 
         public Transform  Transform { get; }
 

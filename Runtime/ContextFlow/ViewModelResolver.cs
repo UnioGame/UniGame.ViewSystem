@@ -50,7 +50,7 @@ namespace UniGame.ViewSystem.Runtime
             _isInitialized = true;
         }
 
-        public async UniTask<IViewModel> Create(IContext context,Type type)
+        public async UniTask<IViewModel> CreateViewModel(IContext context,Type type)
         {
             foreach (var modelProvider in _runtimeFactories)
             {
@@ -59,7 +59,7 @@ namespace UniGame.ViewSystem.Runtime
                 
                 var isValid = modelProvider.IsValid(type);
                 if (!isValid) continue;
-                var model = await modelProvider.Create(context,type);
+                var model = await modelProvider.CreateViewModel(context,type);
                 return model;
             }
 

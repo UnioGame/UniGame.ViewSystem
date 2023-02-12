@@ -18,7 +18,7 @@ namespace UniGame.ViewSystem.Runtime
             return result;
         }
 
-        public async UniTask<IViewModel> Create(IContext context, Type modelType)
+        public async UniTask<IViewModel> CreateViewModel(IContext context, Type modelType)
         {
             var model = modelType.CreateWithDefaultConstructor<IViewModel>();
             return model;

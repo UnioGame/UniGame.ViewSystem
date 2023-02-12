@@ -41,7 +41,7 @@
 
         public bool IsValid(Type modelType) => ViewSystem.IsValid(modelType);
 
-        public async UniTask<IViewModel> Create(IContext context,Type modelType) => await ViewSystem.Create(context,modelType);
+        public async UniTask<IViewModel> CreateViewModel(IContext context,Type modelType) => await ViewSystem.CreateViewModel(context,modelType);
         
         #endregion
         
@@ -87,6 +87,11 @@
         }
 
         public void CloseAll() => ViewSystem.CloseAll();
+        
+        public UniTask<T> InitializeView<T>(T view, IViewModel viewModel) where T : IView
+        {
+            return _gameViewSystem.InitializeView(view, viewModel);
+        }
 
         public void Dispose() => _lifeTime.Terminate();
 
