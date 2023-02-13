@@ -36,7 +36,8 @@ namespace UniGame.ViewSystem.Runtime
     [Serializable]
     public class ContextApiViewModelFactory : IViewModelResolver
     {
-        [SerializeField] private ContextViewModelFactory _contextViewModelFactory = new ContextViewModelFactory();
+        [SerializeField] 
+        private ContextViewModelFactory _contextViewModelFactory = new ContextViewModelFactory();
 
         public bool IsValid(Type modelType)
         {

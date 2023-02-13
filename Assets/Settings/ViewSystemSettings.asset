@@ -23,7 +23,7 @@ MonoBehaviour:
   addressableGroupName: 
   sources: []
   layoutFlow: {fileID: 11400000, guid: c22cfe04dc8dc9e43b8b9b36576fab63, type: 2}
-  viewModelResolvers:
+  viewModelResolver:
     modelFactoryTimeoutMs: 500
     modelResolvers: []
   references:
