@@ -11,6 +11,7 @@ namespace UniGame.ViewSystem.Runtime.Abstract
         IReadOnlyList<UiViewReference> FindModelByType(Type modelType, bool strongMatching = true);
 
         Type GetModelTypeByView(Type viewType, bool strongTypeMatching = true);
+        Type GetViewModelTypeByView(Type viewType, bool strongTypeMatching = true);
         Type GetViewTypeByModel(Type modeType, bool strongTypeMatching = true);
     }
 }

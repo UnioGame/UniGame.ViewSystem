@@ -74,6 +74,8 @@ namespace UniGame.UiSystem.Runtime
         public IReadOnlyList<UiViewReference> FindModelByType(Type modelType, bool strongMatching = true) => _viewModelTypeMap.FindModelByType(modelType, strongMatching);
 
         public Type GetModelTypeByView(Type viewType, bool strongTypeMatching = true) => _viewModelTypeMap.GetModelTypeByView(viewType, strongTypeMatching);
+        
+        public Type GetViewModelTypeByView(Type viewType, bool strongTypeMatching = true) => _viewModelTypeMap.GetViewModelTypeByView(viewType, strongTypeMatching);
 
         public Type GetViewTypeByModel(Type modeType, bool strongTypeMatching = true) => _viewModelTypeMap.GetViewTypeByModel(modeType, strongTypeMatching);
         
