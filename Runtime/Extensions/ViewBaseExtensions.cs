@@ -198,6 +198,30 @@
         /// <summary>
         /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
         /// </summary>
+        public static async UniTask<IView> CreateChildViewAsync(
+            this ViewBase source,
+            Type viewType,
+            IViewModel viewModel, 
+            Transform parent = null,
+            string skinTag = null,
+            string viewName = null,
+            bool stayWorld = false) 
+        {
+            parent = parent ? parent : source.Transform;
+            
+            var view = await source.Layout.Create(viewModel, viewType, 
+                skinTag, parent, viewName,stayWorld);
+            
+            var viewTransform = view.Transform;
+            view.Owner.layer         = source.Owner.layer;
+            viewTransform.localScale = Vector3.one;
+            
+            return view;
+        }
+        
+        /// <summary>
+        /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
+        /// </summary>
         public static async UniTask<T> ShowChildViewAsync<T>(
             this ViewBase source,
             IViewModel viewModel, 
@@ -209,6 +233,74 @@
         {
             var view = await CreateChildViewAsync<T>(source,viewModel, parent,skinTag, viewName,stayWorld);
             view.Show();
+            return view;
+        }
+        
+        /// <summary>
+        /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
+        /// </summary>
+        public static async UniTask<IView> ShowChildViewAsync(
+            this ViewBase source,
+            Type viewType,
+            Transform parent = null, 
+            string skinTag = null, 
+            string viewName = null,
+            bool stayWorld = false) 
+        {
+            var view = await CreateChildViewAsync(source,viewType, parent,skinTag, viewName,stayWorld);
+            view.Show();
+            return view;
+        }
+        
+        /// <summary>
+        /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
+        /// </summary>
+        public static async UniTask<IView> ShowChildViewAsync<TView>(
+            this ViewBase source,
+            Transform parent = null, 
+            string skinTag = null, 
+            string viewName = null,
+            bool stayWorld = false) 
+            where TView : IView
+        {
+            var viewType = typeof(TView);
+            var view = await CreateChildViewAsync(source,viewType, parent,skinTag, viewName,stayWorld);
+            view.Show();
+            return view;
+        }
+
+        public static async UniTask<IView> CreateChildViewAsync<TView>(
+            this ViewBase source,
+            Transform parent = null,
+            string skinTag = null,
+            string viewName = null,
+            bool stayWorld = false)
+            where TView : IView
+        {
+            var viewType = typeof(TView);
+            return await CreateChildViewAsync(source, viewType, parent, skinTag, viewName, stayWorld);
+        }
+
+        /// <summary>
+        /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
+        /// </summary>
+        public static async UniTask<IView> CreateChildViewAsync(
+            this ViewBase source,
+            Type viewType,
+            Transform parent = null, 
+            string skinTag = null, 
+            string viewName = null,
+            bool stayWorld = false) 
+        {
+            parent = parent ? parent : source.Transform;
+            
+            var view = await source.Layout.Create(viewType, 
+                skinTag, parent, viewName,stayWorld);
+            
+            var viewTransform = view.Transform;
+            view.Owner.layer         = source.Owner.layer;
+            viewTransform.localScale = Vector3.one;
+            
             return view;
         }
 

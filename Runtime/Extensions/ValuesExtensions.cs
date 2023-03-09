@@ -25,5 +25,15 @@
 
             return true;
         }
+        
+        public static bool SetValue(
+            this Image target, 
+            bool value)
+        {
+            if (target == null) return false;
+            
+            target.enabled = value;
+            return true;
+        }
     }
 }

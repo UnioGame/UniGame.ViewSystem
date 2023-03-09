@@ -63,6 +63,35 @@
 
         public IObservable<TView> ObserveView<TView>() where  TView :class, IView => ViewSystem.ObserveView<TView>();
 
+
+        public async UniTask<IView> OpenWindow(Type viewType, string skinTag = "", string viewName = null)
+        {
+            return await ViewSystem.OpenWindow(viewType, skinTag, viewName);
+        }
+        public async UniTask<IView> OpenScreen(Type viewType, string skinTag = "", string viewName = null){
+            return await ViewSystem.OpenScreen(viewType, skinTag, viewName);
+        }
+        public async UniTask<IView> OpenOverlay(Type viewType, string skinTag = "", string viewName = null){
+            return await ViewSystem.OpenOverlay(viewType, skinTag, viewName);
+        }
+
+        public async UniTask<IView> CreateWindow(Type viewType, string skinTag = "", string viewName = null){
+            return await ViewSystem.CreateWindow(viewType, skinTag, viewName);
+        }
+        public async UniTask<IView> CreateScreen(Type viewType, string skinTag = "", string viewName = null){
+            return await ViewSystem.CreateScreen(viewType, skinTag, viewName);
+        }
+        public async UniTask<IView> CreateOverlay(Type viewType, string skinTag = "", string viewName = null){
+            return await ViewSystem.CreateOverlay(viewType, skinTag, viewName);
+        }
+
+
+        public async UniTask<IView> Create(Type viewType, string skinTag = "", Transform parent = null, string viewName = null,
+            bool stayWorldPosition = false, ILifeTime ownerLifeTime = null)
+        {
+            return await ViewSystem.Create(viewType, skinTag, parent, viewName, stayWorldPosition, ownerLifeTime);
+        }
+
         public UniTask<IView> Create(IViewModel viewModel, Type viewType, string skinTag = "", Transform parent = null, string viewName = null, bool stayWorld = false,ILifeTime ownerLifeTime = null) =>
             ViewSystem.Create(viewModel, viewType, skinTag, parent, viewName,stayWorld,ownerLifeTime);
 
@@ -78,6 +107,7 @@
 
         public UniTask<IView> CreateOverlay(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null) => ViewSystem.CreateOverlay(viewModel, viewType, skinTag, viewName);
 
+        
         public IViewLayout GetLayout(ViewType type) => ViewSystem.GetLayout(type);
         public IViewLayout GetLayout(string id) => ViewSystem.GetLayout(id);
 
