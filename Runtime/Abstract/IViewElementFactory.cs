@@ -10,8 +10,8 @@ namespace UniGame.ViewSystem.Runtime
     {
         UniTask<IView> Create(
             Type viewType,
-            string skinTag = "",
             Transform parent = null,
+            string skinTag = "",
             string viewName = null,
             bool stayWorldPosition = false,
             ILifeTime ownerLifeTime = null);

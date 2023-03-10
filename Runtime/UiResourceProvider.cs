@@ -35,7 +35,7 @@ namespace UniGame.UiSystem.Runtime
 
             if (item != null) return item.View;
             
-            Debug.LogError($"{nameof(UiResourceProvider)} ITEM MISSING skin:{skinTag} type {viewType.Name}");
+            Debug.LogError($"{nameof(UiResourceProvider)} ITEM MISSING skin:{skinTag} type {viewType?.Name}");
             return null;
         }
         

@@ -114,8 +114,8 @@ namespace UniGame.UiSystem.Runtime
 
         public async UniTask<IView> Create(
             Type viewType, 
-            string skinTag = "",
             Transform parent = null, 
+            string skinTag = "",
             string viewName = null,
             bool stayWorld = false,
             ILifeTime ownerLifeTime = null)
