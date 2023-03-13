@@ -65,11 +65,10 @@ namespace UniModules.UniGame.ViewSystem
         public static void CreateViewSystemPrefab()
         {
             var activeObject = Selection.activeObject;
-            if (!activeObject)
-                return;
+            if (!activeObject) return;
             
             var path = AssetDatabase.GetAssetPath(activeObject);
-            path.GetDirectoryPath();
+            path = path.GetDirectoryPath();
 
             Debug.Log($"ASSET PATH SELECTION :  {path}");
             
