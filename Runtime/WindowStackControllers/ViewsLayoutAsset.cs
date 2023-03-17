@@ -6,8 +6,8 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
     using System;
     using System.Collections.Generic;
     using Backgrounds.Abstract;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using Core.Runtime;
+    using ViewSystem.Runtime;
     using UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract;
     using UniRx;
 
@@ -30,9 +30,11 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         #endregion
 
-        private readonly Lazy<IViewLayout> _layout;
+        private Lazy<IViewLayout> _viewLayout;
+        
+        private Lazy<IViewLayout> ViewLayout => _viewLayout = _viewLayout ?? new Lazy<IViewLayout>(Create);
 
-        public IViewLayout LayoutController => _layout.Value;
+        public IViewLayout LayoutController => ViewLayout.Value;
 
         public Transform Layout => LayoutController.Layout;
         
@@ -52,26 +54,15 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         
         #region public methods
 
-        public ViewsLayoutAsset()
-        {
-            _layout = new Lazy<IViewLayout>(Create);
-        }
-
         public void Dispose() => LayoutController.Dispose();
 
         public bool Contains(IView view) => LayoutController.Contains(view);
 
-        public void HideAll()
-        {
-            LayoutController.HideAll();
-        }
+        public void HideAll() => LayoutController.HideAll();
 
         public IReadOnlyReactiveProperty<IView> ActiveView => LayoutController.ActiveView;
 
-        public void Push(IView view)
-        {
-            LayoutController.Push(view);
-        }
+        public void Push(IView view) => LayoutController.Push(view);
 
         public TView Get<TView>() where TView : class,IView
         {
@@ -106,21 +97,24 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         protected virtual IViewLayout Create()
         {
             IBackgroundView backgroundView = null;
+            
             if (_backgroundFactory != null) {
-                backgroundView = _backgroundFactory.Create(_layoutCanvas?.transform);
+                backgroundView = _backgroundFactory
+                    .Create(_layoutCanvas?.transform);
                 backgroundView.Hide();
             }
             
             if(_layoutBehaviourFactory == null)
                 throw new NullReferenceException(nameof(_layoutBehaviourFactory));
 
-            return _layoutBehaviourFactory.Create(_layoutCanvas.transform, backgroundView);
+            return _layoutBehaviourFactory
+                .Create(_layoutCanvas.transform, backgroundView);
         }
 
         protected void OnDestroy()
         {
-            if(_layout.IsValueCreated)
-                _layout.Value.Dispose();
+            if(ViewLayout.IsValueCreated)
+                ViewLayout.Value.Dispose();
         }
 
         #endregion

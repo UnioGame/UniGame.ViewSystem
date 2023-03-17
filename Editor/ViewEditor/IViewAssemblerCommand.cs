@@ -1,7 +1,7 @@
 ﻿using UniGame.UiSystem.Runtime.Settings;
-using UniModules.UniGame.Core.Runtime.Interfaces;
+using UniGame.Core.Runtime;
 
-namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
+namespace UniModules.UniGame.ViewSystem
 {
     public interface IViewAssemblerCommand : ICommand<ViewsSettings, bool>, IResetable
     {

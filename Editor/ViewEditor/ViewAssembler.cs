@@ -1,6 +1,6 @@
 ﻿using UniModules.UniCore.Runtime.DataFlow;
-using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-using UniModules.UniGame.ViewSystem.Editor.UiEditor;
+using UniGame.Core.Runtime;
+using UniModules.UniGame.ViewSystem;
 using UniRx;
 
 namespace UniGame.UiSystem.UI.Editor.UiEdito

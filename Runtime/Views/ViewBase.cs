@@ -7,43 +7,50 @@ namespace UniGame.UiSystem.Runtime
     using Cysharp.Threading.Tasks;
     using JetBrains.Annotations;
     using UniCore.Runtime.ProfilerTools;
-    using UniModules.UniCore.Runtime.Attributes;
+    using UniCore.Runtime.Attributes;
     using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniGame.Core.Runtime.Rx;
     using UniModules.UniRoutine.Runtime;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+    using Core.Runtime;
     using UniModules.UniGame.UISystem.Runtime;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using UniModules.UniGame.UISystem.Runtime.Extensions;
+    using ViewSystem.Runtime;
     using UniRx;
     using UniModules.UniRoutine.Runtime.Extension;
     using UnityEngine;
-    using UnityEngine.EventSystems;
 
 #if ODIN_INSPECTOR
     using Sirenix.OdinInspector;
 #endif
     
     public abstract class ViewBase : 
-        UIBehaviour, 
+        MonoBehaviour,
         ILayoutView
     {
         private const string NullViewName = "Null";
+        private const string RuntimeInfo = "runtime info";
         
         #region inspector
 
+        [ShowIf(nameof(IsCommandsAction))]
+        [BoxGroup(RuntimeInfo)]
         [ReadOnlyValue]
         [SerializeField]
         [UsedImplicitly]
         private bool _isVisible;
 
+        [HideInInspector]
         [ReadOnlyValue]
         [SerializeField]
         private BoolRecycleReactiveProperty _isInitialized = new BoolRecycleReactiveProperty();
 
+        [ShowIf(nameof(IsCommandsAction))]
+        [BoxGroup(RuntimeInfo)]
         [ReadOnlyValue]
         [SerializeField]
         private ViewStatus _editorViewStatus = ViewStatus.None;
 
+        [HideInInspector]
         [ReadOnlyValue]
         [SerializeField]
         private ViewStatus _internalViewStatus = ViewStatus.None;
@@ -60,8 +67,7 @@ namespace UniGame.UiSystem.Runtime
         private readonly LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
         private readonly LifeTimeDefinition _progressLifeTime   = new LifeTimeDefinition();
         private readonly LifeTimeDefinition _viewModelLifeTime   = new LifeTimeDefinition();
-
-
+        
         /// <summary>
         /// ui element visibility status
         /// </summary>
@@ -83,11 +89,13 @@ namespace UniGame.UiSystem.Runtime
         public IReadOnlyReactiveProperty<bool> IsInitialized => _isInitialized;
         
         public GameObject Owner => gameObject;
+        
+        public GameObject GameObject => gameObject;
 
         /// <summary>
         /// View LifeTime
         /// </summary>
-        public ILifeTime LifeTime => _viewModelLifeTime;
+        public virtual ILifeTime LifeTime => _viewModelLifeTime;
 
         public ILifeTime ModelLifeTime => _viewModelLifeTime;
         
@@ -139,10 +147,13 @@ namespace UniGame.UiSystem.Runtime
             _viewLayout = layoutProvider;
         }
 
-        public IView BindNested(ILayoutView view, IViewModel model)
+        public async UniTask<IView> BindNested(ILayoutView view, IViewModel model)
         {
-            view?.BindLayout(_viewLayout);
-            view?.Initialize(model);
+            if (view == null) return this;
+            
+            view.BindLayout(_viewLayout);
+            await view.Initialize(model);
+            
             return this;
         }
 
@@ -151,14 +162,14 @@ namespace UniGame.UiSystem.Runtime
             BindLayout(layoutProvider);
             await Initialize(model);
             BindLayout(layoutProvider);
-            
+
             return this;
         }
 
-        public async UniTask<IView> Initialize(IViewModel model, bool isViewOwner = false)
+        public async UniTask<IView> Initialize(IViewModel model, bool ownViewModel = false)
         {
             // save current state
-            _isViewOwner = isViewOwner;
+            _isViewOwner = ownViewModel;
             
             //restart view lifetime
             _viewModelLifeTime.Release();
@@ -167,14 +178,13 @@ namespace UniGame.UiSystem.Runtime
             //calls one per lifetime
             if (!_isInitialized.Value) {
                 InitialSetup();
-                OnAwake();
             }
 
             InitializeHandlers(model);
             BindLifeTimeActions(model);
 
             //custom initialization
-            await OnInitialize(model);
+            OnInitialize(model).Forget();
             
             _isInitialized.Value = true;
 
@@ -243,9 +253,10 @@ namespace UniGame.UiSystem.Runtime
                 Select(x => this);
         }
 
-        public override bool IsActive()
+        public bool IsActive()
         {
-            return base.IsActive() && (_status.Value == ViewStatus.Showing || _status.Value == ViewStatus.Shown);
+            return isActiveAndEnabled && 
+                   _status.Value is ViewStatus.Showing or ViewStatus.Shown;
         }
 
         #endregion public methods
@@ -401,7 +412,6 @@ namespace UniGame.UiSystem.Runtime
             _visibility.
                 Subscribe(x => _isVisible = x).
                 AddTo(_lifeTimeDefinition);
-            
         }
         
         private void BindLifeTimeActions(IViewModel model)
@@ -432,11 +442,9 @@ namespace UniGame.UiSystem.Runtime
         private void InitialSetup()
         {
             _lifeTimeDefinition.Release();
-            
             _isInitialized.Value = true;
             _status.Value  = ViewStatus.None;
             _internalViewStatus = ViewStatus.None;
-            
             _viewModelLifeTime.AddTo(ViewLifeTime);
             _progressLifeTime.AddTo(ViewLifeTime);
             
@@ -457,21 +465,17 @@ namespace UniGame.UiSystem.Runtime
             _visibility.Release();
         }
 
-        protected override void OnDisable()
-        {
-            _progressLifeTime.Release();
-            base.OnDisable();
-        }
+        protected void OnDisable() => _progressLifeTime.Release();
 
-        protected sealed override void OnDestroy()
-        {
-            Destroy();
-            base.OnDestroy();
-        }
+        protected void OnDestroy() => Destroy();
 
-        protected virtual void OnAwake()
-        {
-        }
+        protected void Awake() => OnAwake();
+
+        protected virtual void OnAwake() { }
+
+        protected void OnValidate() => OnViewValidate();
+
+        protected virtual void OnViewValidate() {}
 
         #endregion
     }

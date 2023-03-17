@@ -1,10 +1,10 @@
-﻿using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+﻿using UniModules.UniGame.UISystem.Runtime;
 using UnityEngine;
 
-namespace UniModules.UniGame.UISystem.Runtime.Abstract
+namespace UniGame.ViewSystem.Runtime
 {
     using System;
-    using Core.Runtime.Interfaces;
+    using global::UniGame.Core.Runtime;
     using Cysharp.Threading.Tasks;
     using UniRx;
 
@@ -15,27 +15,34 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
         IViewCommands
     {
         public GameObject Owner { get; }
+        
+        public GameObject GameObject { get; }
 
         public Transform  Transform { get; }
-        
-        ILifeTime ModelLifeTime { get; }
-        
+
         ILifeTime ViewLifeTime { get; }
         
         IReadOnlyReactiveProperty<bool> IsVisible { get; }
 
         IReadOnlyReactiveProperty<bool> IsInitialized { get; }
 
-        public IViewModel ViewModel { get; }
+        //IViewModel ViewModel { get; }
         
         IObservable<IView> SelectStatus(ViewStatus status);
 
+        IViewModel ViewModel { get; }
+        
         /// <summary>
         /// is view lifetime finished
         /// </summary>
         bool IsTerminated { get; }
 
-        UniTask<IView> Initialize(IViewModel vm, bool isViewOwner = false);
-
+        UniTask<IView> Initialize(IViewModel vm, bool ownViewModel = false);
+    }
+    
+    public interface IModelView : IView
+    {
+        ILifeTime ModelLifeTime { get; }
+        
     }
 }

@@ -1,7 +1,7 @@
 ﻿
-namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
+namespace UniModules.UniGame.ViewSystem
 {
-    using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
+    using global::UniGame.ViewSystem.Runtime;
     using UnityEditor;
     using UnityEngine;
     

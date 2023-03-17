@@ -1,6 +1,6 @@
 namespace UniGame.UiSystem.Runtime
 {
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
 
     public class WindowView<TWindowModel> : 
         UiCanvasGroupView<TWindowModel> where TWindowModel : class, IViewModel

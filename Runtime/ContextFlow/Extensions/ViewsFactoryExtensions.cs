@@ -1,15 +1,17 @@
 using System;
 using Cysharp.Threading.Tasks;
 using UniGame.UiSystem.Runtime.Settings;
-using UniModules.UniGame.Core.Runtime.Interfaces;
+using UniGame.Core.Runtime;
 using UniModules.UniGame.UiSystem.Runtime;
-using UniModules.UniGame.UISystem.Runtime.Abstract;
-using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
+using UniGame.ViewSystem.Runtime;
+using UniGame.ViewSystem.Runtime.Abstract;
 using UniModules.UniGame.ViewSystem.Runtime.Extensions;
 using UnityEngine;
 
-namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions
+namespace UniGame.ViewSystem.Runtime.Extensions
 {
+    using Abstract;
+
     public static class ViewsFactoryExtensions
     {
         
@@ -101,7 +103,7 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Extensions
             var modelReference = views.SelectReference(skinTag, viewName);
             var modelType = modelReference.ViewModelType;
             
-            var model = await viewSystem.Create(context,modelType);
+            var model = await viewSystem.CreateViewModel(context,modelType);
 
             return viewLayoutType switch
             {

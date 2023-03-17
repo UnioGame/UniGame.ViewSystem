@@ -1,11 +1,13 @@
 ﻿using UniGame.UiSystem.Runtime;
 
-namespace UniModules.UniGame.UISystem.Runtime.Abstract
+namespace UniGame.ViewSystem.Runtime
 {
+    using Cysharp.Threading.Tasks;
+
     public interface ILayoutView:
-        IView, 
+        IModelView, 
         ILayoutItem
     {
-        IView BindNested(ILayoutView view, IViewModel model);
+        UniTask<IView> BindNested(ILayoutView view, IViewModel model);
     }
 }

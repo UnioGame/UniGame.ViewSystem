@@ -1,8 +1,9 @@
-﻿using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
+﻿using UniGame.ViewSystem.Runtime;
 
-namespace UniModules.UniGame.UISystem.Runtime.Abstract
+namespace UniGame.ViewSystem.Runtime
 {
     using System;
+    using Cysharp.Threading.Tasks;
 
     public interface IGameViewSystem : 
         IDisposable, 
@@ -10,6 +11,8 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
         IViewModelResolver
     {
         void CloseAll();
+
+        UniTask<T> InitializeView<T>(T view, IViewModel viewModel) where T : IView;
     }
 
 }

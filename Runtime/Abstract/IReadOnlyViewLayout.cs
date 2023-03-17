@@ -1,8 +1,8 @@
-﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
+﻿namespace UniGame.ViewSystem.Runtime
 {
     using System;
     using System.Collections.Generic;
-    using Core.Runtime.Interfaces;
+    using global::UniGame.Core.Runtime;
     using UnityEngine;
 
     public interface IReadOnlyViewLayout : 

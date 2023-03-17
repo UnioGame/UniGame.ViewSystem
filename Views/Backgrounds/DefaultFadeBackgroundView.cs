@@ -3,14 +3,13 @@
     using System.Collections;
     using UiSystem.Runtime;
     using UniGame.UiSystem.Runtime.Backgrounds.Abstract;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+    using Core.Runtime;
     using UnityEngine;
 
     public class DefaultFadeBackgroundView : UiCanvasGroupView<IBackgroundViewModel>, IBackgroundView
     {
         [SerializeField, Range(0.0f, 1.0f)]
         public float duration = 0.3f;
-
         
         protected override IEnumerator OnHidingProgressOverride(ILifeTime progressLifeTime)
         {
@@ -26,24 +25,22 @@
         {
             if (time <= 0)
             {
-                canvasGroup.alpha = toAlpha;
+                CanvasGroup.alpha = toAlpha;
                 yield break;
             }
             
             var currentAlpha = fromAlpha;
             var timePassed = 0f;
-            canvasGroup.alpha = fromAlpha;
+            CanvasGroup.alpha = fromAlpha;
 
             while (timePassed < time)
             {
                 var stage = timePassed / time;
                 currentAlpha = Mathf.Lerp(fromAlpha, toAlpha, stage);
-                canvasGroup.alpha = currentAlpha;
+                CanvasGroup.alpha = currentAlpha;
                 timePassed += Time.deltaTime;
                 yield return null;
             }
-
-
         }
 
     }

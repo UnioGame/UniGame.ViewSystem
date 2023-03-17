@@ -1,5 +1,6 @@
 {
     "name": "unigame.uisystem.modelsviewsmodule.runtime",
+    "rootNamespace": "",
     "references": [
         "GUID:ab7c9c40a6be6334eb67c4e332935e6a",
         "GUID:9f8e6b2872ac2ca4683e584b9ba21f29",
@@ -7,7 +8,8 @@
         "GUID:6632c725b5599b14c865359e6ecc36f4",
         "GUID:8e4577c9194c10845984cf27eb974fd1",
         "GUID:2796129a6c23eb84a8181f62bf7332f1",
-        "GUID:2bd4bfcbafd5d854bb5049e1ec96cd04"
+        "GUID:2bd4bfcbafd5d854bb5049e1ec96cd04",
+        "GUID:7aa076d38fb14aa448159faea36ca289"
     ],
     "includePlatforms": [
         "Editor"

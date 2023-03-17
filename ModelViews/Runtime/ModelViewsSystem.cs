@@ -1,9 +1,6 @@
-﻿using UnityEngine;
-
-namespace UniGame.ModelViewsMap.Runtime
+﻿namespace UniGame.ModelViewsMap.Runtime
 {
-    using UiSystem.Runtime;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
 
     public class ModelViewsSystem 
     {

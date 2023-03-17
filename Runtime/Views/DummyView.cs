@@ -4,9 +4,9 @@ namespace UniGame.UiSystem.Runtime
 {
     using System;
     using Cysharp.Threading.Tasks;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+    using Core.Runtime;
     using UniModules.UniGame.UISystem.Runtime;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
     using UniRx;
 
     public sealed class DummyView : IView
@@ -23,6 +23,7 @@ namespace UniGame.UiSystem.Runtime
         public IReadOnlyReactiveProperty<ViewStatus> Status => _viewStatusProperty;
 
         public GameObject Owner     => null;
+        public GameObject GameObject => null;
         public Transform  Transform => null;
         
         public ILifeTime ModelLifeTime => UniModules.UniCore.Runtime.DataFlow.LifeTime.TerminatedLifetime;

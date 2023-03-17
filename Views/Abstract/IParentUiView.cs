@@ -1,7 +1,7 @@
 namespace UniGame.UI.Common.Abstract
 {
     using Cysharp.Threading.Tasks;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
     using UnityEngine;
 
     public interface IParentUiView

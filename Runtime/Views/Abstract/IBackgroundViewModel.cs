@@ -1,6 +1,6 @@
 ﻿namespace UniGame.UiSystem.Runtime.Backgrounds.Abstract
 {
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
 
     public interface IBackgroundViewModel : IViewModel
     {

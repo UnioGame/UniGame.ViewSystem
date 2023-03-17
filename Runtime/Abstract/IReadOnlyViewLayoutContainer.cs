@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
+﻿namespace UniGame.ViewSystem.Runtime
 {
     using UniModules.UniGame.UiSystem.Runtime;
 

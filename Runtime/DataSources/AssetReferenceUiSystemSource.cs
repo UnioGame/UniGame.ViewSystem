@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UniModules.UniGame.UISystem.Runtime.DataSources
+namespace UniGame.ViewSystem.Runtime.DataSources
 {
     using UnityEngine.AddressableAssets;
 

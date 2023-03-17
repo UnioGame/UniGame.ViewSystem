@@ -1,14 +1,13 @@
-﻿using UniModules.UniGame.SerializableContext.Runtime.Addressables;
-using UniGame.Addressables.Reactive;
-using UniModules.UniGame.AddressableTools.Runtime.Extensions;
+﻿using UniGame.Addressables.Reactive;
+using UniGame.AddressableTools.Runtime;
 
-namespace UniModules.Rx.Extensions
+namespace UniGame.Rx.Runtime.Extensions
 {
     using System;
     using Cysharp.Threading.Tasks;
     using TMPro;
-    using UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniGame.UISystem.Runtime.Abstract;
+    using global::UniGame.Core.Runtime;
+    using global::UniGame.ViewSystem.Runtime;
     using UniModules.UniGame.UISystem.Runtime.Extensions;
     using UnityEngine;
     using UnityEngine.UI;
@@ -49,12 +48,12 @@ namespace UniModules.Rx.Extensions
             return source == null || source.StringReference == null || source.StringReference.IsEmpty
                 ? view : view.Bind(source.StringReference.AsObservable(), command);
         }
-
+        
         public static TView Bind<TView>(this TView view, AssetReferenceT<Sprite> source, Image image)
             where TView : class,IView
         {
             if (source.RuntimeKeyIsValid() == false) return view;
-            return !image ? view : view.Bind(source.ToObservable(view.ModelLifeTime), image);
+            return !image ? view : view.Bind(source.ToObservable(view.LifeTime), image);
         }
         
         public static TView Bind<TView,TValue>(this TView view, AssetReferenceT<TValue> source, Action<TValue> action)
@@ -91,7 +90,7 @@ namespace UniModules.Rx.Extensions
             where TSource : IView
             where TView : IView
         {
-            source.CloseWith(view.ModelLifeTime);
+            source.CloseWith(view.LifeTime);
             return view;
         }
         
@@ -101,7 +100,7 @@ namespace UniModules.Rx.Extensions
             where TSource : IView
             where T : IViewModel
         {
-            target.CloseWith(view.ModelLifeTime);
+            target.CloseWith(view.LifeTime);
             return view;
         }
         
@@ -115,12 +114,13 @@ namespace UniModules.Rx.Extensions
         {
             if (closeWith) view.BindClose(target);
             
-            return view.Bind(source, x => target.Initialize(x, view.Layout)
+            view.Bind(source, x => target.Initialize(x, view.Layout)
                     .AttachExternalCancellation(view.ModelLifeTime.TokenSource)
                     .Forget());
+
+            return view;
         }
 
-        
         public static TSource BindToWindow<TSource>(
             this TSource view,
             IObservable<IViewModel> source,

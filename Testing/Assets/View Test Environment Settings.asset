@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea97d07859966fb4faf763f7e7ac645a, type: 3}
+  m_Name: View Test Environment Settings
+  m_EditorClassIdentifier: 
+  viewSystem: {fileID: 7387079578667170278, guid: 82bd6829646f667489fcc6853b5e4495,
+    type: 3}
+  viewSettings: {fileID: 11400000, guid: 1419cc0315349e1419954f7eac844dec, type: 2}
+  viewFolder:
+  - Assets
+  viewsData:
+  - name: LobbyMainView
+    viewType:
+      fullTypeName: Game.Code.Lobby.Views.LobbyMainView, game.lobby.views, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    viewModelType:
+      fullTypeName: Game.Code.Lobby.Models.LobbyMainModel, game.lobby.viewmodels,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    skin: 
+    serializableProvider:
+      rid: 862226669015662727
+    assetProvider: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: 862226669015662727
+      type: {class: TestMainLobbyViewModel, ns: Game.Tests.ViewData, asm: Assembly-CSharp}

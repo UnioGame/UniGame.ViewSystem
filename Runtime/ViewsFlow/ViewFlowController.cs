@@ -2,10 +2,9 @@
 {
     using System;
     using UniModules.UniCore.Runtime.DataFlow;
-    using UniModules.UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.UiSystem.Runtime;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using Core.Runtime;
+    using ViewSystem.Runtime;
     using UniRx;
     using UnityEngine.SceneManagement;
     

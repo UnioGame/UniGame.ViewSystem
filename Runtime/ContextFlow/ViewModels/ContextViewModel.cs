@@ -1,9 +1,8 @@
-namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow.ViewModels
+namespace UniGame.ViewSystem.Runtime.ViewModels
 {
     using Cysharp.Threading.Tasks;
     using UniModules.UniGame.Context.Runtime.Connections;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniModules.UniGame.Core.Runtime.Interfaces;
+    using global::UniGame.Core.Runtime;
     using UniModules.UniGame.ViewSystem.Runtime.Abstract;
     
     public class ContextViewModel : IContextViewModel

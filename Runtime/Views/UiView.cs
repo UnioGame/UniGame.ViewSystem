@@ -2,7 +2,7 @@
 {
     using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
     using UniRx;
     using UnityEngine;
     
@@ -15,12 +15,19 @@
         /// </summary>
         private readonly ReactiveProperty<TViewModel> _viewModel = new ReactiveProperty<TViewModel>();
         private CanvasGroup   _canvasGroup;
+        private Canvas   _canvas;
 
         #region public properties
 
         public TViewModel Model => _viewModel.Value;
 
-        public virtual CanvasGroup CanvasGroup => (_canvasGroup = _canvasGroup ? _canvasGroup : GetComponent<CanvasGroup>());
+        public virtual CanvasGroup CanvasGroup => (_canvasGroup = _canvasGroup 
+            ? _canvasGroup 
+            : GetComponent<CanvasGroup>());
+        
+        public virtual Canvas Canvas  => (_canvas = _canvas 
+            ? _canvas 
+            : GetComponent<Canvas>());
 
         #endregion
 

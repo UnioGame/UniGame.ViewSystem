@@ -1,4 +1,4 @@
-﻿namespace Taktika.UI
+﻿namespace UniGame.UI
 {
     using System;
     using TMPro;

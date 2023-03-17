@@ -2,9 +2,7 @@
 {
     using System;
     using Flow;
-    using UniModules.UniGame.UiSystem.Runtime;
     using UniModules.UniGame.UISystem.Runtime;
-    using UniRx;
 
     public static class RxViewHandle 
     {

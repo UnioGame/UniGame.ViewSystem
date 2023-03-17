@@ -1,4 +1,4 @@
-using UniModules.UniGame.UISystem.Runtime.Abstract;
+using UniGame.ViewSystem.Runtime;
 using UniRx;
 
 public interface IDialogViewModel : IViewModel

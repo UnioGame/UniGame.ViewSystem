@@ -1,5 +1,5 @@
-﻿using UniModules.UniGame.AddressableTools.Runtime.Extensions;
-using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
+﻿using UniGame.AddressableTools.Runtime;
+using UniGame.ViewSystem.Runtime.Abstract;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -10,9 +10,8 @@ namespace UniGame.UiSystem.Runtime
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using Settings;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
-    using UniModules.UniGame.ViewSystem.Runtime.ContextFlow;
+    using Core.Runtime;
+    using ViewSystem.Runtime;
 
     public class UiResourceProvider : 
         IViewResourceProvider, 
@@ -36,7 +35,7 @@ namespace UniGame.UiSystem.Runtime
 
             if (item != null) return item.View;
             
-            Debug.LogError($"{nameof(UiResourceProvider)} ITEM MISSING skin:{skinTag} type {viewType.Name}");
+            Debug.LogError($"{nameof(UiResourceProvider)} ITEM MISSING skin:{skinTag} type {viewType?.Name}");
             return null;
         }
         
@@ -75,6 +74,8 @@ namespace UniGame.UiSystem.Runtime
         public IReadOnlyList<UiViewReference> FindModelByType(Type modelType, bool strongMatching = true) => _viewModelTypeMap.FindModelByType(modelType, strongMatching);
 
         public Type GetModelTypeByView(Type viewType, bool strongTypeMatching = true) => _viewModelTypeMap.GetModelTypeByView(viewType, strongTypeMatching);
+        
+        public Type GetViewModelTypeByView(Type viewType, bool strongTypeMatching = true) => _viewModelTypeMap.GetViewModelTypeByView(viewType, strongTypeMatching);
 
         public Type GetViewTypeByModel(Type modeType, bool strongTypeMatching = true) => _viewModelTypeMap.GetViewTypeByModel(modeType, strongTypeMatching);
         

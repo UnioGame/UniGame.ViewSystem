@@ -1,6 +1,6 @@
-﻿using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+﻿using UniGame.Core.Runtime;
 
-namespace UniModules.UniGame.UISystem.Runtime.Abstract
+namespace UniGame.ViewSystem.Runtime
 {
     using System;
     using Cysharp.Threading.Tasks;
@@ -8,6 +8,14 @@ namespace UniModules.UniGame.UISystem.Runtime.Abstract
 
     public interface IViewElementFactory
     {
+        UniTask<IView> Create(
+            Type viewType,
+            Transform parent = null,
+            string skinTag = "",
+            string viewName = null,
+            bool stayWorldPosition = false,
+            ILifeTime ownerLifeTime = null);
+        
         UniTask<IView> Create(
             IViewModel viewModel,
             Type viewType,

@@ -1,10 +1,16 @@
-﻿namespace UniGame.UiSystem.Runtime
+﻿using UnityEngine;
+
+namespace UniGame.UiSystem.Runtime
 {
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
 
     public interface IUiView<TViewModel> : IView
+     
         where TViewModel : class, IViewModel
     {
+        
+        CanvasGroup CanvasGroup { get; }
+        Canvas Canvas { get; }
         TViewModel    Model         { get; }
         
     }

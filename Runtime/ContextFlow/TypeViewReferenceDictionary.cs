@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UniGame.UiSystem.Runtime.Settings;
 using UniModules.UniGame.Core.Runtime.DataStructure;
-using UniModules.UniGame.Core.Runtime.SerializableType;
+using UniGame.Core.Runtime.SerializableType;
 
-namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
+namespace UniGame.ViewSystem.Runtime
 {
     [Serializable]
     public class TypeViewReferenceDictionary : SerializableDictionary<SType,UiReferenceList >

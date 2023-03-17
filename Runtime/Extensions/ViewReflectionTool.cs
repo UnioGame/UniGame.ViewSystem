@@ -1,6 +1,6 @@
 using System;
 using UniModules.UniCore.Runtime.Utils;
-using UniModules.UniGame.ViewSystem.Editor.UiEditor;
+using UniModules.UniGame.ViewSystem;
 
 public static class ViewReflectionTool
 {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Taktika.UI
+namespace UniGame.UI
 {
     using TMPro;
     using UnityEngine.UI;

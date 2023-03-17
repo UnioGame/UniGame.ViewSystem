@@ -1,8 +1,7 @@
 ﻿using System;
 using TMPro;
 using UniGame.Localization.Runtime.UniModules.UniGame.Localization.Runtime;
-using UniModules.UniCore.Runtime.Rx.Extensions;
-using UniModules.UniGame.Core.Runtime.Interfaces;
+using UniGame.Core.Runtime;
 using UnityEngine.Localization;
 
 namespace UniModules.UniGame.UiSystem.Runtime.Extensions

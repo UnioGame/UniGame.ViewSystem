@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using UniModules.UniGame.Core.Runtime.SerializableType;
+    using Core.Runtime.SerializableType;
 
     public interface IModelViewsSettings
     {

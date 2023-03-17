@@ -3,8 +3,8 @@
 namespace UniGame.UiSystem.Runtime
 {
     using UniModules.UniCore.Runtime.DataFlow;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using Core.Runtime;
+    using ViewSystem.Runtime;
     using UniRx;
 
     [Serializable]
@@ -41,9 +41,6 @@ namespace UniGame.UiSystem.Runtime
             GC.SuppressFinalize(this);
         }
 
-        ~ViewModelBase()
-        {
-            _lifeTimeDefinition.Terminate();
-        }
+        ~ViewModelBase()  => _lifeTimeDefinition?.Terminate();
     }
 }

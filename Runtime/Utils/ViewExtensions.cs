@@ -1,9 +1,8 @@
 ﻿namespace UniModules.UniGame.UISystem.Runtime.Utils
 {
     using System;
-    using Abstract;
+    using global::UniGame.ViewSystem.Runtime;
     using Cysharp.Threading.Tasks;
-    using Extensions;
     using UiSystem.Runtime;
     using UniCore.Runtime.Extension;
     using UniRx;

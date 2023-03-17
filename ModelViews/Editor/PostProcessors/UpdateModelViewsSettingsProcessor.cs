@@ -10,7 +10,7 @@ namespace UniGame.UiSystem.ModelViews.Editor.PostProcessors
     using UniModules.UniCore.Runtime.ReflectionUtils;
     using UniModules.UniCore.Runtime.Utils;
     using UniModules.Editor;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
     using UnityEditor;
 
     public class UpdateModelViewsSettingsProcessor : AssetModificationProcessor

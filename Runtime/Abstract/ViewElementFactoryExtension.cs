@@ -1,6 +1,6 @@
-﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
+﻿namespace UniGame.ViewSystem.Runtime
 {
-    using Core.Runtime.DataFlow.Interfaces;
+    using global::UniGame.Core.Runtime;
     using Cysharp.Threading.Tasks;
     using UnityEngine;
 

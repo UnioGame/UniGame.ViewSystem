@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UniGame.UiSystem.Runtime.Settings;
 
-namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract
+namespace UniGame.ViewSystem.Runtime.Abstract
 {
     public interface IViewModelTypeMap
     {
@@ -11,6 +11,7 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract
         IReadOnlyList<UiViewReference> FindModelByType(Type modelType, bool strongMatching = true);
 
         Type GetModelTypeByView(Type viewType, bool strongTypeMatching = true);
+        Type GetViewModelTypeByView(Type viewType, bool strongTypeMatching = true);
         Type GetViewTypeByModel(Type modeType, bool strongTypeMatching = true);
     }
 }

@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using UniGame.UiSystem.Runtime.Settings;
-using UniModules.UniGame.ViewSystem.Runtime.ContextFlow.Abstract;
+using UniGame.ViewSystem.Runtime.Abstract;
 using UniModules.UniGame.ViewSystem.Runtime.Extensions;
 using UnityEngine;
 
-namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
+namespace UniGame.ViewSystem.Runtime
 {
+    using Abstract;
+
     [Serializable]
     public class ViewModelTypeMap : IViewModelTypeMap
     {
+        #region inspector
+        
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.InlineProperty]
 #endif
@@ -22,12 +26,26 @@ namespace UniModules.UniGame.ViewSystem.Runtime.ContextFlow
 #endif
         public TypeViewReferenceDictionary modelTypeMap = new TypeViewReferenceDictionary(16);
         
-        
+        #endregion
+
+        private Dictionary<Type, Type> modelTypeFromViewType = new Dictionary<Type, Type>(64);
+        private Dictionary<Type, Type> modelViewTypeFromViewType = new Dictionary<Type, Type>(64);
+
         public Type GetModelTypeByView(Type viewType, bool strongTypeMatching = true)
         {
             var modelType =  viewsTypeMap
                 .FindByType(viewType,strongTypeMatching)
                 .Select(x => x.ModelType)
+                .FirstOrDefault();
+            
+            return modelType;
+        }
+        
+        public Type GetViewModelTypeByView(Type viewType, bool strongTypeMatching = true)
+        {
+            var modelType =  viewsTypeMap
+                .FindByType(viewType,strongTypeMatching)
+                .Select(x => x.ViewModelType)
                 .FirstOrDefault();
             
             return modelType;

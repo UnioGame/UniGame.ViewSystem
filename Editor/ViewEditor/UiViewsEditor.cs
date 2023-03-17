@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
+namespace UniModules.UniGame.ViewSystem
 {
 #if !ODIN_INSPECTOR
     [CustomEditor(typeof(ViewsSettings),editorForChildClasses:true)]

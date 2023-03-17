@@ -3,8 +3,7 @@
     using System;
     using System.Linq;
     using Backgrounds.Abstract;
-    using UniModules.UniCore.Runtime.Rx.Extensions;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using ViewSystem.Runtime;
     using UniRx;
     using UnityEngine;
 

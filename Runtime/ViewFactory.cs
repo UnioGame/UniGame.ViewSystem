@@ -1,20 +1,19 @@
-﻿using UniModules.UniGame.AddressableTools.Runtime.Extensions;
-using UniModules.UniGame.SerializableContext.Runtime.Addressables;
+﻿using UniGame.AddressableTools.Runtime;
 
 namespace UniGame.UiSystem.Runtime
 {
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime;
+    using UniGame.Runtime.ObjectPool;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
     using System;
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
+    using UniGame.Runtime.ObjectPool.Extensions;
     using UniModules.UniGame.Core.Runtime.Common;
     using UniModules.UniGame.Core.Runtime.DataFlow.Extensions;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniModules.UniGame.UISystem.Runtime.Abstract;
+    using Core.Runtime;
+    using ViewSystem.Runtime;
     using Object = UnityEngine.Object;
     
     public class ViewFactory : IViewFactory
@@ -47,7 +46,8 @@ namespace UniGame.UiSystem.Runtime
             viewDisposable.Initialize();
             
             //load view source by filter parameters
-            var result       = await _resourceProvider.GetViewReferenceAsync(viewType,skinTag, viewName:viewName);
+            var result       = await _resourceProvider
+                .GetViewReferenceAsync(viewType,skinTag, viewName:viewName);
             //create view instance
             var viewResult   = await Create(result,viewDisposable.LifeTime, parent,stayWorldPosition);
             var view         = viewResult.View;
@@ -67,20 +67,23 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// create view instance
         /// </summary>
-        protected virtual async UniTask<ViewResult> Create(AssetReferenceGameObject asset,ILifeTime lifeTime, Transform parent = null, bool stayPosition = false)
+        protected virtual async UniTask<ViewResult> Create(AssetReferenceGameObject asset,
+            ILifeTime lifeTime,
+            Transform parent = null,
+            bool stayPosition = false)
         {
             if (asset.RuntimeKeyIsValid() == false) return new ViewResult();
 
             var sourceView = await LoadAssetReferenceAsset(asset, lifeTime); // await asset.LoadAssetTaskAsync(lifeTime);
-            
+
             //operation was cancelled
             if(sourceView == null) return new ViewResult();
-            
+
             var viewTransform = sourceView.transform;
             var gameObjectView = sourceView.HasCustomPoolLifeTimeFor()
                 ? sourceView.SpawnActive(viewTransform.position, viewTransform.rotation, parent, stayPosition) 
                 : Object.Instantiate(sourceView, parent, stayPosition);
-            
+
             //create instance of view
             var view          = gameObjectView.GetComponent<IView>();
             var assetLifeTime = gameObjectView.GetAssetLifeTime();

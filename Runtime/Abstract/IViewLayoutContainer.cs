@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.UISystem.Runtime.Abstract
+﻿namespace UniGame.ViewSystem.Runtime
 {
     using System.Collections.Generic;
     using UniModules.UniGame.UiSystem.Runtime;
@@ -11,5 +11,10 @@
         /// get controller of target view type 
         /// </summary>
         IViewLayout GetLayout(ViewType type);
+
+        /// <summary>
+        /// get layout by string id
+        /// </summary>
+        IViewLayout GetLayout(string id);
     }
 }

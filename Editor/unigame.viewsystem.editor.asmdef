@@ -1,9 +1,8 @@
 {
-    "name": "unigame.uisystem.editor",
+    "name": "unigame.viewsystem.editor",
     "rootNamespace": "",
     "references": [
         "GUID:5c6e9aa738dad73448283eae914b6a8c",
-        "GUID:4ebedaede1566e6468edf5f6a097b593",
         "GUID:6632c725b5599b14c865359e6ecc36f4",
         "GUID:8e4577c9194c10845984cf27eb974fd1",
         "GUID:2796129a6c23eb84a8181f62bf7332f1",
