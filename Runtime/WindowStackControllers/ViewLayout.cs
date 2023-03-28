@@ -190,7 +190,6 @@
         protected void ViewStatusChanged<TView>(TView view, ViewStatus status)
             where TView : class, IView
         {
-            Debug.Log($"ViewLayout.ViewStatusChanged : {view.GetType().Name} :: status = {status.ToString()}");
             switch (status)
             {
                 case ViewStatus.Hidden:
