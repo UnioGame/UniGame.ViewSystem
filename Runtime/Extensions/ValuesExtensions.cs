@@ -3,6 +3,7 @@
     using AddressableTools.Runtime;
     using Core.Runtime;
     using Cysharp.Threading.Tasks;
+    using TMPro;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
     using UnityEngine.UI;
@@ -23,6 +24,26 @@
             target.enabled = sprite!=null;
             target.sprite = sprite;
 
+            return true;
+        }
+        
+        public static bool SetValue(
+            this Image target, 
+            Color value)
+        {
+            if (target == null) return false;
+            
+            target.color = value;
+            return true;
+        }
+        
+        public static bool SetValue(
+            this TextMeshProUGUI target, 
+            string value)
+        {
+            if (target == null) return false;
+            if (target.text == value) return false;
+            target.text = value;
             return true;
         }
         
