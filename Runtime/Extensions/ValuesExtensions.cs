@@ -26,7 +26,7 @@
 
             return true;
         }
-        
+
         public static bool SetValue(
             this Image target, 
             Color value)
@@ -47,7 +47,7 @@
             return true;
         }
         
-        public static bool SetValue(
+        public static bool SetEnableValue(
             this Image target, 
             bool value)
         {

@@ -255,30 +255,31 @@
         /// <summary>
         /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
         /// </summary>
-        public static async UniTask<IView> ShowChildViewAsync<TView>(
+        public static async UniTask<TView> ShowChildViewAsync<TView>(
             this ViewBase source,
             Transform parent = null, 
             string skinTag = null, 
             string viewName = null,
             bool stayWorld = false) 
-            where TView : IView
+            where TView : class, IView
         {
             var viewType = typeof(TView);
             var view = await CreateChildViewAsync(source,viewType, parent,skinTag, viewName,stayWorld);
             view.Show();
-            return view;
+            return view as TView;
         }
 
-        public static async UniTask<IView> CreateChildViewAsync<TView>(
+        public static async UniTask<TView> CreateChildViewAsync<TView>(
             this ViewBase source,
             Transform parent = null,
             string skinTag = null,
             string viewName = null,
             bool stayWorld = false)
-            where TView : IView
+            where TView : class, IView
         {
             var viewType = typeof(TView);
-            return await CreateChildViewAsync(source, viewType, parent, skinTag, viewName, stayWorld);
+            var view = await CreateChildViewAsync(source, viewType, parent, skinTag, viewName, stayWorld);
+            return view as TView;
         }
 
         /// <summary>
