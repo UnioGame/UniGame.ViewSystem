@@ -1,5 +1,6 @@
 ﻿namespace UniGame.ViewSystem.Runtime
 {
+    using System.Runtime.CompilerServices;
     using AddressableTools.Runtime;
     using Core.Runtime;
     using Cysharp.Threading.Tasks;
@@ -37,6 +38,7 @@
             return true;
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool SetValue(
             this TextMeshProUGUI target, 
             string value)
