@@ -131,7 +131,7 @@
         {
             _lifeTime = new LifeTimeDefinition();
             
-            Create().AttachExternalCancellation(_lifeTime.TokenSource)
+            Create().AttachExternalCancellation(_lifeTime.CancellationToken)
                 .Forget();
         }
 

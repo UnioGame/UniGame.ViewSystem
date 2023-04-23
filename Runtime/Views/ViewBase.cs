@@ -63,7 +63,8 @@ namespace UniGame.UiSystem.Runtime
 
         private RectTransform _rectTransform;
         private Transform _transform;
-        
+        private RecycleReactiveProperty<bool> _isModelChanged = new RecycleReactiveProperty<bool>();
+
         private readonly LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
         private readonly LifeTimeDefinition _progressLifeTime   = new LifeTimeDefinition();
         private readonly LifeTimeDefinition _viewModelLifeTime   = new LifeTimeDefinition();
@@ -87,7 +88,7 @@ namespace UniGame.UiSystem.Runtime
         #region public properties
 
         public IReadOnlyReactiveProperty<bool> IsInitialized => _isInitialized;
-        
+
         public GameObject Owner => gameObject;
         
         public GameObject GameObject => gameObject;
@@ -146,6 +147,8 @@ namespace UniGame.UiSystem.Runtime
         {
             _viewLayout = layoutProvider;
         }
+        
+        public void NotifyModelChanged() => _isModelChanged.Value = true;
 
         public async UniTask<IView> BindNested(ILayoutView view, IViewModel model)
         {
@@ -262,6 +265,8 @@ namespace UniGame.UiSystem.Runtime
         #endregion public methods
 
         #region private methods
+
+        protected virtual UniTask OnModelChanged() => UniTask.CompletedTask;
         
         /// <summary>
         /// custom initialization methods
@@ -416,6 +421,7 @@ namespace UniGame.UiSystem.Runtime
         
         private void BindLifeTimeActions(IViewModel model)
         {
+            _isModelChanged.Value = false;
             //bind model lifetime to local
             var modelLifeTime = model.LifeTime;
             if (model.IsDisposeWithModel)
@@ -434,11 +440,30 @@ namespace UniGame.UiSystem.Runtime
             
             _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Release);
         
+            OnEndOfFrameCheck().Forget();
+            
 #if UNITY_EDITOR
             _status.Subscribe(x => _editorViewStatus = x).AddTo(ViewLifeTime);
 #endif
         }
 
+        private async UniTask OnEndOfFrameCheck()
+        {
+            var token = _viewModelLifeTime.CancellationToken;
+
+            while (!token.IsCancellationRequested)
+            {
+                await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate,token);
+                
+                if (_isModelChanged.Value)
+                {
+                    await OnModelChanged();
+                }
+                
+                _isModelChanged.Value = false;
+            }
+        }
+        
         private void InitialSetup()
         {
             _lifeTimeDefinition.Release();

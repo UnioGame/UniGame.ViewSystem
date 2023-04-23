@@ -43,7 +43,7 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
             
             var views = await UniTask
                 .WhenAll(viewHandles.Select(x => WarmUpUiReference(x,lifeTime,preloadCount)))
-                .AttachExternalCancellation(lifeTime.TokenSource);
+                .AttachExternalCancellation(lifeTime.CancellationToken);
             
             return lifeTime;
         }

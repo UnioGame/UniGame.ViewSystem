@@ -115,7 +115,7 @@ namespace UniGame.Rx.Runtime.Extensions
             if (closeWith) view.BindClose(target);
             
             view.Bind(source, x => target.Initialize(x, view.Layout)
-                    .AttachExternalCancellation(view.ModelLifeTime.TokenSource)
+                    .AttachExternalCancellation(view.ModelLifeTime.CancellationToken)
                     .Forget());
 
             return view;

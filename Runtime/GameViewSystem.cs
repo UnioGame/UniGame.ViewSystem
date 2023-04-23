@@ -276,7 +276,7 @@ namespace UniGame.UiSystem.Runtime
             {
                 var viewResult = await _viewFactory
                     .Create(viewType, skinTag, parent, viewName, stayWorld)
-                    .AttachExternalCancellation(LifeTime.TokenSource)
+                    .AttachExternalCancellation(LifeTime.CancellationToken)
                     .SuppressCancellationThrow();
 
                 failed = viewResult.IsCanceled;
