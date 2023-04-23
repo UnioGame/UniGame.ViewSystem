@@ -58,6 +58,12 @@ namespace UniGame.UiSystem.Runtime
         [HideInInspector]
         [SerializeField]
         public string skinTag = string.Empty;
+
+        /// <summary>
+        /// if value enabled, then model will not be updated when changed
+        /// OnModelChanged not be called
+        /// </summary>
+        public bool disableModelUpdate = false;
         
         #endregion
 
@@ -440,7 +446,7 @@ namespace UniGame.UiSystem.Runtime
             
             _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Release);
         
-            OnEndOfFrameCheck().Forget();
+            if(!disableModelUpdate) OnEndOfFrameCheck().Forget();
             
 #if UNITY_EDITOR
             _status.Subscribe(x => _editorViewStatus = x).AddTo(ViewLifeTime);
