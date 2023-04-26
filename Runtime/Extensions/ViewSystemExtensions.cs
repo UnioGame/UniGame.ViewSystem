@@ -59,13 +59,11 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
         private static async UniTask<ILifeTime> WarmupInternal(this AssetReferenceViewSettings settingsReference,object lifeTimeObject)
         {
             var lifeTime = lifeTimeObject.GetLifeTime();
-            var settings = await settingsReference.LoadAssetTaskAsync<ScriptableObject, IViewsSettings>(lifeTime);
-            var viewSettings = settings.result;
+            var viewSettings = await settingsReference.LoadAssetInstanceTaskAsync(lifeTime,true);
+
             if (viewSettings == null)
-            {
                 return LifeTime.TerminatedLifetime;
-            }
-            
+
             return await viewSettings.Warmup(lifeTime);
         }
     }
