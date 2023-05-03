@@ -13,75 +13,80 @@ namespace UniGame.Rx.Runtime.Extensions
     using UnityEngine.UI;
     using global::UniGame.Localization.Runtime.UniModules.UniGame.Localization.Runtime;
     using global::UniGame.UiSystem.Runtime;
+    using UniGame.Runtime.Common;
+    using UniModules.UniCore.Runtime.Utils;
+    using UniRx;
     using UnityEngine.AddressableAssets;
     using UnityEngine.Localization;
     using UnityEngine.Localization.Components;
     using Object = UnityEngine.Object;
-    
+
     public static class ViewBindingExtension
     {
-        
         #region ugui extensions
-        
+
         public static TView Bind<TView>(this TView view, LocalizedString source, Action<string> command)
-            where TView : class,IView
+            where TView : class, IView
         {
             return source == null ? view : view.Bind(source.AsObservable(), command);
         }
 
         public static TView Bind<TView>(this TView view, LocalizedString source, TextMeshProUGUI text)
-            where TView : class,IView
+            where TView : class, IView
         {
             return source == null ? view : view.Bind(source.AsObservable(), text);
         }
-        
+
         public static TView Bind<TView>(this TView view, LocalizeStringEvent source, TextMeshProUGUI text)
-            where TView : class,IView
+            where TView : class, IView
         {
             return source == null || source.StringReference == null || source.StringReference.IsEmpty
-                ? view : view.Bind(source.StringReference.AsObservable(), text);
+                ? view
+                : view.Bind(source.StringReference.AsObservable(), text);
         }
-        
+
         public static TView Bind<TView>(this TView view, LocalizeStringEvent source, Action<string> command)
-            where TView : class,IView
+            where TView : class, IView
         {
             return source == null || source.StringReference == null || source.StringReference.IsEmpty
-                ? view : view.Bind(source.StringReference.AsObservable(), command);
+                ? view
+                : view.Bind(source.StringReference.AsObservable(), command);
         }
-        
+
         public static TView Bind<TView>(this TView view, AssetReferenceT<Sprite> source, Image image)
-            where TView : class,IView
+            where TView : class, IView
         {
             if (source.RuntimeKeyIsValid() == false) return view;
             return !image ? view : view.Bind(source.ToObservable(view.LifeTime), image);
         }
-        
+
         public static TView Bind<TView>(this TView view, IObservable<AssetReferenceT<Sprite>> source, Image image)
-            where TView : class,IView
+            where TView : class, IView
         {
             if (image == null) return view;
-            return !image 
-                ? view 
-                : view.Bind(source,async x =>
-            {
-                var sprite = await x.LoadAssetTaskAsync(view.LifeTime);
-                image.sprite = sprite;
-            });
+            return !image
+                ? view
+                : view.Bind(source, async x =>
+                {
+                    var sprite = await x.LoadAssetTaskAsync(view.LifeTime);
+                    image.sprite = sprite;
+                });
         }
 
-        public static TView Bind<TView,TValue>(this TView view, AssetReferenceT<TValue> source, Action<TValue> action)
-            where TView : class,IView
+        public static TView Bind<TView, TValue>(this TView view, AssetReferenceT<TValue> source, Action<TValue> action)
+            where TView : class, IView
             where TValue : Object
         {
             if (source.RuntimeKeyIsValid() == false || action == null) return view;
-            AddressableAction(view.LifeTime,source,action).Forget();
+            AddressableAction(view.LifeTime, source, action).Forget();
             return view;
         }
 
-        private static async UniTask AddressableAction<TValue>(ILifeTime lifeTime, AssetReferenceT<TValue> source,Action<TValue> action)
+        private static async UniTask AddressableAction<TValue>(ILifeTime lifeTime, AssetReferenceT<TValue> source,
+            Action<TValue> action)
             where TValue : Object
         {
-            if(action == null || lifeTime.IsTerminated)
+            if (action == null || lifeTime.IsTerminated)
                 return;
             var value = await source.LoadAssetTaskAsync(lifeTime);
             action(value);
@@ -89,15 +94,215 @@ namespace UniGame.Rx.Runtime.Extensions
 
         #endregion
 
-        public static async UniTask<TView> Bind<TView,TModel>(this TView view,TModel model, IView target) 
+        public static async UniTask<TView> Bind<TView, TModel>(this TView view, TModel model, IView target)
             where TView : class, IView
             where TModel : IViewModel
         {
             await target.Initialize(model);
             return view;
         }
+
+        public static TView Bind<TView>(this TView view, IObservable<Sprite> source, Button button)
+            where TView : ILifeTimeContext
+        {
+            if (!button || !button.image)
+                return view;
+
+            return view.Bind(source, x => button.image.SetValue(x));
+        }
+
+        public static TView Bind<TView>(this TView view, IObservable<string> source, TextMeshProUGUI text)
+            where TView : ILifeTimeContext
+        {
+            return view.Bind(source, x => text.SetValue(x));
+        }
+
+        public static TView Bind<TView, TValue>(this TView view,
+            IObservable<TValue> source,
+            Func<TValue, string> format, TextMeshProUGUI text)
+            where TView : ILifeTimeContext
+        {
+            var stringObservable = source.Select(format);
+            return view.Bind(stringObservable, text);
+        }
+
+        public static TView Bind<TView>(this TView view, IObservable<string> source, TextMeshPro text)
+            where TView : ILifeTimeContext
+        {
+            if (!text) return view;
+            return view.Bind(source, x => text.text = x);
+        }
+
+        public static TView Bind<TView>(this TView view, IObservable<int> source, TextMeshPro text)
+            where TView : ILifeTimeContext
+        {
+            return view.Bind(source, x => text.text = x.ToStringFromCache());
+        }
+
+        public static TView Bind<TView>(this TView view, IObservable<Color> source, TextMeshProUGUI text)
+            where TView : ILifeTimeContext
+        {
+            return view.Bind(source,x => text.SetValue(x));
+        }
+
+        public static TView Bind<TView>(this TView view, IObservable<int> source, TextMeshProUGUI text)
+            where TView : ILifeTimeContext
+        {
+            return view.Bind(source, x => text.SetValue(x.ToStringFromCache()));
+        }
+
+        public static TView Bind<TView>(this TView view, IObservable<Sprite> source, Image image)
+            where TView : ILifeTimeContext
+        {
+            return !image
+                ? view
+                : view.Bind(source.Where(x => x != null),x => image.SetValue(x));
+        }
+
+        public static TView Bind<TView>(this TView sender, IObservable<Color> source, Image image)
+            where TView : ILifeTimeContext
+        {
+            return image == null
+                ? sender
+                : sender.Bind(source,x => image.SetValue(x));
+        }
+
+        public static TView Bind<TView>(this TView view, IObservable<bool> source, CanvasGroup group)
+            where TView : ILifeTimeContext
+        {
+            if (!group) return view;
+            return view.Bind(source, x => group.interactable = x);
+        }
+
+        public static TView Bind<TView>(this TView view, IObservable<Texture> source, RawImage image)
+            where TView : ILifeTimeContext
+        {
+            return !image
+                ? view
+                : view.Bind(source.Where(x => x != null), x => image.texture = x);
+        }
+
+        public static TView Bind<TView>(this TView view, IObservable<bool> source, Toggle toggle)
+            where TView : ILifeTimeContext
+        {
+            return !toggle ? view : view.Bind(source, x => toggle.isOn = x);
+        }
+
+
+        public static TView Bind<TView, TValue>(this TView sender, IObservable<TValue> source, Button command)
+            where TView : ILifeTimeContext
+        {
+            return command == null 
+                ? sender 
+                : sender.Bind(source, x => command.onClick?.Invoke());
+        }
+
+        public static TView Bind<TView>(this TView sender, IObservable<float> source, Slider slider)
+            where TView : ILifeTimeContext
+        {
+            return source == null || slider == null
+                ? sender
+                : sender.Bind(source, x => slider.value = x);
+        }
+
+        public static TView Bind<TView>(this TView sender, Button source, Action command)
+            where TView : ILifeTimeContext
+        {
+            if (source == null || sender == null) return sender;
+            var observable = source.OnClickAsObservable();
+            return sender.Bind(observable, command);
+        }
+
+        public static TView Bind<TView>(this TView sender, Button source, Action<Unit> command)
+            where TView : ILifeTimeContext
+        {
+            return sender.Bind(source, () => command(Unit.Default));
+        }
+
+        public static IDisposable Bind(this LocalizedString source, TextMeshProUGUI text, int frameThrottle = 1)
+        {
+            return source.BindTo(x => text.SetValue(x),frameThrottle);
+        }
         
-        public static TSource BindClose<TSource,TView>(
+        public static TView Bind<TView>(this TView sender,
+            Button source,
+            ISignaleValueProperty<bool> value)
+            where TView : ILifeTimeContext
+        {
+            return source == null
+                ? sender
+                : sender.Bind(source.OnClickAsObservable(), () => value.SetValue(true));
+        }
+
+        public static TView Bind<TView>(this TView sender, Button source, Action<Unit> command, TimeSpan throttleTime)
+            where TView : ILifeTimeContext
+        {
+            return source == null ? sender : sender.Bind(source, () => command(Unit.Default), throttleTime);
+        }
+
+        public static TView Bind<TView>(this TView sender, Button source, Action command, TimeSpan throttleTime)
+            where TView : ILifeTimeContext
+        {
+            if (!source) return sender;
+
+            var clickObservable = throttleTime.TotalMilliseconds <= 0
+                ? source.OnClickAsObservable()
+                : source.OnClickAsObservable().ThrottleFirst(throttleTime);
+
+            return sender.Bind(clickObservable, command);
+        }
+
+        public static TView Bind<TView>(this TView view, IObservable<bool> source, Button button)
+            where TView : ILifeTimeContext
+        {
+            return !button ? view : view.Bind(source, x => button.interactable = x);
+        }
+
+        public static TView Bind<TView>(this TView view, Button source, IReactiveCommand<Unit> command,
+            int throttleInMilliseconds = 0)
+            where TView : ILifeTimeContext
+        {
+            return !source
+                ? view
+                : Bind(view, source, () => command.Execute(Unit.Default),
+                    TimeSpan.FromMilliseconds(throttleInMilliseconds));
+        }
+
+        public static TView Bind<TView>(this TView view,
+            IObservable<bool> source,
+            Image image)
+            where TView : ILifeTimeContext
+        {
+            return image == null ? view : view.Bind(source, x => image.enabled = x);
+        }
+
+        public static TView Bind<TView>(this TView view, IObservable<Unit> source, IReactiveCommand<Unit> command)
+            where TView : ILifeTimeContext
+        {
+            return view.Bind(source, x => command.Execute(Unit.Default));
+        }
+
+        public static TSource Bind<TSource>(this TSource view, Toggle source, IReactiveProperty<bool> value)
+            where TSource : ILifeTimeContext
+        {
+            return !source ? view : view.Bind(source.OnValueChangedAsObservable(), value);
+        }
+
+        public static TSource Bind<TSource>(this TSource view, Toggle source, IReactiveCommand<bool> value)
+            where TSource : ILifeTimeContext
+        {
+            if (source == null) return view;
+            var observable = source.OnValueChangedAsObservable();
+            return view.Bind(observable, value, view.LifeTime);
+        }
+
+        public static TView Bind<TView>(this TView view, Toggle source, Action<bool> value)
+            where TView : ILifeTimeContext
+        {
+            return !source ? view : view.Bind(source.OnValueChangedAsObservable(), value);
+        }
+
+        public static TSource BindClose<TSource, TView>(
             this TSource view,
             TView source)
             where TSource : IView
@@ -106,8 +311,8 @@ namespace UniGame.Rx.Runtime.Extensions
             source.CloseWith(view.LifeTime);
             return view;
         }
-        
-        public static TSource BindClose<TSource,T>(
+
+        public static TSource BindClose<TSource, T>(
             this TSource view,
             IView target)
             where TSource : IView
@@ -116,20 +321,20 @@ namespace UniGame.Rx.Runtime.Extensions
             target.CloseWith(view.LifeTime);
             return view;
         }
-        
-        public static TSource Bind<TSource,T>(
+
+        public static TSource Bind<TSource, T>(
             this TSource view,
-            IObservable<T> source, 
-            ViewBase target, 
+            IObservable<T> source,
+            ViewBase target,
             bool closeWith = false)
             where TSource : ViewBase
             where T : IViewModel
         {
             if (closeWith) view.BindClose(target);
-            
+
             view.Bind(source, x => target.Initialize(x, view.Layout)
-                    .AttachExternalCancellation(view.ModelLifeTime.CancellationToken)
-                    .Forget());
+                .AttachExternalCancellation(view.ModelLifeTime.CancellationToken)
+                .Forget());
 
             return view;
         }
@@ -140,18 +345,17 @@ namespace UniGame.Rx.Runtime.Extensions
             Type viewType)
             where TSource : ViewBase
         {
-            return view.Bind(source, x => view.OpenAsWindowAsync(x,viewType));
+            return view.Bind(source, x => view.OpenAsWindowAsync(x, viewType));
         }
-        
-        public static TSource BindWhere<TSource,T>(
+
+        public static TSource BindWhere<TSource, T>(
             this TSource view,
             Object indicator,
-            IObservable<T> source, 
+            IObservable<T> source,
             Action<T> target)
             where TSource : IView
         {
             return indicator != null ? view.Bind(source, target) : view;
         }
-
     }
 }

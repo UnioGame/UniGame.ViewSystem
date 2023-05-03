@@ -1,12 +1,17 @@
 ﻿namespace UniGame.ViewSystem.Runtime
 {
+    using System;
     using System.Runtime.CompilerServices;
     using AddressableTools.Runtime;
     using Core.Runtime;
     using Cysharp.Threading.Tasks;
+    using Localization.Runtime.UniModules.UniGame.Localization.Runtime;
     using TMPro;
+    using UniModules.UniCore.Runtime.Utils;
+    using UniRx;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
+    using UnityEngine.Localization;
     using UnityEngine.UI;
 
     public static class ValuesExtensions
@@ -27,21 +32,9 @@
 
             return true;
         }
-
-        public static bool SetValue(
-            this Image target, 
-            Color value)
-        {
-            if (target == null) return false;
-            
-            target.color = value;
-            return true;
-        }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool SetValue(
-            this TextMeshProUGUI target, 
-            string value)
+        public static bool SetValue(this TextMeshProUGUI target, string value)
         {
             if (target == null) return false;
             if (target.text == value) return false;
@@ -49,13 +42,61 @@
             return true;
         }
         
-        public static bool SetEnableValue(
-            this Image target, 
-            bool value)
+        public static bool SetEnableValue(this Image target, bool value)
         {
             if (target == null) return false;
             
             target.enabled = value;
+            return true;
+        }
+        
+        
+        public static bool SetValue(this TextMeshProUGUI text, string value, StringComparison comparison)
+        {
+            if (!text) return false;
+            
+            if (string.Equals(text.text, value,comparison))
+                return false;
+
+            text.text = value;
+            return true;
+        }
+
+        
+        public static bool SetValue(this TextMeshProUGUI text, Color color)
+        {
+            if (!text) return false;
+            
+            text.color = color;
+            return true;
+        }
+
+        public static bool SetValue(this TextMeshProUGUI text, int value)
+        {
+            if (!text) return false;
+            
+            var stringValue = value.ToStringFromCache();
+            return SetValue(text, stringValue);
+        }
+
+        public static bool SetValue(this Image target, Sprite value)
+        {
+            if (target == null || target.sprite == value) return false;
+            
+            var enabled = value != null;
+            target.enabled = enabled;
+            
+            if(enabled) target.sprite = value;
+            
+            return true;
+        }
+        
+        public static bool SetValue(this Image target, Color icon)
+        {
+            if (!target) return false;
+            
+            target.color = icon;
+
             return true;
         }
     }
