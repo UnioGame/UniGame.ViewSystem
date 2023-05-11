@@ -226,7 +226,7 @@ namespace UniGame.Rx.Runtime.Extensions
         
         public static TView Bind<TView>(this TView sender,
             Button source,
-            ISignaleValueProperty<bool> value)
+            ISignalValueProperty<bool> value)
             where TView : ILifeTimeContext
         {
             return source == null
