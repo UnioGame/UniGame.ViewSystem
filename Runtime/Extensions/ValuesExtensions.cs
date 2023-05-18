@@ -79,6 +79,13 @@
             return SetValue(text, stringValue);
         }
 
+        public static bool SetValue(this Image target, bool enabled)
+        {
+            if (target == null) return false;
+            target.enabled = enabled;
+            return true;
+        }
+        
         public static bool SetValue(this Image target, Sprite value)
         {
             if (target == null || target.sprite == value) return false;
