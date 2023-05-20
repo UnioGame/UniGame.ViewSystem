@@ -32,8 +32,10 @@ namespace UniGame.UiSystem.Runtime
         
         #region inspector
 
+#if ODIN_INSPECTOR
         [ShowIf(nameof(IsCommandsAction))]
         [BoxGroup(RuntimeInfo)]
+#endif
         [ReadOnlyValue]
         [SerializeField]
         [UsedImplicitly]
@@ -44,8 +46,10 @@ namespace UniGame.UiSystem.Runtime
         [SerializeField]
         private BoolRecycleReactiveProperty _isInitialized = new BoolRecycleReactiveProperty();
 
+#if ODIN_INSPECTOR
         [ShowIf(nameof(IsCommandsAction))]
         [BoxGroup(RuntimeInfo)]
+#endif
         [ReadOnlyValue]
         [SerializeField]
         private ViewStatus _editorViewStatus = ViewStatus.None;

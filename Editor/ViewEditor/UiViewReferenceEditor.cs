@@ -1,16 +1,14 @@
-
-
 #if !ODIN_INSPECTOR
 
 using UniGame.UiSystem.Runtime.Settings;
-using UniModules.UniGame.Core.Runtime.SerializableType.Editor.SerializableTypeEditor;
+using UniGame.CoreModules.Editor.SerializableTypeEditor;
+using UniGame.Core.Runtime.SerializableType.Editor.SerializableTypeEditor;
 
 namespace UniModules.UniGame.ViewSystem.Editor.UiEditor
 {
     using UnityEditor;
     using UnityEngine;
-    using UniModules.UniGame.CoreModules.UniGame.Core.Editor.SerializableTypeEditor;
-
+    
     [CustomPropertyDrawer(typeof(UiViewReference))]
     public class UiViewReferenceEditor : PropertyDrawer
     {
