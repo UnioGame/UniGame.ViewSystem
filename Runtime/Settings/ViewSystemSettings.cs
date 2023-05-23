@@ -1,5 +1,4 @@
 ﻿using UniGame.AddressableTools.Runtime;
-using UniGame.ViewSystem.Runtime.Abstract;
 
 namespace UniGame.UiSystem.Runtime.Settings
 {
@@ -13,7 +12,6 @@ namespace UniGame.UiSystem.Runtime.Settings
     using ViewSystem.Runtime;
     using UnityEngine;
     using ViewsFlow;
-    using Object = UnityEngine.Object;
 
 #if ODIN_INSPECTOR
     using Sirenix.OdinInspector;
@@ -73,6 +71,29 @@ namespace UniGame.UiSystem.Runtime.Settings
         public IViewFlowController FlowController { get; protected set; }
 
         #region public methods
+
+
+#if UNITY_EDITOR     
+        public IEnumerable<string> GetEditorViewsId()
+        {
+            
+
+            foreach (var uiView in uiViews)
+            {
+                yield return uiView.ViewName;
+            }
+
+            foreach (var viewSource in sources)
+            {
+                var settings = viewSource.viewSourceReference.editorAsset;
+                foreach (var uiView in settings.uiViews)
+                {
+                    yield return uiView.ViewName;
+                }
+            }
+            yield break;
+        }
+#endif
         
         public async UniTask WaitForInitialize()
         {

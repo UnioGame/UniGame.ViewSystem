@@ -3,14 +3,11 @@ using Cysharp.Threading.Tasks;
 using UniGame.UiSystem.Runtime.Settings;
 using UniGame.Core.Runtime;
 using UniModules.UniGame.UiSystem.Runtime;
-using UniGame.ViewSystem.Runtime;
-using UniGame.ViewSystem.Runtime.Abstract;
 using UniModules.UniGame.ViewSystem.Runtime.Extensions;
 using UnityEngine;
 
 namespace UniGame.ViewSystem.Runtime.Extensions
 {
-    using Abstract;
 
     public static class ViewsFactoryExtensions
     {
@@ -33,6 +30,17 @@ namespace UniGame.ViewSystem.Runtime.Extensions
             return await CreateView<TView>(context,ViewType.Overlay, skinTag, null, viewName);
         }
         
+        public static async UniTask<IView> Create(
+            this IContext context,
+            Type viewType,
+            string skinTag = "",
+            Transform parent = null,
+            string viewName = null,
+            bool stayWorldPosition = false)
+        {
+            return await CreateView(Current,context,viewType.Name, ViewType.None, skinTag, viewName,parent,stayWorldPosition);
+        }
+        
         public static async UniTask<IView> Create<TView>(
             this IContext context,
             string skinTag = "",
@@ -40,7 +48,7 @@ namespace UniGame.ViewSystem.Runtime.Extensions
             string viewName = null,
             bool stayWorldPosition = false)
         {
-            return await CreateView(Current,context,typeof(TView), ViewType.None, skinTag, viewName,parent,stayWorldPosition);
+            return await CreateView(Current,context,typeof(TView).Name, ViewType.None, skinTag, viewName,parent,stayWorldPosition);
         }
 
         public static IViewLayoutProvider MakeActive(this IGameViewSystem viewSystem)
@@ -79,13 +87,13 @@ namespace UniGame.ViewSystem.Runtime.Extensions
             string viewName = null,
             bool stayWorldPosition = false)
         {
-            return await CreateView(Current,context,typeof(TView), viewLayoutType, skinTag, viewName,parent,stayWorldPosition);
+            return await CreateView(Current,context,typeof(TView).Name, viewLayoutType, skinTag, viewName,parent,stayWorldPosition);
         }
         
         private static async UniTask<IView> CreateView(
             IGameViewSystem viewSystem,
             IContext context,
-            Type viewType,
+            string viewType,
             ViewType viewLayoutType,
             string skinTag = "",
             string viewName = null,
@@ -99,7 +107,7 @@ namespace UniGame.ViewSystem.Runtime.Extensions
             }
 #endif
             var typeMap = viewSystem.ModelTypeMap;
-            var views = typeMap.FindViewsByType(viewType);
+            var views = typeMap.FindViews(viewType);
             var modelReference = views.SelectReference(skinTag, viewName);
             var modelType = modelReference.ViewModelType;
             

@@ -2,8 +2,6 @@
 
 namespace UniGame.ViewSystem.Runtime
 {
-    using System;
-    using System.Collections.Generic;
     using global::UniGame.Core.Runtime;
     using Cysharp.Threading.Tasks;
     using Object = UnityEngine.Object;
@@ -15,9 +13,8 @@ namespace UniGame.ViewSystem.Runtime
     public interface IViewResourceProvider
     {
         UniTask<AssetReferenceGameObject> GetViewReferenceAsync(
-            Type viewType,
+            string viewType,
             string skinTag = "",
-            bool strongMatching = true,
             string viewName = "");
         
         /// <summary>
@@ -25,20 +22,18 @@ namespace UniGame.ViewSystem.Runtime
         /// </summary>
         /// <returns>found view or null</returns>
         UniTask<TView> LoadViewAsync<TView>(
-            Type viewType,
+            string viewType,
             ILifeTime lifeTime,
-            string skinTag = null,
-            bool strongMatching = true,
-            string viewName = null) where TView : Object;
+            string skinTag = "",
+            string viewName = "") where TView : Object;
 
         /// <summary>
         /// load all Views with target Type
         /// </summary>
-        List<UniTask<TView>> LoadViewsAsync<TView>(
-            Type viewType,
-            ILifeTime lifeTime,
-            string skinTag = null,
-            bool strongMatching = true) where TView : Object;
+        // List<UniTask<TView>> LoadViewsAsync<TView>(
+        //     string viewType,
+        //     ILifeTime lifeTime,
+        //     string skinTag = "") where TView : Object;
 
     }
 }

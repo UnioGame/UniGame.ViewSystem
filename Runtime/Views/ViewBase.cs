@@ -13,7 +13,6 @@ namespace UniGame.UiSystem.Runtime
     using UniModules.UniRoutine.Runtime;
     using Core.Runtime;
     using UniModules.UniGame.UISystem.Runtime;
-    using UniModules.UniGame.UISystem.Runtime.Extensions;
     using ViewSystem.Runtime;
     using UniRx;
     using UniModules.UniRoutine.Runtime.Extension;

@@ -1,6 +1,4 @@
 ﻿using UniGame.Runtime.ObjectPool.Extensions;
-using UniGame.ViewSystem.Runtime;
-using UniGame.ViewSystem.Runtime.Abstract;
 using UnityEngine.Scripting;
 
 [assembly: AlwaysLinkAssembly]
@@ -106,6 +104,19 @@ namespace UniGame.UiSystem.Runtime
             bool stayWorld = false,
             ILifeTime ownerLifeTime = null)
         {
+            var view = await Create(viewModel, viewType.Name, skinTag, parent, viewName, stayWorld, ownerLifeTime);
+            return view;
+        }
+        
+        public async UniTask<IView> Create(
+            IViewModel viewModel, 
+            string viewType, 
+            string skinTag = "",
+            Transform parent = null, 
+            string viewName = null,
+            bool stayWorld = false,
+            ILifeTime ownerLifeTime = null)
+        {
             var view = await CreateView(viewModel, viewType, skinTag, parent, viewName, stayWorld,ownerLifeTime);
             //fire view data
             _viewCreatedSubject.OnNext(view);
@@ -127,28 +138,24 @@ namespace UniGame.UiSystem.Runtime
             return view;
         }
         
-        public async UniTask<IView> OpenWindow(Type viewType, 
-            string skinTag = "",
-            string viewName = null)
+        public async UniTask<IView> OpenWindow(string viewType, string skinTag = "", string viewName = null)
         {
-            var view = await CreateViewAndPushToLayout<IView>(viewType, 
-                ViewType.Window, skinTag, viewName);
+            var view = await CreateViewAndPushToLayout<IView>(viewType, ViewType.Window, skinTag, viewName);
             
             view.Show();
 
             return view;
         }
 
-        public async UniTask<IView> OpenScreen(Type viewType, string skinTag = "", string viewName = null)
+        public async UniTask<IView> OpenScreen(string viewType, string skinTag = "", string viewName = null)
         {
-            var view = await CreateViewAndPushToLayout<IView>(viewType, ViewType.Screen, 
-                skinTag, viewName);
+            var view = await CreateViewAndPushToLayout<IView>(viewType, ViewType.Screen, skinTag, viewName);
             view.Show();
 
             return view;
         }
 
-        public async UniTask<IView> OpenOverlay(Type viewType, string skinTag = "", 
+        public async UniTask<IView> OpenOverlay(string viewType, string skinTag = "", 
             string viewName = null)
         {
             var view = await CreateViewAndPushToLayout<IView>(viewType, ViewType.Overlay, skinTag, viewName);
@@ -157,25 +164,22 @@ namespace UniGame.UiSystem.Runtime
             return view;
         }
 
-        public async UniTask<IView> CreateWindow(Type viewType, string skinTag = "", string viewName = null)
+        public async UniTask<IView> CreateWindow(string viewType, string skinTag = "", string viewName = null)
         {
-            return await CreateViewAndPushToLayout<IView>(viewType, 
-                ViewType.Window, skinTag, viewName);
+            return await CreateViewAndPushToLayout<IView>(viewType, ViewType.Window, skinTag, viewName);
         }
 
-        public async UniTask<IView> CreateScreen(Type viewType, string skinTag = "", string viewName = null)
+        public async UniTask<IView> CreateScreen(string viewType, string skinTag = "", string viewName = null)
         {
             return await CreateViewAndPushToLayout<IView>(viewType, ViewType.Screen, skinTag, viewName);
         }
 
-        public async UniTask<IView> CreateOverlay(Type viewType, string skinTag = "", string viewName = null)
+        public async UniTask<IView> CreateOverlay(string viewType, string skinTag = "", string viewName = null)
         {
             return await CreateViewAndPushToLayout<IView>(viewType, ViewType.Overlay, skinTag, viewName);
         }
         
-        public async UniTask<IView> OpenWindow(IViewModel viewModel, Type viewType, 
-            string skinTag = "",
-            string viewName = null)
+        public async UniTask<IView> OpenWindow(IViewModel viewModel, string viewType, string skinTag = "", string viewName = null)
         {
             var view = await CreateViewAndPushToLayout<IView>(viewModel, viewType, ViewType.Window, skinTag, viewName);
             view.Show();
@@ -183,7 +187,7 @@ namespace UniGame.UiSystem.Runtime
             return view;
         }
 
-        public async UniTask<IView> OpenScreen(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
+        public async UniTask<IView> OpenScreen(IViewModel viewModel, string viewType, string skinTag = "", string viewName = null)
         {
             var view = await CreateViewAndPushToLayout<IView>(viewModel, viewType, ViewType.Screen, skinTag, viewName);
             view.Show();
@@ -191,7 +195,7 @@ namespace UniGame.UiSystem.Runtime
             return view;
         }
 
-        public async UniTask<IView> OpenOverlay(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
+        public async UniTask<IView> OpenOverlay(IViewModel viewModel, string viewType, string skinTag = "", string viewName = null)
         {
             var view = await CreateViewAndPushToLayout<IView>(viewModel, viewType, ViewType.Overlay, skinTag, viewName);
             view.Show();
@@ -199,17 +203,17 @@ namespace UniGame.UiSystem.Runtime
             return view;
         }
 
-        public async UniTask<IView> CreateWindow(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
+        public async UniTask<IView> CreateWindow(IViewModel viewModel, string viewType, string skinTag = "", string viewName = null)
         {
             return await CreateViewAndPushToLayout<IView>(viewModel, viewType, ViewType.Window, skinTag, viewName);
         }
 
-        public async UniTask<IView> CreateScreen(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
+        public async UniTask<IView> CreateScreen(IViewModel viewModel, string viewType, string skinTag = "", string viewName = null)
         {
             return await CreateViewAndPushToLayout<IView>(viewModel, viewType, ViewType.Screen, skinTag, viewName);
         }
 
-        public async UniTask<IView> CreateOverlay(IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
+        public async UniTask<IView> CreateOverlay(IViewModel viewModel, string viewType, string skinTag = "", string viewName = null)
         {
             return await CreateViewAndPushToLayout<IView>(viewModel, viewType, ViewType.Overlay, skinTag, viewName);
         }
@@ -235,6 +239,7 @@ namespace UniGame.UiSystem.Runtime
         public IEnumerable<IViewLayout> Controllers => _viewLayouts.Controllers;
 
         public IViewLayout GetLayout(ViewType type) => _viewLayouts.GetLayout(type);
+        
         public IViewLayout GetLayout(string id) => _viewLayouts.GetLayout(id);
 
         #endregion
@@ -258,7 +263,7 @@ namespace UniGame.UiSystem.Runtime
         /// <returns>created view element</returns>
         public async UniTask<IView> CreateView(
             IViewModel viewModel,
-            Type viewType,
+            string viewType,
             string skinTag = "",
             Transform parent = null,
             string viewName = null,
@@ -266,7 +271,7 @@ namespace UniGame.UiSystem.Runtime
             ILifeTime ownerLifeTime = null)
         {
             var lifeTime = ownerLifeTime ?? LifeTime;
-            if (lifeTime.IsTerminated)
+            if (lifeTime.IsTerminated) 
                 return DummyView.Create();
             
             var   failed = false;
@@ -290,17 +295,44 @@ namespace UniGame.UiSystem.Runtime
             
             if (failed)
             {
-                GameLog.LogError($"ViewSystem: Try Create view with type: {viewType.Name} | skin:{skinTag} | parent: {parent}: name: {viewName} FAILED");
+                GameLog.LogError($"ViewSystem: Try Create view with type: {viewType} | skin:{skinTag} | parent: {parent}: name: {viewName} FAILED");
                 Destroy(view);
                 return DummyView.Create();
             }
             
             await InitializeView(view, viewModel);
+            
             return view;
         }
 
         public async UniTask<IView> CreateView(
+            IViewModel viewModel,
             Type viewType,
+            string skinTag = "",
+            Transform parent = null,
+            string viewName = null,
+            bool stayWorld = false,
+            ILifeTime ownerLifeTime = null)
+        {
+            var view = await CreateView(viewModel, viewType.Name, skinTag, parent, viewName, stayWorld, ownerLifeTime);
+            return view;
+        }
+
+
+        public async UniTask<IView> CreateView(
+            Type viewType,
+            string skinTag = "",
+            Transform parent = null,
+            string viewName = null,
+            bool stayWorld = false,
+            ILifeTime ownerLifeTime = null)
+        {
+            var view = await CreateView(viewType.Name, skinTag, parent, viewName, stayWorld, ownerLifeTime);
+            return view;
+        }
+        
+        public async UniTask<IView> CreateView(
+            string viewType,
             string skinTag = "",
             Transform parent = null,
             string viewName = null,
@@ -312,9 +344,9 @@ namespace UniGame.UiSystem.Runtime
             return view;
         }
 
-        public async UniTask<IViewModel> CreateViewModel(Type viewType)
+        public async UniTask<IViewModel> CreateViewModel(string viewType)
         {
-            var modelType = ModelTypeMap.GetViewModelTypeByView(viewType);
+            var modelType = ModelTypeMap.GetViewModelType(viewType);
             var model = await CreateViewModel(_defaultContext, modelType);
             return model;
         }
@@ -349,7 +381,7 @@ namespace UniGame.UiSystem.Runtime
         #region private methods
 
         private async UniTask<T> CreateViewAndPushToLayout<T>(
-            Type viewType,
+            string viewType,
             ViewType layoutType,
             string skinTag = "",
             string viewName = null,
@@ -364,12 +396,37 @@ namespace UniGame.UiSystem.Runtime
             return view;
         }
         
+        private async UniTask<T> CreateViewAndPushToLayout<T>(
+            Type viewType,
+            ViewType layoutType,
+            string skinTag = "",
+            string viewName = null,
+            ILifeTime ownerLifeTime = null)
+            where T : class, IView
+        {
+            var view = await CreateViewAndPushToLayout<T>(viewType.Name,layoutType,skinTag,viewName,ownerLifeTime);
+            return view;
+        }
+
+        private async UniTask<T> CreateViewAndPushToLayout<T>(
+            IViewModel viewModel,
+            Type viewType,
+            ViewType layoutType,
+            string skinTag = "",
+            string viewName = null,
+            ILifeTime ownerLifeTime = null)
+            where T : class, IView
+        {
+            var view = await CreateViewAndPushToLayout<T>(viewModel,viewType.Name,layoutType,skinTag,viewName,ownerLifeTime);
+            return view;
+        }
+        
         /// <summary>
         /// create view on target controller
         /// </summary>
         private async UniTask<T> CreateViewAndPushToLayout<T>(
             IViewModel viewModel,
-            Type viewType,
+            string viewType,
             ViewType layoutType,
             string skinTag = "",
             string viewName = null,

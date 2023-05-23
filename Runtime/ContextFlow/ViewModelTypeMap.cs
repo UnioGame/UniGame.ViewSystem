@@ -2,14 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using UniGame.UiSystem.Runtime.Settings;
-using UniGame.ViewSystem.Runtime.Abstract;
 using UniModules.UniGame.ViewSystem.Runtime.Extensions;
-using UnityEngine;
 
 namespace UniGame.ViewSystem.Runtime
 {
-    using Abstract;
-
     [Serializable]
     public class ViewModelTypeMap : IViewModelTypeMap
     {
@@ -18,60 +14,42 @@ namespace UniGame.ViewSystem.Runtime
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.InlineProperty]
 #endif
-        public TypeViewReferenceDictionary viewsTypeMap = new TypeViewReferenceDictionary(16);
-        
-        [Space]
-#if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.InlineProperty]
-#endif
-        public TypeViewReferenceDictionary modelTypeMap = new TypeViewReferenceDictionary(16);
-        
+        public ViewReferencesMap viewsTypeMap = new ViewReferencesMap();
+
         #endregion
 
-        private Dictionary<Type, Type> modelTypeFromViewType = new Dictionary<Type, Type>(64);
-        private Dictionary<Type, Type> modelViewTypeFromViewType = new Dictionary<Type, Type>(64);
-
-        public Type GetModelTypeByView(Type viewType, bool strongTypeMatching = true)
+        public Type GetModelType(string viewType)
         {
-            var modelType =  viewsTypeMap
-                .FindByType(viewType,strongTypeMatching)
-                .Select(x => x.ModelType)
+            var view = viewsTypeMap.Find(viewType)
                 .FirstOrDefault();
             
-            return modelType;
+            return  view == null 
+                ? ViewReferencesMap.Empty.ModelType
+                : view.ModelType;
         }
         
-        public Type GetViewModelTypeByView(Type viewType, bool strongTypeMatching = true)
+        public Type GetViewModelType(string viewType)
         {
-            var modelType =  viewsTypeMap
-                .FindByType(viewType,strongTypeMatching)
-                .Select(x => x.ViewModelType)
+            var view = viewsTypeMap.Find(viewType)
                 .FirstOrDefault();
             
-            return modelType;
+            return  view == null 
+                ? ViewReferencesMap.Empty.ViewModelType
+                : view.ViewModelType;
         }
 
-        public UiViewReference FindView(
-            Type viewType,
-            string skinTag = "", 
-            string viewName = "",
-            bool strongMatching = true)
+        public UiViewReference FindView(string id, string skinTag = "", string viewName = "")
         {
-            var views = FindViewsByType(viewType, strongMatching);
-            var item = views.SelectReference(skinTag,viewName);
-            return item;
+            var items = FindViews(id);
+            return items.SelectReference(skinTag, viewName);
         }
-        
-        public IReadOnlyList<UiViewReference> FindViewsByType(Type viewType, bool strongMatching = true) =>
-            viewsTypeMap.FindByType(viewType, strongMatching);
 
-        public IReadOnlyList<UiViewReference> FindModelByType(Type modelType, bool strongMatching = true) =>
-            modelTypeMap.FindByType(modelType, strongMatching);
+        public IReadOnlyList<UiViewReference> FindViews(string id) => viewsTypeMap.Find(id);
         
-        public Type GetViewTypeByModel(Type modeType, bool strongTypeMatching = true)
+        public Type GetViewType(string id)
         {
-            var viewType =  modelTypeMap
-                .FindByType(modeType,strongTypeMatching)
+            var viewType =  viewsTypeMap
+                .Find(id)
                 .Select(x => x.Type)
                 .FirstOrDefault();
             
@@ -88,23 +66,9 @@ namespace UniGame.ViewSystem.Runtime
 
         public void RegisterViewReference(UiViewReference viewReference)
         {
-            RegisterViews(viewReference, viewReference.Type, viewsTypeMap);
-            RegisterViews(viewReference, viewReference.ModelType, modelTypeMap);
+            viewsTypeMap.Add(viewReference);
         }
 
-        private void RegisterViews(UiViewReference reference,Type targetType, TypeViewReferenceDictionary map)
-        {
-            if (map.TryGetValue(targetType, out var items) == false)
-            {
-                items = new UiReferenceList();
-                map[targetType] = items;
-            }
-
-            if (items.references.Contains(reference))
-                return;
-            
-            items.references.Add(reference);
-        }
         
     }
 }

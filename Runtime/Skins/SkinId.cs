@@ -7,7 +7,6 @@ using System;
 #endif
 public struct SkinId
 {
-
     #region static data
 
     public static implicit operator string(SkinId v)
@@ -36,7 +35,7 @@ public struct SkinId
 
     public override bool Equals(object obj)
     {
-        if (!(obj is SkinId skinId))
+        if (obj is not SkinId skinId)
             return false;
         return !string.IsNullOrEmpty(id) && id.Equals(skinId.id);
     }

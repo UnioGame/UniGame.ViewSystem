@@ -5,13 +5,10 @@
     using AddressableTools.Runtime;
     using Core.Runtime;
     using Cysharp.Threading.Tasks;
-    using Localization.Runtime.UniModules.UniGame.Localization.Runtime;
     using TMPro;
     using UniModules.UniCore.Runtime.Utils;
-    using UniRx;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
-    using UnityEngine.Localization;
     using UnityEngine.UI;
 
     public static class ValuesExtensions

@@ -2,7 +2,6 @@
 
 namespace UniGame.ViewSystem.Runtime
 {
-    using Runtime;
     using UniRx;
 
     public interface IViewStatus

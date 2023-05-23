@@ -30,7 +30,7 @@
             bool stayWorld = false) 
             where T : class, IView
         {
-            return await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName, stayWorld) as T;
+            return await source.Layout.Create(viewModel, typeof(T).Name, skinTag, parent, viewName, stayWorld) as T;
         }
 
         /// <summary>
@@ -44,7 +44,7 @@
             string viewName = null) 
             where T : class, IView
         {
-            var view = await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName);
+            var view = await source.Layout.Create(viewModel, typeof(T).Name, skinTag, parent, viewName);
             view.Hide();
             return view as T;
         }
@@ -149,7 +149,20 @@
             bool stayWorld = false) 
             where T : class, IView
         {
-            var view = await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName,stayWorld) as T;
+            var view = await source.ShowViewAsync(viewModel, typeof(T), parent,skinTag, viewName,stayWorld) as T;
+            return view;
+        }
+        
+        public static async UniTask<IView> ShowViewAsync(
+            this ViewBase source, 
+            IViewModel viewModel, 
+            Type viewType,
+            Transform parent = null, 
+            string skinTag = null, 
+            string viewName = null,
+            bool stayWorld = false) 
+        {
+            var view = await source.Layout.Create(viewModel, viewType.Name, skinTag, parent, viewName,stayWorld);
             view.Show();
             return view;
         }
@@ -168,7 +181,21 @@
             bool stayWorld = false) 
             where T : class, IView
         {
-            var view = await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName,stayWorld) as T;
+            var view = await CreateNestedViewAsync(source,lifeTime,viewModel, typeof(T), skinTag, parent, viewName,stayWorld) as T;
+            return view;
+        }
+        
+        public static async UniTask<IView> CreateNestedViewAsync(
+            this ViewBase source, 
+            ILifeTime lifeTime,
+            IViewModel viewModel, 
+            Type viewType,
+            string skinTag = null, 
+            Transform parent = null, 
+            string viewName = null,
+            bool stayWorld = false) 
+        {
+            var view = await source.Layout.Create(viewModel, viewType.Name, skinTag, parent, viewName,stayWorld);
             view.CloseWith(lifeTime);
             return view;
         }
@@ -185,8 +212,22 @@
             bool stayWorld = false) 
             where T : class, IView
         {
+            var view = await source.CreateChildViewAsync(viewModel, typeof(T), parent, skinTag, viewName,stayWorld) as T;
+
+            return view;
+        }
+        
+        public static async UniTask<IView> CreateChildViewAsync(
+            this ViewBase source,
+            IViewModel viewModel, 
+            Type viewType,
+            Transform parent = null,
+            string skinTag = null,
+            string viewName = null,
+            bool stayWorld = false) 
+        {
             parent = parent ? parent : source.Transform;
-            var view = await source.Layout.Create(viewModel, typeof(T), skinTag, parent, viewName,stayWorld) as T;
+            var view = await source.Layout.Create(viewModel, viewType.Name, skinTag, parent, viewName,stayWorld);
             
             var viewTransform = view.Transform;
             view.Owner.layer         = source.Owner.layer;
@@ -209,7 +250,7 @@
         {
             parent = parent ? parent : source.Transform;
             
-            var view = await source.Layout.Create(viewModel, viewType, 
+            var view = await source.Layout.Create(viewModel, viewType.Name, 
                 skinTag, parent, viewName,stayWorld);
             
             var viewTransform = view.Transform;

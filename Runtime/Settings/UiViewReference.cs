@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using UniGame.AddressableTools.Runtime;
 using UniModules.UniGame.ViewSystem;
 

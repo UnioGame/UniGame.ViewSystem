@@ -1,9 +1,69 @@
 namespace UniGame.ViewSystem.Runtime
 {
+    using System;
     using Cysharp.Threading.Tasks;
 
     public static class ViewLayoutProviderExtension
     {
+
+        public static async UniTask<IView> OpenWindow(this IViewLayoutProvider provider, Type viewType, string skinTag = "",
+            string viewName = null)
+        {
+            return await provider.OpenWindow(viewType.Name, skinTag, viewName);
+        }
+        public static async UniTask<IView> OpenScreen(this IViewLayoutProvider provider,Type viewType, string skinTag = "", string viewName = null)
+        {
+            return await provider.OpenScreen(viewType.Name, skinTag, viewName);
+        }
+        
+        public static async UniTask<IView> OpenOverlay(this IViewLayoutProvider provider,Type viewType, string skinTag = "", string viewName = null)
+        {
+            return await provider.OpenOverlay(viewType.Name, skinTag, viewName);
+        }
+        public static async UniTask<IView> CreateWindow(this IViewLayoutProvider provider,Type viewType, 
+            string skinTag = "", string viewName = null)
+        {
+            return await provider.CreateWindow(viewType.Name, skinTag, viewName);
+        }
+        public static async UniTask<IView> CreateScreen(this IViewLayoutProvider provider,Type viewType, string skinTag = "", 
+            string viewName = null)
+        {
+            return await provider.CreateScreen(viewType.Name, skinTag, viewName);
+        }
+        public static async UniTask<IView> CreateOverlay(this IViewLayoutProvider provider,Type viewType, 
+            string skinTag = "", string viewName = null)
+        {
+            return await provider.CreateOverlay(viewType.Name, skinTag, viewName);
+        }
+        
+        public static async UniTask<IView> OpenWindow(this IViewLayoutProvider provider,IViewModel viewModel, 
+            Type viewType, string skinTag = "", string viewName = null)
+        {
+            return await provider.OpenWindow(viewModel,viewType.Name, skinTag, viewName);
+        }
+        public static async UniTask<IView> OpenScreen(this IViewLayoutProvider provider,
+            IViewModel viewModel, 
+            Type viewType, string skinTag = "", string viewName = null)
+        {
+            return await provider.OpenScreen(viewModel,viewType.Name, skinTag, viewName);
+        }
+        public static async UniTask<IView> OpenOverlay(this IViewLayoutProvider provider,IViewModel viewModel, 
+            Type viewType, string skinTag = "", string viewName = null)
+        {
+            return await provider.OpenScreen(viewModel,viewType.Name, skinTag, viewName);
+        }
+
+        public static async UniTask<IView> CreateWindow(this IViewLayoutProvider provider,IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
+        {
+            return await provider.CreateWindow(viewModel,viewType.Name, skinTag, viewName);
+        }
+        public static async UniTask<IView> CreateScreen(this IViewLayoutProvider provider,IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null){
+            return await provider.CreateScreen(viewModel,viewType.Name, skinTag, viewName);
+        }
+        public static async UniTask<IView> CreateOverlay(this IViewLayoutProvider provider,IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null){
+            return await provider.CreateOverlay(viewModel,viewType.Name, skinTag, viewName);
+        }
+        
         public static async UniTask<T> OpenWindow<T>(this IViewLayoutProvider provider, IViewModel viewModel, string skinTag = "", string viewName = null)
             where T : class, IView
         {

@@ -5,7 +5,6 @@ namespace UniGame.UiSystem.Runtime
     using UniGame.Runtime.ObjectPool;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
-    using System;
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
@@ -34,7 +33,7 @@ namespace UniGame.UiSystem.Runtime
         }
 
         public async UniTask<IView> Create(
-            Type viewType, 
+            string viewType, 
             string skinTag = "", 
             Transform parent = null, 
             string viewName = "",
@@ -48,6 +47,7 @@ namespace UniGame.UiSystem.Runtime
             //load view source by filter parameters
             var result       = await _resourceProvider
                 .GetViewReferenceAsync(viewType,skinTag, viewName:viewName);
+            
             //create view instance
             var viewResult   = await Create(result,viewDisposable.LifeTime, parent,stayWorldPosition);
             var view         = viewResult.View;
@@ -56,7 +56,7 @@ namespace UniGame.UiSystem.Runtime
             //if loading failed release resource immediately
             if (view == null) {
                 viewDisposable.Dispose();
-                GameLog.LogError($"Factory {this.GetType().Name} View of Type {viewType?.Name} not loaded or cancelled");
+                GameLog.LogError($"Factory {this.GetType().Name} View of Type {viewType} not loaded or cancelled");
                 return null;
             }
 
@@ -80,6 +80,7 @@ namespace UniGame.UiSystem.Runtime
             if(sourceView == null) return new ViewResult();
 
             var viewTransform = sourceView.transform;
+            
             var gameObjectView = sourceView.HasCustomPoolLifeTimeFor()
                 ? sourceView.SpawnActive(viewTransform.position, viewTransform.rotation, parent, stayPosition) 
                 : Object.Instantiate(sourceView, parent, stayPosition);

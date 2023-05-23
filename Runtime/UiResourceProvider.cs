@@ -1,5 +1,4 @@
 ﻿using UniGame.AddressableTools.Runtime;
-using UniGame.ViewSystem.Runtime.Abstract;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -7,7 +6,6 @@ namespace UniGame.UiSystem.Runtime
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Cysharp.Threading.Tasks;
     using Settings;
     using Core.Runtime;
@@ -25,59 +23,39 @@ namespace UniGame.UiSystem.Runtime
             _viewModelTypeMap.RegisterViewReference(sourceViews);
         }
 
-        public async UniTask<AssetReferenceGameObject> GetViewReferenceAsync(
-            Type viewType, 
-            string skinTag = "", 
-            bool strongMatching = true, 
+        public UniTask<AssetReferenceGameObject> GetViewReferenceAsync(
+            string viewType, 
+            string skinTag = "",
             string viewName = "")
         {
-            var item = _viewModelTypeMap.FindView(viewType, skinTag, viewName, strongMatching);
+            var item = _viewModelTypeMap.FindView(viewType, skinTag, viewName);
 
-            if (item != null) return item.View;
+            if (item != null) return UniTask.FromResult(item.View);
             
-            Debug.LogError($"{nameof(UiResourceProvider)} ITEM MISSING skin:{skinTag} type {viewType?.Name}");
-            return null;
+            Debug.LogError($"{nameof(UiResourceProvider)} ITEM MISSING skin:{skinTag} type {viewType}");
+            
+            return UniTask.FromResult<AssetReferenceGameObject>(null);
         }
         
         public async UniTask<TView> LoadViewAsync<TView>(
-            Type viewType, 
+            string viewType, 
             ILifeTime lifeTime,
-            string skinTag = "", 
-            bool strongMatching = true, 
+            string skinTag = "",  
             string viewName = "") where TView : UnityEngine.Object
         {
-            var item = await GetViewReferenceAsync(viewType, skinTag, strongMatching, viewName);
+            var item = await GetViewReferenceAsync(viewType, skinTag, viewName);
             return await item.LoadAssetTaskAsync<TView>(lifeTime);
         }
 
-        public List<UniTask<TView>> LoadViewsAsync<TView>(
-            Type viewType,ILifeTime lifeTime, string skinTag = null, bool strongMatching = true)
-            where TView : UnityEngine.Object
-        {
-            var items = _viewModelTypeMap.FindViewsByType(viewType, strongMatching);
+        #region view model map API
 
-            if (items.Count <= 0)
-            {
-                Debug.LogError($"{nameof(UiResourceProvider)} ITEM MISSING skin:{skinTag} type {viewType.Name}");
-                return null;
-            }
-
-            return items
-                .Select(item => item.View.LoadAssetTaskAsync<TView>(lifeTime))
-                .ToList();
-        }
-
-#region view model map API
-
-        public IReadOnlyList<UiViewReference> FindViewsByType(Type viewType, bool strongMatching = true) => _viewModelTypeMap.FindViewsByType(viewType, strongMatching);
-
-        public IReadOnlyList<UiViewReference> FindModelByType(Type modelType, bool strongMatching = true) => _viewModelTypeMap.FindModelByType(modelType, strongMatching);
-
-        public Type GetModelTypeByView(Type viewType, bool strongTypeMatching = true) => _viewModelTypeMap.GetModelTypeByView(viewType, strongTypeMatching);
+        public IReadOnlyList<UiViewReference> FindViews(string viewType) => _viewModelTypeMap.FindViews(viewType);
         
-        public Type GetViewModelTypeByView(Type viewType, bool strongTypeMatching = true) => _viewModelTypeMap.GetViewModelTypeByView(viewType, strongTypeMatching);
+        public Type GetModelType(string viewType) => _viewModelTypeMap.GetModelType(viewType);
+        
+        public Type GetViewModelType(string viewType) => _viewModelTypeMap.GetViewModelType(viewType);
 
-        public Type GetViewTypeByModel(Type modeType, bool strongTypeMatching = true) => _viewModelTypeMap.GetViewTypeByModel(modeType, strongTypeMatching);
+        public Type GetViewType(string modeType) => _viewModelTypeMap.GetViewType(modeType);
         
 #endregion
     }

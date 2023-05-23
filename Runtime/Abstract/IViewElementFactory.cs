@@ -18,7 +18,7 @@ namespace UniGame.ViewSystem.Runtime
         
         UniTask<IView> Create(
             IViewModel viewModel,
-            Type viewType,
+            string viewType,
             string skinTag = "",
             Transform parent = null,
             string viewName = null,

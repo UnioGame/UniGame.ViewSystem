@@ -4,7 +4,6 @@
     using Cysharp.Threading.Tasks;
     using UniModules.UniCore.Runtime.Utils;
     using global::UniGame.Core.Runtime;
-    using global::UniGame.ViewSystem.Runtime;
 
     [Serializable]
     public class DefaultConstructorViewModelFactory : IViewModelResolver

@@ -1,7 +1,9 @@
 ﻿namespace UniGame.ViewSystem.Runtime
 {
+    using System;
     using global::UniGame.Core.Runtime;
     using Cysharp.Threading.Tasks;
+    using UniModules.UniGame.UISystem.Runtime.Extensions;
     using UnityEngine;
 
     public static class ViewElementFactoryExtension
@@ -25,8 +27,22 @@
             string viewName = "", 
             bool stayWorld = false) where T : class, IView
         {
-            var view = await factory.Create(viewModel, typeof(T), skinTag, parent, viewName,stayWorld) as T;
-            lifeTime.AddCleanUpAction(() => view?.Close());
+            var view = await factory.Open(viewModel,typeof(T),lifeTime, skinTag, parent, viewName,stayWorld) as T;
+            return view;
+        }
+        
+        public static async UniTask<IView> Open( 
+            this IViewElementFactory factory,
+            IViewModel viewModel,
+            Type viewType,
+            ILifeTime lifeTime,
+            string skinTag = "",
+            Transform parent = null,
+            string viewName = "", 
+            bool stayWorld = false)
+        {
+            var view = await factory.Create(viewModel, viewType.Name, skinTag, parent, viewName,stayWorld);
+            view.CloseWith(lifeTime);
             view.Show();
             return view;
         }
@@ -42,7 +58,18 @@
             view.Show();
             return view;
         }
-        
+
+        public static async UniTask<IView> Create(this IViewElementFactory factory,
+            IViewModel viewModel,
+            Type viewType,
+            string skinTag = "",
+            Transform parent = null,
+            string viewName = null,
+            bool stayWorld = false)
+        {
+            return await factory.Create(viewModel, viewType.Name, skinTag, parent, viewName,stayWorld);
+        }
+
         public static async UniTask<T> Create<T>( 
             this IViewElementFactory factory,
             IViewModel viewModel,
@@ -54,6 +81,7 @@
             return view;
         }
         
+      
         public static async UniTask<T> Create<T>( 
             this IViewElementFactory factory,
             IViewModel viewModel,

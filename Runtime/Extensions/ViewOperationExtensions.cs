@@ -7,47 +7,45 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
 {
     public static class ViewOperationExtensions 
     {
+        private static readonly UiViewReference Empty = new UiViewReference()
+        {
+            ViewName = "EMPTY",
+            ModelType = typeof(EmptyViewModel),
+            ViewModelType = typeof(EmptyViewModel),
+        };
+        
+        private static List<UiViewReference> _cachedList = new List<UiViewReference>(16);
 
         public static UiViewReference SelectReference(
-            this IEnumerable<UiViewReference> items, 
+            this IEnumerable<UiViewReference> source, 
             string skinTag = "",
             string viewName = "",
             Type modelType = null)
         {
-            var models = string.IsNullOrEmpty(skinTag)
-                ? items
-                : items.Where(x => string.Equals(x.Tag, skinTag, StringComparison.InvariantCultureIgnoreCase));
-
-            models = string.IsNullOrEmpty(viewName)
-                ? models
-                : models.Where(x => string.Equals(x.ViewName, viewName, StringComparison.InvariantCultureIgnoreCase));
-
+            _cachedList.Clear();
             
-            var resultModel = modelType == null
-                ? models.ToList()
-                : models.Where(x => x.ViewModelType == modelType).ToList();
+            var isEmptyTag = string.IsNullOrEmpty(skinTag);
+            var isEmptyName = string.IsNullOrEmpty(viewName);
+            var isEmptyModelType = modelType == null;
 
-            if (!string.IsNullOrEmpty(skinTag) && !string.IsNullOrEmpty(viewName) && modelType != null)
+            foreach (var viewReference in source)
             {
-                return resultModel.FirstOrDefault();
+                if (!string.Equals(viewReference.Tag, skinTag, StringComparison.InvariantCultureIgnoreCase))
+                    continue;
+                
+                if (!isEmptyName && !string.Equals(viewReference.ViewName, viewName, StringComparison.InvariantCultureIgnoreCase))
+                    continue;
+                
+                if (!isEmptyModelType && viewReference.ViewModelType != modelType)
+                    continue;
+
+                _cachedList.Add(viewReference);
             }
 
-            if (string.IsNullOrEmpty(skinTag) && resultModel.FirstOrDefault(x => string.IsNullOrEmpty(x.Tag)) != null)
-            {
-                resultModel = resultModel.Where(x => string.IsNullOrEmpty(x.Tag)).ToList();
-            }
+            var result = _cachedList.FirstOrDefault();
 
-            if (string.IsNullOrEmpty(viewName) && resultModel.FirstOrDefault(x => string.IsNullOrEmpty(x.ViewName)) != null)
-            {
-                resultModel = resultModel.Where(x => string.IsNullOrEmpty(x.ViewName)).ToList();
-            }
-
-            if (modelType == null && resultModel.FirstOrDefault(x => x.Type == null) != null)
-            {
-                resultModel = resultModel.Where(x => x.Type == null).ToList();
-            }
-
-            return resultModel.FirstOrDefault();
+            _cachedList.Clear();
+            return result;
         }
     
     }

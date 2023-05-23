@@ -44,8 +44,12 @@ namespace UniGame.Tests.UnitTests.Editor.ViewSystem
                     }
                 }
             };
-            _viewModelTypeMap.viewsTypeMap.Add(new SType {Type = typeof(UiView<SkinViewModel>) }, viewsSkinFirst);
 
+            foreach (var uiReference in viewsSkinFirst.references)
+            {
+                _viewModelTypeMap.viewsTypeMap.Add(uiReference);
+            }
+            
             var viewsDefaultFirst = new UiReferenceList
             {
                 references = new List<UiViewReference>
@@ -72,20 +76,24 @@ namespace UniGame.Tests.UnitTests.Editor.ViewSystem
                     }
                 }
             };
-            _viewModelTypeMap.viewsTypeMap.Add(new SType { Type = typeof(UiView<DefaultViewModel>) }, viewsDefaultFirst);
+            
+            foreach (var uiReference in viewsDefaultFirst.references)
+            {
+                _viewModelTypeMap.viewsTypeMap.Add(uiReference);
+            }
         }
 
         [Test]
         public void GetDefaultViewForEmptySkinTag()
         {
-            var view = _viewModelTypeMap.FindView(typeof(UiView<SkinViewModel>));
+            var view = _viewModelTypeMap.FindView(typeof(UiView<SkinViewModel>).Name);
             Assert.That(view.ViewName == "Default");
         }
 
         [Test]
         public void GetSkin()
         {
-            var view = _viewModelTypeMap.FindView(typeof(UiView<DefaultViewModel>), "Skin");
+            var view = _viewModelTypeMap.FindView(typeof(UiView<DefaultViewModel>).Name, "Skin");
             Assert.That(view.ViewName == "Skin");
         }
     }
