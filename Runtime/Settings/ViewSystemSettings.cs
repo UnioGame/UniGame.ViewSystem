@@ -76,8 +76,6 @@ namespace UniGame.UiSystem.Runtime.Settings
 #if UNITY_EDITOR     
         public IEnumerable<string> GetEditorViewsId()
         {
-            
-
             foreach (var uiView in uiViews)
             {
                 yield return uiView.ViewName;

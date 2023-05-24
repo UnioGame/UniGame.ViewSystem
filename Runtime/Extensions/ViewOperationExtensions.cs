@@ -30,7 +30,10 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
 
             foreach (var viewReference in source)
             {
-                if (!string.Equals(viewReference.Tag, skinTag, StringComparison.InvariantCultureIgnoreCase))
+                if(isEmptyTag && !string.IsNullOrEmpty(viewReference.Tag))
+                    continue;
+                
+                if (!isEmptyTag && !string.Equals(viewReference.Tag, skinTag, StringComparison.InvariantCultureIgnoreCase))
                     continue;
                 
                 if (!isEmptyName && !string.Equals(viewReference.ViewName, viewName, StringComparison.InvariantCultureIgnoreCase))
