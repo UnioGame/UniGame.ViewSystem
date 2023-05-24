@@ -1,5 +1,6 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
+    using System;
     using System.Linq;
     using Backgrounds.Abstract;
     using UniModules.UniCore.Runtime.Rx.Extensions;
@@ -8,17 +9,25 @@
     using UniRx;
     using UnityEngine;
 
+    [Serializable]
     public class StackViewLayout : ViewLayout
     {
-        private readonly IBackgroundView _background;
+        #region inspector
 
+        [Tooltip("same views will be reused if they are already in layout")]
+        public bool applyIntents = true;
+
+        #endregion
+        
+        private IBackgroundView _background;
         private IView _activeView;
 
         public IView LastView => Views.LastOrDefault(x => x != _activeView);
-
-        public StackViewLayout(Transform layout, IBackgroundView background)
+    
+        public void Initialize(Transform layout, IBackgroundView background)
         {
             _background = background;
+            
             Layout      = layout;
 
             OnClosed.When(x => x == _activeView, HideView)
@@ -39,6 +48,26 @@
                        .Subscribe(ActivateView)
                        .AddTo(LifeTime);
             
+        }
+
+        public override LayoutIntentResult Intent(string viewKey)
+        {
+            IView view = null;
+            var result = new LayoutIntentResult() { stopPropagation = false };
+            
+            var isIntentActive = applyIntents && TryFindView(viewKey, out view) && view!=null;
+            
+            if (!isIntentActive) return result;
+            
+            if (view == ActiveView.Value) return result;
+            if (view.Transform.parent != Layout) return result;
+                
+            view.Transform.SetAsLastSibling();
+
+            result.view = view;
+            result.stopPropagation = true;
+
+            return result;
         }
 
         protected override bool IsAnyViewActive()
@@ -87,9 +116,7 @@
             var lastView = Views.LastOrDefault(x => x != view);
             if (lastView == null) 
             {
-                if (_background != null) // can be UnityEngine.Object
-                    _background.Hide();
-                
+                _background?.Hide();
                 return;
             }
 
@@ -106,8 +133,30 @@
 
             UpdateTop(view);
 
-            if (_background != null) // can be UnityEngine.Object
-                _background.Show();
+            _background?.Show();
+        }
+
+        private bool TryFindView(string viewKey, out IView result )
+        {
+            result = null;
+            
+            if (string.IsNullOrEmpty(viewKey)) return false;
+
+            foreach (var view in Views)
+            {
+                if(view.SourceName ==viewKey) {
+                    result = view;
+                    return true;
+                }
+
+                var viewType = view.GetType().Name;
+                if (!viewKey.Equals(viewType, StringComparison.OrdinalIgnoreCase)) continue;
+                
+                result = view;
+                return true;
+            }
+
+            return false;
         }
     }
 }

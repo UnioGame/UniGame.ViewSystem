@@ -76,6 +76,11 @@
             _onViewIntent.OnNext(typeof(T));
         }
 
+        public virtual LayoutIntentResult Intent(string viewKey) => new LayoutIntentResult()
+        {
+            stopPropagation = false,
+        };
+
         /// <summary>
         /// add view to controller
         /// </summary>

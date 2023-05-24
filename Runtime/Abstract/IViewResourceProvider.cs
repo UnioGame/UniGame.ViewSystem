@@ -4,6 +4,7 @@ namespace UniGame.ViewSystem.Runtime
 {
     using global::UniGame.Core.Runtime;
     using Cysharp.Threading.Tasks;
+    using UiSystem.Runtime.Settings;
     using Object = UnityEngine.Object;
 
     /// <summary>
@@ -12,7 +13,7 @@ namespace UniGame.ViewSystem.Runtime
     /// <typeparam name="TView">Base view type</typeparam>
     public interface IViewResourceProvider
     {
-        UniTask<AssetReferenceGameObject> GetViewReferenceAsync(
+        UniTask<UiViewReference> GetViewReferenceAsync(
             string viewType,
             string skinTag = "",
             string viewName = "");

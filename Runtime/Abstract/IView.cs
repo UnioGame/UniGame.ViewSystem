@@ -32,10 +32,18 @@ namespace UniGame.ViewSystem.Runtime
 
         IViewModel ViewModel { get; }
         
+        string SourceName { get; }
+        
         /// <summary>
         /// is view lifetime finished
         /// </summary>
         bool IsTerminated { get; }
+        
+        /// <summary>
+        /// setup name of source asset
+        /// </summary>
+        /// <param name="sourceName"></param>
+        void SetSourceName(string sourceName);
 
         UniTask<IView> Initialize(IViewModel vm, bool ownViewModel = false);
     }

@@ -33,9 +33,9 @@ namespace UniGame.UiSystem.Runtime
         }
 
         public async UniTask<IView> Create(
-            string viewType, 
-            string skinTag = "", 
-            Transform parent = null, 
+            string viewType,
+            string skinTag = "",
+            Transform parent = null,
             string viewName = "",
             bool stayWorldPosition = false)
         {
@@ -43,11 +43,18 @@ namespace UniGame.UiSystem.Runtime
 
             var viewDisposable = new DisposableLifetime();
             viewDisposable.Initialize();
-            
+
             //load view source by filter parameters
-            var result       = await _resourceProvider
-                .GetViewReferenceAsync(viewType,skinTag, viewName:viewName);
-            
+            var item = await _resourceProvider.GetViewReferenceAsync(viewType, skinTag, viewName);
+
+            if (item == null)
+            {
+                Debug.LogError($"{nameof(UiResourceProvider)} ITEM MISSING {viewType} skin:{skinTag}");
+                return null;
+            }
+
+            var result = item.View;
+ 
             //create view instance
             var viewResult   = await Create(result,viewDisposable.LifeTime, parent,stayWorldPosition);
             var view         = viewResult.View;
@@ -61,6 +68,9 @@ namespace UniGame.UiSystem.Runtime
             }
 
             viewLifeTime.AddDispose(viewDisposable);
+            
+            view.SetSourceName(item.ViewName);
+            
             return view;
         }
         

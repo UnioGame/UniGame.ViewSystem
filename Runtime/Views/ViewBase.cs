@@ -62,6 +62,8 @@ namespace UniGame.UiSystem.Runtime
         [SerializeField]
         public string skinTag = string.Empty;
 
+        public string sourceName;
+        
         /// <summary>
         /// if value enabled, then model will not be updated when changed
         /// OnModelChanged not be called
@@ -135,6 +137,8 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         public IReadOnlyReactiveProperty<bool> IsVisible => _visibility;
 
+        public string SourceName => sourceName;
+        
         public bool IsTerminated => _lifeTimeDefinition.IsTerminated;
 
         public IViewModel ViewModel { get; private set; }
@@ -176,6 +180,11 @@ namespace UniGame.UiSystem.Runtime
             BindLayout(layoutProvider);
 
             return this;
+        }
+
+        public void SetSourceName(string value)
+        {
+            sourceName = value;
         }
 
         public async UniTask<IView> Initialize(IViewModel model, bool ownViewModel = false)

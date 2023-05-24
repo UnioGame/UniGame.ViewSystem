@@ -32,6 +32,7 @@ namespace UniGame.UiSystem.Runtime
         public IReadOnlyReactiveProperty<bool> IsVisible     => _isVisibleProperty;
         public IReadOnlyReactiveProperty<bool> IsInitialized => _isInitializedProperty;
         public IViewModel                      ViewModel     => emptyViewModel;
+        public string SourceName { get;protected set; }
 
         public IView BindToView<T>(IObservable<T> source, Action<T> action, int frameThrottle = 0) => this;
 
@@ -67,6 +68,11 @@ namespace UniGame.UiSystem.Runtime
         public IObservable<IView> SelectStatus(ViewStatus status)
         {
             return _viewStatusProperty.Where(x => x == status).Select(x => this);
+        }
+
+        public void SetSourceName(string sourceName)
+        {
+            SourceName = sourceName;
         }
 
         public UniTask<IView> Initialize(IViewModel vm, bool isViewOwner = false)

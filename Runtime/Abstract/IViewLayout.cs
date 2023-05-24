@@ -3,6 +3,7 @@
 namespace UniGame.ViewSystem.Runtime
 {
     using System;
+    using UiSystem.Runtime;
 
     public interface IViewLayout : 
         IDisposable,
@@ -10,6 +11,8 @@ namespace UniGame.ViewSystem.Runtime
     {
         IReadOnlyReactiveProperty<IView> ActiveView { get; }
 
+        LayoutIntentResult Intent(string viewKey);
+        
         void Push(IView view);
 
         void HideAll();
@@ -19,6 +22,7 @@ namespace UniGame.ViewSystem.Runtime
         void ShowLast();
 
         void Suspend();
+        
         void Resume();
     }
 }

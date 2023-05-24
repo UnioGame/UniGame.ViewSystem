@@ -23,18 +23,13 @@ namespace UniGame.UiSystem.Runtime
             _viewModelTypeMap.RegisterViewReference(sourceViews);
         }
 
-        public UniTask<AssetReferenceGameObject> GetViewReferenceAsync(
+        public UniTask<UiViewReference> GetViewReferenceAsync(
             string viewType, 
             string skinTag = "",
             string viewName = "")
         {
             var item = _viewModelTypeMap.FindView(viewType, skinTag, viewName);
-
-            if (item != null) return UniTask.FromResult(item.View);
-            
-            Debug.LogError($"{nameof(UiResourceProvider)} ITEM MISSING skin:{skinTag} type {viewType}");
-            
-            return UniTask.FromResult<AssetReferenceGameObject>(null);
+            return UniTask.FromResult(item);
         }
         
         public async UniTask<TView> LoadViewAsync<TView>(
@@ -44,7 +39,8 @@ namespace UniGame.UiSystem.Runtime
             string viewName = "") where TView : UnityEngine.Object
         {
             var item = await GetViewReferenceAsync(viewType, skinTag, viewName);
-            return await item.LoadAssetTaskAsync<TView>(lifeTime);
+            var view = item.View;
+            return await view.LoadAssetTaskAsync<TView>(lifeTime);
         }
 
         #region view model map API

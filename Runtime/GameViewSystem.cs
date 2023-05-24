@@ -433,23 +433,37 @@ namespace UniGame.UiSystem.Runtime
             ILifeTime ownerLifeTime = null)
             where T : class, IView
         {
+            var view = await CreateViewAndPushToLayout(viewModel, viewType, layoutType,
+                skinTag, viewName, ownerLifeTime);
+            return view as T;
+        }
+        
+        /// <summary>
+        /// create view on target controller
+        /// </summary>
+        private async UniTask<IView> CreateViewAndPushToLayout(
+            IViewModel viewModel,
+            string viewType,
+            ViewType layoutType,
+            string skinTag = "",
+            string viewName = null,
+            ILifeTime ownerLifeTime = null)
+        {
             var layout = _viewLayouts.GetLayout(layoutType);
+            var intentResult = layout.Intent(viewType);
+            if (intentResult.stopPropagation) return intentResult.view;
+            
             var parent = layout?.Layout;
             
-            var view = await CreateView(viewModel, 
-                viewType, 
-                skinTag, 
-                parent,
-                viewName,
-                stayWorld:false,
-                ownerLifeTime);
+            var view = await CreateView(viewModel, viewType, skinTag, 
+                parent, viewName, stayWorld:false, ownerLifeTime);
 
             layout?.Push(view);
             
             //fire view data
             _viewCreatedSubject.OnNext(view);
 
-            return view as T;
+            return view;
         }
 
         /// <summary>

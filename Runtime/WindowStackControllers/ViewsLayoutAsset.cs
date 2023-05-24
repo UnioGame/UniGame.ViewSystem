@@ -1,8 +1,7 @@
-﻿using UniModules.UniGame.Core.Runtime.Attributes;
-using UnityEngine;
-
-namespace UniGame.UiSystem.Runtime.WindowStackControllers
+﻿namespace UniGame.UiSystem.Runtime.WindowStackControllers
 {
+    using UniModules.UniGame.Core.Runtime.Attributes;
+    using UnityEngine;
     using System;
     using System.Collections.Generic;
     using Backgrounds.Abstract;
@@ -10,23 +9,33 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
     using ViewSystem.Runtime;
     using UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract;
     using UniRx;
+    using UnityEngine.Serialization;
 
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+#endif
+    
     public class ViewsLayoutAsset : MonoBehaviour, IViewLayout
     {
         #region inspector
 
+        [FormerlySerializedAs("_layoutCanvas")] 
         [SerializeField]
-        public Canvas _layoutCanvas;
+        public Canvas layoutCanvas;
 
+        [FormerlySerializedAs("_backgroundFactory")] 
         [SerializeField]
-        public BackgroundFactory _backgroundFactory;
+        public BackgroundFactory backgroundFactory;
 
+        [FormerlySerializedAs("_layoutBehaviourFactory")]
         [SerializeReference]
 #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.Required]
+        [Required]
+        [InlineEditor]
+        [TitleGroup("Layout Behaviour")]
 #endif
         [AssetFilter(typeof(ViewLayoutType))]
-        public ViewLayoutType _layoutBehaviourFactory;
+        public ViewLayoutType layoutBehaviour;
 
         #endregion
 
@@ -62,6 +71,8 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         public IReadOnlyReactiveProperty<IView> ActiveView => LayoutController.ActiveView;
 
+        public LayoutIntentResult Intent(string viewKey) => LayoutController.Intent(viewKey);
+
         public void Push(IView view) => LayoutController.Push(view);
 
         public TView Get<TView>() where TView : class,IView
@@ -80,14 +91,14 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
 
         public void Suspend()
         {
-            if (_layoutCanvas != null)
-                _layoutCanvas.enabled = false;
+            if (layoutCanvas != null)
+                layoutCanvas.enabled = false;
         }
 
         public void Resume()
         {
-            if (_layoutCanvas != null)
-                _layoutCanvas.enabled = true;
+            if (layoutCanvas != null)
+                layoutCanvas.enabled = true;
         }
 
         #endregion
@@ -98,17 +109,18 @@ namespace UniGame.UiSystem.Runtime.WindowStackControllers
         {
             IBackgroundView backgroundView = null;
             
-            if (_backgroundFactory != null) {
-                backgroundView = _backgroundFactory
-                    .Create(_layoutCanvas?.transform);
+            if (backgroundFactory != null) {
+                backgroundView = backgroundFactory
+                    .Create(layoutCanvas?.transform);
                 backgroundView.Hide();
             }
             
-            if(_layoutBehaviourFactory == null)
-                throw new NullReferenceException(nameof(_layoutBehaviourFactory));
+            if(layoutBehaviour == null)
+                throw new NullReferenceException(nameof(layoutBehaviour));
 
-            return _layoutBehaviourFactory
-                .Create(_layoutCanvas.transform, backgroundView);
+            var layoutAsset = Instantiate(layoutBehaviour);
+            
+            return layoutAsset.Create(layoutCanvas.transform, backgroundView);
         }
 
         protected void OnDestroy()
