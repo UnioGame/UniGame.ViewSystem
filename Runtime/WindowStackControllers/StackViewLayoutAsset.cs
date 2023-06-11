@@ -7,8 +7,8 @@
     using Sirenix.OdinInspector;
     using UnityEngine;
     
-    [CreateAssetMenu(menuName = "UniGame/ViewSystem/StackViewLayoutFactory", fileName = "StackViewLayoutFactory")]
-    public class StackViewLayoutFactory : ViewLayoutType
+    [CreateAssetMenu(menuName = "UniGame/ViewSystem/Layout/Stack View Layout", fileName = "Stack View Layout")]
+    public class StackViewLayoutAsset : ViewLayoutType
     {
 #if ODIN_INSPECTOR
         [InlineProperty]

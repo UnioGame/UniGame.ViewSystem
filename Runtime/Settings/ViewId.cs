@@ -9,7 +9,7 @@ namespace UniGame.UiSystem.Runtime.Settings
     
     [Serializable]
 #if ODIN_INSPECTOR
-    [ValueDropdown("@UniGame.UISystem.Runtime.Utils.ViewSystemTool.GetViewNames()",IsUniqueList = true,DropdownTitle = "View Id")]
+    [ValueDropdown("@UniGame.UISystem.Runtime.Utils.ViewSystemTool.GetViewIds()",IsUniqueList = true,DropdownTitle = "View Id")]
 #endif
     public class ViewId
     {

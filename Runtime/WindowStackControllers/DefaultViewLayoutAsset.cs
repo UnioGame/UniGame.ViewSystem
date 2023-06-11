@@ -6,8 +6,8 @@
     using global::UniGame.ViewSystem.Runtime;
     using UnityEngine;
 
-    [CreateAssetMenu(menuName = "UniGame/ViewSystem/DefaultViewLayoutFactory", fileName = "DefaultViewLayoutFactory")]
-    public class DefaultViewLayoutFactory : ViewLayoutType
+    [CreateAssetMenu(menuName = "UniGame/ViewSystem/Layout/Default Layout", fileName = "Default Layout")]
+    public class DefaultViewLayoutAsset : ViewLayoutType
     {
         public override IViewLayout Create(Transform canvasPoint, IBackgroundView backgroundView)
         {

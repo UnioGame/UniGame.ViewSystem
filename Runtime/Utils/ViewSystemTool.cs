@@ -9,6 +9,12 @@
     
     public static class ViewSystemTool
     {
+        public static IEnumerable<ViewId> GetViewIds()
+        {
+            foreach (var id in GetViewNames())
+                yield return (ViewId)id;
+        }
+
         public static IEnumerable<string> GetViewNames()
         {
 #if UNITY_EDITOR
