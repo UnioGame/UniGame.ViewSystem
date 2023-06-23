@@ -171,7 +171,7 @@ namespace UniGame.Rx.Runtime.Extensions
             where TView : ILifeTimeContext
         {
             if (!group) return view;
-            return view.Bind(source, x => group.interactable = x);
+            return view.Bind(source, x => group.alpha = x ? 1 : 0);
         }
 
         public static TView Bind<TView>(this TView view, IObservable<Texture> source, RawImage image)
