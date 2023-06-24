@@ -39,6 +39,8 @@ namespace UniGame.ViewSystem.Runtime
         /// </summary>
         bool IsTerminated { get; }
         
+        bool IsModelAttached { get; }
+        
         /// <summary>
         /// setup name of source asset
         /// </summary>

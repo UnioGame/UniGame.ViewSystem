@@ -37,6 +37,7 @@ namespace UniGame.UiSystem.Runtime
         public IView BindToView<T>(IObservable<T> source, Action<T> action, int frameThrottle = 0) => this;
 
         public bool IsTerminated => LifeTime.IsTerminated;
+        public bool IsModelAttached => true;
 
         private DummyView()
         {

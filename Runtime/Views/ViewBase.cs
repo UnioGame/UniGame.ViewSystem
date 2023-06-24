@@ -93,6 +93,7 @@ namespace UniGame.UiSystem.Runtime
         private IViewLayoutProvider _viewLayout;
 
         private bool _isViewOwner;
+        private bool _isModelAttached;
         
         protected bool IsCommandsAction => Application.isPlaying;
         
@@ -140,6 +141,8 @@ namespace UniGame.UiSystem.Runtime
         public string SourceName => sourceName;
         
         public bool IsTerminated => _lifeTimeDefinition.IsTerminated;
+
+        public bool IsModelAttached => _isModelAttached;
 
         public IViewModel ViewModel { get; private set; }
 
@@ -191,22 +194,23 @@ namespace UniGame.UiSystem.Runtime
         {
             // save current state
             _isViewOwner = ownViewModel;
-            
             //restart view lifetime
             _viewModelLifeTime.Release();
             _progressLifeTime.Release();
-
+            
+            _isModelAttached = true;
+            
             //calls one per lifetime
             if (!_isInitialized.Value) {
                 InitialSetup();
             }
-
+            
             InitializeHandlers(model);
             BindLifeTimeActions(model);
 
             //custom initialization
             await OnInitialize(model);
-            
+
             _isInitialized.Value = true;
 
             return this;
@@ -458,6 +462,8 @@ namespace UniGame.UiSystem.Runtime
             
             _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Release);
         
+            ModelLifeTime.AddCleanUpAction(() => _isModelAttached = false);
+            
             if(!disableModelUpdate) OnEndOfFrameCheck().Forget();
             
 #if UNITY_EDITOR
