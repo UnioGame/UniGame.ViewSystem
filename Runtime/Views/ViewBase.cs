@@ -205,7 +205,7 @@ namespace UniGame.UiSystem.Runtime
             BindLifeTimeActions(model);
 
             //custom initialization
-            OnInitialize(model).Forget();
+            await OnInitialize(model);
             
             _isInitialized.Value = true;
 
