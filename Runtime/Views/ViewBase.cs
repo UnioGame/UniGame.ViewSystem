@@ -389,13 +389,9 @@ namespace UniGame.UiSystem.Runtime
         {
             var viewName = this != null ? name : NullViewName;
 
-#if UNITY_EDITOR || UNITY_DEBUG
-            if (!this)
-            {
-                GameLog.LogWarning($"You try to {internalStatus} {viewName} but it has destroy status yet");
+            if (this == null)
                 return false;
-            }
-#endif
+            
             if (_internalViewStatus == ViewStatus.Closed)
                 return false;
             
@@ -457,7 +453,9 @@ namespace UniGame.UiSystem.Runtime
 
             _viewModelLifeTime.AddCleanUpAction(() =>
             {
-                if (_isViewOwner) ViewModel.Cancel();
+                if (_isViewOwner) 
+                    ViewModel.Cancel();
+                ViewModel = null;
             });
             
             _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Release);

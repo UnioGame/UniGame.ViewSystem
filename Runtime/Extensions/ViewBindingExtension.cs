@@ -68,7 +68,9 @@ namespace UniGame.Rx.Runtime.Extensions
                 ? view
                 : view.Bind(source, async x =>
                 {
-                    var sprite = await x.LoadAssetTaskAsync(view.LifeTime);
+                    var sprite = x == null || !x.RuntimeKeyIsValid() 
+                        ? null
+                        : await x.LoadAssetTaskAsync(view.LifeTime);
                     image.sprite = sprite;
                 });
         }
