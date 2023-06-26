@@ -50,7 +50,7 @@ namespace UniGame.ViewSystem.Runtime
         public static async UniTask<IView> OpenOverlay(this IViewLayoutProvider provider,IViewModel viewModel, 
             Type viewType, string skinTag = "", string viewName = null)
         {
-            return await provider.OpenScreen(viewModel,viewType.Name, skinTag, viewName);
+            return await provider.OpenOverlay(viewModel,viewType.Name, skinTag, viewName);
         }
 
         public static async UniTask<IView> CreateWindow(this IViewLayoutProvider provider,IViewModel viewModel, Type viewType, string skinTag = "", string viewName = null)
