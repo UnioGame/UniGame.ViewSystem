@@ -105,6 +105,10 @@
 
         public UniTask<IView> CreateOverlay(IViewModel viewModel, string viewType, string skinTag = "", string viewName = null) => ViewSystem.CreateOverlay(viewModel, viewType, skinTag, viewName);
 
+        public UniTask<IView> Create(string viewType, ViewType layoutType, string skinTag = "", string viewName = null, ILifeTime ownerLifeTime = null)
+        {
+            return ViewSystem.Create(viewType, layoutType, skinTag, viewName, ownerLifeTime);
+        }
         
         public IViewLayout GetLayout(ViewType type) => ViewSystem.GetLayout(type);
         public IViewLayout GetLayout(string id) => ViewSystem.GetLayout(id);

@@ -2,6 +2,7 @@ using UnityEngine.EventSystems;
 
 namespace UniGame.UI.Components
 {
+    using System;
     using TMPro;
     using UnityEngine;
 

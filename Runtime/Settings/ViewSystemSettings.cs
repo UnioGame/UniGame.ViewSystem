@@ -76,21 +76,41 @@ namespace UniGame.UiSystem.Runtime.Settings
 #if UNITY_EDITOR     
         public IEnumerable<string> GetEditorViewsId()
         {
-            foreach (var uiView in uiViews)
+            foreach (var reference in GetEditorViewsId(uiViews))
             {
-                yield return uiView.ViewName;
+                yield return reference;
             }
 
             foreach (var viewSource in sources)
             {
                 var settings = viewSource.viewSourceReference.editorAsset;
-                foreach (var uiView in settings.uiViews)
+                foreach (var reference in GetEditorViewsId(settings.uiViews))
                 {
-                    yield return uiView.ViewName;
+                    yield return reference;
                 }
             }
             yield break;
         }
+
+        public IEnumerable<string> GetEditorViewsId(IEnumerable<UiViewReference> viewReferences)
+        {
+            foreach (var uiView in viewReferences)
+            {
+                var type = uiView.Type.Type;
+                var typeName = type.Name;
+                var viewName = uiView.ViewName;
+                
+                if (typeName.Equals(viewName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    yield return viewName;
+                    continue;
+                }
+
+                yield return typeName;
+                yield return viewName;
+            }
+        }
+
 #endif
         
         public async UniTask WaitForInitialize()

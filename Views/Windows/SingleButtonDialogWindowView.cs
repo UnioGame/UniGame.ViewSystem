@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using UniGame.ViewSystem.Views.Abstract.ViewModels;
 using UniGame.UiSystem.Runtime;
 using UniGame.Rx.Runtime.Extensions;
 using UnityEngine.UI;

@@ -1,8 +1,10 @@
 using UniGame.ViewSystem.Runtime;
 using UniRx;
 
-public interface IDialogViewModel : IViewModel
+namespace UniGame.ViewSystem.Views.Abstract.ViewModels
 {
-    IReactiveCommand<bool> ResultCommand { get; }
-    string                 ViewModelId   { get; }
+    public interface IDialogViewModel : IViewModel
+    {
+        IReactiveCommand<bool> ResultCommand { get; }
+    }
 }
