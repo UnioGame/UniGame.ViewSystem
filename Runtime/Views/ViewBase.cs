@@ -406,24 +406,25 @@ namespace UniGame.UiSystem.Runtime
             return true;
         }
 
-        private void StartProgressAction(LifeTimeDefinition lifeTime,Func<IEnumerator> action,Action finallyAction = null,RoutineType routineType = RoutineType.Update)
+        private async UniTask StartProgressAction(LifeTimeDefinition lifeTime,Func<UniTask> action,Action finallyAction = null,RoutineType routineType = RoutineType.Update)
         {
-#if UNITY_EDITOR
-            if (action == null)
-            {
-                Debug.LogError($"VIEW {name} {GetType().Name} Progress action is NULL");
-                return;
-            }
-#endif
-            
             if (lifeTime.IsTerminated) 
                 return;
-            lifeTime.Release();
             
-            //run animation immediately
-            action().Execute(routineType,true)
-                .WithFinally(finallyAction)
-                .AddTo(lifeTime);
+            lifeTime.Release();
+
+            try
+            {
+                if (action == null) return;
+                //run animation immediately
+                var actionTask = action.Invoke();
+                await actionTask.AttachExternalCancellation(lifeTime.CancellationToken);
+            }
+            finally
+            {
+                finallyAction?.Invoke();
+            }
+            
         }
 
         private void InitializeHandlers(IViewModel model)
