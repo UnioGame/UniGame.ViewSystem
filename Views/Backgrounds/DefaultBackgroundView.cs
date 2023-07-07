@@ -6,6 +6,7 @@
     using UiSystem.Runtime;
     using UniGame.UiSystem.Runtime.Backgrounds.Abstract;
     using Core.Runtime;
+    using Cysharp.Threading.Tasks;
     using UnityEngine;
 
 #if ENABLE_DOTWEEN
@@ -25,19 +26,19 @@
         private Sequence _showSequence;
 #endif
         
-        protected override IEnumerator OnCloseProgressOverride(ILifeTime progressLifeTime)
+        protected override async UniTask OnCloseProgressOverride(ILifeTime progressLifeTime)
         {
 #if ENABLE_DOTWEEN
             DoTweenExtension.KillSequence(ref _showSequence);
             DoTweenExtension.KillSequence(ref _hideSequence);
             
             _hideSequence = GetHideSequence();
-            yield return _hideSequence.WaitForCompletionTween();
+             await _hideSequence.WaitForCompletionTweenAsync();
 #endif
-            yield break;
+            return;
         }
 
-        protected override IEnumerator OnHidingProgressOverride(ILifeTime progressLifeTime)
+        protected override async UniTask OnHidingProgressOverride(ILifeTime progressLifeTime)
         {
 #if ENABLE_DOTWEEN
             DoTweenExtension.KillSequence(ref _showSequence);
@@ -45,21 +46,19 @@
             
             _hideSequence = GetHideSequence();
             
-            yield return _hideSequence.WaitForCompletionTween();
+            await _hideSequence.WaitForCompletionTweenAsync();
 #endif
-            yield break;
         }
 
-        protected override IEnumerator OnShowProgressOverride(ILifeTime progressLifeTime)
+        protected override async UniTask OnShowProgressOverride(ILifeTime progressLifeTime)
         {
 #if ENABLE_DOTWEEN
             DoTweenExtension.KillSequence(ref _showSequence);
             DoTweenExtension.KillSequence(ref _hideSequence);
             
             _showSequence = GetShowSequence();
-            yield return _showSequence.WaitForCompletionTween();
+            await _showSequence.WaitForCompletionTweenAsync();
 #endif
-            yield break;
         }
 
 #if ENABLE_DOTWEEN

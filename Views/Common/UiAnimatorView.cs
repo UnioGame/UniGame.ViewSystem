@@ -79,7 +79,7 @@
             }
         }
 
-        protected override IEnumerator OnShowProgressOverride(ILifeTime progressLifeTime)
+        protected override async UniTask OnShowProgressOverride(ILifeTime progressLifeTime)
         {
             CanvasGroup.SetState(visibleState);
             
@@ -92,27 +92,25 @@
             }
             
             _animator.enabled = true;
-            yield return _animator.WaitStateEnd(_showStateHash);
+            await _animator.WaitStateEndAsync(_showStateHash);
         }
 
-        protected override IEnumerator OnCloseProgressOverride(ILifeTime progressLifeTime)
+        protected override async UniTask OnCloseProgressOverride(ILifeTime progressLifeTime)
         {
             foreach (var nestedView in _nestedAnimatedViews)
             {
                 nestedView.Close();
             }
             
-            yield return _animator.WaitStateEnd(_hideStateHash);
+            await _animator.WaitStateEndAsync(_hideStateHash);
         }
 
-        protected override IEnumerator OnHidingProgressOverride(ILifeTime progressLifeTime)
+        protected override async UniTask OnHidingProgressOverride(ILifeTime progressLifeTime)
         {
             foreach (var nestedView in _nestedAnimatedViews)
-            {
                 nestedView.Hide();
-            }
-            
-            yield return _animator.WaitStateEnd(_hideStateHash);
+
+            await _animator.WaitStateEndAsync(_hideStateHash);
             _animator.enabled = false;
         }
     }

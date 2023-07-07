@@ -65,37 +65,37 @@ namespace UniGame.UiSystem.Runtime
 
         protected virtual UniTask OnViewInitialize(TWindowModel model) => UniTask.CompletedTask;
 
-        protected sealed override IEnumerator OnCloseProgress(ILifeTime progressLifeTime)
+        protected sealed override async UniTask OnCloseProgress(ILifeTime progressLifeTime)
         {
             CanvasGroup.SetBlocksRaycast(hiddenState.BlockRaycasts);
-            yield return OnCloseProgressOverride(progressLifeTime);
+            await OnCloseProgressOverride(progressLifeTime);
         }
 
-        protected sealed override IEnumerator OnHidingProgress(ILifeTime progressLifeTime)
+        protected sealed override async UniTask  OnHidingProgress(ILifeTime progressLifeTime)
         {
             CanvasGroup.SetBlocksRaycast(hiddenState.BlockRaycasts);
-            yield return OnHidingProgressOverride(progressLifeTime);
+            await OnHidingProgressOverride(progressLifeTime);
         }
 
-        protected sealed override IEnumerator OnShowProgress(ILifeTime progressLifeTime)
+        protected sealed override async UniTask  OnShowProgress(ILifeTime progressLifeTime)
         {
             CanvasGroup.SetBlocksRaycast(visibleState.BlockRaycasts);
-            yield return OnShowProgressOverride(progressLifeTime);
+            await OnShowProgressOverride(progressLifeTime);
         }
 
-        protected virtual IEnumerator OnCloseProgressOverride(ILifeTime progressLifeTime)
+        protected virtual async UniTask OnCloseProgressOverride(ILifeTime progressLifeTime)
         {
-            yield return OnHidingProgress(progressLifeTime);
+            await OnHidingProgress(progressLifeTime);
         }
 
-        protected virtual IEnumerator OnHidingProgressOverride(ILifeTime progressLifeTime)
+        protected virtual UniTask OnHidingProgressOverride(ILifeTime progressLifeTime)
         {
-            yield break;
+            return UniTask.CompletedTask;
         }
 
-        protected virtual IEnumerator OnShowProgressOverride(ILifeTime progressLifeTime)
+        protected virtual UniTask OnShowProgressOverride(ILifeTime progressLifeTime)
         {
-            yield break;
+            return UniTask.CompletedTask;
         }
 
         protected override void OnAwake()

@@ -1,9 +1,9 @@
 ﻿namespace UniGame.ViewSystem.Backgrounds
 {
-    using System.Collections;
     using UiSystem.Runtime;
     using UniGame.UiSystem.Runtime.Backgrounds.Abstract;
     using Core.Runtime;
+    using Cysharp.Threading.Tasks;
     using UnityEngine;
 
     public class DefaultFadeBackgroundView : UiCanvasGroupView<IBackgroundViewModel>, IBackgroundView
@@ -11,22 +11,22 @@
         [SerializeField, Range(0.0f, 1.0f)]
         public float duration = 0.3f;
         
-        protected override IEnumerator OnHidingProgressOverride(ILifeTime progressLifeTime)
+        protected override async UniTask OnHidingProgressOverride(ILifeTime progressLifeTime)
         {
-            yield return AnimateFade(1, 0, duration);
+            await AnimateFade(1, 0, duration);
         }
 
-        protected override IEnumerator OnShowProgressOverride(ILifeTime progressLifeTime)
+        protected override async UniTask OnShowProgressOverride(ILifeTime progressLifeTime)
         {
-            yield return AnimateFade(0, 1, duration);
+            await AnimateFade(0, 1, duration);
         }
 
-        private IEnumerator AnimateFade(float fromAlpha, float toAlpha, float time)
+        private async UniTask AnimateFade(float fromAlpha, float toAlpha, float time)
         {
             if (time <= 0)
             {
                 CanvasGroup.alpha = toAlpha;
-                yield break;
+                return;
             }
             
             var currentAlpha = fromAlpha;
@@ -39,7 +39,7 @@
                 currentAlpha = Mathf.Lerp(fromAlpha, toAlpha, stage);
                 CanvasGroup.alpha = currentAlpha;
                 timePassed += Time.deltaTime;
-                yield return null;
+                await UniTask.Yield();
             }
         }
 

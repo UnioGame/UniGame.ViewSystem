@@ -1,8 +1,8 @@
 ﻿namespace UniGame.UI.Views
 {
-    using System.Collections;
     using UniGame.UiSystem.Runtime;
     using Core.Runtime;
+    using Cysharp.Threading.Tasks;
     using ViewSystem.Runtime;
     using UnityEngine;
 
@@ -22,16 +22,16 @@
 
         #endregion
 
-        protected override IEnumerator OnShowProgressOverride(ILifeTime progress)
+        protected override async UniTask OnShowProgressOverride(ILifeTime progress)
         {
             PlayAnimation(progress,_showAnimation);
-            yield return WaitAnimation(_showAnimation);
+            await WaitAnimation(_showAnimation);
         }
         
-        protected override IEnumerator OnHidingProgressOverride(ILifeTime progress)
+        protected override async UniTask OnHidingProgressOverride(ILifeTime progress)
         {
             PlayAnimation(progress,_hideAnimation);
-            yield return WaitAnimation(_hideAnimation);
+            await WaitAnimation(_hideAnimation);
         }
 
         private void PlayAnimation(ILifeTime progress,string id)
@@ -42,11 +42,10 @@
             progress.AddCleanUpAction(() => _animation.Stop());
         }
 
-        private IEnumerator WaitAnimation(string animationName)
+        private async UniTask WaitAnimation(string animationName)
         {
-            while (_animation && _animation.IsPlaying(animationName)) {
-                yield return null;
-            }
+            while (_animation && _animation.IsPlaying(animationName))
+                await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
         }
     }
 }
