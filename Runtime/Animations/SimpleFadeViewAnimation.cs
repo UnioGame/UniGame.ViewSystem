@@ -27,10 +27,8 @@
         public bool animateClosing = true;
 
         [ShowIf(nameof(enabled))]
-        [FormerlySerializedAs("animateGroup")]
         [TitleGroup("Animation Settings")]
-        [FoldoutGroup("CanvasGroup")]
-        public float fadeDuration = 0.5f;
+        public float duration = 0.2f;
 
         [ShowIf(nameof(enabled))] [FoldoutGroup("CanvasGroup")] [SerializeField]
         public CanvasGroupState hiddenState = new CanvasGroupState
@@ -58,7 +56,7 @@
             if (!enabled)
                 return;
 
-            await AnimateFade(view, visibleState, hiddenState, fadeDuration, lifeTime);
+            await AnimateFade(view, visibleState, hiddenState, duration, lifeTime);
         }
 
         public async UniTask Close(IView view, ILifeTime lifeTime)
@@ -78,7 +76,7 @@
             if (!enabled)
                 return;
 
-            await AnimateFade(view, visibleState, hiddenState, fadeDuration, lifeTime);
+            await AnimateFade(view, visibleState, hiddenState, duration, lifeTime);
         }
 
         public CanvasGroup GetGroup(IView view)
