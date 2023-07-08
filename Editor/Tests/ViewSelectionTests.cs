@@ -28,7 +28,7 @@ namespace UniGame.Tests.UnitTests.Editor.ViewSystem
                         View          = new AssetReferenceGameObject(""),
                         ViewName      = "Skin",
                         Tag           = "Skin",
-                        Type          = typeof(UiView<SkinViewModel>),
+                        Type          = typeof(View<SkinViewModel>),
                         ModelType     = typeof(SkinViewModel),
                         ViewModelType = typeof(SkinViewModel)
                     },
@@ -38,7 +38,7 @@ namespace UniGame.Tests.UnitTests.Editor.ViewSystem
                         View          = new AssetReferenceGameObject(""),
                         ViewName      = "Default",
                         Tag           = "",
-                        Type          = typeof(UiView<SkinViewModel>),
+                        Type          = typeof(View<SkinViewModel>),
                         ModelType     = typeof(SkinViewModel),
                         ViewModelType = typeof(SkinViewModel)
                     }
@@ -60,7 +60,7 @@ namespace UniGame.Tests.UnitTests.Editor.ViewSystem
                         View          = new AssetReferenceGameObject(""),
                         ViewName      = "Default",
                         Tag           = "",
-                        Type          = typeof(UiView<DefaultViewModel>),
+                        Type          = typeof(View<DefaultViewModel>),
                         ModelType     = typeof(DefaultViewModel),
                         ViewModelType = typeof(DefaultViewModel)
                     },
@@ -70,7 +70,7 @@ namespace UniGame.Tests.UnitTests.Editor.ViewSystem
                         View          = new AssetReferenceGameObject(""),
                         ViewName      = "Skin",
                         Tag           = "Skin",
-                        Type          = typeof(UiView<DefaultViewModel>),
+                        Type          = typeof(View<DefaultViewModel>),
                         ModelType     = typeof(DefaultViewModel),
                         ViewModelType = typeof(DefaultViewModel)
                     }
@@ -86,14 +86,14 @@ namespace UniGame.Tests.UnitTests.Editor.ViewSystem
         [Test]
         public void GetDefaultViewForEmptySkinTag()
         {
-            var view = _viewModelTypeMap.FindView(typeof(UiView<SkinViewModel>).Name);
+            var view = _viewModelTypeMap.FindView(typeof(View<SkinViewModel>).Name);
             Assert.That(view.ViewName == "Default");
         }
 
         [Test]
         public void GetSkin()
         {
-            var view = _viewModelTypeMap.FindView(typeof(UiView<DefaultViewModel>).Name, "Skin");
+            var view = _viewModelTypeMap.FindView(typeof(View<DefaultViewModel>).Name, "Skin");
             Assert.That(view.ViewName == "Skin");
         }
     }

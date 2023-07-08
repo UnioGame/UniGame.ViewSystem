@@ -14,7 +14,7 @@
     using UniModules.UniGame.DoTweenRoutines.Runtime;
 #endif
     
-    public class DefaultBackgroundView : UiCanvasGroupView<IBackgroundViewModel>, IBackgroundView
+    public class DefaultBackgroundView : View<IBackgroundViewModel>, IBackgroundView
     {
         [SerializeField, Range(0.0f, 1.0f)]
         public float _duration = 0.3f;
@@ -26,7 +26,7 @@
         private Sequence _showSequence;
 #endif
         
-        protected override async UniTask OnCloseProgressOverride(ILifeTime progressLifeTime)
+        protected override async UniTask OnCloseProgress(ILifeTime progressLifeTime)
         {
 #if ENABLE_DOTWEEN
             DoTweenExtension.KillSequence(ref _showSequence);
@@ -38,7 +38,7 @@
             return;
         }
 
-        protected override async UniTask OnHidingProgressOverride(ILifeTime progressLifeTime)
+        protected override async UniTask OnHidingProgress(ILifeTime progressLifeTime)
         {
 #if ENABLE_DOTWEEN
             DoTweenExtension.KillSequence(ref _showSequence);
@@ -50,7 +50,7 @@
 #endif
         }
 
-        protected override async UniTask OnShowProgressOverride(ILifeTime progressLifeTime)
+        protected override async UniTask OnShowProgress(ILifeTime progressLifeTime)
         {
 #if ENABLE_DOTWEEN
             DoTweenExtension.KillSequence(ref _showSequence);

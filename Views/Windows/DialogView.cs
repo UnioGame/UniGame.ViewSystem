@@ -9,7 +9,7 @@ namespace UniGame.ViewSystem.Views.Windows
     using UnityEngine;
     using UnityEngine.UI;
     
-    public class DialogView<TModel> : WindowView<TModel>
+    public class DialogView<TModel> : View<TModel>
         where TModel : class, IDialogViewModel
     {
         private readonly ReactiveCommand _onYesButtonClick = new ReactiveCommand();
@@ -27,7 +27,7 @@ namespace UniGame.ViewSystem.Views.Windows
     
         public IObservable<Unit> OnYesButtonClick => _onYesButtonClick;
 
-        protected override UniTask OnViewInitialize(TModel model)
+        protected override UniTask OnInitialize(TModel model)
         {
             this.Bind(yesButton, x =>
                 {

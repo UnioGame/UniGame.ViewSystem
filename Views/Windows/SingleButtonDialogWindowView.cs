@@ -5,7 +5,7 @@ using UniGame.Rx.Runtime.Extensions;
 using UnityEngine.UI;
 using UniGame.Rx.Runtime.Extensions;
 
-public class SingleButtonDialogWindowView : WindowView<IDialogViewModel>
+public class SingleButtonDialogWindowView : View<IDialogViewModel>
 {
     
     #region inspector
@@ -18,7 +18,7 @@ public class SingleButtonDialogWindowView : WindowView<IDialogViewModel>
     
     #endregion
 
-    protected override UniTask OnViewInitialize(IDialogViewModel model)
+    protected override UniTask OnInitialize(IDialogViewModel model)
     {
         this.Bind(yesButton, x => Apply(true))
             .Bind(noButton, x => Apply(false))
