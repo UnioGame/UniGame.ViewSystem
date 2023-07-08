@@ -3,7 +3,6 @@
 namespace UniGame.UiSystem.Runtime
 {
     using System;
-    using System.Collections;
     using Cysharp.Threading.Tasks;
     using JetBrains.Annotations;
     using UniCore.Runtime.ProfilerTools;
@@ -12,11 +11,11 @@ namespace UniGame.UiSystem.Runtime
     using UniModules.UniGame.Core.Runtime.Rx;
     using UniModules.UniRoutine.Runtime;
     using Core.Runtime;
+    using Game.Modules.UnioModules.UniGame.ViewSystem.Runtime.Animations;
     using Game.Modules.UnioModules.UniGame.ViewSystem.Runtime.Views.Abstract;
     using UniModules.UniGame.UISystem.Runtime;
     using ViewSystem.Runtime;
     using UniRx;
-    using UniModules.UniRoutine.Runtime.Extension;
     using UnityEngine;
 
 #if ODIN_INSPECTOR
@@ -38,7 +37,7 @@ namespace UniGame.UiSystem.Runtime
         [HideLabel]
 #endif
         [SerializeReference]
-        public IViewAnimation viewAnimation;
+        public IViewAnimation viewAnimation = new SimpleFadeViewAnimation();
         
 #if ODIN_INSPECTOR
         [ShowIf(nameof(IsCommandsAction))]
@@ -81,6 +80,7 @@ namespace UniGame.UiSystem.Runtime
         
         #endregion
 
+        private IViewAnimation _monoAnimation;
         private RectTransform _rectTransform;
         private Transform _transform;
         private RecycleReactiveProperty<bool> _isModelChanged = new RecycleReactiveProperty<bool>();
@@ -310,9 +310,8 @@ namespace UniGame.UiSystem.Runtime
 
         protected virtual IViewAnimation SelectAnimation()
         {
-            var selectedAnimation = viewAnimation;
-            selectedAnimation ??= GetComponent<IViewAnimation>();
-            return selectedAnimation;
+            _monoAnimation = GetComponent<IViewAnimation>();
+            return _monoAnimation ?? viewAnimation;
         }
 
         protected virtual UniTask OnModelChanged() => UniTask.CompletedTask;
