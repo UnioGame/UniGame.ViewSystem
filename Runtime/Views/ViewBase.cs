@@ -351,8 +351,6 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         private async UniTask OnShow()
         {
-            await UniTask.Yield(PlayerLoopTiming.PostLateUpdate);
-
             if (!SetStatus(ViewStatus.Showing))
                 return;
 
@@ -377,6 +375,8 @@ namespace UniGame.UiSystem.Runtime
                     _visibility.Value = false;
                     break;
                 case ViewStatus.Showing:
+                    _visibility.Value = true;
+                    break;
                 case ViewStatus.Shown:
                     _visibility.Value = true;
                     break;
@@ -393,7 +393,10 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         protected virtual async UniTask OnCloseProgress(ILifeTime progressLifeTime)
         {
-            await OnHidingProgress(progressLifeTime);
+            if (Animation == null)
+                return;
+            
+            await Animation.Close(this, progressLifeTime);
         }
 
         /// <summary>

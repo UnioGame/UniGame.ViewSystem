@@ -8,5 +8,6 @@
     {
         UniTask Show(IView view, ILifeTime lifeTime);
         UniTask Hide(IView view, ILifeTime lifeTime);
+        UniTask Close(IView view, ILifeTime lifeTime);
     }
 }

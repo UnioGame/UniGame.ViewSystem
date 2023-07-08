@@ -1,6 +1,5 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
-    using System;
     using Core.Runtime;
     using Cysharp.Threading.Tasks;
     using Game.Modules.UnioModules.UniGame.ViewSystem.Runtime.Views.Abstract;
@@ -19,5 +18,9 @@
             return UniTask.CompletedTask;
         }
 
+        public virtual UniTask Close(IView view, ILifeTime lifeTime)
+        {
+            return UniTask.CompletedTask;
+        }
     }
 }
