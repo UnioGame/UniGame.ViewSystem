@@ -7,11 +7,11 @@
     using UniGame.UiSystem.Runtime.Backgrounds.Abstract;
     using Core.Runtime;
     using Cysharp.Threading.Tasks;
+    using DoTween.Runtime.Extensions;
     using UnityEngine;
 
 #if ENABLE_DOTWEEN
     using DG.Tweening;
-    using UniModules.UniGame.DoTweenRoutines.Runtime;
 #endif
     
     public class DefaultBackgroundView : View<IBackgroundViewModel>, IBackgroundView

@@ -1,14 +1,13 @@
-﻿namespace Game.Modules.UnioModules.UniGame.ViewSystem.Runtime.Animations
+﻿namespace UniGame.ViewSystem.Runtime.Animations
 {
     using System;
     using Cysharp.Threading.Tasks;
+    using Views.Abstract;
     using global::UniGame.Core.Runtime;
-    using global::UniGame.ViewSystem.Runtime;
+    using Runtime;
     using global::UniModules.UniUiSystem.Runtime.Utils;
     using Sirenix.OdinInspector;
     using UnityEngine;
-    using UnityEngine.Serialization;
-    using Views.Abstract;
 
     [Serializable]
     public class SimpleFadeViewAnimation : IViewAnimation

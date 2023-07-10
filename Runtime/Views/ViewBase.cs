@@ -11,8 +11,8 @@ namespace UniGame.UiSystem.Runtime
     using UniModules.UniGame.Core.Runtime.Rx;
     using UniModules.UniRoutine.Runtime;
     using Core.Runtime;
-    using Game.Modules.UnioModules.UniGame.ViewSystem.Runtime.Animations;
-    using Game.Modules.UnioModules.UniGame.ViewSystem.Runtime.Views.Abstract;
+    using ViewSystem.Runtime.Animations;
+    using ViewSystem.Runtime.Views.Abstract;
     using UniModules.UniGame.UISystem.Runtime;
     using ViewSystem.Runtime;
     using UniRx;

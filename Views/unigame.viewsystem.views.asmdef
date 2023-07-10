@@ -23,7 +23,8 @@
         "UnityEditor.TestRunner",
         "UnityEngine.TestRunner",
         "DOTween.Modules",
-        "UniTask.DOTween"
+        "UniTask.DOTween",
+        "unigame.dotween.runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

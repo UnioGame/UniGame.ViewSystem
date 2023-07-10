@@ -1,8 +1,8 @@
-﻿namespace Game.Modules.UnioModules.UniGame.ViewSystem.Runtime.Views.Abstract
+﻿namespace UniGame.ViewSystem.Runtime.Views.Abstract
 {
     using Cysharp.Threading.Tasks;
     using global::UniGame.Core.Runtime;
-    using global::UniGame.ViewSystem.Runtime;
+    using Runtime;
 
     public interface IViewAnimation
     {
