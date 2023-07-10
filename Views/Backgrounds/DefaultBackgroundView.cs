@@ -7,10 +7,10 @@
     using UniGame.UiSystem.Runtime.Backgrounds.Abstract;
     using Core.Runtime;
     using Cysharp.Threading.Tasks;
-    using DoTween.Runtime.Extensions;
     using UnityEngine;
 
 #if ENABLE_DOTWEEN
+    using DoTween.Runtime.Extensions;
     using DG.Tweening;
 #endif
     
