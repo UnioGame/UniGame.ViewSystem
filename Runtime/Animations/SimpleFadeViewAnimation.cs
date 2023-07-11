@@ -55,7 +55,7 @@
             if (!enabled)
                 return;
 
-            await AnimateFade(view, visibleState, hiddenState, duration, lifeTime);
+            await AnimateFade(view, hiddenState, visibleState, duration, lifeTime);
         }
 
         public async UniTask Close(IView view, ILifeTime lifeTime)
