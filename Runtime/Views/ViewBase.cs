@@ -17,6 +17,7 @@ namespace UniGame.UiSystem.Runtime
     using ViewSystem.Runtime;
     using UniRx;
     using UnityEngine;
+    using UnityEngine.Serialization;
 
 #if ODIN_INSPECTOR
     using Sirenix.OdinInspector;
@@ -76,7 +77,7 @@ namespace UniGame.UiSystem.Runtime
         /// if value enabled, then model will not be updated when changed
         /// OnModelChanged not be called
         /// </summary>
-        public bool disableModelUpdate = false;
+        public bool enableModelUpdate = false;
         
         #endregion
 
@@ -498,7 +499,7 @@ namespace UniGame.UiSystem.Runtime
         
             ModelLifeTime.AddCleanUpAction(() => _isModelAttached = false);
             
-            if(!disableModelUpdate) OnEndOfFrameCheck().Forget();
+            if(enableModelUpdate) OnEndOfFrameCheck().Forget();
             
 #if UNITY_EDITOR
             _status.Subscribe(x => _editorViewStatus = x).AddTo(ViewLifeTime);
