@@ -11,6 +11,7 @@ namespace UniGame.UiSystem.Runtime
     using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniGame.UiSystem.Runtime;
     using Core.Runtime;
+    using Core.Runtime.Extension;
     using UniModules.UniGame.Context.Runtime.Context;
     using ViewSystem.Runtime;
     using UniRx;
@@ -527,10 +528,13 @@ namespace UniGame.UiSystem.Runtime
             var asset = view as Component;
             if (asset == null) return;
             
+            if(view.GameObject!=null)
+                view.GameObject.SetActive(false);
+            
             var target = asset.gameObject;
-            target.DespawnAsset();
+            target.DespawnNextFrame();
         }
-
+        
         #endregion
     }
 }
