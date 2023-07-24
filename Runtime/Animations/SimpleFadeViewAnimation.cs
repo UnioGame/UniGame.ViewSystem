@@ -100,7 +100,10 @@
                 return;
             }
 
-            canvasGroup.SetState(from);
+            canvasGroup.alpha              = from.Alpha;
+            canvasGroup.interactable       = to.Interactable;
+            canvasGroup.ignoreParentGroups = to.IgnoreParent;
+            canvasGroup.blocksRaycasts     = to.BlockRaycasts;
 
             var fromAlpha = from.Alpha;
             var toAlpha = to.Alpha;
