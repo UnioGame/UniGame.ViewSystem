@@ -11,7 +11,7 @@
     [InlineProperty]
     [ValueDropdown("@UniGame.ViewSystem.Editor.EditorAssets.ViewSystemEditorAsset.GetSkins()",IsUniqueList = true)]
 #endif
-    public class ViewType
+    public class SkinType
     {
         public string view;
     }

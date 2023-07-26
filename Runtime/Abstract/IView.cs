@@ -22,6 +22,10 @@ namespace UniGame.ViewSystem.Runtime
 
         ILifeTime ViewLifeTime { get; }
         
+        string ViewId { get; }
+        
+        int ViewIdHash { get; }
+        
         IReadOnlyReactiveProperty<bool> IsVisible { get; }
 
         IReadOnlyReactiveProperty<bool> IsInitialized { get; }
@@ -45,7 +49,7 @@ namespace UniGame.ViewSystem.Runtime
         /// setup name of source asset
         /// </summary>
         /// <param name="sourceName"></param>
-        void SetSourceName(string sourceName);
+        void SetSourceName(string viewId,string sourceName);
 
         UniTask<IView> Initialize(IViewModel vm, bool ownViewModel = false);
     }

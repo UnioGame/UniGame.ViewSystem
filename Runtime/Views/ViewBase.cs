@@ -17,7 +17,6 @@ namespace UniGame.UiSystem.Runtime
     using ViewSystem.Runtime;
     using UniRx;
     using UnityEngine;
-    using UnityEngine.Serialization;
 
 #if ODIN_INSPECTOR
     using Sirenix.OdinInspector;
@@ -72,6 +71,8 @@ namespace UniGame.UiSystem.Runtime
         public string skinTag = string.Empty;
 
         public string sourceName;
+        public string viewId;
+        public int viewIdHash;
         
         /// <summary>
         /// if value enabled, then model will not be updated when changed
@@ -109,7 +110,11 @@ namespace UniGame.UiSystem.Runtime
         
         #region public properties
 
-        public IViewAnimation Animation { get; set; }
+        public string SourceName => sourceName;
+        
+        public string ViewId => viewId;
+
+        public int ViewIdHash => viewIdHash;
         
         public IReadOnlyReactiveProperty<bool> IsInitialized => _isInitialized;
 
@@ -126,6 +131,8 @@ namespace UniGame.UiSystem.Runtime
         
         public ILifeTime ViewLifeTime  => _lifeTimeDefinition;
 
+        public IViewAnimation Animation { get; set; }
+        
         /// <summary>
         /// view transform
         /// </summary>
@@ -150,8 +157,6 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         public IReadOnlyReactiveProperty<bool> IsVisible => _visibility;
 
-        public string SourceName => sourceName;
-        
         public bool IsTerminated => _lifeTimeDefinition.IsTerminated;
 
         public bool IsModelAttached => _isModelAttached;
@@ -197,9 +202,11 @@ namespace UniGame.UiSystem.Runtime
             return this;
         }
 
-        public void SetSourceName(string value)
+        public void SetSourceName(string id,string source)
         {
-            sourceName = value;
+            viewId = id;
+            viewIdHash = viewId.GetHashCode();
+            sourceName = source;
         }
 
         public async UniTask<IView> Initialize(IViewModel model, bool ownViewModel = false)

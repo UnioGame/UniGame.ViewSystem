@@ -29,10 +29,12 @@ namespace UniGame.UiSystem.Runtime
         public ILifeTime ModelLifeTime => UniModules.UniCore.Runtime.DataFlow.LifeTime.TerminatedLifetime;
         public ILifeTime ViewLifeTime  => UniModules.UniCore.Runtime.DataFlow.LifeTime.TerminatedLifetime;
 
+        public int ViewIdHash => 0;
         public IReadOnlyReactiveProperty<bool> IsVisible     => _isVisibleProperty;
         public IReadOnlyReactiveProperty<bool> IsInitialized => _isInitializedProperty;
         public IViewModel                      ViewModel     => emptyViewModel;
-        public string SourceName { get;protected set; }
+        public string SourceName { get; set; }
+        public string ViewId { get; set; }
 
         public IView BindToView<T>(IObservable<T> source, Action<T> action, int frameThrottle = 0) => this;
 
@@ -71,8 +73,9 @@ namespace UniGame.UiSystem.Runtime
             return _viewStatusProperty.Where(x => x == status).Select(x => this);
         }
 
-        public void SetSourceName(string sourceName)
+        public void SetSourceName(string viewId, string sourceName)
         {
+            ViewId = viewId;
             SourceName = sourceName;
         }
 

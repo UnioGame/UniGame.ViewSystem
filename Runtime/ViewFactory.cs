@@ -33,7 +33,7 @@ namespace UniGame.UiSystem.Runtime
         }
 
         public async UniTask<IView> Create(
-            string viewType,
+            string viewId,
             string skinTag = "",
             Transform parent = null,
             string viewName = "",
@@ -45,11 +45,11 @@ namespace UniGame.UiSystem.Runtime
             viewDisposable.Initialize();
 
             //load view source by filter parameters
-            var item = await _resourceProvider.GetViewReferenceAsync(viewType, skinTag, viewName);
+            var item = await _resourceProvider.GetViewReferenceAsync(viewId, skinTag, viewName);
 
             if (item == null)
             {
-                Debug.LogError($"{nameof(UiResourceProvider)} ITEM MISSING {viewType} skin:{skinTag}");
+                Debug.LogError($"{nameof(UiResourceProvider)} ITEM MISSING {viewId} skin:{skinTag} viewName:{viewName}");
                 return null;
             }
 
@@ -63,13 +63,12 @@ namespace UniGame.UiSystem.Runtime
             //if loading failed release resource immediately
             if (view == null) {
                 viewDisposable.Dispose();
-                GameLog.LogError($"Factory {this.GetType().Name} View of Type {viewType} not loaded or cancelled");
+                GameLog.LogError($"Factory {this.GetType().Name} View of Type {viewId} not loaded or cancelled");
                 return null;
             }
 
             viewLifeTime.AddDispose(viewDisposable);
-            
-            view.SetSourceName(item.ViewName);
+            view.SetSourceName(viewId,item.ViewName);
             
             return view;
         }
@@ -77,7 +76,8 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// create view instance
         /// </summary>
-        protected virtual async UniTask<ViewResult> Create(AssetReferenceGameObject asset,
+        protected virtual async UniTask<ViewResult> Create(
+            AssetReferenceGameObject asset,
             ILifeTime lifeTime,
             Transform parent = null,
             bool stayPosition = false)
