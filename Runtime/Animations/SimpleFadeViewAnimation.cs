@@ -8,6 +8,7 @@
     using global::UniModules.UniUiSystem.Runtime.Utils;
     using Sirenix.OdinInspector;
     using UnityEngine;
+    using UnityEngine.Serialization;
 
     [Serializable]
     public class SimpleFadeViewAnimation : IViewAnimation
@@ -28,6 +29,10 @@
         [ShowIf(nameof(enabled))]
         [TitleGroup("Animation Settings")]
         public float duration = 0.2f;
+        
+        [ShowIf(nameof(enabled))]
+        [TitleGroup("Animation Settings")]
+        public bool unscaledTime;
 
         [ShowIf(nameof(enabled))] [FoldoutGroup("CanvasGroup")] [SerializeField]
         public CanvasGroupState hiddenState = new CanvasGroupState
@@ -109,8 +114,8 @@
             var toAlpha = to.Alpha;
 
             var token = progressLifeTime.CancellationToken;
-            var startTime = Time.time;
-            var finishTime = Time.time + duration;
+            var startTime = unscaledTime ? Time.unscaledTime : Time.time;
+            var finishTime = startTime + duration;
 
             try
             {
