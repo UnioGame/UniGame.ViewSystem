@@ -119,12 +119,14 @@
 
             try
             {
-                while (!token.IsCancellationRequested && Time.time < finishTime)
+                var time = unscaledTime ? Time.unscaledTime : Time.time;
+                while (!token.IsCancellationRequested && time < finishTime)
                 {
-                    var timePassed = (Time.time - startTime);
+                    var timePassed = (time - startTime);
                     var progress = timePassed / duration;
                     var alpha = Mathf.Lerp(fromAlpha, toAlpha, progress);
                     canvasGroup.alpha = alpha;
+                    time = unscaledTime ? Time.unscaledTime : Time.time;
                     await UniTask.Yield();
                 }
             }
