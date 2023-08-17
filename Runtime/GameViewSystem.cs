@@ -249,6 +249,7 @@ namespace UniGame.UiSystem.Runtime
         {
             _viewLayouts.GetLayout(ViewType.Screen)?.CloseAll();
             _viewLayouts.GetLayout(ViewType.Window)?.CloseAll();
+            _viewLayouts.GetLayout(ViewType.Overlay)?.CloseAll();
         }
 
         /// <summary>
