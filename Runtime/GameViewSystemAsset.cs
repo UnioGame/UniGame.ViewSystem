@@ -120,6 +120,8 @@
 
         public void CloseAll() => ViewSystem.CloseAll();
         
+        public void CloseAll(ViewType viewType) => ViewSystem.CloseAll(viewType);
+        
         public UniTask<T> InitializeView<T>(T view, IViewModel viewModel) where T : IView
         {
             return _gameViewSystem.InitializeView(view, viewModel);

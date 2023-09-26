@@ -247,11 +247,16 @@ namespace UniGame.UiSystem.Runtime
 
         public void CloseAll()
         {
-            _viewLayouts.GetLayout(ViewType.Screen)?.CloseAll();
-            _viewLayouts.GetLayout(ViewType.Window)?.CloseAll();
-            _viewLayouts.GetLayout(ViewType.Overlay)?.CloseAll();
+            CloseAll(ViewType.Screen);
+            CloseAll(ViewType.Window);
+            CloseAll(ViewType.Overlay);
         }
 
+        public void CloseAll(ViewType viewType)
+        {
+            _viewLayouts.GetLayout(viewType)?.CloseAll();
+        }
+        
         /// <summary>
         /// create new view element
         /// </summary>
