@@ -7,6 +7,10 @@
     {
         IEnumerable<IViewLayout> Controllers { get; }
 
+        bool RegisterLayout(string id,IViewLayout layout);
+        
+        bool RemoveLayout(string id);
+        
         /// <summary>
         /// get controller of target view type 
         /// </summary>
@@ -16,5 +20,9 @@
         /// get layout by string id
         /// </summary>
         IViewLayout GetLayout(string id);
+        
+        void CloseAll();
+
+        void CloseAll(string id);
     }
 }

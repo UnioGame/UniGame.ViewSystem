@@ -3,10 +3,12 @@
 namespace UniGame.ViewSystem.Runtime
 {
     using System;
+    using Core.Runtime;
     using UiSystem.Runtime;
 
     public interface IViewLayout : 
         IDisposable,
+        ILifeTimeContext,
         IReadOnlyViewLayout
     {
         IReadOnlyReactiveProperty<IView> ActiveView { get; }

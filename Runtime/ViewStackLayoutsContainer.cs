@@ -9,18 +9,17 @@ namespace UniGame.UiSystem.Runtime
 
     public class ViewStackLayoutsContainer : IViewLayoutContainer
     {
-        private IDictionary<string, IViewLayout> _viewControllers;
+        private IDictionary<string, IViewLayout> _layouts;
 
         private IViewLayout _dummyController;
-
-
+        
         public ViewStackLayoutsContainer(IDictionary<ViewType, IViewLayout> layoutMap)
         {
-            _viewControllers = new Dictionary<string, IViewLayout>(layoutMap.Count);
+            _layouts = new Dictionary<string, IViewLayout>(layoutMap.Count);
+            
             foreach (var layoutItem in layoutMap)
-            {
-                _viewControllers[layoutItem.Key.ToStringFromCache()] = layoutItem.Value;
-            }
+                RegisterLayout(layoutItem.Key.ToStringFromCache(), layoutItem.Value);
+            
             //empty object controller
             _dummyController = new ViewLayout();
         }
@@ -29,7 +28,7 @@ namespace UniGame.UiSystem.Runtime
         
         public TView Get<TView>()  where TView : class, IView
         {
-            foreach (var viewLayout in _viewControllers) {
+            foreach (var viewLayout in _layouts) {
                 var layout = viewLayout.Value;
                 var view = layout.Get<TView>();
                 if (view!=null) return view;
@@ -40,14 +39,27 @@ namespace UniGame.UiSystem.Runtime
 
         public bool RegisterLayout(string id, IViewLayout layout)
         {
-            if (HasLayout(id)) return false;
-            _viewControllers[id] = layout;
+            if (_layouts.ContainsKey(id)) return false;
+            _layouts[id] = layout;
             return true;
         }
 
-        public bool HasLayout(string id) => GetLayout(id) != null;
+        public bool HasLayout(string id)
+        {
+            return GetLayout(id) != _dummyController;
+        }
         
-        public IEnumerable<IViewLayout> Controllers => _viewControllers.Values;
+        public IEnumerable<IViewLayout> Controllers => _layouts.Values;
+
+        public bool RemoveLayout(string id)
+        {
+            if (!_layouts.TryGetValue(id, out var layout))
+                return false;
+            
+            layout.Dispose();
+            _layouts.Remove(id);
+            return true;
+        }
 
         public IViewLayout GetLayout(ViewType type)
         {
@@ -56,9 +68,28 @@ namespace UniGame.UiSystem.Runtime
 
         public IViewLayout GetLayout(string id)
         {
-            return _viewControllers.TryGetValue(id, out var controller) 
+            return _layouts.TryGetValue(id, out var controller) 
                 ? controller 
                 : _dummyController;
+        }
+
+        public void CloseAll()
+        {
+            foreach (var layout in _layouts)
+            {
+                layout.Value.CloseAll();
+            }
+        }
+
+        public void CloseAll(string id)
+        {
+            var layout = GetLayout(id);
+            layout.CloseAll();
+        }
+
+        public void Dispose()
+        {
+            CloseAll();
         }
     }
 }

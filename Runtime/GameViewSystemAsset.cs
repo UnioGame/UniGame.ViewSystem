@@ -11,6 +11,7 @@
     using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniGame.UiSystem.Runtime;
     using Core.Runtime;
+    using UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract;
     using ViewSystem.Runtime;
     using UnityEngine.AddressableAssets;
 
@@ -30,6 +31,9 @@
         [Space]
         public ViewLayoutMap layoutMap = new ViewLayoutMap();
 
+        [Space]
+        public ViewLayoutType defaultLayout;
+        
         #endregion
 
         private IGameViewSystem    _gameViewSystem;
@@ -41,7 +45,7 @@
 
         public async UniTask<IViewModel> CreateViewModel(IContext context,Type modelType) => await ViewSystem.CreateViewModel(context,modelType);
         
-        #endregion
+        #endregion  
         
         #region view system api
 
@@ -160,7 +164,8 @@
             var viewLayoutContainer = new ViewStackLayoutsContainer(stackMap);
             var sceneFlowController = settingsAsset.FlowController;
 
-            var gameSystem = new GameViewSystem(factory, viewLayoutContainer, 
+            var gameSystem = new GameViewSystem(factory, 
+                viewLayoutContainer, 
                 sceneFlowController,
                 settingsAsset.viewModelResolver,
                 settingsAsset.ViewModelTypeMap);

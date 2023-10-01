@@ -247,9 +247,12 @@ namespace UniGame.UiSystem.Runtime
 
         public void CloseAll()
         {
-            CloseAll(ViewType.Screen);
-            CloseAll(ViewType.Window);
-            CloseAll(ViewType.Overlay);
+            _viewLayouts.CloseAll();
+        }
+
+        public void CloseAll(string id)
+        {
+            _viewLayouts.GetLayout(id)?.CloseAll();
         }
 
         public void CloseAll(ViewType viewType)
