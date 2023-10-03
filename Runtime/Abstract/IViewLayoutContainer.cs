@@ -7,6 +7,8 @@
     {
         IEnumerable<IViewLayout> Controllers { get; }
 
+        bool HasLayout(string id);
+        
         bool RegisterLayout(string id,IViewLayout layout);
         
         bool RemoveLayout(string id);

@@ -15,19 +15,16 @@
     using Sirenix.OdinInspector;
 #endif
     
-    public class ViewsLayoutAsset : MonoBehaviour, IViewLayout
+    public class MonoViewsLayout : MonoBehaviour, IViewLayout
     {
         #region inspector
 
-        [FormerlySerializedAs("_layoutCanvas")] 
         [SerializeField]
         public Canvas layoutCanvas;
 
-        [FormerlySerializedAs("_backgroundFactory")] 
         [SerializeField]
         public BackgroundFactory backgroundFactory;
 
-        [FormerlySerializedAs("_layoutBehaviourFactory")]
         [SerializeReference]
 #if ODIN_INSPECTOR
         [Required]

@@ -6,7 +6,7 @@
     using WindowStackControllers;
 
     [Serializable]
-    public class ViewLayoutMap : SerializableDictionary<ViewType, ViewsLayoutAsset>
+    public class ViewLayoutMap : SerializableDictionary<ViewType, MonoViewsLayout>
     {
         
     }

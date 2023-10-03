@@ -11,6 +11,7 @@
     using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniGame.UiSystem.Runtime;
     using Core.Runtime;
+    using UniModules.UniCore.Runtime.Utils;
     using UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract;
     using ViewSystem.Runtime;
     using UnityEngine.AddressableAssets;
@@ -20,6 +21,7 @@
 #endif
     public class GameViewSystemAsset : MonoBehaviour, IGameViewSystem
     {
+       
         #region inspector data
         
 #if ODIN_INSPECTOR
@@ -113,6 +115,21 @@
         {
             return ViewSystem.Create(viewType, layoutType, skinTag, viewName, ownerLifeTime);
         }
+
+        public bool HasLayout(string id)
+        {
+            return ViewSystem.HasLayout(id);
+        }
+
+        public bool RegisterLayout(string id, IViewLayout layout)
+        {
+            return ViewSystem.RegisterLayout(id, layout);
+        }
+
+        public bool RemoveLayout(string id)
+        {
+            return ViewSystem.RemoveLayout(id);
+        }
         
         public IViewLayout GetLayout(ViewType type) => ViewSystem.GetLayout(type);
         public IViewLayout GetLayout(string id) => ViewSystem.GetLayout(id);
@@ -124,8 +141,18 @@
 
         public void CloseAll() => ViewSystem.CloseAll();
         
+        public void CloseAll(string layoutId)
+        {
+            ViewSystem.CloseAll(layoutId);
+        }
+
         public void CloseAll(ViewType viewType) => ViewSystem.CloseAll(viewType);
         
+        public UniTask<IView> OpenView(IViewModel viewModel, string viewType, string layout, string skinTag = "", string viewName = null)
+        {
+            return ViewSystem.OpenView(viewModel, viewType, layout, skinTag, viewName);
+        }
+
         public UniTask<T> InitializeView<T>(T view, IViewModel viewModel) where T : IView
         {
             return _gameViewSystem.InitializeView(view, viewModel);

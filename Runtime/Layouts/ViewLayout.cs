@@ -67,7 +67,17 @@
             _views.ObserveReset().Do(_ => _activeView.Value = null).Subscribe().AddTo(LifeTime);
         }
 
-        public void Dispose() => _lifeTime.Terminate();
+        public void Dispose()
+        {
+            _lifeTime.Terminate();
+            
+            foreach (var view in _views)
+            {
+                if(view != null && view.GameObject!=null) view.Destroy();
+            }
+            
+            _views.Clear();
+        }
 
         public bool Contains(IView view) => _views.Contains(view);
 

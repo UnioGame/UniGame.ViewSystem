@@ -41,6 +41,10 @@ namespace UniGame.UiSystem.Runtime
         {
             if (_layouts.ContainsKey(id)) return false;
             _layouts[id] = layout;
+            
+            layout.LifeTime
+                .AddCleanUpAction(() => RemoveLayout(layout));
+            
             return true;
         }
 
@@ -51,6 +55,19 @@ namespace UniGame.UiSystem.Runtime
         
         public IEnumerable<IViewLayout> Controllers => _layouts.Values;
 
+        public bool RemoveLayout(IViewLayout layout)
+        {
+            var targetId = default(string);
+            foreach (var pair in _layouts)
+            {
+                if(pair.Value != layout)continue;
+                targetId = pair.Key;
+                break;
+            }
+            if (string.IsNullOrEmpty(targetId)) return false;
+            return RemoveLayout(targetId);
+        }
+        
         public bool RemoveLayout(string id)
         {
             if (!_layouts.TryGetValue(id, out var layout))
