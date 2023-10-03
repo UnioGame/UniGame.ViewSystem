@@ -25,6 +25,16 @@ namespace UniGame.UiSystem.Runtime
         public static readonly string OverlayType = ViewType.Overlay.ToStringFromCache();
         public static readonly string NoneType = ViewType.None.ToStringFromCache();
         
+        public static IEnumerable<string> DefaultTypes {
+            get
+            {
+                yield return ScreenType;
+                yield return WindowType;
+                yield return OverlayType;
+                yield return NoneType;
+            }
+        }
+        
         #region private fields
 
         private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
