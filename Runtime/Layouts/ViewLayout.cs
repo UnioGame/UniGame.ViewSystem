@@ -11,6 +11,7 @@
     using UniRx;
     using UnityEngine;
     using System;
+    using UnityEngine.Pool;
 
     [Serializable]
     public class ViewLayout : IViewLayout
@@ -70,12 +71,19 @@
         public void Dispose()
         {
             _lifeTime.Terminate();
+
+            var viewList = ListPool<IView>.Get();
             
             foreach (var view in _views)
             {
-                if(view != null && view.GameObject!=null) view.Destroy();
+                if(view != null && view.GameObject!=null) 
+                    viewList.Add(view);
             }
+
+            foreach (var view in viewList)
+                view?.Destroy();
             
+            viewList.Despawn();
             _views.Clear();
         }
 
