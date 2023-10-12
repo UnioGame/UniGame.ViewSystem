@@ -4,6 +4,8 @@ using UniGame.AddressableTools.Runtime;
 namespace UniGame.Rx.Runtime.Extensions
 {
     using System;
+    using System.Runtime.CompilerServices;
+    using AddressableTools.Runtime.AssetReferencies;
     using Cysharp.Threading.Tasks;
     using TMPro;
     using global::UniGame.Core.Runtime;
@@ -15,6 +17,7 @@ namespace UniGame.Rx.Runtime.Extensions
     using global::UniGame.UiSystem.Runtime;
     using UniGame.Runtime.Common;
     using UniModules.UniCore.Runtime.Utils;
+    using UniModules.UniGame.Core.Runtime.Rx;
     using UniRx;
     using UnityEngine.AddressableAssets;
     using UnityEngine.Localization;
@@ -53,13 +56,14 @@ namespace UniGame.Rx.Runtime.Extensions
                 : view.Bind(source.StringReference.AsObservable(), command);
         }
 
-        public static TView Bind<TView>(this TView view, AssetReferenceT<Sprite> source, Image image)
+        public static TView BindAsync<TView>(this TView view, AssetReferenceT<Sprite> source, Image image)
             where TView : class, IView
         {
             if (source.RuntimeKeyIsValid() == false) return view;
             return !image ? view : view.Bind(source.ToObservable(view.LifeTime), image);
         }
-
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TView Bind<TView>(this TView view, IObservable<AssetReferenceT<Sprite>> source, Image image)
             where TView : class, IView
         {
@@ -67,14 +71,35 @@ namespace UniGame.Rx.Runtime.Extensions
             
             return !image
                 ? view
-                : view.Bind(source, x =>
+                : view.Bind(source, x => Bind(view, x, image));
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TView Bind<TView>(this TView view, 
+            IObservable<AddressableValue<Sprite>> source, Image image)
+            where TView : class, IView
+        {
+            return view.Bind(source, x =>
                 {
-                    var sprite = x == null || !x.RuntimeKeyIsValid() 
-                        ? null
-                        : x.LoadAssetForCompletion(view.LifeTime);
-                    image.sprite = sprite;
+                    if (x?.reference == null) return;
+                    Bind(view, x.reference, image);
                 });
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TView Bind<TView>(this TView view, AssetReferenceT<Sprite> source, Image image)
+            where TView : class, IView
+        {
+            if (image == null) return view;
+            
+            var sprite = source == null || !source.RuntimeKeyIsValid() 
+                ? null
+                : source.LoadAssetForCompletion(view.LifeTime);
+            
+            image.sprite = sprite;
+            return view;
+        }
+        
         
         public static TView BindAsync<TView>(this TView view, IObservable<AssetReferenceT<Sprite>> source, Image image)
             where TView : class, IView
