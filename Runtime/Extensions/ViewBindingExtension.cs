@@ -64,6 +64,22 @@ namespace UniGame.Rx.Runtime.Extensions
             where TView : class, IView
         {
             if (image == null) return view;
+            
+            return !image
+                ? view
+                : view.Bind(source, x =>
+                {
+                    var sprite = x == null || !x.RuntimeKeyIsValid() 
+                        ? null
+                        : x.LoadAssetForCompletion(view.LifeTime);
+                    image.sprite = sprite;
+                });
+        }
+        
+        public static TView BindAsync<TView>(this TView view, IObservable<AssetReferenceT<Sprite>> source, Image image)
+            where TView : class, IView
+        {
+            if (image == null) return view;
             return !image
                 ? view
                 : view.Bind(source, async x =>
