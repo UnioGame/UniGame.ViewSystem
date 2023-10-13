@@ -92,11 +92,12 @@ namespace UniGame.Rx.Runtime.Extensions
         {
             if (image == null) return view;
             
-            var sprite = source == null || !source.RuntimeKeyIsValid() 
+            image.enabled = true;
+            var sprite = source == null || !source.RuntimeKeyIsValid()
                 ? null
                 : source.LoadAssetForCompletion(view.LifeTime);
             
-            image.sprite = sprite;
+            image.SetValue(sprite);
             return view;
         }
         

@@ -76,6 +76,7 @@
             return SetValue(text, stringValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool SetValue(this Image target, bool enabled)
         {
             if (target == null) return false;
@@ -83,6 +84,7 @@
             return true;
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool SetValue(this Image target, Sprite value)
         {
             if (target == null || target.sprite == value) return false;
