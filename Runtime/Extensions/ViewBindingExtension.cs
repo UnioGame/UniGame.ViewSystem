@@ -183,6 +183,18 @@ namespace UniGame.Rx.Runtime.Extensions
             return view.Bind(source, x => text.text = x.ToStringFromCache());
         }
 
+        public static TView Bind<TView>(this TView view, IObservable<string> source, TMP_InputField text)
+            where TView : ILifeTimeContext
+        {
+            return view.Bind(source,x => text.SetValue(x));
+        }
+        
+        public static TView Bind<TView>(this TView view, IObservable<int> source, TMP_InputField text)
+            where TView : ILifeTimeContext
+        {
+            return view.Bind(source,x => text.SetValue(x.ToStringFromCache()));
+        }
+        
         public static TView Bind<TView>(this TView view, IObservable<Color> source, TextMeshProUGUI text)
             where TView : ILifeTimeContext
         {
@@ -196,6 +208,14 @@ namespace UniGame.Rx.Runtime.Extensions
         }
 
         public static TView Bind<TView>(this TView view, IObservable<Sprite> source, Image image)
+            where TView : ILifeTimeContext
+        {
+            return !image
+                ? view
+                : view.Bind(source.Where(x => x != null),x => image.SetValue(x));
+        }
+        
+        public static TView Bind<TView>(this TView view, IObservable<Sprite> source, RawImage image)
             where TView : ILifeTimeContext
         {
             return !image
@@ -325,13 +345,31 @@ namespace UniGame.Rx.Runtime.Extensions
             Image image)
             where TView : ILifeTimeContext
         {
-            return image == null ? view : view.Bind(source, x => image.enabled = x);
+            return image == null 
+                ? view 
+                : view.Bind(source, x => image.enabled = x);
+        }
+        
+        public static TView Bind<TView>(this TView view,
+            IObservable<bool> source,
+            RawImage image)
+            where TView : ILifeTimeContext
+        {
+            return image == null 
+                ? view 
+                : view.Bind(source, x => image.enabled = x);
         }
 
         public static TView Bind<TView>(this TView view, IObservable<Unit> source, IReactiveCommand<Unit> command)
             where TView : ILifeTimeContext
         {
             return view.Bind(source, x => command.Execute(Unit.Default));
+        }
+        
+        public static TView Bind<TView,TData>(this TView view, IObservable<TData> source, IReactiveCommand<TData> command)
+            where TView : ILifeTimeContext
+        {
+            return view.Bind(source, x => command.Execute(x));
         }
 
         public static TSource Bind<TSource>(this TSource view, Toggle source, IReactiveProperty<bool> value)

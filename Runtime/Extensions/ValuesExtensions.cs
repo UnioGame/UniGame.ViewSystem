@@ -30,15 +30,6 @@
             return true;
         }
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool SetValue(this TextMeshProUGUI target, string value)
-        {
-            if (target == null) return false;
-            if (target.text == value) return false;
-            target.text = value;
-            return true;
-        }
-        
         public static bool SetEnableValue(this Image target, bool value)
         {
             if (target == null) return false;
@@ -47,6 +38,31 @@
             return true;
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool SetValue(this TextMeshProUGUI text, string value)
+        {
+            if (text == null || 
+                string.IsNullOrEmpty(value)) return false;
+            
+            if (string.Equals(text.text, value)) return false;
+
+            text.text = value;
+            
+            return true;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool SetValue(this TMP_InputField text, string value)
+        {
+            if (text == null || 
+                string.IsNullOrEmpty(value)) return false;
+            
+            if (string.Equals(text.text, value)) return false;
+
+            text.text = value;
+            
+            return true;
+        }
         
         public static bool SetValue(this TextMeshProUGUI text, string value, StringComparison comparison)
         {
@@ -94,6 +110,18 @@
             
             if(enabled) target.sprite = value;
             
+            return true;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool SetValue(this RawImage target, Sprite value)
+        {
+            if (target == null) return false;
+            
+            var enabled = value != null;
+            target.enabled = enabled;
+            
+            if(enabled) target.texture = value.texture;
             return true;
         }
         
