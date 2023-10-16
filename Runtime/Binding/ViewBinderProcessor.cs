@@ -22,25 +22,31 @@
             return view;
         }
         
-        public bool CheckField(Type viewType, Type modelType, FieldInfo viewField, FieldInfo modelField)
+        public ref BindField CheckField(object view, object model, FieldInfo viewField, FieldInfo modelField)
         {
-            var viewFieldType = viewField.FieldType;
-            var modelFieldType = modelField.FieldType;
-            
-            if (viewFieldType == modelFieldType)
-                return true;
-            
-            if (viewFieldType.IsAssignableFrom(modelFieldType))
-                return true;
-            
-            if (modelFieldType.IsAssignableFrom(viewFieldType))
-                return true;
+            if(!viewField.Name.Equals(modelField.Name,StringComparison.OrdinalIgnoreCase))
+                return false;
 
-            return false;
+            return true;
         }
         
     }
 
+    [Serializable]
+    public struct BindField
+    {
+        public object viewField;
+        public object valueField;
+        
+        public object view;
+        public object value;
+        
+        public string name;
+        
+        public FieldInfo viewFieldInfo;
+        public FieldInfo valueFieldInfo;
+    }
+    
     public interface IViewBinder
     {
         public IView BindToField(IView view,object viewField, object modelField);
