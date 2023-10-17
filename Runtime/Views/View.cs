@@ -1,5 +1,6 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
+    using System;
     using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
     using ViewSystem.Runtime;
@@ -21,6 +22,8 @@
 
         public TViewModel Model => _viewModel.Value;
 
+        public sealed override Type ModelType => typeof(TViewModel);
+        
         public virtual CanvasGroup CanvasGroup => (_canvasGroup = _canvasGroup 
             ? _canvasGroup 
             : GetComponent<CanvasGroup>());

@@ -85,6 +85,8 @@ namespace UniGame.UiSystem.Runtime
         
         #endregion
 
+        #region private fields
+
         private IViewAnimation _monoAnimation;
         private RectTransform _rectTransform;
         private Transform _transform;
@@ -111,6 +113,8 @@ namespace UniGame.UiSystem.Runtime
         
         protected bool IsCommandsAction => Application.isPlaying;
         
+        #endregion
+        
         #region public properties
 
         public string SourceName => sourceName;
@@ -124,6 +128,8 @@ namespace UniGame.UiSystem.Runtime
         public GameObject Owner => gameObject;
         
         public GameObject GameObject => gameObject;
+
+        public virtual Type ModelType => typeof(IViewModel);
 
         /// <summary>
         /// View LifeTime

@@ -3,9 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using System.Runtime.CompilerServices;
-    using UniModules.UniCore.Runtime.ReflectionUtils;
-    using UnityEngine.Serialization;
 
     [Serializable]
     public class ViewBinderProcessor : IViewBinderProcessor,IViewBinder
@@ -17,25 +14,18 @@
         {
             new ViewUiFieldsBinder(),
             new ObservableToMethodBinder(),
+            new ViewDataBinder()
         };
         
         public IView Bind(IView view, IViewModel model)
         {
-            if (!HasBinding(view)) return view;
-
             foreach (var viewBinder in binders)
                 viewBinder.Bind(view, model);
             
             return view;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool HasBinding(IView view)
-        {
-            var viewType = view.GetType();
-            var hasAttribute = viewType.HasAttribute<ViewBindAttribute>();
-            return hasAttribute;
-        }
+
         
     }
 }

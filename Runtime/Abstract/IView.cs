@@ -14,6 +14,8 @@ namespace UniGame.ViewSystem.Runtime
         IViewStatus, 
         IViewCommands
     {
+        Type ModelType { get; }
+        
         public GameObject Owner { get; }
         
         public GameObject GameObject { get; }

@@ -2,15 +2,13 @@
 {
     using System;
     using System.Reflection;
+    using UnityEngine.Serialization;
 
     [Serializable]
-    public struct FieldBindData
+    public struct BindDataConnection
     {
-        public object source;
-        public object target;
-
-        public FieldInfo sourceField;
-        public FieldInfo targetField;
+        public IView value;
+        public IViewModel source;
         
         public object sourceValue;
         public object targetValue;

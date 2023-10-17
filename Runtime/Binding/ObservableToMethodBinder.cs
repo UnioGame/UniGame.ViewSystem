@@ -2,6 +2,7 @@
 {
     using System;
     using System.Reflection;
+    using System.Runtime.CompilerServices;
     using Rx.Runtime.Extensions;
     using UniModules.UniCore.Runtime.ReflectionUtils;
     using UniRx;
@@ -12,10 +13,22 @@
         public static BindingFlags BindFlags = BindingFlags.Instance | BindingFlags.Public |
                                                BindingFlags.NonPublic | BindingFlags.IgnoreCase;
         
-        private Type[] _genericArguments = new Type[1];
-        private Type _observableType = typeof(IObservable<>);
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool HasBinding(IView view)
+        {
+            var viewType = view.GetType();
+            var hasAttribute = viewType.HasAttribute<ViewBindAttribute>();
+            return hasAttribute;
+        }
+        
         public IView Bind(IView view, IViewModel model)
+        {
+            if (!HasBinding(view)) return view;
+
+            return BindMethods(view, model);
+        }
+        
+        public IView BindMethods(IView view, IViewModel model)
         {
             var modelType = model.GetType();
             var viewType = view.GetType();
