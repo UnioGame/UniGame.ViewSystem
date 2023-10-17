@@ -195,13 +195,49 @@ namespace UniGame.Rx.Runtime.Extensions
             return view.Bind(source,x => text.SetValue(x.ToStringFromCache()));
         }
         
+        public static TView Bind<TView>(this TView view, IObservable<float> source, TMP_InputField text)
+            where TView : ILifeTimeContext
+        {
+            return view.Bind(source,x => text.SetValue(x.ToStringFromCache()));
+        }
+        
         public static TView Bind<TView>(this TView view, IObservable<Color> source, TextMeshProUGUI text)
             where TView : ILifeTimeContext
         {
             return view.Bind(source,x => text.SetValue(x));
         }
+        
+        public static TView Bind<TView>(this TView view, IObservable<Color> source, TextMeshPro text)
+            where TView : ILifeTimeContext
+        {
+            return view.Bind(source,x => text.SetValue(x));
+        }
+        
+        public static TView Bind<TView>(this TView view, IObservable<Color> source, TMP_InputField text)
+            where TView : ILifeTimeContext
+        {
+            return view.Bind(source,x => text.SetValue(x));
+        }
+        
+        public static TView Bind<TView>(this TView view, IObservable<Color> source, Button button)
+            where TView : ILifeTimeContext
+        {
+            return view.Bind(source,x => button.SetValue(x));
+        }
 
         public static TView Bind<TView>(this TView view, IObservable<int> source, TextMeshProUGUI text)
+            where TView : ILifeTimeContext
+        {
+            return view.Bind(source, x => text.SetValue(x.ToStringFromCache()));
+        }
+        
+        public static TView Bind<TView>(this TView view, IObservable<float> source, TextMeshProUGUI text)
+            where TView : ILifeTimeContext
+        {
+            return view.Bind(source, x => text.SetValue(x.ToStringFromCache()));
+        }
+        
+        public static TView Bind<TView>(this TView view, IObservable<float> source, TextMeshPro text)
             where TView : ILifeTimeContext
         {
             return view.Bind(source, x => text.SetValue(x.ToStringFromCache()));
@@ -224,6 +260,14 @@ namespace UniGame.Rx.Runtime.Extensions
         }
 
         public static TView Bind<TView>(this TView sender, IObservable<Color> source, Image image)
+            where TView : ILifeTimeContext
+        {
+            return image == null
+                ? sender
+                : sender.Bind(source,x => image.SetValue(x));
+        }
+        
+        public static TView Bind<TView>(this TView sender, IObservable<Color> source, RawImage image)
             where TView : ILifeTimeContext
         {
             return image == null
@@ -304,6 +348,36 @@ namespace UniGame.Rx.Runtime.Extensions
             return source == null
                 ? sender
                 : sender.Bind(source.OnClickAsObservable(), () => value.SetValue(true));
+        }
+        
+        public static TView Bind<TView>(this TView sender,
+            IObservable<Unit> source,
+            ISignalValueProperty<bool> value)
+            where TView : ILifeTimeContext
+        {
+            return source == null
+                ? sender
+                : sender.Bind(source, () => value.SetValue(true));
+        }
+        
+        public static TView Bind<TView>(this TView sender,
+            IObservable<bool> source,
+            ISignalValueProperty<bool> value)
+            where TView : ILifeTimeContext
+        {
+            return source == null
+                ? sender
+                : sender.Bind(source, () => value.SetValue(true));
+        }
+        
+        public static TView Bind<TView>(this TView sender,
+            Toggle source,
+            ISignalValueProperty<bool> value)
+            where TView : ILifeTimeContext
+        {
+            return source == null
+                ? sender
+                : sender.Bind(source.OnValueChangedAsObservable(), value.SetValue);
         }
 
         public static TView Bind<TView>(this TView sender, Button source, Action<Unit> command, TimeSpan throttleTime)

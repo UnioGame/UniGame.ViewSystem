@@ -16,6 +16,7 @@ namespace UniGame.UiSystem.Runtime
     using ViewSystem.Runtime;
     using UniRx;
     using UnityEngine;
+    using ViewSystem.Runtime.Binding;
 
     [Serializable]
     public class GameViewSystem : IGameViewSystem
@@ -39,13 +40,14 @@ namespace UniGame.UiSystem.Runtime
 
         private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
 
-        private readonly IViewFactory _viewFactory;
-        private readonly IViewLayoutContainer _viewLayouts;
-        private readonly IViewFlowController _flowController;
-        private readonly IViewModelResolver _viewModelResolver;
-        private readonly IViewModelTypeMap _modelTypeMap;
-        private readonly IContext _defaultContext;
-        private readonly Subject<IView> _viewCreatedSubject;
+        private IViewFactory _viewFactory;
+        private IViewLayoutContainer _viewLayouts;
+        private IViewFlowController _flowController;
+        private IViewModelResolver _viewModelResolver;
+        private IViewModelTypeMap _modelTypeMap;
+        private IContext _defaultContext;
+        private Subject<IView> _viewCreatedSubject;
+        private IViewBinderProcessor _viewBinderProcessor;
 
         #endregion
 
@@ -56,6 +58,7 @@ namespace UniGame.UiSystem.Runtime
             IViewModelResolver viewModelResolver,
             IViewModelTypeMap modelTypeMap)
         {
+            _viewBinderProcessor = new ViewBinderProcessor();
             _viewCreatedSubject = new Subject<IView>().AddTo(LifeTime);
             _defaultContext = new EntityContext();
 
@@ -566,6 +569,8 @@ namespace UniGame.UiSystem.Runtime
 
             await view.Initialize(viewModel);
 
+            //_viewBinderProcessor.Bind(view, viewModel);
+            
             //destroy view when lifetime terminated
             var viewLifeTime = view.ViewLifeTime;
             viewLifeTime.AddCleanUpAction(() => Destroy(view));

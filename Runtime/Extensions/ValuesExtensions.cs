@@ -52,6 +52,19 @@
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool SetValue(this TextMeshPro text, string value)
+        {
+            if (text == null || 
+                string.IsNullOrEmpty(value)) return false;
+            
+            if (string.Equals(text.text, value)) return false;
+
+            text.text = value;
+            
+            return true;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool SetValue(this TMP_InputField text, string value)
         {
             if (text == null || 
@@ -81,6 +94,27 @@
             if (!text) return false;
             
             text.color = color;
+            return true;
+        }
+        
+        public static bool SetValue(this TextMeshPro text, Color color)
+        {
+            if (!text) return false;
+            text.color = color;
+            return true;
+        }
+        
+        public static bool SetValue(this TMP_InputField text, Color color)
+        {
+            if (!text && text.textComponent!=null) return false;
+            text.textComponent.color = color;
+            return true;
+        }
+        
+        public static bool SetValue(this Button button, Color color)
+        {
+            if(button == null || button.image == null) return false;
+            button.image.color = color;
             return true;
         }
 
@@ -122,6 +156,13 @@
             target.enabled = enabled;
             
             if(enabled) target.texture = value.texture;
+            return true;
+        }
+        
+        public static bool SetValue(this RawImage target, Color icon)
+        {
+            if (!target) return false;
+            target.color = icon;
             return true;
         }
         

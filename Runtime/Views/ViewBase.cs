@@ -17,6 +17,7 @@ namespace UniGame.UiSystem.Runtime
     using ViewSystem.Runtime;
     using UniRx;
     using UnityEngine;
+    using ViewSystem.Runtime.Binding;
 
 #if ODIN_INSPECTOR
     using Sirenix.OdinInspector;
@@ -28,6 +29,8 @@ namespace UniGame.UiSystem.Runtime
     {
         private const string NullViewName = "Null";
         private const string RuntimeInfo = "runtime info";
+        
+        private static IViewBinderProcessor ViewBinderProcessor = new ViewBinderProcessor();
         
         #region inspector
 
@@ -232,6 +235,8 @@ namespace UniGame.UiSystem.Runtime
             //custom initialization
             await OnInitialize(model);
 
+            ViewBinderProcessor.Bind(this, model);
+            
             _isInitialized.Value = true;
 
             return this;

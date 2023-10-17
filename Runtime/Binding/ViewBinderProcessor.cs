@@ -3,91 +3,39 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using System.Runtime.CompilerServices;
     using UniModules.UniCore.Runtime.ReflectionUtils;
     using UnityEngine.Serialization;
 
     [Serializable]
-    public class ViewBinderProcessor
+    public class ViewBinderProcessor : IViewBinderProcessor,IViewBinder
     {
-        private const BindingFlags BindFlags = BindingFlags.Instance | BindingFlags.Public |
+        public const BindingFlags BindFlags = BindingFlags.Instance | BindingFlags.Public |
                                                 BindingFlags.NonPublic | BindingFlags.IgnoreCase;
         
-        private List<IViewBinder> _binders = new List<IViewBinder>();
+        public List<IViewBinder> binders = new List<IViewBinder>()
+        {
+            new ViewUiFieldsBinder(),
+            new ObservableToMethodBinder(),
+        };
         
         public IView Bind(IView view, IViewModel model)
         {
-            var viewType = view.GetType();
-            var modelType = model.GetType();
-            
-            var viewFields = viewType.GetFields();
-            var viewMethods = viewType.GetMethods();
-            
-            var modelFields = modelType.GetFields();
-            var modelMethods = modelType.GetMethods();
+            if (!HasBinding(view)) return view;
 
-            //bind fields
-            foreach (var modelField in modelFields)
-            {
-                var modelValue = modelField.GetValue(model);
-                var viewFiled = viewType.GetField(modelField.Name, BindFlags);
-                var methodInfo = viewType.GetMethod(modelField.Name, BindFlags);
-
-                if (viewFiled != null)
-                {
-                    var viewValue = viewFiled.GetValue(view);
-                    
-                    var bindData = new FieldBindData()
-                    {
-                        source = model,
-                        target = view,
-                        sourceField = modelField,
-                        targetField = viewFiled,
-                        sourceValue = modelValue,
-                        targetValue = viewValue,
-                    };
-
-                    BindField(ref bindData);
-                }
-
-                if (methodInfo != null)
-                {
-                    
-                }
-                
-                
-            }
+            foreach (var viewBinder in binders)
+                viewBinder.Bind(view, model);
             
             return view;
         }
-        
-        public void BindField(ref FieldBindData bindData)
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool HasBinding(IView view)
         {
-            foreach (var viewBinder in _binders)
-                viewBinder.BindField(ref bindData);
+            var viewType = view.GetType();
+            var hasAttribute = viewType.HasAttribute<ViewBindAttribute>();
+            return hasAttribute;
         }
         
-    }
-
-    [Serializable]
-    public struct FieldBindData
-    {
-        public object source;
-        public object target;
-
-        public FieldInfo sourceField;
-        public FieldInfo targetField;
-        
-        public object sourceValue;
-        public object targetValue;
-    }
-    
-    [Serializable]
-    public struct MethodBindFieldData
-    {
-        public object source;
-        public object target;
-
-        public FieldInfo sourceField;
-        public FieldInfo targetField;
     }
 }
