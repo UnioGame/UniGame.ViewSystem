@@ -13,7 +13,6 @@
         public List<IViewBinder> binders = new List<IViewBinder>()
         {
             new ViewUiFieldsBinder(),
-            new ObservableToMethodBinder(),
             new ViewDataBinder()
         };
         

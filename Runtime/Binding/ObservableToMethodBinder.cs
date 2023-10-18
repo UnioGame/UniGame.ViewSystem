@@ -21,34 +21,53 @@
             return hasAttribute;
         }
         
+        public IView Bind(IView view)
+        {
+            return BindMethods(view, view.ViewModel);
+        }
+        
         public IView Bind(IView view, IViewModel model)
         {
-            if (!HasBinding(view)) return view;
-
             return BindMethods(view, model);
         }
         
-        public IView BindMethods(IView view, IViewModel model)
+        public IView BindMethods(IView view,IViewModel model)
         {
+            if (model == null) return view;
+            
             var modelType = model.GetType();
-            var viewType = view.GetType();
             
             var modelFields = modelType.GetFields();
 
             foreach (var modelField in modelFields)
-            {
-                var method = viewType.GetMethod(modelField.Name, BindFlags);
-                if(method == null) continue;
-                if(method.ContainsGenericParameters) continue;
-                var parameters = method.GetParametersInfo();
-                if(parameters.Length > 1) continue;
-
-                var value = modelField.GetValue(model);
-                if(value == null) continue;
-
-                Bind(view, value, method);
-            }
+                Bind(view, modelField.Name, modelField.Name);
             
+            return view;
+        }
+
+        public IView Bind(IView view,string modelFieldName,string methodName)
+        {
+            var model = view.ViewModel;
+            if (model == null) return view;
+            
+            var modelType = model.GetType();
+            var viewType = view.GetType();
+            var modelField = modelType.GetField(modelFieldName, BindFlags);
+            if(modelField == null) return view;
+            
+            var method = viewType.GetMethod(methodName, BindFlags);
+            if(method == null) return view;
+                
+            if(method.ContainsGenericParameters)  return view;
+            
+            var parameters = method.GetParametersInfo();
+            if(parameters.Length > 1)  return view;
+
+            var value = modelField.GetValue(model);
+            if(value == null) return view;
+
+            Bind(view, value, method);
+
             return view;
         }
 
@@ -63,5 +82,6 @@
             return result;
         }
 
+        
     }
 }

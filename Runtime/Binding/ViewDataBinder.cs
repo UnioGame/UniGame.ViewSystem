@@ -18,7 +18,7 @@
             if (viewGameObject == null) return view;
 
             var bindData = viewGameObject.GetComponent<ViewBindData>();
-            if(bindData == null) return view;
+            if(bindData == null || bindData.isEnabled == false) return view;
 
             var sourceType = model.GetType();
             var viewBindData = bindData;
@@ -42,7 +42,10 @@
                 _fieldBinder.Bind(view, ref connection);
             }
 
-            _methodBinder.BindMethods(view, model);
+            foreach (var bindValue in viewBindData.methods)
+            {
+                _methodBinder.Bind(view, bindValue.field,bindValue.method);
+            }
             
             return view;
         }

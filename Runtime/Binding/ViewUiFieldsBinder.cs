@@ -12,6 +12,7 @@
                                               BindingFlags.NonPublic | BindingFlags.IgnoreCase;
         
         public ViewFieldBinder fieldBinder = new ViewFieldBinder();
+        public ObservableToMethodBinder methodBinder = new ObservableToMethodBinder();
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HasBinding(IView view)
@@ -24,7 +25,16 @@
         public IView Bind(IView view,IViewModel model)
         {
             if (!HasBinding(view)) return view;
+
+            BindField(view, model);
+
+            methodBinder.Bind(view, model);
             
+            return view;
+        }
+
+        public IView BindField(IView view,IViewModel model)
+        {
             var viewType = view.GetType();
             var modelType = model.GetType();
             
@@ -51,9 +61,9 @@
                 fieldBinder.Bind(view, ref bindData);
             }
             
+            
             return view;
         }
-
         
     }
 }
