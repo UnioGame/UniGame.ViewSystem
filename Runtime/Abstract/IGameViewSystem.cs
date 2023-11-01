@@ -9,8 +9,6 @@
         IViewLayoutProvider,
         IViewModelResolver
     {
-        void CloseAll();
-
         void CloseAll(ViewType viewType);
 
         UniTask<IView> OpenView(IViewModel viewModel, string viewType, string layout, string skinTag = "",
