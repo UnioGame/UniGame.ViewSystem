@@ -95,6 +95,14 @@ namespace UniGame.UiSystem.Runtime
                 ? sourceView.SpawnActive(viewTransform.position, viewTransform.rotation, parent, stayPosition) 
                 : Object.Instantiate(sourceView, parent, stayPosition);
 
+            var isActive = gameObjectView.activeSelf;
+            if (isActive)
+            {
+                gameObjectView.SetActive(false);
+                await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate,lifeTime.Token);
+                gameObjectView.SetActive(true);
+            }
+            
             //create instance of view
             var view          = gameObjectView.GetComponent<IView>();
             var assetLifeTime = gameObjectView.GetAssetLifeTime();

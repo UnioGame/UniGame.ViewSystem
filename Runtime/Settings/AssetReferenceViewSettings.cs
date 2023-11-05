@@ -3,16 +3,10 @@ using UniGame.UiSystem.Runtime.Settings;
 
 namespace UniModules.UniGame.ViewSystem.Runtime.Settings
 {
-    using UnityEngine.AddressableAssets;
+    using global::UniGame.AddressableTools.Runtime.AssetReferencies;
 
     [Serializable]
-#if ODIN_INSPECTOR
-    [Sirenix.OdinInspector.DrawWithUnity]
-#endif
-    public class AssetReferenceViewSettings : AssetReferenceT<ViewsSettings>
+    public class AssetReferenceViewSettings : AddressableValue<ViewsSettings>
     {
-        public AssetReferenceViewSettings(string guid) : base(guid)
-        {
-        }
     }
 }

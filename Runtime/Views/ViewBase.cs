@@ -261,7 +261,7 @@ namespace UniGame.UiSystem.Runtime
                 return this;
             
             StartProgressAction(_progressLifeTime, OnShow)
-                .AttachExternalCancellation(_progressLifeTime.CancellationToken)
+                .AttachExternalCancellation(_progressLifeTime.Token)
                 .Forget();
             
             return this;
@@ -283,7 +283,7 @@ namespace UniGame.UiSystem.Runtime
                 return;
 
             StartProgressAction(_progressLifeTime, OnHide)
-                .AttachExternalCancellation(_progressLifeTime.CancellationToken)
+                .AttachExternalCancellation(_progressLifeTime.Token)
                 .Forget();;
         }
 
@@ -306,7 +306,7 @@ namespace UniGame.UiSystem.Runtime
             }
             
             StartProgressAction(_progressLifeTime, OnClose, Destroy)
-                .AttachExternalCancellation(_progressLifeTime.CancellationToken)
+                .AttachExternalCancellation(_progressLifeTime.Token)
                 .Forget();;
         }
         
@@ -472,7 +472,7 @@ namespace UniGame.UiSystem.Runtime
                 if (action == null) return;
                 //run animation immediately
                 var actionTask = action.Invoke();
-                await actionTask.AttachExternalCancellation(lifeTime.CancellationToken);
+                await actionTask.AttachExternalCancellation(lifeTime.Token);
             }
             finally
             {
@@ -526,7 +526,7 @@ namespace UniGame.UiSystem.Runtime
 
         private async UniTask OnEndOfFrameCheck()
         {
-            var token = _viewModelLifeTime.CancellationToken;
+            var token = _viewModelLifeTime.Token;
 
             while (!token.IsCancellationRequested)
             {

@@ -113,7 +113,7 @@
             var fromAlpha = from.Alpha;
             var toAlpha = to.Alpha;
 
-            var token = progressLifeTime.CancellationToken;
+            var token = progressLifeTime.Token;
             var startTime = unscaledTime ? Time.unscaledTime : Time.time;
             var finishTime = startTime + duration;
 

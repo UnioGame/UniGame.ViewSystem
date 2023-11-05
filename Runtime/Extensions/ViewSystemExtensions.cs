@@ -45,7 +45,7 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
             
             var views = await UniTask
                 .WhenAll(viewHandles.Select(x => WarmUpUiReference(x,lifeTime,preloadCount)))
-                .AttachExternalCancellation(lifeTime.CancellationToken);
+                .AttachExternalCancellation(lifeTime.Token);
             
             return lifeTime;
         }
@@ -67,7 +67,8 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
         private static async UniTask<ILifeTime> WarmupInternal(this AssetReferenceViewSettings settingsReference,object lifeTimeObject)
         {
             var lifeTime = lifeTimeObject.GetLifeTime();
-            var viewSettings = await settingsReference.LoadAssetInstanceTaskAsync(lifeTime,true);
+            var reference = settingsReference.reference;
+            var viewSettings = await reference.LoadAssetInstanceTaskAsync(lifeTime,true);
 
             if (viewSettings == null)
                 return LifeTime.TerminatedLifetime;
