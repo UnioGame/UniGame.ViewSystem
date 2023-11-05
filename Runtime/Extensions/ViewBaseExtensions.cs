@@ -336,8 +336,8 @@
         {
             parent = parent ? parent : source.Transform;
             
-            var view = await source.Layout.Create(viewType, 
-                 parent,skinTag, viewName,stayWorld);
+            var view = await source.Layout
+                .Create(viewType, parent,skinTag, viewName,stayWorld);
             
             var viewTransform = view.Transform;
             view.Owner.layer         = source.Owner.layer;
