@@ -54,7 +54,7 @@ namespace UniGame.UiSystem.Runtime
         [HideInInspector]
         [ReadOnlyValue]
         [SerializeField]
-        private BoolRecycleReactiveProperty _isInitialized = new BoolRecycleReactiveProperty();
+        private BoolRecycleReactiveProperty _isInitialized = new();
 
 #if ODIN_INSPECTOR
         [ShowIf(nameof(IsCommandsAction))]
@@ -90,21 +90,22 @@ namespace UniGame.UiSystem.Runtime
         private IViewAnimation _monoAnimation;
         private RectTransform _rectTransform;
         private Transform _transform;
-        private RecycleReactiveProperty<bool> _isModelChanged = new RecycleReactiveProperty<bool>();
+        private RecycleReactiveProperty<bool> _isModelChanged = new();
 
-        private readonly LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
-        private readonly LifeTimeDefinition _progressLifeTime   = new LifeTimeDefinition();
-        private readonly LifeTimeDefinition _viewModelLifeTime   = new LifeTimeDefinition();
+        private readonly LifeTimeDefinition _lifeTimeDefinition = new();
+        private readonly LifeTimeDefinition _progressLifeTime   = new();
+        private readonly LifeTimeDefinition _viewModelLifeTime   = new();
+        private readonly Subject<IViewModel> _viewModelChanged = new();
         
         /// <summary>
         /// ui element visibility status
         /// </summary>
-        private readonly BoolRecycleReactiveProperty _visibility = new BoolRecycleReactiveProperty(false);
+        private readonly BoolRecycleReactiveProperty _visibility = new(false);
 
         /// <summary>
         /// view statuses reactions
         /// </summary>
-        private readonly RecycleReactiveProperty<ViewStatus> _status = new RecycleReactiveProperty<ViewStatus>();
+        private readonly RecycleReactiveProperty<ViewStatus> _status = new();
 
         private IViewLayoutProvider _viewLayout;
 
@@ -171,6 +172,8 @@ namespace UniGame.UiSystem.Runtime
         public bool IsModelAttached => _isModelAttached;
 
         public IViewModel ViewModel { get; private set; }
+        
+        public IObservable<IViewModel> OnViewModelChanged => _viewModelChanged;
 
         #endregion public properties
 
@@ -244,6 +247,7 @@ namespace UniGame.UiSystem.Runtime
             ViewBinderProcessor.Bind(this, model);
             
             _isInitialized.Value = true;
+            _viewModelChanged.OnNext(model);
 
             return this;
         }

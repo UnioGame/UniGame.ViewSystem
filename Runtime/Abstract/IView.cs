@@ -31,12 +31,12 @@ namespace UniGame.ViewSystem.Runtime
         IReadOnlyReactiveProperty<bool> IsVisible { get; }
 
         IReadOnlyReactiveProperty<bool> IsInitialized { get; }
-
-        //IViewModel ViewModel { get; }
         
         IObservable<IView> SelectStatus(ViewStatus status);
 
         IViewModel ViewModel { get; }
+        
+        IObservable<IViewModel> OnViewModelChanged { get; }
         
         string SourceName { get; }
         

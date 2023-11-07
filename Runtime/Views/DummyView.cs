@@ -35,6 +35,7 @@ namespace UniGame.UiSystem.Runtime
         public IReadOnlyReactiveProperty<bool> IsVisible     => _isVisibleProperty;
         public IReadOnlyReactiveProperty<bool> IsInitialized => _isInitializedProperty;
         public IViewModel                      ViewModel     => emptyViewModel;
+        public IObservable<IViewModel> OnViewModelChanged => Observable.Empty<IViewModel>();
         public string SourceName { get; set; }
         public string ViewId { get; set; }
 
