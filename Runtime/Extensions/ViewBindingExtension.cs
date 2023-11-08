@@ -340,6 +340,23 @@ namespace UniGame.Rx.Runtime.Extensions
             return source.BindTo(x => text.SetValue(x),frameThrottle);
         }
         
+                
+        public static T BindLifeTime<T>(this T sender, Action disableAction)
+            where T : ILifeTimeContext
+        {
+            if (sender == null) return sender;
+            sender.LifeTime.AddCleanUpAction(disableAction);
+            return sender;
+        }
+        
+        public static T BindViewLifeTime<T>(this T sender, Action disableAction)
+            where T : IView
+        {
+            if (sender == null) return sender;
+            sender.ViewLifeTime.AddCleanUpAction(disableAction);
+            return sender;
+        }
+        
         public static TView Bind<TView>(this TView sender,
             Button source,
             ISignalValueProperty<bool> value)
