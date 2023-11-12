@@ -1,7 +1,5 @@
 ﻿namespace UniGame.Views.Backgrounds
 {
-    using System.Collections;
-    using UniGame.Rendering.Runtime.Blur.KawaseBlur;
     using UniCore.Runtime.ProfilerTools;
     using UiSystem.Runtime;
     using UniGame.UiSystem.Runtime.Backgrounds.Abstract;
@@ -65,9 +63,11 @@
         private Sequence GetShowSequence()
         {
             GameLog.LogRuntime("SHOW BACKGROUND AND ENABLE BLUR");
-            
-            if(enableBlur)
-                KawaseBlurGlobalSettings.EnableBlur();
+
+            if (enableBlur)
+            {
+                
+            }
 
             var sequence  = DOTween.Sequence();
             var fadeTween = CanvasGroup.DOFade(1.0f, _duration);
@@ -86,7 +86,6 @@
                 .OnComplete(() =>
                 {
                     GameLog.LogRuntime("HIDE BACKGROUND AND DISABLE BLUR");
-                    KawaseBlurGlobalSettings.DisableBlur();
                 });
             
             return sequence;
