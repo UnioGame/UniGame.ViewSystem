@@ -92,11 +92,20 @@ namespace UniGame.Rx.Runtime.Extensions
         {
             if (image == null) return view;
             
-            image.enabled = true;
-            var sprite = source == null || !source.RuntimeKeyIsValid()
-                ? null
-                : source.LoadAssetForCompletion(view.LifeTime);
+            BindInternal(view,source,image).Forget();
+
+            return view;
+        }
+        
+        private static async UniTask<TView> BindInternal<TView>(this TView view, AssetReferenceT<Sprite> reference, Image image)
+            where TView : class, IView
+        {
+            if (image == null) return view;
             
+            var sprite = reference == null || !reference.RuntimeKeyIsValid()
+                ? null
+                : await reference.LoadAssetTaskAsync(view.LifeTime);
+
             image.SetValue(sprite);
             return view;
         }
@@ -439,6 +448,16 @@ namespace UniGame.Rx.Runtime.Extensions
             return image == null 
                 ? view 
                 : view.Bind(source, x => image.enabled = x);
+        }
+        
+        public static TView Bind<TView>(this TView view,
+            IObservable<bool> source,
+            MonoBehaviour component)
+            where TView : ILifeTimeContext
+        {
+            return component == null 
+                ? view 
+                : view.Bind(source, x => component.enabled = x);
         }
         
         public static TView Bind<TView>(this TView view,
