@@ -42,7 +42,7 @@
         public static bool SetValue(this TextMeshProUGUI text, string value)
         {
             if (text == null || 
-                string.IsNullOrEmpty(value)) return false;
+                value == null) return false;
             
             if (string.Equals(text.text, value)) return false;
 
@@ -54,8 +54,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool SetValue(this TextMeshPro text, string value)
         {
-            if (text == null || 
-                string.IsNullOrEmpty(value)) return false;
+            if (text == null || value == null) return false;
             
             if (string.Equals(text.text, value)) return false;
 
@@ -67,8 +66,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool SetValue(this TMP_InputField text, string value)
         {
-            if (text == null || 
-                string.IsNullOrEmpty(value)) return false;
+            if (text == null || value == null) return false;
             
             if (string.Equals(text.text, value)) return false;
 
