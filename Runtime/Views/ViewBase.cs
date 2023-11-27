@@ -9,7 +9,6 @@ namespace UniGame.UiSystem.Runtime
     using UniCore.Runtime.Attributes;
     using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniGame.Core.Runtime.Rx;
-    using UniModules.UniRoutine.Runtime;
     using Core.Runtime;
     using ViewSystem.Runtime.Animations;
     using ViewSystem.Runtime.Views.Abstract;
@@ -184,6 +183,9 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         public void Destroy()
         {
+            SetInternalStatus(ViewStatus.Closed);
+            SetStatus(ViewStatus.Closed);
+            
             _lifeTimeDefinition.Terminate();
             _viewModelLifeTime.Terminate();
         }
@@ -288,7 +290,7 @@ namespace UniGame.UiSystem.Runtime
 
             StartProgressAction(_progressLifeTime, OnHide)
                 .AttachExternalCancellation(_progressLifeTime.Token)
-                .Forget();;
+                .Forget();
         }
 
         /// <summary>
@@ -300,9 +302,7 @@ namespace UniGame.UiSystem.Runtime
 #endif
         public void Close()
         {
-            if(!SetInternalStatus(ViewStatus.Closed))
-                return;
-
+            //if(!SetInternalStatus(ViewStatus.Closed)) return;
             if (_status.Value == ViewStatus.Hidden)
             {
                 Destroy();
@@ -311,7 +311,7 @@ namespace UniGame.UiSystem.Runtime
             
             StartProgressAction(_progressLifeTime, OnClose, Destroy)
                 .AttachExternalCancellation(_progressLifeTime.Token)
-                .Forget();;
+                .Forget();
         }
         
         public IObservable<IView> SelectStatus(ViewStatus status)
@@ -354,6 +354,8 @@ namespace UniGame.UiSystem.Runtime
         /// <returns></returns>
         private async UniTask OnClose()
         {
+            SetStatus(ViewStatus.Hiding);
+            
             await OnCloseProgress(_progressLifeTime);
         }
         
@@ -362,6 +364,8 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         private async UniTask OnHide()
         {
+            SetStatus(ViewStatus.Hiding);
+            
             //wait until user defined closing operation complete
             await OnHidingProgress(_progressLifeTime);
 
@@ -415,8 +419,7 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         protected virtual async UniTask OnCloseProgress(ILifeTime progressLifeTime)
         {
-            if (Animation == null)
-                return;
+            if (Animation == null) return;
             
             await Animation.Close(this, progressLifeTime);
         }
@@ -464,7 +467,10 @@ namespace UniGame.UiSystem.Runtime
             return true;
         }
 
-        private async UniTask StartProgressAction(LifeTimeDefinition lifeTime,Func<UniTask> action,Action finallyAction = null,RoutineType routineType = RoutineType.Update)
+        private async UniTask StartProgressAction(
+            LifeTimeDefinition lifeTime,
+            Func<UniTask> action,
+            Action finallyAction = null)
         {
             if (lifeTime.IsTerminated) 
                 return;
@@ -474,7 +480,7 @@ namespace UniGame.UiSystem.Runtime
             try
             {
                 if (action == null) return;
-                //run animation immediately
+                //run animation
                 var actionTask = action.Invoke();
                 await actionTask.AttachExternalCancellation(lifeTime.Token);
             }
@@ -524,7 +530,8 @@ namespace UniGame.UiSystem.Runtime
             if(enableModelUpdate) OnEndOfFrameCheck().Forget();
             
 #if UNITY_EDITOR
-            _status.Subscribe(x => _editorViewStatus = x).AddTo(ViewLifeTime);
+            _status.Subscribe(x => _editorViewStatus = x)
+                .AddTo(ViewLifeTime);
 #endif
         }
 
@@ -567,13 +574,16 @@ namespace UniGame.UiSystem.Runtime
             ViewModel            = null;
             _viewLayout          = null;
             
-            _status.Release();
             _visibility.Release();
         }
 
         protected void OnDisable() => _progressLifeTime.Release();
 
-        protected void OnDestroy() => Destroy();
+        protected void OnDestroy()
+        {
+            Destroy();
+            _status.Release();
+        }
 
         protected void Awake() => OnAwake();
 
