@@ -17,9 +17,9 @@ namespace UniGame.UiSystem.Runtime.Settings
 #endif
     
     [Serializable]
-    public class UiViewReference
+    public class UiViewReference : IEquatable<UiViewReference>,
 #if ODIN_INSPECTOR
-        : ISearchFilterable
+        ISearchFilterable
 #endif
     {
         public string AssetGUID = string.Empty;
@@ -59,6 +59,28 @@ namespace UniGame.UiSystem.Runtime.Settings
 
         public List<AssetReferenceSpriteAtlas> Atlases = new List<AssetReferenceSpriteAtlas>();
 
+        public int Hash;
+        
+        public override int GetHashCode()
+        {
+            var hash = HashCode.Combine(AssetGUID.GetHashCode(), 
+                ViewModelType.GetHashCode(), 
+                Tag.GetHashCode(),
+                ModelType.GetHashCode());
+            
+            return hash;
+        }
+
+        public bool Equals(UiViewReference other)
+        {
+            return other!=null && other.GetHashCode() == GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is UiViewReference other && Equals(other);
+        }
+
         private string GetModelTypeName()
         {
             return $"ModelType : {ModelType.Type?.GetFormattedName()}";
@@ -83,8 +105,11 @@ namespace UniGame.UiSystem.Runtime.Settings
         }
         
 #endif
+        
         public bool IsMatch(string searchString)
         {
+            if (string.IsNullOrEmpty(searchString)) return true;
+            
             var isMatch = AssetGUID.IndexOf(searchString, StringComparison.InvariantCultureIgnoreCase) >= 0;
 
 #if UNITY_EDITOR
@@ -93,8 +118,7 @@ namespace UniGame.UiSystem.Runtime.Settings
             {
                 var gameObjectName = gameObject.name;
                 isMatch |= gameObjectName.IndexOf(searchString, StringComparison.InvariantCultureIgnoreCase) >= 0;
-            }
-            
+            }   
 #endif
             isMatch |= ViewName.IndexOf(searchString, StringComparison.InvariantCultureIgnoreCase) >= 0;
             isMatch |= Tag.IndexOf(searchString, StringComparison.InvariantCultureIgnoreCase) >= 0;

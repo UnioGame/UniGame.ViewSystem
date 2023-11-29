@@ -24,10 +24,10 @@ namespace UniModules.UniGame.ViewSystem
             previousReferences.AddRange(settings.uiViews);
             settings.uiViews.Clear();
 
-            var skinsFolders   = settings.uiViewsSkinFolders;
+            var skinsFolders = settings.uiViewsSkinFolders;
             var defaultFolders = settings.uiViewsDefaultFolders;
-            var assetsSources  = settings.viewsAssetsSources;
-            
+            var assetsSources = settings.viewsAssetsSources;
+
             var groupName = string.IsNullOrEmpty(settings.sourceName)
                 ? settings.name
                 : settings.sourceName;
@@ -43,7 +43,7 @@ namespace UniModules.UniGame.ViewSystem
                 var views = LoadUiViews<IView>(defaultFolders);
                 views.ForEach(x => AddView(settings, x, true, groupName));
             }
-            
+
             if (assetsSources.Count > 0)
             {
                 var views = assetsSources.Where(x => x.editorAsset != null)
@@ -51,56 +51,105 @@ namespace UniModules.UniGame.ViewSystem
                     .Select(x => x.GetComponent<IView>())
                     .Where(x => x != null)
                     .ToList();
+                
                 views.ForEach(x => AddView(settings, x, true, groupName));
             }
 
-            settings.uiViews
-                .ForEach(ApplyOverrideValues);
+            foreach (var uiView in settings.uiViews)
+                ApplyOverrideValues(uiView,previousReferences);
 
             previousReferences.Clear();
             return settings;
         }
 
-        public UiViewReference CreateViewReference(IView view, bool defaultView,bool overrideAddressables, string groupName)
+        public UiViewReference CreateViewReference(IView view, bool defaultView,bool overrideAddressableGroup,string groupName)
         {
-            var assetView  = view as MonoBehaviour;
-            var gameObject = assetView.gameObject;
-            var assetPath  = AssetDatabase.GetAssetPath(gameObject);
-            var tag        = GetSkinTag(view, defaultView);
+            var viewDescription = new UiViewReference();
+            UpdateViewReferenceData(viewDescription, view, defaultView,overrideAddressableGroup, groupName);
+            return viewDescription;
+        }
 
-            if (overrideAddressables || !gameObject.IsInAnyAddressableAssetGroup())
+        public UiViewReference UpdateViewReferenceData(
+            UiViewReference viewDescription,
+            bool defaultView = true, 
+            bool overrideAddressableGroup = false,
+            string addressableGroup = null)
+        {
+            var viewObject = viewDescription.View.editorAsset;
+            if (viewObject == null)
             {
-                gameObject.SetAddressableAssetGroup(groupName);
+                Debug.LogError($"View System Error: NULL VIEW OBJECT FOUND ON REBUILD {viewDescription.ViewName}");
+                return viewDescription;
             }
-            
-            var assetReference = gameObject.PrefabToAssetReference();
 
+            var view = viewObject.GetComponent<IView>();
+            if (view == null)
+            {
+                Debug.LogError($"View System Error: NON OBJECT VIEW FOUND ON REBUILD {viewDescription.ViewName} {viewObject}");
+                return viewDescription;
+            }
+
+            return UpdateViewReferenceData(viewDescription, 
+                view, defaultView,
+                overrideAddressableGroup, addressableGroup);
+        }
+
+        public UiViewReference UpdateViewReferenceData(UiViewReference viewDescription, 
+            IView view, bool defaultView = true,
+            bool overrideAddressableGroup = false,
+            string addressableGroup = null)
+        {
+            var gameObject = view.GameObject;
+            var assetPath = AssetDatabase.GetAssetPath(gameObject);
+            var tag = GetSkinTag(view, defaultView);
+
+            ApplyViewAddressable(gameObject, overrideAddressableGroup, addressableGroup);
+
+            var assetReference = gameObject.PrefabToAssetReference();
             if (assetReference.RuntimeKeyIsValid() == false)
             {
                 GameLog.LogError($"Asset {gameObject.name} by path {assetPath} wrong addressable asset");
                 return null;
             }
-
-            var viewType = view.GetType();
-
-            var modelType = ViewSystemUtils.GetModelTypeByView(viewType);
             
+            var guid = assetReference.AssetGUID;
+            var viewType = view.GetType();
+            var modelType = ViewSystemUtils.GetModelTypeByView(viewType);
             var viewModelType = ViewSystemUtils.GetFirstAssignable(modelType);
-                
-            var viewDescription = new UiViewReference()
-            {
-                Tag = tag,
-                AssetGUID = assetReference.AssetGUID,
-                Type = viewType,
-                ModelType = modelType,
-                ViewModelType = viewModelType,
-                View = assetReference,
-                ViewName = assetReference.editorAsset.name
-            };
-
+            
+            viewDescription.Tag = tag;
+            viewDescription.AssetGUID = guid;
+            viewDescription.Type = viewType;
+            viewDescription.ModelType = modelType;
+            viewDescription.ViewModelType = viewModelType;
+            viewDescription.View = assetReference;
+            viewDescription.ViewName = assetReference.editorAsset.name;
+            viewDescription.PoolingPreloadCount = viewDescription.PoolingPreloadCount;
+            viewDescription.Hash = viewDescription.GetHashCode();
+            
             return viewDescription;
         }
 
+        public void ApplyViewAddressable(
+            GameObject gameObject,
+            bool overrideAddressableGroup = false,
+            string addressableGroup = null)
+        {
+            if(overrideAddressableGroup && !string.IsNullOrEmpty(addressableGroup))
+                gameObject.SetAddressableAssetGroup(addressableGroup);
+
+            if (gameObject.IsInAnyAddressableAssetGroup()) return;
+            
+            if (string.IsNullOrEmpty(addressableGroup))
+            {
+                gameObject.AddToDefaultAddressableGroup();
+            }
+            else
+            {
+                gameObject.SetAddressableAssetGroup(addressableGroup);
+            }
+        }
+        
         public void Reset() => proceedViews.Clear();
 
         public string GetSkinTag(IView view, bool defaultView)
@@ -112,13 +161,15 @@ namespace UniModules.UniGame.ViewSystem
 
             var skinOverride = gameObject.GetComponent<IViewSkinTag>();
 
-            if (defaultView) return skinOverride == null 
-                ? string.Empty : skinOverride.SkinTag;
-            
-            var assetPath  = AssetDatabase.GetAssetPath(gameObject);
+            if (defaultView)
+                return skinOverride == null
+                    ? string.Empty
+                    : skinOverride.SkinTag;
+
+            var assetPath = AssetDatabase.GetAssetPath(gameObject);
             return Path.GetFileName(Path.GetDirectoryName(assetPath));
         }
-        
+
         private List<TView> LoadUiViews<TView>(IReadOnlyList<string> paths)
             where TView : class, IView
         {
@@ -132,23 +183,25 @@ namespace UniModules.UniGame.ViewSystem
             return views;
         }
 
-        private void ApplyOverrideValues(UiViewReference viewReference)
+        private void ApplyOverrideValues(UiViewReference viewReference,List<UiViewReference> values)
         {
-            var overrideValue = previousReferences
-                .FirstOrDefault(x => x.Type.Equals(viewReference.Type) &&
-                                     x.ModelType.Equals(viewReference.ModelType) &&
-                                     string.Equals(x.Tag, viewReference.Tag) &&
-                                     string.Equals(x.ViewName, viewReference.ViewName));
-
-            var type = overrideValue?.ViewModelType.Type;
-            if (type == null || type.IsAbstract || type.IsInterface) return;
-
-            viewReference.ViewModelType = overrideValue.ViewModelType;
+            var overrideValue = values
+                .FirstOrDefault(x => x.Hash == viewReference.Hash);
+            
+            if (overrideValue == null) return;
+            
+            var type = overrideValue.ViewModelType.Type;
+            if (type is { IsAbstract: false, IsInterface: false })
+            {
+                viewReference.ViewModelType = overrideValue.ViewModelType;
+            }
+            
+            viewReference.PoolingPreloadCount = overrideValue.PoolingPreloadCount;
         }
 
         private void AddView(ViewsSettings settings, IView view, bool defaultView, string groupName)
         {
-            var views     = settings.uiViews;
+            var views = settings.uiViews;
             var assetView = view as MonoBehaviour;
             if (assetView == null)
             {
@@ -162,7 +215,9 @@ namespace UniModules.UniGame.ViewSystem
             if (views.Any(x => string.Equals(guid, x.AssetGUID)))
                 return;
 
-            var viewReference = CreateViewReference(view,defaultView,settings.applyAddressablesGroup, groupName);
+            var viewReference = CreateViewReference(view, defaultView, 
+                settings.applyAddressablesGroup, groupName);
+            
             views.Add(viewReference);
         }
     }

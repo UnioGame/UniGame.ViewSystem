@@ -50,6 +50,8 @@
             }
             
             await OnInitialize(modelData);
+            
+            await UniTask.Yield();
         }
 
         /// <summary>

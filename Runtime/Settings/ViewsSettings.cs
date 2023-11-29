@@ -59,10 +59,10 @@ namespace UniGame.UiSystem.Runtime.Settings
         [Header("Registered Views")]
 #if ODIN_INSPECTOR
         [TabGroup(ViewTabKey)]
-        [Searchable]
-        //[BoxGroup(nameof(ViewsGroup))]
+        [Searchable(FilterOptions = SearchFilterOptions.ISearchFilterableInterface)]
         [GUIColor(nameof(ViewsBackgroundColor))]
         [PropertyOrder(-1)]
+        [ListDrawerSettings(ListElementLabelName = "@ViewName")]
 #endif
         public List<UiViewReference> uiViews = new List<UiViewReference>();
 
