@@ -225,6 +225,8 @@ namespace UniGame.UiSystem.Runtime
 
         public async UniTask<IView> Initialize(IViewModel model, bool ownViewModel = false)
         {
+            if (gameObject == null) return this;
+            
             // save current state
             _isViewOwner = ownViewModel;
             //restart view lifetime
@@ -332,8 +334,8 @@ namespace UniGame.UiSystem.Runtime
         #region private methods
 
         protected virtual IViewAnimation SelectAnimation()
-        {
-            _monoAnimation = GetComponent<IViewAnimation>();
+        {   
+            _monoAnimation = gameObject.GetComponent<IViewAnimation>();
             return _monoAnimation ?? viewAnimation;
         }
 

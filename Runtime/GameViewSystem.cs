@@ -564,6 +564,9 @@ namespace UniGame.UiSystem.Runtime
         public async UniTask<T> InitializeView<T>(T view, IViewModel viewModel)
             where T : IView
         {
+            if(view == null || view.GameObject == null) 
+                return view;
+            
             if (view is ILayoutItem factoryView)
                 factoryView.BindLayout(this);
 
