@@ -178,6 +178,12 @@ namespace UniGame.Rx.Runtime.Extensions
             var stringObservable = source.Select(format);
             return view.Bind(stringObservable, text);
         }
+        
+        public static TView Bind<TView>(this TView view, IObservable<int> source, int value)
+            where TView : ILifeTimeContext
+        {
+            return view.Bind(source, x => value = x);
+        }
 
         public static TView Bind<TView>(this TView view, IObservable<string> source, TextMeshPro text)
             where TView : ILifeTimeContext
