@@ -213,7 +213,6 @@
             where T : class, IView
         {
             var view = await source.CreateChildViewAsync(viewModel, typeof(T), parent, skinTag, viewName,stayWorld) as T;
-
             return view;
         }
         
@@ -433,6 +432,15 @@
             return view;
         }
 
+        public static async UniTask<T> CloseWith<T>(this UniTask<T> viewTask, ILifeTime lifeTime) 
+            where T : IView
+        {
+            var view = await viewTask;
+            if (view != null)
+                lifeTime.AddCleanUpAction(view.Close);
+
+            return view;
+        }
         
         public static T CloseWith<T>(this T view, ILifeTime lifeTime) where T : IView
         {
