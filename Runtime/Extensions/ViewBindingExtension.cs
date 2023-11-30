@@ -257,7 +257,7 @@ namespace UniGame.Rx.Runtime.Extensions
         {
             return !image
                 ? view
-                : view.Bind(source.Where(x => x != null),x => image.SetValue(x));
+                : view.Bind(source,x => image.SetValue(x));
         }
         
         public static TView Bind<TView>(this TView view, IObservable<Sprite> source, RawImage image)
@@ -374,6 +374,23 @@ namespace UniGame.Rx.Runtime.Extensions
             return source == null
                 ? sender
                 : sender.Bind(source.OnClickAsObservable(), () => value.SetValue(true));
+        }
+        
+                
+        public static T Bind<T>(this T sender,
+            IObservable<bool> source,Image image, Sprite on, Sprite off)
+            where T : ILifeTimeContext
+        {
+            var sourceObservable = source.Select(x => x ? on : off);
+            return Bind(sender, sourceObservable, image);
+        }
+        
+        public static T Bind<T>(this T sender,
+            IObservable<bool> source,Button image, Sprite on, Sprite off)
+            where T : ILifeTimeContext
+        {
+            var sourceObservable = source.Select(x => x ? on : off);
+            return Bind(sender, sourceObservable, image);
         }
         
         public static TView Bind<TView>(this TView sender,
