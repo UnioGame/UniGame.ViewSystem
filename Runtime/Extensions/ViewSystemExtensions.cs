@@ -10,8 +10,6 @@ using UnityEngine.SceneManagement;
 
 namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
 {
-    using UnityEngine.AddressableAssets;
-
     public static class ViewSystemExtensions 
     {
         public static async UniTask<ILifeTime> Warmup(this AssetReferenceViewSettings settingsReference,ILifeTime lifeTime)
@@ -58,11 +56,8 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
             return asset;
         }
 
-        public static async UniTask<GameObject> WarmUp(this AssetReferenceT<GameObject> view, ILifeTime lifeTime,int count = 0)
-        {
-            var asset = await view.CreatePool(lifeTime,count);
-            return asset;
-        }
+
+        
         
         private static async UniTask<ILifeTime> WarmupInternal(this AssetReferenceViewSettings settingsReference,object lifeTimeObject)
         {
