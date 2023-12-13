@@ -34,7 +34,7 @@ namespace UniGame.UiSystem.Runtime
         #region inspector
 
 #if ODIN_INSPECTOR
-        [FoldoutGroup("Animation")]
+        [FoldoutGroup("animation")]
         [InlineProperty]
         [HideLabel]
 #endif
@@ -72,8 +72,17 @@ namespace UniGame.UiSystem.Runtime
         [SerializeField]
         public string skinTag = string.Empty;
 
+#if ODIN_INSPECTOR
+        [FoldoutGroup("settings")]
+#endif
         public string sourceName;
+#if ODIN_INSPECTOR
+        [FoldoutGroup("settings")]
+#endif
         public string viewId;
+#if ODIN_INSPECTOR
+        [FoldoutGroup("settings")]
+#endif
         public int viewIdHash;
         
         /// <summary>

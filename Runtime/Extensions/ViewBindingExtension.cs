@@ -327,6 +327,30 @@ namespace UniGame.Rx.Runtime.Extensions
                 ? sender
                 : sender.Bind(source, x => slider.value = x);
         }
+        
+        public static TView Bind<TView>(this TView sender,IObservable<float> maxValue, IObservable<float> source, Slider slider)
+            where TView : ILifeTimeContext
+        {
+            if (source == null || slider == null) return sender;
+            sender.Bind(maxValue,x => slider.maxValue = x);    
+            return sender.Bind(source,slider);
+        }
+        
+        public static TView Bind<TView>(this TView sender,IObservable<int> maxValue, IObservable<int> source, Slider slider)
+            where TView : ILifeTimeContext
+        {
+            if (source == null || slider == null) return sender;
+            sender.Bind(maxValue,x => slider.maxValue = x);    
+            return sender.Bind(source,slider);
+        }
+        
+        public static TView Bind<TView>(this TView sender, IObservable<int> source, Slider slider)
+            where TView : ILifeTimeContext
+        {
+            return source == null || slider == null
+                ? sender
+                : sender.Bind(source, x => slider.value = x);
+        }
 
         public static TView Bind<TView>(this TView sender, Button source, Action command)
             where TView : ILifeTimeContext
