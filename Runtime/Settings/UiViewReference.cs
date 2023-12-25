@@ -17,9 +17,9 @@ namespace UniGame.UiSystem.Runtime.Settings
 #endif
     
     [Serializable]
-    public class UiViewReference : IEquatable<UiViewReference>,
+    public class UiViewReference : IEquatable<UiViewReference>
 #if ODIN_INSPECTOR
-        ISearchFilterable
+        ,ISearchFilterable
 #endif
     {
         public string AssetGUID = string.Empty;
