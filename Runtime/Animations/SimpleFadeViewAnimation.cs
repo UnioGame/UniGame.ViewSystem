@@ -6,35 +6,55 @@
     using global::UniGame.Core.Runtime;
     using Runtime;
     using global::UniModules.UniUiSystem.Runtime.Utils;
-    using Sirenix.OdinInspector;
     using UnityEngine;
     using UnityEngine.Serialization;
 
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+#endif
+    
     [Serializable]
     public class SimpleFadeViewAnimation : IViewAnimation
     {
         #region inspector
 
-        [TitleGroup("Animation Settings")] public bool enabled = false;
+        
+#if ODIN_INSPECTOR
+        [TitleGroup("Animation Settings")] 
+#endif
+        public bool enabled = false;
 
+#if ODIN_INSPECTOR
         [ShowIf(nameof(enabled))] [TitleGroup("Animation Settings")]
+#endif
         public bool animateShowing = true;
-
+        
+#if ODIN_INSPECTOR
         [ShowIf(nameof(enabled))] [TitleGroup("Animation Settings")]
+#endif
         public bool animateHiding = true;
 
+        
+#if ODIN_INSPECTOR
         [ShowIf(nameof(enabled))] [TitleGroup("Animation Settings")]
+#endif
         public bool animateClosing = true;
 
+       
+#if ODIN_INSPECTOR
         [ShowIf(nameof(enabled))]
         [TitleGroup("Animation Settings")]
+#endif
         public float duration = 0.2f;
         
         [ShowIf(nameof(enabled))]
         [TitleGroup("Animation Settings")]
         public bool unscaledTime;
 
-        [ShowIf(nameof(enabled))] [FoldoutGroup("CanvasGroup")] [SerializeField]
+        [SerializeField]
+#if ODIN_INSPECTOR
+        [ShowIf(nameof(enabled))] [FoldoutGroup("CanvasGroup")] 
+#endif
         public CanvasGroupState hiddenState = new CanvasGroupState
         {
             Alpha = 0,
@@ -42,7 +62,10 @@
             Interactable = false
         };
 
-        [ShowIf(nameof(enabled))] [FoldoutGroup("CanvasGroup")] [SerializeField]
+        [SerializeField]
+#if ODIN_INSPECTOR
+        [ShowIf(nameof(enabled))] [FoldoutGroup("CanvasGroup")] 
+#endif
         public CanvasGroupState visibleState = new CanvasGroupState
         {
             Alpha = 1,
