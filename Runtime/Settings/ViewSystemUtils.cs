@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Sirenix.OdinInspector;
 using UniModules.UniCore.Runtime.ReflectionUtils;
 using UniModules.UniCore.Runtime.Utils;
 using UniGame.Core.Runtime.SerializableType;
 using UniGame.UiSystem.Runtime;
+
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+#endif
 
 namespace UniModules.UniGame.ViewSystem
 {
@@ -41,6 +44,7 @@ namespace UniModules.UniGame.ViewSystem
             return items.FirstOrDefault();
         }
 
+#if ODIN_INSPECTOR
         public static IEnumerable<ValueDropdownItem<SType>> GetModelSTypeVariants(Type type)
         {
             foreach (var target in GetTypesVariants(type))
@@ -64,7 +68,8 @@ namespace UniModules.UniGame.ViewSystem
                 };
             }
         }
-
+#endif
+        
         public static IEnumerable<Type> GetTypesVariants(Type modelType)
         {
             var type = modelType;
