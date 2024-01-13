@@ -3,13 +3,16 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using Sirenix.OdinInspector;
     using UniGame.Runtime.ObjectPool.Extensions;
     using UniModules.UniCore.Runtime.ReflectionUtils;
     using UnityEngine;
     using UnityEngine.Pool;
     using Object = UnityEngine.Object;
 
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+#endif
+    
     [Serializable]
     public class FieldBindValue
     {
@@ -20,32 +23,45 @@
             BindingFlags.Instance | BindingFlags.Public |
             BindingFlags.NonPublic | BindingFlags.IgnoreCase;
         
+#if ODIN_INSPECTOR
         [TabGroup(FieldTabKey)]
         [EnableIf(nameof(enabled))]
+#endif
         public GameObject target;
         
+#if ODIN_INSPECTOR
         [TabGroup(FieldTabKey)]
         [ValueDropdown(nameof(GetComponents))]
         [HideLabel]
         [EnableIf(nameof(enabled))]
+#endif
         public Object value;
         
+#if ODIN_INSPECTOR
         [TabGroup(FieldTabKey)]
         [EnableIf(nameof(enabled))]
         [ValueDropdown(nameof(GetFields))]
         [HideLabel]
         [OnValueChanged(nameof(OnFieldChanged))]
+#endif
         public string field = string.Empty;
         
+#if ODIN_INSPECTOR
         [TabGroup(SettingsTabKey)]
+#endif
         public bool enabled;
         
+#if ODIN_INSPECTOR
         [TabGroup(SettingsTabKey)]
+#endif
         public ViewBindData view;
         
+#if ODIN_INSPECTOR
         [TabGroup(SettingsTabKey)]
+#endif
         public string label;
         
+#if ODIN_INSPECTOR
         public IEnumerable<ValueDropdownItem<Object>> GetComponents()
         {
             if(target == null) yield break;
@@ -87,8 +103,11 @@
                 };
             }
         }
-
+#endif
+        
+#if ODIN_INSPECTOR
         [OnInspectorInit]
+#endif
         private void OnFieldChanged()
         {
             if(view == null) return;

@@ -47,8 +47,10 @@
 #endif
         public float duration = 0.2f;
         
+#if ODIN_INSPECTOR
         [ShowIf(nameof(enabled))]
         [TitleGroup("Animation Settings")]
+#endif
         public bool unscaledTime;
 
         [SerializeField]

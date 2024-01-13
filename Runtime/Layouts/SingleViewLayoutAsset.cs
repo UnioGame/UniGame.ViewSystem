@@ -4,9 +4,12 @@
     using global::UniGame.UiSystem.Runtime;
     using global::UniGame.UiSystem.Runtime.Backgrounds.Abstract;
     using global::UniGame.ViewSystem.Runtime;
-    using Sirenix.OdinInspector;
     using UnityEngine;
 
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+#endif
+    
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/Layout/Single View Layout", fileName = "Single View Layout")]
     public class SingleViewLayoutAsset : ViewLayoutType
     {

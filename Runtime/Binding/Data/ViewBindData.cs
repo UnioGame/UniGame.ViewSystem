@@ -3,13 +3,16 @@
     using System;
     using System.Collections.Generic;
     using Core.Runtime.SerializableType;
-    using Sirenix.OdinInspector;
     using UiSystem.Runtime;
     using UniModules.UniCore.Runtime.ReflectionUtils;
     using UnityEngine;
 
 #if UNITY_EDITOR
     using UniModules.Editor;
+#endif
+    
+#if ODIN_INSPECTOR
+     using Sirenix.OdinInspector;
 #endif
     
     [Serializable]
@@ -21,26 +24,36 @@
 
         public bool isEnabled = true;
         
+#if ODIN_INSPECTOR
         [OnValueChanged(nameof(Save))]
         [TabGroup(BindTabKey)]
         [ListDrawerSettings(CustomAddFunction = nameof(AddField),ListElementLabelName = "label")]
+#endif
         public List<FieldBindValue> values = new List<FieldBindValue>();
         
+#if ODIN_INSPECTOR
         [PropertySpace(8)]
         [OnValueChanged(nameof(Save))]
         [TabGroup(BindTabKey)]
         [ListDrawerSettings(CustomAddFunction = nameof(AddMethod),ListElementLabelName = "label")]
+#endif
         public List<MethodBindValue> methods = new List<MethodBindValue>();
         
+#if ODIN_INSPECTOR
         [TabGroup(SettingsTabKey)]
+#endif
         public bool autoBindModel = true;
         
+#if ODIN_INSPECTOR
         [TabGroup(SettingsTabKey)]
         [HideIf(nameof(autoBindModel))]
         [ValueDropdown(nameof(GetModelTypes))]
+#endif
         public SType modelType;
 
+#if ODIN_INSPECTOR
         [TabGroup(SettingsTabKey)]
+#endif
         public ViewBase view;
 
         public Type ModelType => autoBindModel ? view.ModelType : modelType;
@@ -77,6 +90,7 @@
 #endif
         }
         
+#if ODIN_INSPECTOR
         public IEnumerable<ValueDropdownItem<SType>> GetModelTypes()
         {
             var types = BaseModelType.GetAssignableTypes();
@@ -91,8 +105,11 @@
                 };
             }
         }
-
+#endif
+        
+#if ODIN_INSPECTOR
         [OnInspectorInit]
+#endif
         private void OnInspectorInit()
         {
             view ??= GetComponent<ViewBase>();

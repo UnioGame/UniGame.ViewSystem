@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using Converters;
-    using Sirenix.OdinInspector;
     using UiSystem.Runtime;
     using UnityEngine;
     
@@ -12,8 +11,14 @@
     using UnityEditor;
 #endif
     
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+#endif
+    
     [Serializable]
+#if ODIN_INSPECTOR
     [ValueDropdown("@UniGame.LeoEcs.ViewSystem.Layouts.ViewLayoutId.GetLayoutsId()",IsUniqueList = true,DropdownTitle = "Equip Slot")]
+#endif
     public struct ViewLayoutId
     {
         [SerializeField]
@@ -21,6 +26,7 @@
 
         #region statis editor data
         
+#if ODIN_INSPECTOR
         public static IEnumerable<ValueDropdownItem<ViewLayoutId>> GetLayoutsId()
         {
 #if UNITY_EDITOR
@@ -52,7 +58,8 @@
 #endif
             yield break;
         }
-                
+#endif     
+
         #endregion
 
         public static implicit operator string(ViewLayoutId v)

@@ -3,13 +3,17 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using Sirenix.OdinInspector;
+    
     using UniGame.Runtime.ObjectPool.Extensions;
     using UniModules.UniCore.Runtime.ReflectionUtils;
     using UnityEngine;
     using UnityEngine.Pool;
     using Object = UnityEngine.Object;
 
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+#endif
+    
     [Serializable]
     public class MethodBindValue
     {
@@ -25,28 +29,39 @@
 
         private static Type ObservableType = typeof(IObservable<>);
         
+#if ODIN_INSPECTOR
         [TabGroup(FieldTabKey)]
         [EnableIf(nameof(enabled))]
         [ValueDropdown(nameof(GetFields))]
         [OnValueChanged(nameof(OnFieldChanged))]
         [HideLabel]
+#endif
         public string field = string.Empty;
         
+#if ODIN_INSPECTOR
         [TabGroup(FieldTabKey)]
         [ValueDropdown(nameof(GetMethods))]
         [HideLabel]
         [EnableIf(nameof(enabled))]
+#endif
         public string method;
         
+#if ODIN_INSPECTOR
         [TabGroup(SettingsTabKey)]
+#endif
         public bool enabled;
         
+#if ODIN_INSPECTOR
         [TabGroup(SettingsTabKey)]
+#endif
         public ViewBindData view;
 
+#if ODIN_INSPECTOR
         [TabGroup(SettingsTabKey)]
+#endif
         public string label;
         
+#if ODIN_INSPECTOR
         public IEnumerable<ValueDropdownItem<string>> GetMethods()
         {
             if(view == null) yield break;
@@ -122,8 +137,11 @@
                 };
             }
         }
+#endif
         
+#if ODIN_INSPECTOR
         [OnInspectorInit]
+#endif
         private void OnFieldChanged()
         {
             if(view == null) return;
