@@ -1,8 +1,5 @@
 ﻿namespace UniGame.Views.Backgrounds
 {
-    using System.Collections;
-    using UniGame.Rendering.Runtime.Blur.KawaseBlur;
-    using UniCore.Runtime.ProfilerTools;
     using UiSystem.Runtime;
     using UniGame.UiSystem.Runtime.Backgrounds.Abstract;
     using Core.Runtime;
