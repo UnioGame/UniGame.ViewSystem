@@ -21,7 +21,6 @@
 #endif
     public class GameViewSystemAsset : MonoBehaviour, IGameViewSystem
     {
-       
         #region inspector data
         
 #if ODIN_INSPECTOR
