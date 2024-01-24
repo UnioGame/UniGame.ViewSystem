@@ -10,6 +10,7 @@ namespace UniGame.ModelViewsMap.Runtime.Settings
     {
         public AssetReferenceUiSystem(string guid) : base(guid)
         {
+            
         }
     }
 }
