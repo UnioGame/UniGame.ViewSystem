@@ -30,7 +30,7 @@
         public AssetReferenceT<ViewSystemSettings> settings;
         
         [Space]
-        public ViewLayoutMap layoutMap = new ViewLayoutMap();
+        public ViewLayoutMap layoutMap = new();
 
         [Space]
         public ViewLayoutType defaultLayout;
@@ -38,7 +38,7 @@
         #endregion
 
         private IGameViewSystem    _gameViewSystem;
-        private LifeTimeDefinition _lifeTime;
+        private LifeTimeDefinition _lifeTime = new();
 
         #region IViewModelProvider api
 

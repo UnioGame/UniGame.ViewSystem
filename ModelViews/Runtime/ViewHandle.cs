@@ -16,8 +16,8 @@
         private LifeTimeDefinition _lifeTime     = new LifeTimeDefinition();
         private LifeTimeDefinition _viewLifeTime = new LifeTimeDefinition();
 
-        private RecycleReactiveProperty<IViewHandle> _observable = new RecycleReactiveProperty<IViewHandle>();
-        private RecycleReactiveProperty<ViewStatus>  _rxStatus     = new RecycleReactiveProperty<ViewStatus>();
+        private ReactiveValue<IViewHandle> _observable = new ReactiveValue<IViewHandle>();
+        private ReactiveValue<ViewStatus>  _rxStatus     = new ReactiveValue<ViewStatus>();
         private IView _view;
         private ReactiveCommand _notifyCommand = new ReactiveCommand();
 

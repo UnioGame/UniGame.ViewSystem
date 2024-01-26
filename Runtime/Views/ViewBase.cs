@@ -53,7 +53,7 @@ namespace UniGame.UiSystem.Runtime
         [HideInInspector]
         [ReadOnlyValue]
         [SerializeField]
-        private BoolRecycleReactiveProperty _isInitialized = new();
+        private BoolReactiveValue _isInitialized = new();
 
 #if ODIN_INSPECTOR
         [ShowIf(nameof(IsCommandsAction))]
@@ -98,7 +98,7 @@ namespace UniGame.UiSystem.Runtime
         private IViewAnimation _monoAnimation;
         private RectTransform _rectTransform;
         private Transform _transform;
-        private RecycleReactiveProperty<bool> _isModelChanged = new();
+        private ReactiveValue<bool> _isModelChanged = new();
 
         private readonly LifeTimeDefinition _lifeTimeDefinition = new();
         private readonly LifeTimeDefinition _progressLifeTime   = new();
@@ -108,12 +108,12 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// ui element visibility status
         /// </summary>
-        private readonly BoolRecycleReactiveProperty _visibility = new(false);
+        private readonly BoolReactiveValue _visibility = new(false);
 
         /// <summary>
         /// view statuses reactions
         /// </summary>
-        private readonly RecycleReactiveProperty<ViewStatus> _status = new();
+        private readonly ReactiveValue<ViewStatus> _status = new();
 
         private IViewLayoutProvider _viewLayout;
 
