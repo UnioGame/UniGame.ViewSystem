@@ -13,6 +13,7 @@ namespace UniGame.UiSystem.Runtime
         private readonly LifeTimeDefinition   _lifeTimeDefinition = new LifeTimeDefinition();
         private readonly BoolReactiveProperty _isActive           = new BoolReactiveProperty(true);
         private          bool                 _disposeWithModel   = true;
+        private ReactiveCommand _close => new ReactiveCommand();
 
         public  ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
 
@@ -21,6 +22,8 @@ namespace UniGame.UiSystem.Runtime
             get => _disposeWithModel;
             protected set => _disposeWithModel = value;
         }
+
+        public IReactiveCommand<Unit> Close => _close;
         
         public IReadOnlyReactiveProperty<bool> IsActive => _isActive;
 
@@ -35,12 +38,17 @@ namespace UniGame.UiSystem.Runtime
 #endif
         public void Dispose()
         {
-            if (_lifeTimeDefinition.IsTerminated)
-                return;
+            if (_lifeTimeDefinition.IsTerminated) return;
+            
+            _close.Dispose();
             _lifeTimeDefinition.Terminate();
             GC.SuppressFinalize(this);
         }
 
-        ~ViewModelBase()  => _lifeTimeDefinition?.Terminate();
+        ~ViewModelBase()
+        {
+            _close.Dispose();
+            _lifeTimeDefinition?.Terminate();
+        }
     }
 }
