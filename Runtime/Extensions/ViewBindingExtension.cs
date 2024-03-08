@@ -204,6 +204,34 @@ namespace UniGame.Rx.Runtime.Extensions
             return view.Bind(source,x => text.SetValue(x));
         }
         
+        public static TView Bind<TView>(this TView view,TMP_InputField source, IReactiveProperty<int> value)
+            where TView : ILifeTimeContext
+        {
+            if (source == null) return view;
+            var observable = source.onValueChanged.AsObservable();
+            return view.Bind(observable, x =>
+            {
+                int.TryParse(x, out var result);
+                value.Value = result;
+            });
+        }
+        
+        public static TView Bind<TView>(this TView view,TMP_InputField source, IObserver<string> value)
+            where TView : ILifeTimeContext
+        {
+            if (source == null) return view;
+            var observable = source.onValueChanged.AsObservable();
+            return view.Bind(observable, value);
+        }
+        
+        public static TView Bind<TView>(this TView view,TMP_InputField source, IReactiveProperty<string> value)
+            where TView : ILifeTimeContext
+        {
+            if (source == null) return view;
+            var observable = source.onValueChanged.AsObservable();
+            return view.Bind(observable, value);
+        }
+        
         public static TView Bind<TView>(this TView view, IObservable<int> source, TMP_InputField text)
             where TView : ILifeTimeContext
         {
