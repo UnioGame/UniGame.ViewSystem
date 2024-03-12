@@ -224,10 +224,13 @@ namespace UniGame.Rx.Runtime.Extensions
             return view.Bind(observable, value);
         }
         
-        public static TView Bind<TView>(this TView view,TMP_InputField source, IReactiveProperty<string> value)
+        public static TView Bind<TView>(this TView view,TMP_InputField source, IReactiveProperty<string> value,bool initDefault = true)
             where TView : ILifeTimeContext
         {
-            if (source == null) return view;
+            if (source == null || value == null) return view;
+            if(initDefault)
+                value.Value = source.text;
+            
             var observable = source.onValueChanged.AsObservable();
             return view.Bind(observable, value);
         }
