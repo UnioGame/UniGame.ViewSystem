@@ -35,17 +35,13 @@ Add to your project manifiest by path [%UnityProject%]/Packages/manifiest.json n
 
 ```json
 {
-  "scopedRegistries": [
-   {
-      "name": "UniGame",
-      "url": "http://package.unigame.pro:4873/",
-      "scopes": [
-        "com.unigame"
-      ]
-    }
-  ],
+  "dependencies": {
+    "com.unigame.viewsystem" : "https://github.com/UnioGame/UniGame.ViewSystem.git"
+    "com.unigame.localization": "https://github.com/UnioGame/UniGame.Localization.git",
+    "com.unigame.coremodules": "https://github.com/UnioGame/UniGame.CoreModules.git",
+    "com.cysharp.unitask" : "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"
+  }
 }
-
 ```
 
 and now install via Package Manager
