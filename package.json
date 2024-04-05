@@ -15,9 +15,10 @@
   ],
   "dependencies": {
     "com.unity.localization": "1.5.1",
-    "com.unigame.localization": "https://github.com/UnioGame/UniGame.Localization.git",
     "com.unity.textmeshpro": "3.0.8",
-    "com.unigame.coremodules": "https://github.com/UnioGame/UniGame.CoreModules.git"
+    "com.unigame.localization": "https://github.com/UnioGame/UniGame.Localization.git",
+    "com.unigame.coremodules": "https://github.com/UnioGame/UniGame.CoreModules.git",
+    "com.cysharp.unitask" : "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"
   },
   "repository": {
     "type": "git",
