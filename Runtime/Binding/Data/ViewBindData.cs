@@ -14,6 +14,10 @@
 #if ODIN_INSPECTOR
      using Sirenix.OdinInspector;
 #endif
+
+#if TRI_INSPECTOR
+    using TriInspector;
+#endif
     
     [Serializable]
     public class ViewBindData : MonoBehaviour
