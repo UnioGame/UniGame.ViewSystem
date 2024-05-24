@@ -113,8 +113,7 @@
             var gameObject = view.GameObject;
 
             var canvasGroup = gameObject.GetComponent<CanvasGroup>();
-            canvasGroup ??= gameObject.AddComponent<CanvasGroup>();
-
+            if (!canvasGroup) canvasGroup = gameObject.AddComponent<CanvasGroup>(); 
             return canvasGroup;
         }
 
