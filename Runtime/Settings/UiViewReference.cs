@@ -14,6 +14,7 @@ namespace UniGame.UiSystem.Runtime.Settings
 
 #if ODIN_INSPECTOR
     using Sirenix.OdinInspector;
+    using UnityEditor;
 #endif
     
     [Serializable]
@@ -38,9 +39,8 @@ namespace UniGame.UiSystem.Runtime.Settings
         public string Tag = string.Empty;
 
 #if ODIN_INSPECTOR
-        [DrawWithUnity]
+        [ValueDropdown(nameof(GetViewsDropdown))]
 #endif
-        [STypeFilter(typeof(IView))]
         public SType Type;
 
 #if ODIN_INSPECTOR
@@ -99,9 +99,45 @@ namespace UniGame.UiSystem.Runtime.Settings
             };
         }
         
+        public IEnumerable<ValueDropdownItem<SType>> GetViewsDropdown()
+        {
+            foreach (var viewType in GetTypeDropdown(typeof(IView)))
+            {
+                yield return viewType;
+            }
+        }
+        
+        public IEnumerable<ValueDropdownItem<SType>> GetTypeDropdown(Type type,bool allowAbstract = false)
+        {
+            if (type == null)
+            {
+                yield return new ValueDropdownItem<SType>()
+                {
+                    Text = "(empty)",
+                    Value = null,
+                };
+            }
+            var types = TypeCache.GetTypesDerivedFrom(type);
+            foreach (var targetType in types)
+            {
+                if(targetType == null) continue;
+                if(!allowAbstract && (targetType.IsAbstract || 
+                   targetType.IsInterface)) continue;
+                
+                yield return new ValueDropdownItem<SType>()
+                {
+                    Text = targetType.Name,
+                    Value = targetType
+                };
+            }
+        }
+        
         private IEnumerable<ValueDropdownItem<SType>> GetModelDropdowns()
         {
-            return ViewSystemUtils.GetModelSTypeVariants(ModelType.Type);
+            foreach (var item in GetTypeDropdown(typeof(IViewModel),true))
+            {
+                yield return item;
+            }
         }
         
 #endif
