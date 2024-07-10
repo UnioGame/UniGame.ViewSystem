@@ -109,6 +109,7 @@ namespace UniGame.UiSystem.Runtime.Settings
         
         public IEnumerable<ValueDropdownItem<SType>> GetTypeDropdown(Type type,bool allowAbstract = false)
         {
+#if UNITY_EDITOR
             if (type == null)
             {
                 yield return new ValueDropdownItem<SType>()
@@ -130,6 +131,8 @@ namespace UniGame.UiSystem.Runtime.Settings
                     Value = targetType
                 };
             }
+#endif
+            yield break;
         }
         
         private IEnumerable<ValueDropdownItem<SType>> GetModelDropdowns()
