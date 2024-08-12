@@ -6,5 +6,6 @@
         Screen  = 1,
         Window  = 2,
         Overlay = 3,
+        HealthBar = 4
     }
 }
