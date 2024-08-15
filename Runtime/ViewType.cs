@@ -5,7 +5,6 @@
         None    = 0,
         Screen  = 1,
         Window  = 2,
-        Overlay = 3,
-        HealthBar = 4
+        Overlay = 3
     }
 }
