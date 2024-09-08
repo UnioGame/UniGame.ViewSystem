@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 127793568177832887}
   - component: {fileID: 4444143577815009918}
   - component: {fileID: 510056504312570526}
+  - component: {fileID: 3560638554337900803}
   m_Layer: 0
   m_Name: Overlay
   m_TagString: Untagged
@@ -32,7 +33,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7387079578667170276}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -56,6 +56,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 1809030831
@@ -76,9 +77,9 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1792, y: 828}
-  m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_ReferenceResolution: {x: 1080, y: 1920}
+  m_ScreenMatchMode: 1
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -100,7 +101,22 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 311
+    m_Bits: 55
+--- !u!114 &3560638554337900803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6689680012628655584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2255a6df9791d6244a8e68a58b579d39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layoutCanvas: {fileID: 0}
+  backgroundFactory: {fileID: 0}
+  layoutBehaviour: {fileID: 0}
 --- !u!1 &7387079578667170277
 GameObject:
   m_ObjectHideFlags: 0
@@ -111,9 +127,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7387079578667170276}
   - component: {fileID: 7387079578667170278}
-  - component: {fileID: 2702282566138719452}
-  - component: {fileID: 1115454216375761744}
-  - component: {fileID: 5413586547395399407}
   - component: {fileID: 1652989200803567895}
   m_Layer: 0
   m_Name: ViewSystemAsset
@@ -129,6 +142,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7387079578667170277}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -138,7 +152,6 @@ Transform:
   - {fileID: 7387079578710871595}
   - {fileID: 8551802080964923522}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7387079578667170278
 MonoBehaviour:
@@ -160,57 +173,10 @@ MonoBehaviour:
   layoutMap:
     keys: 010000000200000003000000
     values:
-    - {fileID: 2702282566138719452}
-    - {fileID: 1115454216375761744}
-    - {fileID: 5413586547395399407}
---- !u!114 &2702282566138719452
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7387079578667170277}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2255a6df9791d6244a8e68a58b579d39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _layoutCanvas: {fileID: 7387079579963990725}
-  _backgroundFactory: {fileID: 0}
-  _layoutBehaviourFactory: {fileID: 11400000, guid: ed5763f3f29a7cb4c94abf0efef0d2fe,
-    type: 2}
---- !u!114 &1115454216375761744
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7387079578667170277}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2255a6df9791d6244a8e68a58b579d39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _layoutCanvas: {fileID: 7387079578710871638}
-  _backgroundFactory: {fileID: 0}
-  _layoutBehaviourFactory: {fileID: 11400000, guid: ed5763f3f29a7cb4c94abf0efef0d2fe,
-    type: 2}
---- !u!114 &5413586547395399407
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7387079578667170277}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2255a6df9791d6244a8e68a58b579d39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _layoutCanvas: {fileID: 127793568177832887}
-  _backgroundFactory: {fileID: 0}
-  _layoutBehaviourFactory: {fileID: 11400000, guid: 6d9bedbb270ccac448e317a8efa74c0b,
-    type: 2}
+    - {fileID: 448714698308417584}
+    - {fileID: 5251586503875359122}
+    - {fileID: 3560638554337900803}
+  defaultLayout: {fileID: 0}
 --- !u!114 &1652989200803567895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -235,6 +201,7 @@ GameObject:
   - component: {fileID: 7387079578710871638}
   - component: {fileID: 7387079578710871592}
   - component: {fileID: 7387079578710871593}
+  - component: {fileID: 5251586503875359122}
   m_Layer: 0
   m_Name: Windows
   m_TagString: Untagged
@@ -255,7 +222,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7387079578667170276}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -279,6 +245,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 1809030831
@@ -299,9 +266,9 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1792, y: 828}
-  m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_ReferenceResolution: {x: 1080, y: 1920}
+  m_ScreenMatchMode: 1
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -324,6 +291,21 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 55
+--- !u!114 &5251586503875359122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7387079578710871639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2255a6df9791d6244a8e68a58b579d39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layoutCanvas: {fileID: 0}
+  backgroundFactory: {fileID: 0}
+  layoutBehaviour: {fileID: 0}
 --- !u!1 &7387079579963990722
 GameObject:
   m_ObjectHideFlags: 0
@@ -336,6 +318,7 @@ GameObject:
   - component: {fileID: 7387079579963990725}
   - component: {fileID: 7387079579963990727}
   - component: {fileID: 7387079579963990724}
+  - component: {fileID: 448714698308417584}
   m_Layer: 0
   m_Name: Screens
   m_TagString: Untagged
@@ -356,7 +339,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7387079578667170276}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -380,7 +362,8 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 25
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 1809030831
   m_SortingOrder: 100
@@ -400,9 +383,9 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1792, y: 828}
-  m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_ReferenceResolution: {x: 1080, y: 1920}
+  m_ScreenMatchMode: 1
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -424,4 +407,19 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 311
+    m_Bits: 55
+--- !u!114 &448714698308417584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7387079579963990722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2255a6df9791d6244a8e68a58b579d39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layoutCanvas: {fileID: 0}
+  backgroundFactory: {fileID: 0}
+  layoutBehaviour: {fileID: 0}
