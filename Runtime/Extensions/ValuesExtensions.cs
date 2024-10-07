@@ -123,6 +123,19 @@
             var stringValue = value.ToStringFromCache();
             return SetValue(text, stringValue);
         }
+        
+        public static bool SetValue(this Image target, UniTask<Sprite> value)
+        {
+            SetValueAsync(target, value).Forget();
+            return target!=null;
+        }
+        
+        public static async UniTask<bool> SetValueAsync(this Image target, UniTask<Sprite> sprite)
+        {
+            if (target == null) return false;
+            var value = await sprite;
+            return SetValue(target, value);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool SetValue(this Image target, bool enabled)
