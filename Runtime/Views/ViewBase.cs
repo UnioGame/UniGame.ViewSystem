@@ -291,6 +291,7 @@ namespace UniGame.UiSystem.Runtime
         [Button]
         [ShowIf(nameof(IsCommandsAction))]
 #endif
+        private UniTask _task;
         public void Hide()
         {
             if(!SetInternalStatus(ViewStatus.Hidden))
@@ -299,9 +300,13 @@ namespace UniGame.UiSystem.Runtime
             if(!SetStatus(ViewStatus.Hiding))
                 return;
 
-            StartProgressAction(_progressLifeTime, OnHide)
-                .AttachExternalCancellation(_progressLifeTime.Token)
-                .Forget();
+            if(_task.Status == UniTaskStatus.Pending) return;
+            
+            _task = StartProgressAction(_progressLifeTime, OnHide)
+                .AttachExternalCancellation(_progressLifeTime.Token);
+            
+            _task.Forget();
+
         }
 
         /// <summary>
@@ -320,9 +325,11 @@ namespace UniGame.UiSystem.Runtime
                 return;
             }
             
-            StartProgressAction(_progressLifeTime, OnClose, Destroy)
-                .AttachExternalCancellation(_progressLifeTime.Token)
-                .Forget();
+            if(_task.Status == UniTaskStatus.Pending) return;
+            
+            _task =  StartProgressAction(_progressLifeTime, OnClose, Destroy)
+                .AttachExternalCancellation(_progressLifeTime.Token);
+            _task.Forget();
         }
         
         public IObservable<IView> SelectStatus(ViewStatus status)
