@@ -95,7 +95,7 @@ namespace UniGame.UiSystem.Runtime.Settings
 #if UNITY_EDITOR
         private IEnumerable<string> GetLabels()
         {
-            return this.GetAllAddressablesLabels();
+            return this.GetAllAddressableLabels();
         }
 
 #if ODIN_INSPECTOR
