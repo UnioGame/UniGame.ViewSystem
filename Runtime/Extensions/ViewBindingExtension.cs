@@ -155,6 +155,17 @@ namespace UniGame.Rx.Runtime.Extensions
             return view;
         }
 
+
+        public static IDisposable Bind(this IObservable<string> source, TextMeshPro text)
+        {
+            return source.Subscribe(x => text.SetValue(x));
+        }
+        
+        public static IDisposable Bind(this IObservable<string> source, TextMeshProUGUI text)
+        {
+            return source.Subscribe(x => text.SetValue(x));
+        }
+
         public static TView Bind<TView>(this TView view, IObservable<Sprite> source, Button button)
             where TView : ILifeTimeContext
         {
