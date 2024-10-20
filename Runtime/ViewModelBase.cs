@@ -10,22 +10,17 @@ namespace UniGame.UiSystem.Runtime
     [Serializable]
     public class ViewModelBase : IViewModel
     {
-        private readonly LifeTimeDefinition   _lifeTimeDefinition = new LifeTimeDefinition();
-        private readonly BoolReactiveProperty _isActive           = new BoolReactiveProperty(true);
-        private          bool                 _disposeWithModel   = true;
-        private ReactiveCommand _close => new ReactiveCommand();
+        private readonly LifeTime _lifeTime = new();
+        private bool _disposeWithModel = true;
+        private ReactiveCommand _close => new();
 
-        public  ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
+        public ILifeTime LifeTime => _lifeTime;
 
         public virtual bool IsDisposeWithModel
         {
             get => _disposeWithModel;
             protected set => _disposeWithModel = value;
         }
-
-        public IReactiveCommand<Unit> Close => _close;
-        
-        public IReadOnlyReactiveProperty<bool> IsActive => _isActive;
 
         public IViewModel DisposeByModel(bool disposeWithModel)
         {
@@ -38,17 +33,17 @@ namespace UniGame.UiSystem.Runtime
 #endif
         public void Dispose()
         {
-            if (_lifeTimeDefinition.IsTerminated) return;
-            
+            if (_lifeTime.IsTerminated) return;
+
             _close.Dispose();
-            _lifeTimeDefinition.Terminate();
+            _lifeTime.Release();
             GC.SuppressFinalize(this);
         }
 
         ~ViewModelBase()
         {
             _close.Dispose();
-            _lifeTimeDefinition?.Terminate();
+            _lifeTime?.Release();
         }
     }
 }

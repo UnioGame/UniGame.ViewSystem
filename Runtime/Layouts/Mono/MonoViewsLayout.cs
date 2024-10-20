@@ -25,7 +25,6 @@
         [SerializeField]
         public BackgroundFactory backgroundFactory;
 
-        [SerializeReference]
 #if ODIN_INSPECTOR
         [Required]
         [InlineEditor]
