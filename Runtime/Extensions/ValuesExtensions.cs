@@ -7,6 +7,7 @@
     using Cysharp.Threading.Tasks;
     using TMPro;
     using UniModules.UniCore.Runtime.Utils;
+    using UniModules.UniGame.Core.Runtime.DataFlow.Extensions;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
     using UnityEngine.UI;
@@ -128,6 +129,22 @@
         {
             SetValueAsync(target, value).Forget();
             return target!=null;
+        }
+
+        public static void SetValue(this Image target, AssetReferenceT<Sprite> sprite)
+        {
+            SetValueAsync(target, sprite).Forget();
+        }
+
+        public static async UniTask<bool> SetValueAsync(this Image target, AssetReferenceT<Sprite> sprite)
+        {
+            if (target == null || 
+                sprite == null || 
+                sprite.RuntimeKeyIsValid() == false) return false;
+            
+            var lifeTime = target.GetAssetLifeTime();
+            var value = await sprite.LoadAssetTaskAsync<Sprite>(lifeTime);
+            return SetValue(target, value);
         }
         
         public static async UniTask<bool> SetValueAsync(this Image target, UniTask<Sprite> sprite)
