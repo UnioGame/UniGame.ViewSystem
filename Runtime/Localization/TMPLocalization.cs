@@ -7,20 +7,21 @@ namespace UniGame.Localization.Runtime.Components
     using UniRx;
     using UnityEngine;
     using UnityEngine.Localization;
+    using UnityEngine.Serialization;
     using ViewSystem.Runtime;
 
     public class TMPLocalization : MonoBehaviour
     {
+        public TextMeshPro text;
+        public TextMeshProUGUI textUGUI;
         public LocalizedString localization;
-
-        private TextMeshPro _text;
-        private TextMeshProUGUI _textUGUI;
+        
         private LifeTime _lifeTime = new();
 
         private void Awake()
         {
-            _text = GetComponent<TextMeshPro>();
-            _textUGUI = GetComponent<TextMeshProUGUI>();
+            text ??= GetComponent<TextMeshPro>();
+            textUGUI ??= GetComponent<TextMeshProUGUI>();
         }
         
         [Button]
@@ -28,10 +29,10 @@ namespace UniGame.Localization.Runtime.Components
         {
             var value = localization.GetLocalizedString();
             
-            _text = GetComponent<TextMeshPro>();
-            _textUGUI = GetComponent<TextMeshProUGUI>();
-            _text.SetValue(value);
-            _textUGUI.SetValue(value);
+            text ??= GetComponent<TextMeshPro>();
+            textUGUI ??= GetComponent<TextMeshProUGUI>();
+            text.SetValue(value);
+            textUGUI.SetValue(value);
         }
 
         private void OnEnable()
@@ -39,8 +40,8 @@ namespace UniGame.Localization.Runtime.Components
             _lifeTime.Restart();
             
             localization.AsObservable()
-                .Do(x => _textUGUI.SetValue(x))
-                .Do(x => _text.SetValue(x))
+                .Do(x => textUGUI.SetValue(x))
+                .Do(x => text.SetValue(x))
                 .Subscribe()
                 .AddTo(_lifeTime);
         }
