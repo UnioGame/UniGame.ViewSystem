@@ -15,6 +15,8 @@ namespace UniGame.UiSystem.Runtime
         private ReactiveCommand _close => new();
 
         public ILifeTime LifeTime => _lifeTime;
+        
+        public IReactiveCommand<Unit> Close => _close;
 
         public virtual bool IsDisposeWithModel
         {
