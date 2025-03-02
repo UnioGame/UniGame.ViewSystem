@@ -15,7 +15,7 @@
     using Sirenix.OdinInspector;
 #endif
     
-    public class MonoViewsLayout : MonoBehaviour, IViewLayout
+    public class ViewSystemLayoutComponent : MonoBehaviour, IViewLayout
     {
         #region inspector
 

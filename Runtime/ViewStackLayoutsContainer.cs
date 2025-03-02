@@ -13,12 +13,12 @@ namespace UniGame.UiSystem.Runtime
 
         private IViewLayout _dummyController;
         
-        public ViewStackLayoutsContainer(IDictionary<ViewType, IViewLayout> layoutMap)
+        public ViewStackLayoutsContainer(IDictionary<string, IViewLayout> layoutMap)
         {
             _layouts = new Dictionary<string, IViewLayout>(layoutMap.Count);
             
             foreach (var layoutItem in layoutMap)
-                RegisterLayout(layoutItem.Key.ToStringFromCache(), layoutItem.Value);
+                RegisterLayout(layoutItem.Key, layoutItem.Value);
             
             //empty object controller
             _dummyController = new ViewLayout();

@@ -114,9 +114,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2255a6df9791d6244a8e68a58b579d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layoutCanvas: {fileID: 0}
+  layoutCanvas: {fileID: 127793568177832887}
   backgroundFactory: {fileID: 0}
-  layoutBehaviour: {fileID: 0}
+  layoutBehaviour: {fileID: 11400000, guid: fa81a35f67287a949b8f6a9524ace61e, type: 2}
 --- !u!1 &7387079578667170277
 GameObject:
   m_ObjectHideFlags: 0
@@ -168,6 +168,7 @@ MonoBehaviour:
   settings:
     m_AssetGUID: 
     m_SubObjectName: 
+    m_SubObjectGUID: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   layoutMap:
@@ -176,7 +177,7 @@ MonoBehaviour:
     - {fileID: 448714698308417584}
     - {fileID: 5251586503875359122}
     - {fileID: 3560638554337900803}
-  defaultLayout: {fileID: 0}
+  defaultLayout: {fileID: 11400000, guid: fa81a35f67287a949b8f6a9524ace61e, type: 2}
 --- !u!114 &1652989200803567895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -303,9 +304,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2255a6df9791d6244a8e68a58b579d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layoutCanvas: {fileID: 0}
+  layoutCanvas: {fileID: 7387079578710871638}
   backgroundFactory: {fileID: 0}
-  layoutBehaviour: {fileID: 0}
+  layoutBehaviour: {fileID: 11400000, guid: 3b063ea60dca1d6449cc6838450bbf68, type: 2}
 --- !u!1 &7387079579963990722
 GameObject:
   m_ObjectHideFlags: 0
@@ -420,6 +421,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2255a6df9791d6244a8e68a58b579d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layoutCanvas: {fileID: 0}
+  layoutCanvas: {fileID: 7387079579963990725}
   backgroundFactory: {fileID: 0}
-  layoutBehaviour: {fileID: 0}
+  layoutBehaviour: {fileID: 11400000, guid: fa81a35f67287a949b8f6a9524ace61e, type: 2}

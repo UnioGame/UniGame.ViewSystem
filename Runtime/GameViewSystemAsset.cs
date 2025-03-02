@@ -15,6 +15,7 @@
     using UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract;
     using ViewSystem.Runtime;
     using UnityEngine.AddressableAssets;
+    using WindowStackControllers;
 
 #if ODIN_INSPECTOR
     using Sirenix.OdinInspector;
@@ -32,6 +33,10 @@
         [Space]
         public ViewLayoutMap layoutMap = new();
 
+        [Space]
+        [ListDrawerSettings(ListElementLabelName = "@name")]
+        public List<ViewLayoutItem> customLayouts = new();
+        
         [Space]
         public ViewLayoutType defaultLayout;
         
@@ -182,10 +187,13 @@
             await settingsAsset.Initialize();
 
             var factory  = new ViewFactory(new AsyncLazy(settingsAsset.WaitForInitialize),settingsAsset.ResourceProvider);
-            var stackMap = new Dictionary<ViewType, IViewLayout>(4);
+            var stackMap = new Dictionary<string, IViewLayout>(4);
             
             foreach (var item in layoutMap)
-                stackMap[item.Key] = item.Value;
+                stackMap[item.Key.ToStringFromCache()] = item.Value;
+
+            foreach (var customLayout in customLayouts)
+                stackMap[customLayout.name] = customLayout.layout;
             
             var viewLayoutContainer = new ViewStackLayoutsContainer(stackMap);
             var sceneFlowController = settingsAsset.FlowController;
@@ -203,5 +211,12 @@
             return gameSystem;
         }
 
+    }
+
+    [Serializable]
+    public class ViewLayoutItem
+    {
+        public string name;
+        public ViewSystemLayoutComponent layout;
     }
 }
