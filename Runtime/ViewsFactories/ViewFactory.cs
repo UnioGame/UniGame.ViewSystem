@@ -26,7 +26,6 @@ namespace UniGame.UiSystem.Runtime
             IViewResourceProvider viewResourceProvider)
         {
             _assetReferenceMap = new Dictionary<string, GameObject>();
-            
             _readyStatus       = readyStatus;
             _resourceProvider = viewResourceProvider;
             _resourceProvider = viewResourceProvider;
@@ -91,8 +90,8 @@ namespace UniGame.UiSystem.Runtime
 
             var viewTransform = sourceView.transform;
             
-            var gameObjectView = sourceView.HasCustomPoolLifeTimeFor()
-                ? sourceView.SpawnActive(viewTransform.position, viewTransform.rotation, parent, stayPosition) 
+            var gameObjectView = sourceView.HasCustomPoolLifeTime()
+                ? sourceView.Spawn(viewTransform.position, viewTransform.rotation, parent, stayPosition) 
                 : Object.Instantiate(sourceView, parent, stayPosition);
 
             var isActive = gameObjectView.activeSelf;

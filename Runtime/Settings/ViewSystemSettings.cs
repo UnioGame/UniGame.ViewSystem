@@ -7,6 +7,8 @@ namespace UniGame.UiSystem.Runtime.Settings
     using Core.Runtime;
     using System;
     using System.Collections.Generic;
+    using Game.Modules.unigame.unimodules.UniGame.ViewSystem.Runtime.ViewsFactories;
+    using Game.Modules.ViewSystem;
     using UniCore.Runtime.ProfilerTools;
     using UniModules.UniGame.Core.Runtime.Attributes;
     using ViewSystem.Runtime;
@@ -56,6 +58,17 @@ namespace UniGame.UiSystem.Runtime.Settings
 #endif
         public ViewModelResolver viewModelResolver = new ViewModelResolver();
 
+        [Space(8)]
+        [Header("Views Factory")]
+        [SerializeReference]
+#if ODIN_INSPECTOR
+        [TabGroup(SettingsTabKey)]
+        [InlineProperty]
+        [HideLabel]
+        [GUIColor(0.5f,0.8f,0.4f)]
+#endif
+        public IViewFactoryProvider viewsFactory = new DefaultViewFactoryProvider();
+        
         #endregion
 
         private UiResourceProvider uiResourceProvider;

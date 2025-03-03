@@ -11,6 +11,7 @@
     using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniGame.UiSystem.Runtime;
     using Core.Runtime;
+    using Game.Modules.unigame.unimodules.UniGame.ViewSystem.Runtime.ViewsFactories;
     using UniModules.UniCore.Runtime.Utils;
     using UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract;
     using ViewSystem.Runtime;
@@ -186,7 +187,11 @@
             
             await settingsAsset.Initialize();
 
-            var factory  = new ViewFactory(new AsyncLazy(settingsAsset.WaitForInitialize),settingsAsset.ResourceProvider);
+            //create view factory specific for settings
+            var viewProvider = settingsAsset.viewsFactory ?? new DefaultViewFactoryProvider();
+            var factory  = await viewProvider.CreateViewFactoryAsync(settingsAsset);
+            
+            //fill layouts
             var stackMap = new Dictionary<string, IViewLayout>(4);
             
             foreach (var item in layoutMap)

@@ -1,0 +1,22 @@
+{
+    "name": "com.unigame.viewsystem.zenject",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6632c725b5599b14c865359e6ecc36f4",
+        "GUID:8e4577c9194c10845984cf27eb974fd1",
+        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:593a5b492d29ac6448b1ebf7f035ef33"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "ZENJECT_ENABLED"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

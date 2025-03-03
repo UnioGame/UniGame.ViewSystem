@@ -5,22 +5,34 @@ MVVM View System for Unity3D
 **Odin Inspector Asset recommended to usage with this Package (https://odininspector.com)**
 
 
-- [Overview](#overview)
-- [Getting Started](#getting-started)
-- [View System Settings](#view-system-settings)
-  - [SetUp Views Locations](#setup-views-locations) 
-  - [Addressable Support](#addressable-support) 
-  - [Nested View Sources](#nested-view-sources) 
-  - [Layouts Control](#layouts-control)
-  - [Settings Rebuild](#settings-rebuild)
-- [Skins Support](#skins-support)
-- [Pooling Support](#skins-support)
-- [API References](#api-references)
-  - [Views & ViewModels](#views-&-viewmodels)
-  - [Reactive Binding](#reactive-binding)
-  - [Context Views](#context-views)
-- [Examples](#examples)
-- [License](#license)
+- [UniGame.ViewSystem](#unigameviewsystem)
+  - [Overview](#overview)
+  - [Getting Started](#getting-started)
+  - [Getting Started](#getting-started-1)
+  - [View System Settings](#view-system-settings)
+    - [Create Settings](#create-settings)
+    - [SetUp Views Locations](#setup-views-locations)
+    - [Addressable Support](#addressable-support)
+    - [Nested View Sources](#nested-view-sources)
+    - [Layouts Control](#layouts-control)
+    - [Settings Rebuild](#settings-rebuild)
+  - [Skins Support](#skins-support)
+    - [Skins via folders](#skins-via-folders)
+    - [Skins via component](#skins-via-component)
+    - [Custom Views Factory](#custom-views-factory)
+  - [Pooling Support](#pooling-support)
+  - [API References](#api-references)
+    - [Views \& ViewModels](#views--viewmodels)
+    - [Reactive Binding](#reactive-binding)
+      - [Bind To UGUI](#bind-to-ugui)
+      - [Behaviour bindings](#behaviour-bindings)
+  - [Examples](#examples)
+    - [Item List View](#item-list-view)
+    - [Localization View](#localization-view)
+    - [Nested Views Sources](#nested-views-sources)
+    - [View Skin loading](#view-skin-loading)
+    - [Real Project Demo](#real-project-demo)
+  - [License](#license)
 
 ## Overview
 
@@ -144,15 +156,70 @@ Add View Skin Component to a prefab to turn it into a skin. To add a new skin ta
 ![image](https://user-images.githubusercontent.com/72013166/126639300-bcc028a7-5070-4e78-9495-6d76c0ffc3b1.png)
 
 
+### Custom Views Factory
+
+View Factory - provide custom view creation logic. You can create your own factory by implementing:
+
+ - **IViewFactory** 
+ - **IViewFactoryProvider**
+
+And select new provider in View System Settings
+
+```csharp
+
+![image](https://github.com/UniGameTeam/UniGame.ViewSystem/blob/master/Editor/GitAssets/viewfactoriessettings.png)
+
+#### Enable Zenject DI Support
+
+Add to your project scriptings define symbol "ZENJECT_ENABLED" to enable Zenject DI support
+
+Anywhere in your initialization of game pass Zenject DiContainer to ZenjectViewFactoryProvider.Container static field
+
+```csharp
+public class ZenjectViewFactoryProvider : IViewFactoryProvider
+{
+    public static DiContainer Container { get; set; }
+}
+```
+
+You can use Zenject DI module as an example to create your own custom DI support in view lines of code. Module is located in ZenjectViewModule directory
+
+```csharp
+
+//ZenjectViewFactory example
+public class ZenjectViewFactory  : IViewFactory
+{
+    public ViewFactory _viewFactory;
+    public DiContainer _container;
+    
+    public ZenjectViewFactory(DiContainer container,AsyncLazy readyStatus, IViewResourceProvider viewResourceProvider)
+    {
+        _container = container;
+        _viewFactory = new ViewFactory(readyStatus, viewResourceProvider);
+    }
+    
+    public async UniTask<IView> Create(string viewId, 
+        string skinTag = "", 
+        Transform parent = null, 
+        string viewName = null,
+        bool stayWorldPosition = false)
+    {
+        var view = await _viewFactory.Create(viewId, skinTag, parent, viewName, stayWorldPosition);
+        if (view == null || view.GameObject == null) return view;
+        var viewObject = view.GameObject;
+        
+        _container.InjectGameObject(viewObject);
+        return view;
+    }
+}
+
+```
+
 ## Pooling Support
 
 ## API References
 
-
 ### Views & ViewModels
-
-
-
 
 ### Reactive Binding
 
