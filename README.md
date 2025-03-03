@@ -165,13 +165,11 @@ View Factory - provide custom view creation logic. You can create your own facto
 
 And select new provider in View System Settings
 
-```csharp
-
-![image](https://github.com/UniGameTeam/UniGame.ViewSystem/blob/master/Editor/GitAssets/viewfactoriessettings.png)
-
 #### Enable Zenject DI Support
 
 Add to your project scriptings define symbol "ZENJECT_ENABLED" to enable Zenject DI support
+
+![image](https://github.com/UniGameTeam/UniGame.ViewSystem/blob/master/Editor/GitAssets/viewfactoriessettings.png)
 
 Anywhere in your initialization of game pass Zenject DiContainer to ZenjectViewFactoryProvider.Container static field
 
