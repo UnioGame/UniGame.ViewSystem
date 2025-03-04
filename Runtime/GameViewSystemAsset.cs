@@ -84,6 +84,11 @@
             return await ViewSystem.OpenOverlay(viewType, skinTag, viewName);
         }
 
+        public async UniTask<IView> Open(string viewType, string layout, string skinTag = "", string viewName = null)
+        {
+            return await ViewSystem.Open(viewType, layout,skinTag, viewName);
+        }
+
         public async UniTask<IView> CreateWindow(string viewType, string skinTag = "", string viewName = null){
             return await ViewSystem.CreateWindow(viewType, skinTag, viewName);
         }
@@ -116,7 +121,14 @@
 
         public UniTask<IView> CreateOverlay(IViewModel viewModel, string viewType, string skinTag = "", string viewName = null) => ViewSystem.CreateOverlay(viewModel, viewType, skinTag, viewName);
 
-        public UniTask<IView> Create(string viewType, ViewType layoutType, string skinTag = "", string viewName = null, ILifeTime ownerLifeTime = null)
+        public UniTask<IView> Create(string viewType, ViewType layoutType, 
+            string skinTag = "", string viewName = null, ILifeTime ownerLifeTime = null)
+        {
+            return ViewSystem.Create(viewType, layoutType, skinTag, viewName, ownerLifeTime);
+        }
+        
+        public UniTask<IView> Create(string viewType, string layoutType, 
+            string skinTag = "", string viewName = null, ILifeTime ownerLifeTime = null)
         {
             return ViewSystem.Create(viewType, layoutType, skinTag, viewName, ownerLifeTime);
         }

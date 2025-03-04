@@ -157,30 +157,31 @@ namespace UniGame.UiSystem.Runtime
             return view;
         }
         
-        public async UniTask<IView> OpenWindow(string viewType, string skinTag = "", string viewName = null)
+        public async UniTask<IView> Open(string viewType, string layout,
+            string skinTag = "", 
+            string viewName = null)
         {
-            var view = await CreateView<IView>(viewType, WindowType, skinTag, viewName);
+            var view = await CreateView<IView>(viewType, layout, skinTag, viewName);
             
             view.Show();
 
             return view;
         }
+        
+        public async UniTask<IView> OpenWindow(string viewType, string skinTag = "", string viewName = null)
+        {
+            return await Open(viewType,WindowType,skinTag,viewName);
+        }
 
         public async UniTask<IView> OpenScreen(string viewType, string skinTag = "", string viewName = null)
         {
-            var view = await CreateView<IView>(viewType, ScreenType, skinTag, viewName);
-            view.Show();
-
-            return view;
+            return await Open(viewType,ScreenType,skinTag,viewName);
         }
 
         public async UniTask<IView> OpenOverlay(string viewType, string skinTag = "", 
             string viewName = null)
         {
-            var view = await CreateView<IView>(viewType,  OverlayType, skinTag, viewName);
-            view.Show();
-
-            return view;
+            return await Open(viewType,OverlayType,skinTag,viewName);
         }
 
         public async UniTask<IView> CreateWindow(string viewType, string skinTag = "", string viewName = null)

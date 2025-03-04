@@ -91,6 +91,12 @@
                 .Where(x => x == status)
                 .AwaitFirstAsync(view.ViewLifeTime);
         }
+
+        public static async UniTask AwaitClose(this IView view)
+        {
+            while (view.LifeTime.IsTerminated == false)
+                await UniTask.Yield();
+        }
         
     }
 }

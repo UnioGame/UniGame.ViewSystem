@@ -26,6 +26,11 @@ MonoBehaviour:
   viewModelResolver:
     modelFactoryTimeoutMs: 500
     modelResolvers: []
+  viewsFactory:
+    rid: 4688042801206132852
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4688042801206132852
+      type: {class: DefaultViewFactoryProvider, ns: Game.Modules.unigame.unimodules.UniGame.ViewSystem.Runtime.ViewsFactories, asm: unigame.viewsystem.runtime}
+      data: 
