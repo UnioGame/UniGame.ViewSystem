@@ -418,7 +418,7 @@ namespace UniGame.Rx.Runtime.Extensions
 
         public static IDisposable Bind(this LocalizedString source, TextMeshProUGUI text, int frameThrottle = 1)
         {
-            return source.BindTo(x => text.SetValue(x),frameThrottle);
+            return source.Bind(x => text.SetValue(x),frameThrottle);
         }
         
                 

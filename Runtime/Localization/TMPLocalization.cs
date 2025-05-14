@@ -7,7 +7,6 @@ namespace UniGame.Localization.Runtime.Components
     using UniRx;
     using UnityEngine;
     using UnityEngine.Localization;
-    using UnityEngine.Serialization;
     using ViewSystem.Runtime;
 
     public class TMPLocalization : MonoBehaviour
