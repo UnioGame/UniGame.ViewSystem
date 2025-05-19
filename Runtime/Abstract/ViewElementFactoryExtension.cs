@@ -81,6 +81,18 @@
             return view;
         }
         
+        public static async UniTask<T> Create<T>( 
+            this IViewElementFactory factory,
+            Transform parent = null,
+            string skinTag = "",
+            string viewName = null,
+            bool stayWorldPosition = false,
+            ILifeTime ownerLifeTime = null) where T : class, IView
+        {
+            var view = await factory.Create(typeof(T),parent,skinTag,viewName,stayWorldPosition,ownerLifeTime);
+            return view as T;
+        }
+        
       
         public static async UniTask<T> Create<T>( 
             this IViewElementFactory factory,
