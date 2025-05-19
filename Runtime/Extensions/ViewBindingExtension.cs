@@ -17,6 +17,7 @@ namespace UniGame.Rx.Runtime.Extensions
     using global::UniGame.UiSystem.Runtime;
     using UniGame.Runtime.Common;
     using UniModules.UniCore.Runtime.Utils;
+    using UniModules.UniGame.Core.Runtime.DataFlow.Extensions;
     using UniModules.UniGame.Core.Runtime.Rx;
     using UniRx;
     using UnityEngine.AddressableAssets;
@@ -75,6 +76,17 @@ namespace UniGame.Rx.Runtime.Extensions
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TView Bind<TView>(this TView view, IObservable<AssetReference> source, Image image)
+            where TView : class, IView
+        {
+            if (image == null) return view;
+            
+            return !image
+                ? view
+                : view.Bind(source, x => Bind(view, x, image));
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TView Bind<TView>(this TView view, 
             IObservable<AddressableValue<Sprite>> source, Image image)
             where TView : class, IView
@@ -91,23 +103,63 @@ namespace UniGame.Rx.Runtime.Extensions
             where TView : class, IView
         {
             if (image == null) return view;
-            
-            BindInternal(view,source,image).Forget();
-
+            image.Bind(source).Forget();
             return view;
         }
         
-        private static async UniTask<TView> BindInternal<TView>(this TView view, AssetReferenceT<Sprite> reference, Image image)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async UniTask<TView> Bind<TView>(this TView view, AssetReference source, Image image)
             where TView : class, IView
         {
             if (image == null) return view;
+            await image.Bind(source);
+            return view;
+        }
+        
+        public static async UniTask<bool> Bind<TValue>(
+            this AssetReference reference,
+            Action<TValue> action, 
+            ILifeTime lifeTime)
+            where TValue : Object
+        {
+            if(action == null) return false;
+            
+            var value = reference == null || !reference.RuntimeKeyIsValid()
+                ? null
+                : await reference.LoadAssetTaskAsync<TValue>(lifeTime);
+
+            if(value == null) return false;
+            action?.Invoke(value);
+            return true;
+        }
+
+        public static async UniTask<bool> Bind(
+            this Image image, 
+            AssetReference reference)
+        {
+            if (image == null) return false;
+            var lifeTime = image.GetAssetLifeTime();
             
             var sprite = reference == null || !reference.RuntimeKeyIsValid()
                 ? null
-                : await reference.LoadAssetTaskAsync(view.LifeTime);
+                : await reference.LoadAssetTaskAsync<Sprite>(lifeTime);
 
             image.SetValue(sprite);
-            return view;
+            
+            return sprite != null;
+        }
+        
+        public static async UniTask<bool> Bind(this Image image, AssetReferenceT<Sprite> reference)
+        {
+            if (image == null) return false;
+            
+            var lifeTime = image.GetAssetLifeTime();
+            var sprite = reference == null || !reference.RuntimeKeyIsValid()
+                ? null
+                : await reference.LoadAssetTaskAsync(lifeTime);
+            
+            image.SetValue(sprite);
+            return sprite != null;
         }
         
         
