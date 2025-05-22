@@ -26,8 +26,8 @@ namespace UniGame.UiSystem.Runtime
         MonoBehaviour,
         ILayoutView
     {
-        private const string NullViewName = "Null";
-        private const string RuntimeInfo = "runtime info";
+        public const string NullViewName = "Null";
+        public const string RuntimeInfo = "runtime info";
         
         private static IViewBinderProcessor ViewBinderProcessor = new ViewBinderProcessor();
         
