@@ -36,6 +36,14 @@ namespace UniGame.UiSystem.Runtime
             }
         }
         
+        public static IGameViewSystem ViewSystem { get;private set; }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Reset()
+        {
+            ViewSystem = null;
+        }
+        
         #region private fields
 
         private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
@@ -58,6 +66,8 @@ namespace UniGame.UiSystem.Runtime
             IViewModelResolver viewModelResolver,
             IViewModelTypeMap modelTypeMap)
         {
+            ViewSystem = this;
+            
             _viewBinderProcessor = new ViewBinderProcessor();
             _viewCreatedSubject = new Subject<IView>().AddTo(LifeTime);
             _defaultContext = new EntityContext();

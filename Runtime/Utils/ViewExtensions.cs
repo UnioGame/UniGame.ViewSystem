@@ -19,7 +19,7 @@
             return view;
         }
 
-        public static async UniTask<TView> GetOrShow<TView>(this IViewLayoutProvider viewSystem, ViewType type,
+        public static async UniTask<TView> GetOrShow<TView>(this IViewsLayout viewSystem, ViewType type,
             Func<IViewModel> modelFactory,
             string skinTag = "",
             string viewName = null)
@@ -30,7 +30,7 @@
             return view;
         }
 
-        public static async UniTask<TView> GetOrCreate<TView>(this IViewLayoutProvider viewSystem,ViewType type, 
+        public static async UniTask<TView> GetOrCreate<TView>(this IViewsLayout viewSystem,ViewType type, 
             Func<IViewModel> modelFactory,
             string skinTag = "", 
             string viewName = null)
@@ -46,7 +46,7 @@
             return view;
         }
 
-        public static async UniTask<TView> Create<TView>(this IViewLayoutProvider viewSystem,IViewModel model,
+        public static async UniTask<TView> Create<TView>(this IViewsLayout viewSystem,IViewModel model,
             ViewType type,
             string skinTag = "",
             string viewName = null,

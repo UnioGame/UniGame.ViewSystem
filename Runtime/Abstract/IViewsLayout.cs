@@ -4,7 +4,7 @@
     using Cysharp.Threading.Tasks;
     using UniModules.UniGame.UiSystem.Runtime;
 
-    public interface IViewLayoutProvider : 
+    public interface IViewsLayout : 
         ILifeTimeContext, 
         IViewLayoutContainer,
         IViewElementFactory,

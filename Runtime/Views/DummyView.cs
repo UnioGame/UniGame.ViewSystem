@@ -24,6 +24,8 @@ namespace UniGame.UiSystem.Runtime
 
         public Type ModelType => typeof(IViewModel);
         
+        public IViewsLayout Layout => GameViewSystem.ViewSystem;
+
         public GameObject Owner     => null;
         public GameObject GameObject => null;
         public Transform  Transform => null;

@@ -115,7 +115,7 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         private readonly ReactiveValue<ViewStatus> _status = new();
 
-        private IViewLayoutProvider _viewLayout;
+        private IViewsLayout _viewLayout;
 
         private bool _isViewOwner;
         private bool _isModelAttached;
@@ -166,7 +166,7 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// views layout
         /// </summary>
-        public IViewLayoutProvider Layout => _viewLayout;
+        public virtual IViewsLayout Layout => _viewLayout ?? GameViewSystem.ViewSystem;
 
         public IReadOnlyReactiveProperty<ViewStatus> Status => _status;
 
@@ -199,7 +199,7 @@ namespace UniGame.UiSystem.Runtime
             _viewModelLifeTime.Terminate();
         }
 
-        public void BindLayout(IViewLayoutProvider layoutProvider)
+        public void BindLayout(IViewsLayout layoutProvider)
         {
             _viewLayout = layoutProvider;
         }
@@ -216,7 +216,7 @@ namespace UniGame.UiSystem.Runtime
             return this;
         }
 
-        public async UniTask<IView> Initialize(IViewModel model, IViewLayoutProvider layoutProvider)
+        public async UniTask<IView> Initialize(IViewModel model, IViewsLayout layoutProvider)
         {
             BindLayout(layoutProvider);
             await Initialize(model);

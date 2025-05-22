@@ -51,7 +51,7 @@ namespace UniGame.ViewSystem.Runtime.Extensions
             return await CreateView(Current,context,typeof(TView).Name, ViewType.None, skinTag, viewName,parent,stayWorldPosition);
         }
 
-        public static IViewLayoutProvider MakeActive(this IGameViewSystem viewSystem)
+        public static IViewsLayout MakeActive(this IGameViewSystem viewSystem)
         {
             Current = viewSystem;
 

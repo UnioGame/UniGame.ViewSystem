@@ -4,6 +4,6 @@
 
     public interface ILayoutItem
     {
-        void BindLayout(IViewLayoutProvider layouts);
+        void BindLayout(IViewsLayout layouts);
     }
 }

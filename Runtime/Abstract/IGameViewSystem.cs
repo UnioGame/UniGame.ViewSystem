@@ -6,7 +6,7 @@
 
     public interface IGameViewSystem : 
         IDisposable, 
-        IViewLayoutProvider,
+        IViewsLayout,
         IViewModelResolver
     {
         void CloseAll(ViewType viewType);
