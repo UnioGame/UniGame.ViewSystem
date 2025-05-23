@@ -35,6 +35,14 @@ namespace UniGame.Rx.Runtime.Extensions
             return source == null ? view : view.Bind(source.AsObservable(), command);
         }
 
+        public static TView Bind<TView>(this TView view, IObservable<LocalizedString> source, TextMeshProUGUI text)
+            where TView : class, IView
+        {
+            return source == null 
+                ? view 
+                : view.Bind(source, x => view.Bind(x, text));
+        }
+        
         public static TView Bind<TView>(this TView view, LocalizedString source, TextMeshProUGUI text)
             where TView : class, IView
         {
