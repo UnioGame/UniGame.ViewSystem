@@ -193,11 +193,9 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         public void Destroy()
         {
-            _viewModelLifeTime.Terminate();
-            
             SetInternalStatus(ViewStatus.Closed);
             SetStatus(ViewStatus.Closed);
-            
+            _viewModelLifeTime.Terminate();
             _lifeTimeDefinition.Terminate();
         }
 

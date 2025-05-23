@@ -14,7 +14,7 @@
         /// <summary>
         /// model container
         /// </summary>
-        private readonly ReactiveProperty<TViewModel> _viewModel = new ReactiveProperty<TViewModel>();
+        private readonly ReactiveProperty<TViewModel> _viewModel = new();
         private CanvasGroup   _canvasGroup;
         private Canvas   _canvas;
 
