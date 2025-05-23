@@ -11,24 +11,11 @@ namespace UniGame.UiSystem.Runtime
     public class ViewModelBase : IViewModel
     {
         private readonly LifeTime _lifeTime = new();
-        private bool _disposeWithModel = true;
         private ReactiveCommand _close => new();
 
         public ILifeTime LifeTime => _lifeTime;
         
         public IReactiveCommand<Unit> Close => _close;
-
-        public virtual bool IsDisposeWithModel
-        {
-            get => _disposeWithModel;
-            protected set => _disposeWithModel = value;
-        }
-
-        public IViewModel DisposeByModel(bool disposeWithModel)
-        {
-            IsDisposeWithModel = disposeWithModel;
-            return this;
-        }
 
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Button]

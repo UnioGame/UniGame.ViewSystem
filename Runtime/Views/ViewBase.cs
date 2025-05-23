@@ -3,6 +3,7 @@
 namespace UniGame.UiSystem.Runtime
 {
     using System;
+    using System.Threading;
     using Cysharp.Threading.Tasks;
     using JetBrains.Annotations;
     using UniCore.Runtime.ProfilerTools;
@@ -192,11 +193,12 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         public void Destroy()
         {
+            _viewModelLifeTime.Terminate();
+            
             SetInternalStatus(ViewStatus.Closed);
             SetStatus(ViewStatus.Closed);
             
             _lifeTimeDefinition.Terminate();
-            _viewModelLifeTime.Terminate();
         }
 
         public void BindLayout(IViewsLayout layoutProvider)
@@ -330,6 +332,7 @@ namespace UniGame.UiSystem.Runtime
             
             _closeTask =  StartProgressAction(_progressLifeTime, OnClose, Destroy)
                 .AttachExternalCancellation(_progressLifeTime.Token);
+            
             _closeTask.Forget();
         }
         
@@ -524,16 +527,6 @@ namespace UniGame.UiSystem.Runtime
         private void BindLifeTimeActions(IViewModel model)
         {
             _isModelChanged.Value = false;
-            //bind model lifetime to local
-            var modelLifeTime = model.LifeTime;
-            if (model.IsDisposeWithModel)
-            {
-                modelLifeTime.ComposeCleanUp(_viewModelLifeTime, () =>
-                {
-                    if (Equals(ViewModel, model))
-                        Destroy();
-                });
-            }
 
             _viewModelLifeTime.AddCleanUpAction(() =>
             {
@@ -545,8 +538,12 @@ namespace UniGame.UiSystem.Runtime
             _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Release);
         
             ModelLifeTime.AddCleanUpAction(() => _isModelAttached = false);
-            
-            if(enableModelUpdate) OnEndOfFrameCheck().Forget();
+
+            if (enableModelUpdate)
+            {
+                OnEndOfFrameCheck(_viewModelLifeTime.Token)
+                    .Forget();
+            }
             
 #if UNITY_EDITOR
             _status.Subscribe(x => _editorViewStatus = x)
@@ -554,10 +551,8 @@ namespace UniGame.UiSystem.Runtime
 #endif
         }
 
-        private async UniTask OnEndOfFrameCheck()
+        private async UniTask OnEndOfFrameCheck(CancellationToken token)
         {
-            var token = _viewModelLifeTime.Token;
-
             while (!token.IsCancellationRequested)
             {
                 await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate,token);
