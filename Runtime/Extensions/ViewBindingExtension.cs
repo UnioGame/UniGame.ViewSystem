@@ -628,6 +628,16 @@ namespace UniGame.Rx.Runtime.Extensions
         
         public static TView Bind<TView>(this TView view,
             IObservable<bool> source,
+            Slider component)
+            where TView : ILifeTimeContext
+        {
+            return component == null 
+                ? view 
+                : view.Bind(source, x => component.value = x ? component.maxValue : component.minValue);
+        }
+        
+        public static TView Bind<TView>(this TView view,
+            IObservable<bool> source,
             RawImage image)
             where TView : ILifeTimeContext
         {
