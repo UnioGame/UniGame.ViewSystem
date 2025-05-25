@@ -1,5 +1,6 @@
 namespace UniGame.Localization.Runtime.Components
 {
+    using System;
     using global::UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniGame.Localization.Runtime;
     using UniRx;
@@ -18,6 +19,13 @@ namespace UniGame.Localization.Runtime.Components
         private void Awake()
         {
             parent ??= transform;
+        }
+
+        private void OnDestroy()
+        {
+            if(_instance != null)
+                DestroyImmediate(_instance);
+            _instance = null;
         }
 
         private void OnEnable()
