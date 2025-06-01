@@ -10,13 +10,15 @@ namespace UniGame.UiSystem.Runtime
     [Serializable]
     public class ViewModelBase : IViewModel
     {
-        private readonly LifeTime _lifeTime = new();
-        private ReactiveCommand _close => new();
+        private LifeTime _lifeTime = new();
+        private ReactiveCommand _close = new();
 
         public ILifeTime LifeTime => _lifeTime;
         
-        public IReactiveCommand<Unit> Close => _close;
+        public IReactiveCommand<Unit> CloseCommand => _close;
 
+        public void Close() => _close.Execute();
+        
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Button]
 #endif

@@ -492,6 +492,12 @@ namespace UniGame.Rx.Runtime.Extensions
         {
             return sender.Bind(source, () => command(Unit.Default));
         }
+        
+        public static TView Bind<TView>(this TView sender, Button source, Func<UniTask> command)
+            where TView : ILifeTimeContext
+        {
+            return sender.Bind(source.OnClickAsObservable(), command);
+        }
 
         public static IDisposable Bind(this LocalizedString source, TextMeshProUGUI text, int frameThrottle = 1)
         {

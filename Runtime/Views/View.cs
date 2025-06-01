@@ -2,7 +2,9 @@
 {
     using System;
     using Cysharp.Threading.Tasks;
+    using Rx.Runtime.Extensions;
     using UniCore.Runtime.ProfilerTools;
+    using UniModules.UniGame.UiSystem.Runtime.Extensions;
     using ViewSystem.Runtime;
     using UniRx;
     using UnityEngine;
@@ -48,6 +50,8 @@
             {
                 GameLog.LogError($"VIEW: {name} wrong model type. Target type {typeof(TViewModel).Name} : model Type {model?.GetType().Name}");
             }
+
+            BindViewModel(model);
             
             await OnInitialize(modelData);
             
@@ -58,5 +62,11 @@
         /// custom initialization methods
         /// </summary>
         protected virtual UniTask OnInitialize(TViewModel model) => UniTask.CompletedTask;
+        
+        private void BindViewModel(IViewModel model)
+        {
+            if (model is ICloseableViewModel closeable)
+                this.Bind(closeable.CloseCommand, Close);
+        }
     }
 }
