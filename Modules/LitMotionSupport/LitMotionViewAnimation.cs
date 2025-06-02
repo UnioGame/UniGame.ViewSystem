@@ -67,8 +67,6 @@ namespace ViewSystem.Modules.LitMotionSupport
                     await Show(view,lifeTime);
                     break;
                 case ViewStatus.Hiding:
-                    if(controlCanvasGroup) 
-                        group.SetState(1);
                     await Hide(view,lifeTime);
                     break;
                 case ViewStatus.Shown:
@@ -85,15 +83,12 @@ namespace ViewSystem.Modules.LitMotionSupport
         public async UniTask Show(IView view, ILifeTime lifeTime)
         {
             if(!animateShowing) return;
+
+            await UniTask.WaitForEndOfFrame();
             
-            var showTask = PlayAnimation(view, showAnimation)
-                .AttachExternalCancellation(lifeTime.Token);
-            showTask.Forget();
-
-            await UniTask.Yield();
             if(controlCanvasGroup) group.SetState(1);
-
-            await UniTask.WaitWhile(showTask, x => showTask.Status == UniTaskStatus.Pending);
+            await PlayAnimation(view, showAnimation)
+                .AttachExternalCancellation(lifeTime.Token);
         }
 
         public async UniTask Close(IView view, ILifeTime lifeTime)
@@ -106,6 +101,9 @@ namespace ViewSystem.Modules.LitMotionSupport
         public async UniTask Hide(IView view, ILifeTime lifeTime)
         {
             if (!animateHiding) return;
+            
+            await UniTask.WaitForEndOfFrame();
+            if(controlCanvasGroup) group.SetState(1);
             await PlayAnimation(view, hideAnimation)
                 .AttachExternalCancellation(lifeTime.Token);
         }
