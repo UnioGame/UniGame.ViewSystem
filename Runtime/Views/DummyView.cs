@@ -67,10 +67,14 @@ namespace UniGame.UiSystem.Runtime
         }
 
         public IView Show() => this;
+        public async UniTask<IView> ShowAsync() => Show();
 
-        public void Hide()
+        public void Hide() { }
+
+        public UniTask CloseAsync()
         {
-            
+            Close();
+            return UniTask.CompletedTask;
         }
 
         public IObservable<IView> SelectStatus(ViewStatus status)

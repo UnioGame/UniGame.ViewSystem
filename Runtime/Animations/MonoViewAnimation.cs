@@ -2,12 +2,19 @@
 {
     using Core.Runtime;
     using Cysharp.Threading.Tasks;
+    using UniModules.UniGame.UISystem.Runtime;
     using ViewSystem.Runtime.Views.Abstract;
     using UnityEngine;
     using ViewSystem.Runtime;
 
     public class MonoViewAnimation : MonoBehaviour, IViewAnimation
     {
+        
+        public UniTask PlayAnimation(IView view, ViewStatus status,ILifeTime lifeTime)
+        {
+            return UniTask.CompletedTask;
+        }
+        
         public virtual UniTask Show(IView view, ILifeTime lifeTime)
         {
             return UniTask.CompletedTask;
@@ -22,5 +29,6 @@
         {
             return UniTask.CompletedTask;
         }
+
     }
 }

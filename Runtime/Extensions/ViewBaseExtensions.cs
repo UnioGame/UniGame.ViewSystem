@@ -274,7 +274,7 @@
             where T : class, IView
         {
             var view = await CreateChildViewAsync<T>(source, viewModel, parent, skinTag, viewName, stayWorld);
-            view.Show();
+            await view.ShowAsync();
             return view;
         }
 

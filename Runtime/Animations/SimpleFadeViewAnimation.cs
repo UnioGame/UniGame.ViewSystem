@@ -6,6 +6,7 @@
     using global::UniGame.Core.Runtime;
     using Runtime;
     using global::UniModules.UniUiSystem.Runtime.Utils;
+    using UniModules.UniGame.UISystem.Runtime;
     using UnityEngine;
     using UnityEngine.Serialization;
 
@@ -76,7 +77,31 @@
         };
 
         #endregion
+        
+        public async UniTask PlayAnimation(IView view, ViewStatus status,ILifeTime lifeTime)
+        {
+            if (!enabled) return;
+            var group = GetGroup(view);
 
+            switch (status)
+            {
+                case ViewStatus.Showing:
+                    await Show(view,lifeTime);
+                    break;
+                case ViewStatus.Hiding:
+                    await Hide(view,lifeTime);
+                    break;
+                case ViewStatus.Shown:
+                    group.SetState(visibleState);
+                    break;
+                case ViewStatus.None:
+                case ViewStatus.Closed:
+                case ViewStatus.Hidden:
+                    group.SetState(hiddenState);
+                    break;
+            }
+        }
+        
         public async UniTask Show(IView view, ILifeTime lifeTime)
         {
             if (!animateShowing)
@@ -159,5 +184,6 @@
                 canvasGroup.SetState(to);
             }
         }
+
     }
 }

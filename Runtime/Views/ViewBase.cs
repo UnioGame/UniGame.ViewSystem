@@ -114,7 +114,7 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// view statuses reactions
         /// </summary>
-        private readonly ReactiveValue<ViewStatus> _status = new();
+        private readonly ReactiveValue<ViewStatus> _status = new(ViewStatus.None);
 
         private IViewsLayout _viewLayout;
 
@@ -253,6 +253,9 @@ namespace UniGame.UiSystem.Runtime
             BindLifeTimeActions(model);
 
             Animation = SelectAnimation();
+            
+            PlayAnimation(_progressLifeTime)
+                .Forget();
 
             //custom initialization
             await OnInitialize(model);
@@ -274,12 +277,17 @@ namespace UniGame.UiSystem.Runtime
 #endif
         public IView Show()
         {
+            ShowAsync().Forget();
+            return this;
+        }
+        
+        public async UniTask<IView> ShowAsync()
+        {
             if(!SetInternalStatus(ViewStatus.Shown))
                 return this;
             
-            StartProgressAction(_progressLifeTime, OnShow)
-                .AttachExternalCancellation(_progressLifeTime.Token)
-                .Forget();
+            await StartProgressAction(_progressLifeTime, OnShow)
+                .AttachExternalCancellation(_progressLifeTime.Token);
             
             return this;
         }
@@ -317,7 +325,13 @@ namespace UniGame.UiSystem.Runtime
         [ShowIf(nameof(IsCommandsAction))]
 #endif
         private UniTask _closeTask;
+        
         public void Close()
+        {
+            CloseAsync().Forget();
+        }
+        
+        public async UniTask CloseAsync()
         {
             //if(!SetInternalStatus(ViewStatus.Closed)) return;
             if (_status.Value == ViewStatus.Hidden)
@@ -325,13 +339,18 @@ namespace UniGame.UiSystem.Runtime
                 Destroy();
                 return;
             }
-            
-            if(_closeTask.Status == UniTaskStatus.Pending) return;
+
+            if (_closeTask.Status == UniTaskStatus.Pending)
+            {
+                await UniTask.WaitWhile(_closeTask,x => x.Status == UniTaskStatus.Pending);
+                return;
+            }
             
             _closeTask =  StartProgressAction(_progressLifeTime, OnClose, Destroy)
+                .Preserve()
                 .AttachExternalCancellation(_progressLifeTime.Token);
             
-            _closeTask.Forget();
+            await _closeTask;
         }
         
         public IObservable<IView> SelectStatus(ViewStatus status)
@@ -433,15 +452,19 @@ namespace UniGame.UiSystem.Runtime
             return true;
         }
 
+        public async UniTask PlayAnimation(ILifeTime animationLifeTime)
+        {
+            if (Animation == null) return;
+            await Animation.PlayAnimation(this, _status.Value, animationLifeTime);
+        }
+
         /// <summary>
         /// close continuation
         /// use hiding progress by default
         /// </summary>
         protected virtual async UniTask OnCloseProgress(ILifeTime progressLifeTime)
         {
-            if (Animation == null) return;
-            
-            await Animation.Close(this, progressLifeTime);
+            await PlayAnimation(progressLifeTime);
         }
 
         /// <summary>
@@ -449,10 +472,7 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         protected virtual async UniTask OnShowProgress(ILifeTime progressLifeTime)
         {
-            if (Animation == null)
-                return;
-            
-            await Animation.Show(this, progressLifeTime);
+            await PlayAnimation(progressLifeTime);
         }
         
         /// <summary>
@@ -460,27 +480,14 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         protected virtual async UniTask OnHidingProgress(ILifeTime progressLifeTime)
         {
-            if (Animation == null)
-                return;
-            
-            await Animation.Hide(this, progressLifeTime);
+            await PlayAnimation(progressLifeTime);
         }
 
         private bool SetInternalStatus(ViewStatus internalStatus)
         {
-            var viewName = this != null ? name : NullViewName;
-
-            if (this == null)
-                return false;
-            
-            if (_internalViewStatus == ViewStatus.Closed)
-                return false;
-            
-            if(_internalViewStatus == internalStatus)
-            {
-                GameLog.LogWarning($"You try to {internalStatus} {viewName} but it has {internalStatus} status yet");
-                return false;
-            }
+            if (this == null) return false;
+            if (_internalViewStatus == ViewStatus.Closed) return false;
+            if(_internalViewStatus == internalStatus) return false;
 
             _internalViewStatus = internalStatus;
 
@@ -597,13 +604,27 @@ namespace UniGame.UiSystem.Runtime
             _status.Release();
         }
 
-        protected void Awake() => OnAwake();
+        protected void Awake()
+        {
+            _status.Subscribe(OnViewStatus);
+            OnAwake();
+        }
 
-        protected virtual void OnAwake() { }
+        protected void OnEnable()
+        {
+            var animation = SelectAnimation();
+            animation?.PlayAnimation(this, _status.Value, _progressLifeTime);
+        }
 
         protected void OnValidate() => OnViewValidate();
 
+        protected virtual void OnViewEnable(){ }
+        
+        protected virtual void OnAwake() { }
+        
         protected virtual void OnViewValidate() {}
+
+        protected virtual void OnViewStatus(ViewStatus status) { }
 
         #endregion
     }

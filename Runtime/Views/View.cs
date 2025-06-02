@@ -4,7 +4,9 @@
     using Cysharp.Threading.Tasks;
     using Rx.Runtime.Extensions;
     using UniCore.Runtime.ProfilerTools;
+    using UniModules.UniGame.UISystem.Runtime;
     using UniModules.UniGame.UiSystem.Runtime.Extensions;
+    using UniModules.UniUiSystem.Runtime.Utils;
     using ViewSystem.Runtime;
     using UniRx;
     using UnityEngine;
@@ -68,5 +70,6 @@
             if (model is ICloseableViewModel closeable)
                 this.Bind(closeable.CloseCommand, Close);
         }
+
     }
 }

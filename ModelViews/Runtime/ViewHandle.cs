@@ -4,6 +4,7 @@
     using UniModules.UniCore.Runtime.DataFlow;
     using UniModules.UniGame.Core.Runtime.Rx;
     using Core.Runtime;
+    using Cysharp.Threading.Tasks;
     using UniModules.UniGame.UISystem.Runtime;
     using ViewSystem.Runtime;
     using UniRx;
@@ -102,8 +103,11 @@
         public void Close() => View?.Close();
 
         public IView Show() => View?.Show();
+        public async UniTask<IView> ShowAsync() => Show();
 
         public void Hide() => View?.Hide();
+        
+        public UniTask CloseAsync() => View?.CloseAsync() ?? UniTask.CompletedTask;
 
         #endregion
 

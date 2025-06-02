@@ -172,9 +172,7 @@ namespace UniGame.UiSystem.Runtime
             string viewName = null)
         {
             var view = await CreateView<IView>(viewType, layout, skinTag, viewName);
-            
-            view.Show();
-
+            await view.ShowAsync();
             return view;
         }
         

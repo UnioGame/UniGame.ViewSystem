@@ -1,0 +1,30 @@
+{
+    "name": "unigame.viewsystem.litmotion",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6632c725b5599b14c865359e6ecc36f4",
+        "GUID:8e4577c9194c10845984cf27eb974fd1",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:3b570a5146f9d4f0fa107ed4559471a3",
+        "GUID:4368f6075359c4611b74470590e3ec1f",
+        "GUID:52f1a7b1118134b9983b49a8d367591e",
+        "GUID:3aa1866a824b5472da50fe142777d95f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "ENABLE_LIT_MOTION"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.annulusgames.lit-motion.animation",
+            "expression": "",
+            "define": "ENABLE_LIT_MOTION"
+        }
+    ],
+    "noEngineReferences": false
+}

@@ -3,11 +3,10 @@
     using Cysharp.Threading.Tasks;
     using global::UniGame.Core.Runtime;
     using Runtime;
+    using UniModules.UniGame.UISystem.Runtime;
 
     public interface IViewAnimation
     {
-        UniTask Show(IView view, ILifeTime lifeTime);
-        UniTask Hide(IView view, ILifeTime lifeTime);
-        UniTask Close(IView view, ILifeTime lifeTime);
+        UniTask PlayAnimation(IView view, ViewStatus status, ILifeTime lifeTime);
     }
 }
