@@ -59,8 +59,7 @@ namespace ViewSystem.Modules.LitMotionSupport
         public async UniTask PlayAnimation(IView view, ViewStatus status,ILifeTime lifeTime)
         {
             if (!enabled) return;
-            var group = GetGroup(view);
-
+            
             switch (status)
             {
                 case ViewStatus.Showing:
@@ -70,14 +69,22 @@ namespace ViewSystem.Modules.LitMotionSupport
                     await Hide(view,lifeTime);
                     break;
                 case ViewStatus.Shown:
-                    group.SetState(1);
+                    SetCanvasGroupValue(view,1);
                     break;
                 case ViewStatus.None:
                 case ViewStatus.Closed:
                 case ViewStatus.Hidden:
-                    group.SetState(0);
+                    SetCanvasGroupValue(view,0);
                     break;
             }
+        }
+
+        public void SetCanvasGroupValue(IView view, float value)
+        {
+            if (!controlCanvasGroup) return;
+            
+            var canvasGroup = GetGroup(view);
+            canvasGroup.SetState(value);
         }
 
         public async UniTask Show(IView view, ILifeTime lifeTime)
@@ -86,7 +93,8 @@ namespace ViewSystem.Modules.LitMotionSupport
 
             await UniTask.WaitForEndOfFrame();
             
-            if(controlCanvasGroup) group.SetState(1);
+            SetCanvasGroupValue(view,1);
+            
             await PlayAnimation(view, showAnimation)
                 .AttachExternalCancellation(lifeTime.Token);
         }
@@ -103,15 +111,16 @@ namespace ViewSystem.Modules.LitMotionSupport
             if (!animateHiding) return;
             
             await UniTask.WaitForEndOfFrame();
-            if(controlCanvasGroup) group.SetState(1);
+            
+            SetCanvasGroupValue(view,1);
             await PlayAnimation(view, hideAnimation)
                 .AttachExternalCancellation(lifeTime.Token);
         }
         
         public async UniTask PlayAnimation(IView view, LitMotionAnimation animation)
         {
-            //showAnimation.Stop();
-            //hideAnimation.Stop();
+            showAnimation.Stop();
+            hideAnimation.Stop();
             
             animation.Restart();
             
