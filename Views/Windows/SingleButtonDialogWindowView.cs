@@ -1,11 +1,10 @@
 using Cysharp.Threading.Tasks;
-using UniGame.ViewSystem.Views.Abstract.ViewModels;
 using UniGame.UiSystem.Runtime;
-using UniGame.Rx.Runtime.Extensions;
+using UniGame.Runtime.Rx.Runtime.Extensions;
 using UnityEngine.UI;
-using UniGame.Rx.Runtime.Extensions;
+using UniGame.ViewSystem.Views.Windows;
 
-public class SingleButtonDialogWindowView : View<IDialogViewModel>
+public class SingleButtonDialogWindowView : View<DialogViewModel>
 {
     
     #region inspector
@@ -18,7 +17,7 @@ public class SingleButtonDialogWindowView : View<IDialogViewModel>
     
     #endregion
 
-    protected override UniTask OnInitialize(IDialogViewModel model)
+    protected override UniTask OnInitialize(DialogViewModel model)
     {
         this.Bind(yesButton, x => Apply(true))
             .Bind(noButton, x => Apply(false))
@@ -29,7 +28,7 @@ public class SingleButtonDialogWindowView : View<IDialogViewModel>
 
     public void Apply(bool answer)
     {
-        Model.ResultCommand.Execute(answer);
+        Model.result.Execute(answer);
         Close();
     }
 }

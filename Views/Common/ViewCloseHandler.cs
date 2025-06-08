@@ -1,9 +1,10 @@
 namespace UniGame.UI.Components
 {
+    using R3;
     using UniGame.UiSystem.Runtime;
-    using UniModules.UniCore.Runtime.DataFlow;
-    using UniModules.UniGame.UISystem.Runtime;
-    using UniRx;
+    using Runtime.DataFlow;
+    using ViewSystem.Runtime;
+     
     using UnityEngine;
     using UnityEngine.EventSystems;
     using UnityEngine.UI;
@@ -65,7 +66,8 @@ namespace UniGame.UI.Components
         private void HandleBackButton()
         {
             if(Input.GetKeyDown(KeyCode.Escape) && 
-               (_view.Status.Value == ViewStatus.Showing || _view.Status.Value == ViewStatus.Shown))
+               (_view.Status.CurrentValue == ViewStatus.Showing || 
+                _view.Status.CurrentValue == ViewStatus.Shown))
                 _view.Close();
         }
     }

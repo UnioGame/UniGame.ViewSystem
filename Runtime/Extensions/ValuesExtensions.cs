@@ -6,8 +6,7 @@
     using Core.Runtime;
     using Cysharp.Threading.Tasks;
     using TMPro;
-    using UniModules.UniCore.Runtime.Utils;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Extensions;
+    using UniGame.Runtime.Utils;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
     using UnityEngine.UI;

@@ -3,18 +3,18 @@ namespace UniGame.UiSystem.Runtime.Settings
 #if UNITY_EDITOR
     using UniModules.UniGame.AddressableExtensions.Editor;
 #endif
-    using Core.Runtime.ScriptableObjects;
-    using UniRx;
+     
     using System.Collections.Generic;
+    using UniGame.Runtime.Rx;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
+    
 #if ODIN_INSPECTOR
     using Sirenix.OdinInspector;
-
 #endif
 
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/" + nameof(ViewsSettings), fileName = nameof(ViewsSettings))]
-    public class ViewsSettings : LifetimeScriptableObject, IViewsSettings
+    public class ViewsSettings : ScriptableObject, IViewsSettings
     {
         public const string ViewTabKey = "Views";
         public const string SettingsTabKey = "Settings";

@@ -1,7 +1,7 @@
 using System;
 using UniGame.ModelViewsMap.Runtime.Settings;
 using UniGame.UiSystem.Runtime;
-using UniModules.UniCore.Runtime.ReflectionUtils;
+using UniGame.Runtime.ReflectionUtils;
 using UniModules.Editor;
 using UniGame.ViewSystem.Runtime;
 using UniModules.UniGame.ViewSystem;

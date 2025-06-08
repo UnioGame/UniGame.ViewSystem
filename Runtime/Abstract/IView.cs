@@ -1,4 +1,4 @@
-﻿using UniModules.UniGame.UISystem.Runtime;
+﻿using UniGame.ViewSystem.Runtime;
 using UnityEngine;
 
 namespace UniGame.ViewSystem.Runtime
@@ -6,7 +6,7 @@ namespace UniGame.ViewSystem.Runtime
     using System;
     using global::UniGame.Core.Runtime;
     using Cysharp.Threading.Tasks;
-    using UniRx;
+    using R3;
 
 
     public interface IView : 
@@ -30,15 +30,15 @@ namespace UniGame.ViewSystem.Runtime
         
         int ViewIdHash { get; }
         
-        IReadOnlyReactiveProperty<bool> IsVisible { get; }
+        ReadOnlyReactiveProperty<bool> IsVisible { get; }
 
-        IReadOnlyReactiveProperty<bool> IsInitialized { get; }
+        ReadOnlyReactiveProperty<bool> IsInitialized { get; }
         
-        IObservable<IView> SelectStatus(ViewStatus status);
+        Observable<IView> SelectStatus(ViewStatus status);
 
         IViewModel ViewModel { get; }
         
-        IObservable<IViewModel> OnViewModelChanged { get; }
+        Observable<IViewModel> OnViewModelChanged { get; }
         
         string SourceName { get; }
         

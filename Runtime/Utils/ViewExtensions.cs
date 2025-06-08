@@ -1,11 +1,12 @@
-﻿namespace UniModules.UniGame.UISystem.Runtime.Utils
+﻿namespace UniGame.ViewSystem.Runtime.Utils
 {
     using System;
     using global::UniGame.ViewSystem.Runtime;
     using Cysharp.Threading.Tasks;
     using UiSystem.Runtime;
-    using UniCore.Runtime.Extension;
-    using UniRx;
+    using global::UniGame.Runtime.Extension;
+    using R3;
+    using UniModules.UniGame.UiSystem.Runtime;
     using UnityEngine;
 
     public static class ViewExtensions
@@ -76,20 +77,23 @@
 
         public static async UniTask AwaitIsReadyAsync(this IView view)
         {
-            if (view == null || view.ViewLifeTime.IsTerminated)
-                return;
+            if (view == null || view.ViewLifeTime.IsTerminated) return;
+            var lifeTime = view.ViewLifeTime;
             await view.IsInitialized
                 .Where(x => x)
-                .AwaitFirstAsync(view.ViewLifeTime);
+                .FirstAsync(cancellationToken:lifeTime.Token);
         }
 
         public static async UniTask AwaitStatusAsync(this IView view,ViewStatus status)
         {
             if (view == null || view.ViewLifeTime.IsTerminated)
                 return;
+            
+            var lifeTime = view.ViewLifeTime;
+            
             await view.Status
                 .Where(x => x == status)
-                .AwaitFirstAsync(view.ViewLifeTime);
+                .FirstAsync(cancellationToken:lifeTime.Token);
         }
 
         public static async UniTask AwaitClose(this IView view)

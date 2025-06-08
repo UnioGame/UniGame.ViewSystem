@@ -3,8 +3,8 @@
   "author": "UniGame",
   "displayName": "UniGame Views System",
   "description": "MVVM Views system for Unity",
-  "unity": "2019.2",
-  "version": "2024.0.0",
+  "unity": "2023.2",
+  "version": "2025.0.0",
   "license": "MIT",
   "homepage": "https://github.com/UniGameTeam/UniGame.ViewSystem#readme",
   "keywords": [
@@ -14,11 +14,14 @@
     "views"
   ],
   "dependencies": {
-    "com.unity.localization": "1.5.1",
-    "com.unity.textmeshpro": "3.0.8",
-    "com.unigame.localization": "https://github.com/UnioGame/UniGame.Localization.git",
-    "com.unigame.coremodules": "https://github.com/UnioGame/UniGame.CoreModules.git",
-    "com.cysharp.unitask" : "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"
+    "com.unity.localization": "1.5.4",
+    "com.unity.addressables": "2.6.0",
+    "com.unigame.unicore": "https://github.com/UnioGame/unigame.core.git",
+    "com.unigame.localization": "https://github.com/UnioGame/unigame.localization.git",
+    "com.unigame.rx": "https://github.com/UnioGame/unigame.rx.git",
+    "com.cysharp.unitask" : "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
+    "com.cysharp.r3": "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity",
+    "com.github-glitchenzo.nugetforunity": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity"
   },
   "repository": {
     "type": "git",

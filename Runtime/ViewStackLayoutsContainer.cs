@@ -1,5 +1,5 @@
 ﻿
-using UniModules.UniCore.Runtime.Utils;
+using UniGame.Runtime.Utils;
 
 namespace UniGame.UiSystem.Runtime
 {

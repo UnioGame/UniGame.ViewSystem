@@ -1,11 +1,12 @@
-﻿using UniModules.UniGame.UISystem.Runtime;
+﻿using UniGame.ViewSystem.Runtime;
 
 namespace UniGame.ViewSystem.Runtime
 {
-    using UniRx;
+    using R3;
+
 
     public interface IViewStatus
     {
-        IReadOnlyReactiveProperty<ViewStatus> Status { get; }
+        ReadOnlyReactiveProperty<ViewStatus> Status { get; }
     }
 }

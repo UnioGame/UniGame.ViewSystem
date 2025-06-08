@@ -1,10 +1,9 @@
-﻿using UniGame.AddressableTools.Runtime;
-using UniGame.Context.Runtime;
-using UnityEngine;
-
-namespace UniGame.ModelViewsMap.Runtime.Settings
+﻿namespace UniGame.ModelViewsMap.Runtime.Settings
 {
     using System;
+    using UniGame.AddressableTools.Runtime;
+    using UniGame.Context.Runtime;
+    using UnityEngine;
     using System.Collections.Generic;
     using System.Linq;
     using Cysharp.Threading.Tasks;
@@ -54,7 +53,8 @@ namespace UniGame.ModelViewsMap.Runtime.Settings
 
         public async UniTask<IGameViewSystem> Initialize(IContext context)
         {
-            var source = await uiViewSystemSource.LoadAssetTaskAsync(LifeTime);
+            var lifeTime = context.LifeTime;
+            var source = await uiViewSystemSource.LoadAssetTaskAsync(lifeTime);
             var uiSystem = await source.CreateAsync(context);
 
             ModelsViewsFlow.Initialize(uiSystem,this);

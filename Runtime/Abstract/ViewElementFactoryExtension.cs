@@ -3,7 +3,7 @@
     using System;
     using global::UniGame.Core.Runtime;
     using Cysharp.Threading.Tasks;
-    using UniModules.UniGame.UISystem.Runtime.Extensions;
+    using Runtime;
     using UnityEngine;
 
     public static class ViewElementFactoryExtension

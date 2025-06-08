@@ -13,7 +13,6 @@
         "Unity.Addressables",
         "Unity.ResourceManager",
         "Unity.Localization",
-        "UniRx",
         "UniTask",
         "Unity.TextMeshPro",
         "unigame.dotweenroutines.runtime",

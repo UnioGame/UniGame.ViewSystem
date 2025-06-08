@@ -10,7 +10,8 @@ namespace UniGame.UiSystem.Runtime.Settings
     using Game.Modules.unigame.unimodules.UniGame.ViewSystem.Runtime.ViewsFactories;
     using Game.Modules.ViewSystem;
     using UniCore.Runtime.ProfilerTools;
-    using UniModules.UniGame.Core.Runtime.Attributes;
+    using UniGame.Runtime.DataFlow;
+    using UniGame.Attributes;
     using ViewSystem.Runtime;
     using UnityEngine;
     using ViewsFlow;
@@ -23,7 +24,7 @@ namespace UniGame.UiSystem.Runtime.Settings
     /// Base View system settings. Contains info about all available view abd type info
     /// </summary>
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/ViewSystemSettings", fileName = nameof(ViewSystemSettings))]
-    public class ViewSystemSettings : ViewsSettings, ICompletionStatus
+    public class ViewSystemSettings : ViewsSettings, ICompletionStatus, IDisposable
     {
         #region inspector
 
@@ -73,6 +74,8 @@ namespace UniGame.UiSystem.Runtime.Settings
 
         private UiResourceProvider uiResourceProvider;
 
+        private LifeTime _lifeTime = new();
+
         [NonSerialized] private bool isStarted;
 
         public bool IsComplete { get; private set; } = false;
@@ -82,6 +85,8 @@ namespace UniGame.UiSystem.Runtime.Settings
         public IViewModelTypeMap ViewModelTypeMap => uiResourceProvider;
 
         public IViewFlowController FlowController { get; protected set; }
+        
+        public ILifeTime LifeTime => _lifeTime;
 
         #region public methods
 
@@ -128,16 +133,20 @@ namespace UniGame.UiSystem.Runtime.Settings
         
         public async UniTask WaitForInitialize()
         {
-            while (!LifeTime.IsTerminated && !IsComplete)
+            while (!IsComplete)
             {
                 await UniTask.Yield();
             }
         }
 
+        public void Dispose() => _lifeTime?.Release();
+
         public async UniTask Initialize()
         {
             if (isStarted) return;
 
+            _lifeTime ??= new LifeTime();
+            
             IsComplete = false;
             isStarted = true;
 
@@ -201,8 +210,10 @@ namespace UniGame.UiSystem.Runtime.Settings
             }
         }
 
-        private void OnDisable() => Dispose();
+        private void OnDestroy() => Dispose();
 
         #endregion
+
+        
     }
 }

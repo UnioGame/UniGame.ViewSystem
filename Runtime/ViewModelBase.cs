@@ -2,10 +2,11 @@
 
 namespace UniGame.UiSystem.Runtime
 {
-    using UniModules.UniCore.Runtime.DataFlow;
+    using UniGame.Runtime.DataFlow;
     using Core.Runtime;
+    using R3;
     using ViewSystem.Runtime;
-    using UniRx;
+     
 
     [Serializable]
     public class ViewModelBase : IViewModel
@@ -15,9 +16,9 @@ namespace UniGame.UiSystem.Runtime
 
         public ILifeTime LifeTime => _lifeTime;
         
-        public IReactiveCommand<Unit> CloseCommand => _close;
+        public ReactiveCommand CloseCommand => _close;
 
-        public void Close() => _close.Execute();
+        public void Close() => _close.Execute(Unit.Default);
         
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Button]

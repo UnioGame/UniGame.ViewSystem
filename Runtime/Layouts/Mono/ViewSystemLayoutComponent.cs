@@ -1,14 +1,15 @@
 ﻿namespace UniGame.UiSystem.Runtime.WindowStackControllers
 {
-    using UniModules.UniGame.Core.Runtime.Attributes;
+    using UniGame.Attributes;
     using UnityEngine;
     using System;
     using System.Collections.Generic;
     using Backgrounds.Abstract;
     using Core.Runtime;
+    using R3;
     using ViewSystem.Runtime;
-    using UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract;
-    using UniRx;
+    using ViewSystem.Runtime.WindowStackControllers.Abstract;
+     
     using UnityEngine.Serialization;
 
 #if ODIN_INSPECTOR
@@ -43,17 +44,17 @@
 
         public Transform Layout => LayoutController.Layout;
         
-        public IObservable<IView> OnHidden => LayoutController.OnHidden;
+        public Observable<IView> OnHidden => LayoutController.OnHidden;
         
-        public IObservable<IView> OnShown => LayoutController.OnShown;
+        public Observable<IView> OnShown => LayoutController.OnShown;
         
-        public IObservable<IView> OnClosed => LayoutController.OnClosed;
+        public Observable<IView> OnClosed => LayoutController.OnClosed;
         
-        public IObservable<Type>  OnIntent => LayoutController.OnIntent;
+        public Observable<Type>  OnIntent => LayoutController.OnIntent;
 
-        public IObservable<IView> OnBeginHide  => LayoutController.OnBeginHide;
+        public Observable<IView> OnBeginHide  => LayoutController.OnBeginHide;
         
-        public IObservable<IView> OnBeginShow  => LayoutController.OnBeginShow;
+        public Observable<IView> OnBeginShow  => LayoutController.OnBeginShow;
         
         public ILifeTime LifeTime => LayoutController.LifeTime;
         
@@ -65,7 +66,7 @@
 
         public void HideAll() => LayoutController.HideAll();
 
-        public IReadOnlyReactiveProperty<IView> ActiveView => LayoutController.ActiveView;
+        public ReadOnlyReactiveProperty<IView> ActiveView => LayoutController.ActiveView;
 
         public LayoutIntentResult Intent(string viewKey) => LayoutController.Intent(viewKey);
 

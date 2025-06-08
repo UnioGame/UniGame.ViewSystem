@@ -2,7 +2,7 @@
 {
     using System;
     using Cysharp.Threading.Tasks;
-    using UniModules.UniCore.Runtime.Utils;
+    using UniGame.Runtime.Utils;
     using global::UniGame.Core.Runtime;
 
     [Serializable]

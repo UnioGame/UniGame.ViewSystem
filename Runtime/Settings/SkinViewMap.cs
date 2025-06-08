@@ -1,7 +1,7 @@
 namespace UniModules.UniGame.UiSystem.Runtime.Settings
 {
     using System;
-    using Core.Runtime.DataStructure;
+    using global::UniGame.DataStructure;
 
     [Serializable]
     public class SkinViewMap : SerializableDictionary<string,UiViewsItems> { }

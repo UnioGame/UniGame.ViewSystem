@@ -5,7 +5,7 @@
     using System.Reflection;
     
     using UniGame.Runtime.ObjectPool.Extensions;
-    using UniModules.UniCore.Runtime.ReflectionUtils;
+    using UniGame.Runtime.ReflectionUtils;
     using UnityEngine;
     using UnityEngine.Pool;
     using Object = UnityEngine.Object;

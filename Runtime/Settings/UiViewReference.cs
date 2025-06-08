@@ -5,7 +5,7 @@ using UniModules.UniGame.ViewSystem;
 namespace UniGame.UiSystem.Runtime.Settings
 {
     using System;
-    using UniModules.UniCore.Runtime.ReflectionUtils;
+    using UniGame.Runtime.ReflectionUtils;
     using Core.Runtime.SerializableType;
     using Core.Runtime.SerializableType.Attributes;
     using ViewSystem.Runtime;

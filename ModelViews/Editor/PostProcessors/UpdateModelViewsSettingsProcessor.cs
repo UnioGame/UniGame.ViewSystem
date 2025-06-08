@@ -7,8 +7,8 @@ namespace UniGame.UiSystem.ModelViews.Editor.PostProcessors
     using System.Linq;
     using ModelViewsMap.Runtime.Settings;
     using UiSystem.Runtime;
-    using UniModules.UniCore.Runtime.ReflectionUtils;
-    using UniModules.UniCore.Runtime.Utils;
+    using UniGame.Runtime.ReflectionUtils;
+    using UniGame.Runtime.Utils;
     using UniModules.Editor;
     using ViewSystem.Runtime;
     using UnityEditor;

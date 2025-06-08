@@ -7,7 +7,7 @@ namespace UniGame.UiSystem.Editor.PostProcessors
     using Runtime.Settings;
     using UI.Editor.UiEdito;
     using UniCore.Runtime.ProfilerTools;
-    using UniModules.UniCore.Runtime.Utils;
+    using UniGame.Runtime.Utils;
     using UniModules.Editor;
     using UnityEngine;
 

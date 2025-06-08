@@ -1,7 +1,7 @@
 ﻿namespace UniGame.ModelViewsMap.Runtime.Settings
 {
     using System;
-    using UniModules.UniGame.Core.Runtime.DataStructure;
+    using UniGame.DataStructure;
     using Core.Runtime.SerializableType;
 
     [Serializable]

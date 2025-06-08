@@ -6,7 +6,7 @@ using UniGame.Core.Runtime.SerializableType;
 using UniGame.Core.Runtime.SerializableType.Attributes;
 using UniGame.UiSystem.Runtime.Settings;
 using UniGame.ViewSystem.Runtime;
-using UniModules.UniCore.Runtime.ReflectionUtils;
+using UniGame.Runtime.ReflectionUtils;
 using UnityEngine;
 
 namespace Modules.UniModules.UniGame.ViewSystem.Testing.Editor

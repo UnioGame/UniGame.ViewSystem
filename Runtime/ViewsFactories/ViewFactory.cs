@@ -9,8 +9,7 @@ namespace UniGame.UiSystem.Runtime
     using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
     using UniGame.Runtime.ObjectPool.Extensions;
-    using UniModules.UniGame.Core.Runtime.Common;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Extensions;
+    using UniGame.Common;
     using Core.Runtime;
     using ViewSystem.Runtime;
     using Object = UnityEngine.Object;

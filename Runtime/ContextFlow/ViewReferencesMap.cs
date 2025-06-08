@@ -3,8 +3,8 @@
     using System;
     using System.Collections.Generic;
     using UniGame.UiSystem.Runtime.Settings;
-    using UniModules.UniCore.Runtime.Utils;
-    using UniModules.UniGame.Core.Runtime.DataStructure;
+    using UniGame.Runtime.Utils;
+    using UniGame.DataStructure;
 
     [Serializable]
     public class ViewReferencesMap : IViewReferencesMap

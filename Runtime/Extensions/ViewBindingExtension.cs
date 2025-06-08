@@ -1,25 +1,24 @@
 ﻿using UniGame.Addressables.Reactive;
 using UniGame.AddressableTools.Runtime;
+using UniGame.Core.Runtime;
+using UniGame.ViewSystem.Runtime;
+using UniGame.Localization.Runtime;
+using UniGame.UiSystem.Runtime;
 
-namespace UniGame.Rx.Runtime.Extensions
+namespace UniGame.Runtime.Rx.Runtime.Extensions
 {
     using System;
     using System.Runtime.CompilerServices;
     using AddressableTools.Runtime.AssetReferencies;
     using Cysharp.Threading.Tasks;
     using TMPro;
-    using global::UniGame.Core.Runtime;
-    using global::UniGame.ViewSystem.Runtime;
-    using UniModules.UniGame.UISystem.Runtime.Extensions;
+    using ViewSystem.Runtime;
     using UnityEngine;
     using UnityEngine.UI;
-    using global::UniGame.Localization.Runtime.UniModules.UniGame.Localization.Runtime;
-    using global::UniGame.UiSystem.Runtime;
-    using UniGame.Runtime.Common;
-    using UniModules.UniCore.Runtime.Utils;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Extensions;
-    using UniModules.UniGame.Core.Runtime.Rx;
-    using UniRx;
+    using R3;
+    using Common;
+    using Utils;
+    using UniModules.UniGame.UiSystem.Runtime.Extensions;
     using UnityEngine.AddressableAssets;
     using UnityEngine.Localization;
     using UnityEngine.Localization.Components;
@@ -35,7 +34,8 @@ namespace UniGame.Rx.Runtime.Extensions
             return source == null ? view : view.Bind(source.AsObservable(), command);
         }
 
-        public static TView Bind<TView>(this TView view, IObservable<LocalizedString> source, TextMeshProUGUI text)
+        public static TView Bind<TView>(this TView view, Observable<LocalizedString> source, 
+            TextMeshProUGUI text)
             where TView : class, IView
         {
             return source == null 
@@ -69,11 +69,11 @@ namespace UniGame.Rx.Runtime.Extensions
             where TView : class, IView
         {
             if (source.RuntimeKeyIsValid() == false) return view;
-            return !image ? view : view.Bind(source.ToObservable(view.LifeTime), image);
+            return !image ? view : view.Bind(source, image);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TView Bind<TView>(this TView view, IObservable<AssetReferenceT<Sprite>> source, Image image)
+        public static TView Bind<TView>(this TView view, Observable<AssetReferenceT<Sprite>> source, Image image)
             where TView : class, IView
         {
             if (image == null) return view;
@@ -84,7 +84,7 @@ namespace UniGame.Rx.Runtime.Extensions
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TView Bind<TView>(this TView view, IObservable<AssetReference> source, Image image)
+        public static TView Bind<TView>(this TView view, Observable<AssetReference> source, Image image)
             where TView : class, IView
         {
             if (image == null) return view;
@@ -96,7 +96,7 @@ namespace UniGame.Rx.Runtime.Extensions
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TView Bind<TView>(this TView view, 
-            IObservable<AddressableValue<Sprite>> source, Image image)
+            Observable<AddressableValue<Sprite>> source, Image image)
             where TView : class, IView
         {
             return view.Bind(source, x =>
@@ -171,7 +171,7 @@ namespace UniGame.Rx.Runtime.Extensions
         }
         
         
-        public static TView BindAsync<TView>(this TView view, IObservable<AssetReferenceT<Sprite>> source, Image image)
+        public static TView BindAsync<TView>(this TView view, Observable<AssetReferenceT<Sprite>> source, Image image)
             where TView : class, IView
         {
             if (image == null) return view;
@@ -216,17 +216,17 @@ namespace UniGame.Rx.Runtime.Extensions
         }
 
 
-        public static IDisposable Bind(this IObservable<string> source, TextMeshPro text)
+        public static IDisposable Bind(this Observable<string> source, TextMeshPro text)
         {
             return source.Subscribe(x => text.SetValue(x));
         }
         
-        public static IDisposable Bind(this IObservable<string> source, TextMeshProUGUI text)
+        public static IDisposable Bind(this Observable<string> source, TextMeshProUGUI text)
         {
             return source.Subscribe(x => text.SetValue(x));
         }
 
-        public static TView Bind<TView>(this TView view, IObservable<Sprite> source, Button button)
+        public static TView Bind<TView>(this TView view, Observable<Sprite> source, Button button)
             where TView : ILifeTimeContext
         {
             if (!button || !button.image)
@@ -235,14 +235,14 @@ namespace UniGame.Rx.Runtime.Extensions
             return view.Bind(source, x => button.image.SetValue(x));
         }
 
-        public static TView Bind<TView>(this TView view, IObservable<string> source, TextMeshProUGUI text)
+        public static TView Bind<TView>(this TView view, Observable<string> source, TextMeshProUGUI text)
             where TView : ILifeTimeContext
         {
             return view.Bind(source, x => text.SetValue(x));
         }
 
         public static TView Bind<TView, TValue>(this TView view,
-            IObservable<TValue> source,
+            Observable<TValue> source,
             Func<TValue, string> format, TextMeshProUGUI text)
             where TView : ILifeTimeContext
         {
@@ -250,32 +250,32 @@ namespace UniGame.Rx.Runtime.Extensions
             return view.Bind(stringObservable, text);
         }
         
-        public static TView Bind<TView>(this TView view, IObservable<int> source, int value)
+        public static TView Bind<TView>(this TView view, Observable<int> source, int value)
             where TView : ILifeTimeContext
         {
             return view.Bind(source, x => value = x);
         }
 
-        public static TView Bind<TView>(this TView view, IObservable<string> source, TextMeshPro text)
+        public static TView Bind<TView>(this TView view, Observable<string> source, TextMeshPro text)
             where TView : ILifeTimeContext
         {
             if (!text) return view;
             return view.Bind(source, x => text.text = x);
         }
 
-        public static TView Bind<TView>(this TView view, IObservable<int> source, TextMeshPro text)
+        public static TView Bind<TView>(this TView view, Observable<int> source, TextMeshPro text)
             where TView : ILifeTimeContext
         {
             return view.Bind(source, x => text.text = x.ToStringFromCache());
         }
 
-        public static TView Bind<TView>(this TView view, IObservable<string> source, TMP_InputField text)
+        public static TView Bind<TView>(this TView view, Observable<string> source, TMP_InputField text)
             where TView : ILifeTimeContext
         {
             return view.Bind(source,x => text.SetValue(x));
         }
         
-        public static TView Bind<TView>(this TView view,TMP_InputField source, IReactiveProperty<int> value)
+        public static TView Bind<TView>(this TView view,TMP_InputField source, ReactiveProperty<int> value)
             where TView : ILifeTimeContext
         {
             if (source == null) return view;
@@ -296,7 +296,7 @@ namespace UniGame.Rx.Runtime.Extensions
         }
         
         public static TView Bind<TView>(this TView view,TMP_InputField source, 
-            IReactiveProperty<string> value,bool initDefault = true)
+            ReactiveProperty<string> value,bool initDefault = true)
             where TView : ILifeTimeContext
         {
             if (source == null || value == null) return view;
@@ -323,61 +323,61 @@ namespace UniGame.Rx.Runtime.Extensions
             return view.Bind(observable, value);
         }
         
-        public static TView Bind<TView>(this TView view, IObservable<int> source, TMP_InputField text)
+        public static TView Bind<TView>(this TView view, Observable<int> source, TMP_InputField text)
             where TView : ILifeTimeContext
         {
             return view.Bind(source,x => text.SetValue(x.ToStringFromCache()));
         }
         
-        public static TView Bind<TView>(this TView view, IObservable<float> source, TMP_InputField text)
+        public static TView Bind<TView>(this TView view, Observable<float> source, TMP_InputField text)
             where TView : ILifeTimeContext
         {
             return view.Bind(source,x => text.SetValue(x.ToStringFromCache()));
         }
         
-        public static TView Bind<TView>(this TView view, IObservable<Color> source, TextMeshProUGUI text)
+        public static TView Bind<TView>(this TView view, Observable<Color> source, TextMeshProUGUI text)
             where TView : ILifeTimeContext
         {
             return view.Bind(source,x => text.SetValue(x));
         }
         
-        public static TView Bind<TView>(this TView view, IObservable<Color> source, TextMeshPro text)
+        public static TView Bind<TView>(this TView view, Observable<Color> source, TextMeshPro text)
             where TView : ILifeTimeContext
         {
             return view.Bind(source,x => text.SetValue(x));
         }
         
-        public static TView Bind<TView>(this TView view, IObservable<Color> source, TMP_InputField text)
+        public static TView Bind<TView>(this TView view, Observable<Color> source, TMP_InputField text)
             where TView : ILifeTimeContext
         {
             return view.Bind(source,x => text.SetValue(x));
         }
         
-        public static TView Bind<TView>(this TView view, IObservable<Color> source, Button button)
+        public static TView Bind<TView>(this TView view, Observable<Color> source, Button button)
             where TView : ILifeTimeContext
         {
             return view.Bind(source,x => button.SetValue(x));
         }
 
-        public static TView Bind<TView>(this TView view, IObservable<int> source, TextMeshProUGUI text)
+        public static TView Bind<TView>(this TView view, Observable<int> source, TextMeshProUGUI text)
             where TView : ILifeTimeContext
         {
             return view.Bind(source, x => text.SetValue(x.ToStringFromCache()));
         }
         
-        public static TView Bind<TView>(this TView view, IObservable<float> source, TextMeshProUGUI text)
+        public static TView Bind<TView>(this TView view, Observable<float> source, TextMeshProUGUI text)
             where TView : ILifeTimeContext
         {
             return view.Bind(source, x => text.SetValue(x.ToStringFromCache()));
         }
         
-        public static TView Bind<TView>(this TView view, IObservable<float> source, TextMeshPro text)
+        public static TView Bind<TView>(this TView view, Observable<float> source, TextMeshPro text)
             where TView : ILifeTimeContext
         {
             return view.Bind(source, x => text.SetValue(x.ToStringFromCache()));
         }
 
-        public static TView Bind<TView>(this TView view, IObservable<Sprite> source, Image image)
+        public static TView Bind<TView>(this TView view, Observable<Sprite> source, Image image)
             where TView : ILifeTimeContext
         {
             return !image
@@ -385,7 +385,7 @@ namespace UniGame.Rx.Runtime.Extensions
                 : view.Bind(source,x => image.SetValue(x));
         }
         
-        public static TView Bind<TView>(this TView view, IObservable<Sprite> source, RawImage image)
+        public static TView Bind<TView>(this TView view, Observable<Sprite> source, RawImage image)
             where TView : ILifeTimeContext
         {
             return !image
@@ -393,7 +393,7 @@ namespace UniGame.Rx.Runtime.Extensions
                 : view.Bind(source.Where(x => x != null),x => image.SetValue(x));
         }
 
-        public static TView Bind<TView>(this TView sender, IObservable<Color> source, Image image)
+        public static TView Bind<TView>(this TView sender, Observable<Color> source, Image image)
             where TView : ILifeTimeContext
         {
             return image == null
@@ -401,7 +401,7 @@ namespace UniGame.Rx.Runtime.Extensions
                 : sender.Bind(source,x => image.SetValue(x));
         }
         
-        public static TView Bind<TView>(this TView sender, IObservable<Color> source, RawImage image)
+        public static TView Bind<TView>(this TView sender, Observable<Color> source, RawImage image)
             where TView : ILifeTimeContext
         {
             return image == null
@@ -409,14 +409,14 @@ namespace UniGame.Rx.Runtime.Extensions
                 : sender.Bind(source,x => image.SetValue(x));
         }
 
-        public static TView Bind<TView>(this TView view, IObservable<bool> source, CanvasGroup group)
+        public static TView Bind<TView>(this TView view, Observable<bool> source, CanvasGroup group)
             where TView : ILifeTimeContext
         {
             if (!group) return view;
             return view.Bind(source, x => group.alpha = x ? 1 : 0);
         }
 
-        public static TView Bind<TView>(this TView view, IObservable<Texture> source, RawImage image)
+        public static TView Bind<TView>(this TView view, Observable<Texture> source, RawImage image)
             where TView : ILifeTimeContext
         {
             return !image
@@ -424,14 +424,14 @@ namespace UniGame.Rx.Runtime.Extensions
                 : view.Bind(source.Where(x => x != null), x => image.texture = x);
         }
 
-        public static TView Bind<TView>(this TView view, IObservable<bool> source, Toggle toggle)
+        public static TView Bind<TView>(this TView view, Observable<bool> source, Toggle toggle)
             where TView : ILifeTimeContext
         {
             return !toggle ? view : view.Bind(source, x => toggle.isOn = x);
         }
 
 
-        public static TView Bind<TView, TValue>(this TView sender, IObservable<TValue> source, Button command)
+        public static TView Bind<TView, TValue>(this TView sender, Observable<TValue> source, Button command)
             where TView : ILifeTimeContext
         {
             return command == null 
@@ -439,7 +439,7 @@ namespace UniGame.Rx.Runtime.Extensions
                 : sender.Bind(source, x => command.onClick?.Invoke());
         }
 
-        public static TView Bind<TView>(this TView sender, IObservable<float> source, Slider slider)
+        public static TView Bind<TView>(this TView sender, Observable<float> source, Slider slider)
             where TView : ILifeTimeContext
         {
             return source == null || slider == null
@@ -447,7 +447,7 @@ namespace UniGame.Rx.Runtime.Extensions
                 : sender.Bind(source, x => slider.value = x);
         }
         
-        public static TView Bind<TView>(this TView sender,IObservable<float> maxValue, IObservable<float> source, Slider slider)
+        public static TView Bind<TView>(this TView sender,Observable<float> maxValue, Observable<float> source, Slider slider)
             where TView : ILifeTimeContext
         {
             if (source == null || slider == null) return sender;
@@ -455,7 +455,7 @@ namespace UniGame.Rx.Runtime.Extensions
             return sender.Bind(source,slider);
         }
         
-        public static TView Bind<TView>(this TView sender,IObservable<int> maxValue, IObservable<int> source, Slider slider)
+        public static TView Bind<TView>(this TView sender,Observable<int> maxValue, Observable<int> source, Slider slider)
             where TView : ILifeTimeContext
         {
             if (source == null || slider == null) return sender;
@@ -463,7 +463,7 @@ namespace UniGame.Rx.Runtime.Extensions
             return sender.Bind(source,slider);
         }
         
-        public static TView Bind<TView>(this TView sender, IObservable<int> source, Slider slider)
+        public static TView Bind<TView>(this TView sender, Observable<int> source, Slider slider)
             where TView : ILifeTimeContext
         {
             return source == null || slider == null
@@ -533,7 +533,7 @@ namespace UniGame.Rx.Runtime.Extensions
         
                 
         public static T Bind<T>(this T sender,
-            IObservable<bool> source,Image image, Sprite on, Sprite off)
+            Observable<bool> source,Image image, Sprite on, Sprite off)
             where T : ILifeTimeContext
         {
             var sourceObservable = source.Select(x => x ? on : off);
@@ -541,7 +541,7 @@ namespace UniGame.Rx.Runtime.Extensions
         }
         
         public static T Bind<T>(this T sender,
-            IObservable<bool> source,Button image, Sprite on, Sprite off)
+            Observable<bool> source,Button image, Sprite on, Sprite off)
             where T : ILifeTimeContext
         {
             var sourceObservable = source.Select(x => x ? on : off);
@@ -549,7 +549,7 @@ namespace UniGame.Rx.Runtime.Extensions
         }
         
         public static TView Bind<TView>(this TView sender,
-            IObservable<Unit> source,
+            Observable<Unit> source,
             ISignalValueProperty<bool> value)
             where TView : ILifeTimeContext
         {
@@ -559,7 +559,7 @@ namespace UniGame.Rx.Runtime.Extensions
         }
         
         public static TView Bind<TView>(this TView sender,
-            IObservable<bool> source,
+            Observable<bool> source,
             ISignalValueProperty<bool> value)
             where TView : ILifeTimeContext
         {
@@ -596,13 +596,13 @@ namespace UniGame.Rx.Runtime.Extensions
             return sender.Bind(clickObservable, command);
         }
 
-        public static TView Bind<TView>(this TView view, IObservable<bool> source, Button button)
+        public static TView Bind<TView>(this TView view, Observable<bool> source, Button button)
             where TView : ILifeTimeContext
         {
             return !button ? view : view.Bind(source, x => button.interactable = x);
         }
 
-        public static TView Bind<TView>(this TView view, Button source, IReactiveCommand<Unit> command,
+        public static TView Bind<TView>(this TView view, Button source, ReactiveCommand<Unit> command,
             int throttleInMilliseconds = 0)
             where TView : ILifeTimeContext
         {
@@ -613,7 +613,7 @@ namespace UniGame.Rx.Runtime.Extensions
         }
 
         public static TView Bind<TView>(this TView view,
-            IObservable<bool> source,
+            Observable<bool> source,
             Image image)
             where TView : ILifeTimeContext
         {
@@ -623,7 +623,7 @@ namespace UniGame.Rx.Runtime.Extensions
         }
         
         public static TView Bind<TView>(this TView view,
-            IObservable<bool> source,
+            Observable<bool> source,
             MonoBehaviour component)
             where TView : ILifeTimeContext
         {
@@ -633,7 +633,7 @@ namespace UniGame.Rx.Runtime.Extensions
         }
         
         public static TView Bind<TView>(this TView view,
-            IObservable<bool> source,
+            Observable<bool> source,
             Slider component)
             where TView : ILifeTimeContext
         {
@@ -643,7 +643,7 @@ namespace UniGame.Rx.Runtime.Extensions
         }
         
         public static TView Bind<TView>(this TView view,
-            IObservable<bool> source,
+            Observable<bool> source,
             RawImage image)
             where TView : ILifeTimeContext
         {
@@ -652,25 +652,25 @@ namespace UniGame.Rx.Runtime.Extensions
                 : view.Bind(source, x => image.enabled = x);
         }
 
-        public static TView Bind<TView>(this TView view, IObservable<Unit> source, IReactiveCommand<Unit> command)
+        public static TView Bind<TView>(this TView view, Observable<Unit> source, ReactiveCommand<Unit> command)
             where TView : ILifeTimeContext
         {
             return view.Bind(source, x => command.Execute(Unit.Default));
         }
         
-        public static TView Bind<TView,TData>(this TView view, IObservable<TData> source, IReactiveCommand<TData> command)
+        public static TView Bind<TView,TData>(this TView view, Observable<TData> source, ReactiveCommand<TData> command)
             where TView : ILifeTimeContext
         {
             return view.Bind(source, x => command.Execute(x));
         }
 
-        public static TSource Bind<TSource>(this TSource view, Toggle source, IReactiveProperty<bool> value)
+        public static TSource Bind<TSource>(this TSource view, Toggle source, ReactiveProperty<bool> value)
             where TSource : ILifeTimeContext
         {
             return !source ? view : view.Bind(source.OnValueChangedAsObservable(), value);
         }
 
-        public static TSource Bind<TSource>(this TSource view, Toggle source, IReactiveCommand<bool> value)
+        public static TSource Bind<TSource>(this TSource view, Toggle source, ReactiveCommand<bool> value)
             where TSource : ILifeTimeContext
         {
             if (source == null) return view;
@@ -706,7 +706,7 @@ namespace UniGame.Rx.Runtime.Extensions
 
         public static TSource Bind<TSource, T>(
             this TSource view,
-            IObservable<T> source,
+            Observable<T> source,
             ViewBase target,
             bool closeWith = false)
             where TSource : ViewBase
@@ -723,7 +723,7 @@ namespace UniGame.Rx.Runtime.Extensions
 
         public static TSource BindToWindow<TSource>(
             this TSource view,
-            IObservable<IViewModel> source,
+            Observable<IViewModel> source,
             Type viewType)
             where TSource : ViewBase
         {
@@ -733,7 +733,7 @@ namespace UniGame.Rx.Runtime.Extensions
         public static TSource BindWhere<TSource, T>(
             this TSource view,
             Object indicator,
-            IObservable<T> source,
+            Observable<T> source,
             Action<T> target)
             where TSource : IView
         {

@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract
+﻿namespace UniGame.ViewSystem.Runtime.WindowStackControllers.Abstract
 {
     using global::UniGame.UiSystem.Runtime.Backgrounds.Abstract;
     using global::UniGame.ViewSystem.Runtime;

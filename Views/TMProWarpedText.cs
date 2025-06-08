@@ -1,9 +1,10 @@
 ﻿namespace UniGame.UI
 {
     using System;
+    using R3;
     using TMPro;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Extensions;
-    using UniRx;
+    using Core.Runtime;
+     
     using UnityEngine;
 
     public class TMProWarpedText : MonoBehaviour
@@ -16,22 +17,23 @@
 
         private void Awake()
         {
-            if (_rebuildOnTextUpdate)
-            {
-                _text.ObserveEveryValueChanged(t => t.font)
-                     .Throttle(TimeSpan.FromMilliseconds(50))
-                     .Subscribe(x => WarpText())
-                     .AddTo(this.GetLifeTime());
+            if (!_rebuildOnTextUpdate) return;
             
-                _text.ObserveEveryValueChanged(t => t.text)
-                     .Throttle(TimeSpan.FromMilliseconds(50))
-                     .Subscribe(x => WarpText())
-                     .AddTo(this.GetLifeTime());
+            var lifeTime = this.GetLifeTime();
+
+            Observable.EveryValueChanged(_text, x => x.font)
+                .Debounce(TimeSpan.FromMilliseconds(50))
+                .Subscribe(x => WarpText())
+                .AddTo(lifeTime);
+
+            Observable.EveryValueChanged(_text, x => x.text)
+                .Debounce(TimeSpan.FromMilliseconds(50))
+                .Subscribe(x => WarpText())
+                .AddTo(lifeTime);
             
-                _text.ObserveEveryValueChanged(t => t.color)
-                    .Subscribe(x => WarpText())
-                    .AddTo(this.GetLifeTime());
-            }
+            Observable.EveryValueChanged(_text, x => x.color)
+                .Subscribe(x => WarpText())
+                .AddTo(lifeTime);
         }
 
         private void OnEnable()

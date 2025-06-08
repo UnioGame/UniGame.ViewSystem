@@ -2,10 +2,12 @@ namespace UniGame.ViewSystem.Runtime.ViewModels
 {
     using System;
     using Cysharp.Threading.Tasks;
-    using UniModules.UniGame.Context.Runtime.Connections;
+    using Context.Runtime;
     using global::UniGame.Core.Runtime;
+    using R3;
+    using UniGame.Runtime.Rx.Extensions;
     using UniModules.UniGame.ViewSystem.Runtime.Abstract;
-    using UniRx;
+     
 
     [Serializable]
     public class ContextViewModel : IContextViewModel
@@ -14,14 +16,12 @@ namespace UniGame.ViewSystem.Runtime.ViewModels
         private readonly ReactiveCommand _closeCommand = new();
         public ILifeTime LifeTime => _context.LifeTime;
 
-        public IReactiveCommand<Unit> CloseCommand => _closeCommand;
+        public ReactiveCommand CloseCommand => _closeCommand;
         public virtual bool IsDisposeWithModel => true;
         
         public async UniTask InitializeContextAsync(IContext context)
         {
-            _context.Reset();
             _context.Connect(context);
-
             await OnInitializeContext(_context);
         }
 

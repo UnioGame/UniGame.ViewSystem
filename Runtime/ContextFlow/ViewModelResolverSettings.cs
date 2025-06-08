@@ -3,7 +3,6 @@ namespace UniGame.ViewSystem.Runtime
     using System;
     using Cysharp.Threading.Tasks;
     using UniGame.Core.Runtime;
-    using UniGame.Core.Runtime.ScriptableObjects;
     using UnityEngine;
 
 #if ODIN_INSPECTOR
@@ -15,7 +14,7 @@ namespace UniGame.ViewSystem.Runtime
     /// </summary>
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/Settings/View Model Resolver Settings",
         fileName = "View Model Resolver Settings")]
-    public class ViewModelResolverSettings : LifetimeScriptableObject, IViewModelResolver
+    public class ViewModelResolverSettings : ScriptableObject, IViewModelResolver
     {
         [SerializeField]
 #if ODIN_INSPECTOR

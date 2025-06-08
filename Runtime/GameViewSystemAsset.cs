@@ -1,19 +1,19 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
     using UniGame.AddressableTools.Runtime;
-    using UniGame.ViewSystem.Runtime.Extensions;
     using UnityEngine;
     using System;
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
     using Settings;
     using UniCore.Runtime.ProfilerTools;
-    using UniModules.UniCore.Runtime.DataFlow;
+    using UniGame.Runtime.DataFlow;
     using UniModules.UniGame.UiSystem.Runtime;
     using Core.Runtime;
     using Game.Modules.unigame.unimodules.UniGame.ViewSystem.Runtime.ViewsFactories;
-    using UniModules.UniCore.Runtime.Utils;
-    using UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract;
+    using R3;
+    using UniGame.Runtime.Utils;
+    using ViewSystem.Runtime.WindowStackControllers.Abstract;
     using ViewSystem.Runtime;
     using UnityEngine.AddressableAssets;
     using WindowStackControllers;
@@ -58,7 +58,7 @@
 
         public IViewModelTypeMap ModelTypeMap => ViewSystem.ModelTypeMap;
         
-        public IObservable<IView> ViewCreated => ViewSystem.ViewCreated;
+        public Observable<IView> ViewCreated => ViewSystem.ViewCreated;
         
         public IGameViewSystem ViewSystem => _gameViewSystem;
 
@@ -70,7 +70,7 @@
         
         public IReadOnlyViewLayout this[ViewType type] => ViewSystem[type];
 
-        public IObservable<TView> ObserveView<TView>() where  TView :class, IView => ViewSystem.ObserveView<TView>();
+        public Observable<TView> ObserveView<TView>() where  TView :class, IView => ViewSystem.ObserveView<TView>();
 
 
         public async UniTask<IView> OpenWindow(string viewType, string skinTag = "", string viewName = null)

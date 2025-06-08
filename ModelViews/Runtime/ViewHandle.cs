@@ -1,13 +1,14 @@
 ﻿namespace UniGame.UiSystem.ModelViews.Runtime.Flow
 {
     using System;
-    using UniModules.UniCore.Runtime.DataFlow;
-    using UniModules.UniGame.Core.Runtime.Rx;
+    using UniGame.Runtime.DataFlow;
+    using UniGame.Runtime.Rx;
     using Core.Runtime;
     using Cysharp.Threading.Tasks;
-    using UniModules.UniGame.UISystem.Runtime;
+    using R3;
+    using UniGame.Runtime.Rx.Extensions;
     using ViewSystem.Runtime;
-    using UniRx;
+     
 
     /// <summary>
     /// Model View handle
@@ -28,7 +29,7 @@
 
         #region public properties
 
-        public IReadOnlyReactiveProperty<ViewStatus> Status => _rxStatus;
+        public ReadOnlyReactiveProperty<ViewStatus> Status => _rxStatus;
         
 
         public IView View => _view;
@@ -140,7 +141,7 @@
                 Subscribe().
                 AddTo(_viewLifeTime);
 
-            _rxStatus.SetValueForce(view.Status.Value);
+            _rxStatus.SetValueForce(view.Status.CurrentValue);
         }
 
         #endregion

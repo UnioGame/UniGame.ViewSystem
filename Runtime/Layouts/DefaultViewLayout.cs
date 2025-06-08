@@ -3,8 +3,9 @@
     using System;
     using System.Linq;
     using Backgrounds.Abstract;
+    using R3;
     using ViewSystem.Runtime;
-    using UniRx;
+     
     using UnityEngine;
 
     [Serializable]
@@ -60,7 +61,7 @@
             Remove(view);
             Add(view);
             //show view if it inactive
-            if(view.IsVisible.Value == false)
+            if(view.IsVisible.CurrentValue == false)
                 view.Show();
             
             _background?.Show();

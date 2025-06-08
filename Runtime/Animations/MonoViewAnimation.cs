@@ -2,7 +2,6 @@
 {
     using Core.Runtime;
     using Cysharp.Threading.Tasks;
-    using UniModules.UniGame.UISystem.Runtime;
     using ViewSystem.Runtime.Views.Abstract;
     using UnityEngine;
     using ViewSystem.Runtime;

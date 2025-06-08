@@ -1,5 +1,5 @@
 ﻿using System;
-using UniModules.UniGame.Core.Runtime.Common;
+using UniGame.Common;
 
 namespace UniGame.ViewSystem.Runtime
 {

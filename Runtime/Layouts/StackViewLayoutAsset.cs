@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.UISystem.Runtime.WindowStackControllers
+﻿namespace UniGame.ViewSystem.Runtime.WindowStackControllers
 {
     using Abstract;
     using global::UniGame.UiSystem.Runtime;

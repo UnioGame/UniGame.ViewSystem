@@ -1,5 +1,5 @@
 using System;
-using UniModules.UniCore.Runtime.Utils;
+using UniGame.Runtime.Utils;
 using UniModules.UniGame.ViewSystem;
 
 public static class ViewReflectionTool

@@ -20,6 +20,7 @@ MVVM View System for Unity3D
     - [Skins via folders](#skins-via-folders)
     - [Skins via component](#skins-via-component)
     - [Custom Views Factory](#custom-views-factory)
+      - [Enable Zenject DI Support](#enable-zenject-di-support)
   - [Pooling Support](#pooling-support)
   - [API References](#api-references)
     - [Views \& ViewModels](#views--viewmodels)
@@ -43,14 +44,38 @@ MVVM View System for Unity3D
 
 ## Getting Started
 
-Add to your project manifiest by path [%UnityProject%]/Packages/manifiest.json new Scope:
+For this module you need to install R3 package, NuGetForUnity and ObservableCollections.
+
+```
+ObservableCollections can be installer vai NuGetForUnity
+
+In Unity projects, you can installing ObservableCollections with NugetForUnity. 
+If R3 integration is required, similarly install ObservableCollections.R3 via NuGetForUnity.
+```
+
+follow the instructions on home pages for these packages:
+
+- https://github.com/Cysharp/R3
+- https://github.com/GlitchEnzo/NuGetForUnity
+- https://github.com/Cysharp/ObservableCollections
+
+```
+
+"dependencies": {
+    "com.cysharp.r3": "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity",
+    "com.github-glitchenzo.nugetforunity": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity"
+}
+
+```
+
+
+Add to your project manifiest by path [%UnityProject%]/Packages/manifiest.json new package:
 
 ```json
 {
   "dependencies": {
-    "com.unigame.viewsystem" : "https://github.com/UnioGame/UniGame.ViewSystem.git"
-    "com.unigame.localization": "https://github.com/UnioGame/UniGame.Localization.git",
-    "com.unigame.coremodules": "https://github.com/UnioGame/UniGame.CoreModules.git",
+    "com.unigame.viewsystem" : "https://github.com/UnioGame/unigame.viewsystem.git"
+    "com.unigame.localization" : "https://github.com/UnioGame/unigame.localization.git",
     "com.cysharp.unitask" : "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"
   }
 }

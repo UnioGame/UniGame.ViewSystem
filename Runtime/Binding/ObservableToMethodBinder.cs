@@ -3,9 +3,10 @@
     using System;
     using System.Reflection;
     using System.Runtime.CompilerServices;
-    using Rx.Runtime.Extensions;
-    using UniModules.UniCore.Runtime.ReflectionUtils;
-    using UniRx;
+    using R3;
+    using UniGame.Runtime.Rx.Runtime.Extensions;
+    using UniGame.Runtime.ReflectionUtils;
+     
 
     [Serializable]
     public class ObservableToMethodBinder : IViewBinder
@@ -75,7 +76,7 @@
         {
             var result = fieldValue switch
             {
-                IObservable<Unit> value => view.Bind(value,methodInfo),
+                Observable<Unit> value => view.Bind(value,methodInfo),
                 _ => view
             };
 

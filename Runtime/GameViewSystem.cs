@@ -6,15 +6,16 @@ namespace UniGame.UiSystem.Runtime
     using System;
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
-    using UniCore.Runtime.ProfilerTools;
-    using UniModules.UniCore.Runtime.DataFlow;
+    using UniGame.Runtime.DataFlow;
     using UniModules.UniGame.UiSystem.Runtime;
     using Core.Runtime;
     using Core.Runtime.Extension;
-    using UniModules.UniCore.Runtime.Utils;
-    using UniModules.UniGame.Context.Runtime.Context;
+    using R3;
+    using UniCore.Runtime.ProfilerTools;
+    using UniGame.Runtime.Utils;
+    using Context.Runtime;
     using ViewSystem.Runtime;
-    using UniRx;
+     
     using UnityEngine;
     using ViewSystem.Runtime.Binding;
 
@@ -88,7 +89,7 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// reactive views stream
         /// </summary>
-        public IObservable<IView> ViewCreated => _viewCreatedSubject;
+        public Observable<IView> ViewCreated => _viewCreatedSubject;
 
 
         #region public methods
@@ -114,7 +115,7 @@ namespace UniGame.UiSystem.Runtime
         
         #region ui system api
 
-        public IObservable<TView> ObserveView<TView>()
+        public Observable<TView> ObserveView<TView>()
             where TView : class, IView
         {
             var observable = ViewCreated.OfType<IView, TView>();

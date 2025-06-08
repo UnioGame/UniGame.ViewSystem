@@ -2,10 +2,11 @@
 {
     using System;
     using AddressableTools.Runtime.AssetReferencies;
-    using Rx.Runtime.Extensions;
+    using R3;
+    using UniGame.Runtime.Rx.Runtime.Extensions;
     using TMPro;
     using UniGame.Runtime.Common;
-    using UniRx;
+     
     using UnityEngine;
     using UnityEngine.AddressableAssets;
     using UnityEngine.UI;
@@ -21,25 +22,25 @@
 
             switch (sourceValue)
             {
-                case IObservable<Sprite> observable:
+                case Observable<Sprite> observable:
                     return Bind(view, observable, ref bindData);
-                case IObservable<Unit> observable:
+                case Observable<Unit> observable:
                     return Bind<Unit>(view, observable, ref bindData);
-                case IObservable<string> observable:
+                case Observable<string> observable:
                     return Bind(view, observable, ref bindData);
-                case IObservable<bool> observable:
+                case Observable<bool> observable:
                     return Bind(view, observable, ref bindData);
-                case IObservable<int> observable:
+                case Observable<int> observable:
                     return Bind(view, observable, ref bindData);
-                case IObservable<Color> observable:
+                case Observable<Color> observable:
                     return Bind(view, observable, ref bindData);
-                case IObservable<float> observable:
+                case Observable<float> observable:
                     return Bind(view, observable, ref bindData);
-                case IObservable<Texture> observable:
+                case Observable<Texture> observable:
                     return Bind(view, observable, ref bindData);
-                case IObservable<AssetReferenceT<Sprite>> observable:
+                case Observable<AssetReferenceT<Sprite>> observable:
                     return Bind(view, observable, ref bindData);
-                case IObservable<AddressableValue<Sprite>> observable:   
+                case Observable<AddressableValue<Sprite>> observable:   
                     return Bind(view, observable, ref bindData);
                 case SignalValueProperty<bool> observable:   
                     return Bind(view, observable, ref bindData);
@@ -48,7 +49,7 @@
             return view;
         }
 
-        public IView Bind(IView view, IObservable<int> observable, ref BindDataConnection bindData)
+        public IView Bind(IView view, Observable<int> observable, ref BindDataConnection bindData)
         {
             var targetValue = bindData.targetValue;
 
@@ -61,7 +62,7 @@
             };
         }
         
-        public IView Bind(IView view, IObservable<Color> observable, ref BindDataConnection bindData)
+        public IView Bind(IView view, Observable<Color> observable, ref BindDataConnection bindData)
         {
             var targetValue = bindData.targetValue;
 
@@ -76,7 +77,7 @@
             };
         }
         
-        public IView Bind(IView view, IObservable<float> observable, ref BindDataConnection bindData)
+        public IView Bind(IView view, Observable<float> observable, ref BindDataConnection bindData)
         {
             var targetValue = bindData.targetValue;
 
@@ -90,7 +91,7 @@
             };
         }
         
-        public IView Bind(IView view, IObservable<bool> observable, ref BindDataConnection bindData)
+        public IView Bind(IView view, Observable<bool> observable, ref BindDataConnection bindData)
         {
             var targetValue = bindData.targetValue;
 
@@ -105,7 +106,7 @@
             };
         }
 
-        public IView Bind<T>(IView view, IObservable<T> observable, ref BindDataConnection bindData)
+        public IView Bind<T>(IView view, Observable<T> observable, ref BindDataConnection bindData)
         {
             if (observable == null) return view;
             
@@ -113,15 +114,16 @@
             
             return targetValue switch
             {
+                ReactiveProperty<T> value => view.Bind(observable, value),
+                ReactiveCommand<T> value => view.Bind(observable, value),
+                Observer<T> value => view.Bind(observable, value),
                 ISubject<T> value => view.Bind(observable, value),
-                IReactiveCommand<T> value => view.Bind(observable, value),
-                IReactiveProperty<T> value => view.Bind(observable, value),
                 IObserver<T> value => view.Bind(observable, value),
                 _ => view
             };
         }
         
-        public IView Bind(IView view,IObservable<string> observable,ref BindDataConnection bindData)
+        public IView Bind(IView view,Observable<string> observable,ref BindDataConnection bindData)
         {
             var targetValue = bindData.targetValue;
             return targetValue switch
@@ -133,7 +135,7 @@
             };
         }
 
-        public IView Bind(IView view,IObservable<Sprite> observable,ref BindDataConnection bindData)
+        public IView Bind(IView view,Observable<Sprite> observable,ref BindDataConnection bindData)
         {
             var targetValue = bindData.targetValue;
             return targetValue switch
@@ -144,7 +146,7 @@
             };
         }
         
-        public IView Bind(IView view,IObservable<AssetReferenceT<Sprite>> observable,ref BindDataConnection bindData)
+        public IView Bind(IView view,Observable<AssetReferenceT<Sprite>> observable,ref BindDataConnection bindData)
         {
             var targetValue = bindData.targetValue;
             return targetValue switch
@@ -154,7 +156,7 @@
             };
         }
         
-        public IView Bind(IView view,IObservable<AddressableValue<Sprite>> observable,ref BindDataConnection bindData)
+        public IView Bind(IView view,Observable<AddressableValue<Sprite>> observable,ref BindDataConnection bindData)
         {
             var targetValue = bindData.targetValue;
             return targetValue switch
@@ -171,13 +173,13 @@
             {
                 Button value => view.Bind(value, source),
                 Toggle value => view.Bind(value, source),
-                IObservable<Unit> value=> view.Bind(value,source),
-                IObservable<bool> value=> view.Bind(value,source),
+                Observable<Unit> value=> view.Bind(value,source),
+                Observable<bool> value=> view.Bind(value,source),
                 _ => view
             };  
         }
         
-        public IView Bind(IView view,IObservable<Texture> observable,ref BindDataConnection bindData)
+        public IView Bind(IView view,Observable<Texture> observable,ref BindDataConnection bindData)
         {
             var targetValue = bindData.targetValue;
             return targetValue switch

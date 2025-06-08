@@ -2,7 +2,8 @@
 {
     using System;
     using global::UniGame.Core.Runtime;
-    using UniRx;
+    using R3;
+
 
     public interface IViewModel : 
         IDisposable, ILifeTimeContext,
@@ -13,6 +14,6 @@
 
     public interface ICloseableViewModel
     {
-        IReactiveCommand<Unit> CloseCommand { get; }
+        ReactiveCommand CloseCommand { get; }
     }
 }

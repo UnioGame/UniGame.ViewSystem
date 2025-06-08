@@ -1,9 +1,11 @@
 namespace UniGame.Localization.Runtime.Components
 {
     using System;
-    using global::UniModules.UniCore.Runtime.DataFlow;
-    using UniModules.UniGame.Localization.Runtime;
-    using UniRx;
+    using Cysharp.Threading.Tasks;
+    using global::UniGame.Runtime.DataFlow;
+    using R3;
+    using Runtime;
+     
     using UnityEngine;
     using UnityEngine.Localization;
 

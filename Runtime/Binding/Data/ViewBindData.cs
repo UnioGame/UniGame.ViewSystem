@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Core.Runtime.SerializableType;
     using UiSystem.Runtime;
-    using UniModules.UniCore.Runtime.ReflectionUtils;
+    using UniGame.Runtime.ReflectionUtils;
     using UnityEngine;
 
 #if UNITY_EDITOR

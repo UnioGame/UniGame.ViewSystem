@@ -5,11 +5,11 @@
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using ModelViewsMap.Runtime.Settings;
+    using R3;
     using UniGame.Runtime.ObjectPool.Extensions;
     using UniModules.UniGame.UiSystem.Runtime;
-    using UniModules.UniGame.UISystem.Runtime;
     using ViewSystem.Runtime;
-    using UniRx;
+     
     
 
     public static class ModelsViewsFlow
@@ -28,51 +28,52 @@
             _modelViewsSettings = modelViewsSettings;
         }
 
-        public static IObservable<IViewHandle> AsView(this IViewModel viewModel)
+        public static Observable<IViewHandle> AsView(this IViewModel viewModel)
         {
             var handle = AsView(viewModel, null);
             return handle;
         }
         
-        public static IObservable<IViewHandle> AsView<TView>(this IViewModel viewModel)
+        public static Observable<IViewHandle> AsView<TView>(this IViewModel viewModel)
             where TView : IView
         {
             var handle = AsView(viewModel,typeof(TView));
             return handle;
         }
 
-        public static IObservable<IViewHandle> OpenWindow(this IObservable<IViewHandle> handleObservable, string skinTag = "") => 
+        public static Observable<IViewHandle> OpenWindow(this Observable<IViewHandle> handleObservable, string skinTag = "") => 
             OpenView(handleObservable, ViewType.Window, skinTag);
         
-        public static IObservable<IViewHandle> OpenScreen(this IObservable<IViewHandle> handleObservable, string skinTag = "") => 
+        public static Observable<IViewHandle> OpenScreen(this Observable<IViewHandle> handleObservable, string skinTag = "") => 
             OpenView(handleObservable, ViewType.Screen, skinTag);
         
-        public static IObservable<IViewHandle> OpenOverlay(this IObservable<IViewHandle> handleObservable, string skinTag = "") => 
+        public static Observable<IViewHandle> OpenOverlay(this Observable<IViewHandle> handleObservable, string skinTag = "") => 
             OpenView(handleObservable, ViewType.Overlay, skinTag);
 
-        public static IObservable<IViewHandle> HideView(this IObservable<IViewHandle> handle)
+        public static Observable<IViewHandle> HideView(this Observable<IViewHandle> handle)
         {
             var result = handle.
-                Where(x => x.Status.Value == ViewStatus.Shown || x.Status.Value == ViewStatus.Showing).
+                Where(x => x.Status.CurrentValue == ViewStatus.Shown || 
+                           x.Status.CurrentValue == ViewStatus.Showing).
                 Do(x => x.Hide());
             return result;
         }
         
-        public static IObservable<IViewHandle> ShowView(this IObservable<IViewHandle> handle)
+        public static Observable<IViewHandle> ShowView(this Observable<IViewHandle> handle)
         {
             var result = handle.
                 Do(x => x.Show());
             return result;
         }
         
-        public static IObservable<IViewHandle> DestroyView(this IObservable<IViewHandle> handle)
+        public static Observable<IViewHandle> DestroyView(this Observable<IViewHandle> handle)
         {
             var result = handle.
                 Do(x => x.Destroy());
             return result;
         }
         
-        public static IObservable<IViewHandle> CloseView(this IObservable<IViewHandle> handle)
+        public static Observable<IViewHandle> CloseView(this Observable<IViewHandle> handle)
         {
             var result= handle.
                 Do(x => x.Close());
@@ -83,8 +84,8 @@
 
         #region private methods
 
-        private static IObservable<IViewHandle> OpenView(
-            this IObservable<IViewHandle> handleObservable, 
+        private static Observable<IViewHandle> OpenView(
+            this Observable<IViewHandle> handleObservable, 
             ViewType layoutType,
             string skinTag = "")
         {
@@ -124,11 +125,11 @@
 
         }
         
-        private static IObservable<IViewHandle> AsView(this IViewModel viewModel, Type viewType)
+        private static Observable<IViewHandle> AsView(this IViewModel viewModel, Type viewType)
         {
             var handler    = GetHandle(viewModel,viewModel.GetType(),viewType);
             var observable = handler;
-            return observable;
+            return observable.ToObservable();
         }
         
         private static void Remove(IViewModel viewModel)

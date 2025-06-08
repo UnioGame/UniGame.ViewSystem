@@ -1,7 +1,8 @@
 ﻿namespace UniGame.Lobby.Runtime.UI.ViewModels
 {
+    using R3;
     using ViewSystem.Runtime;
-    using UniRx;
+     
 
     public interface IBlackoutViewModel : IViewModel
     {

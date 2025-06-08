@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using global::UniGame.Core.Runtime;
+    using R3;
     using UnityEngine;
 
     public interface IReadOnlyViewLayout : 
@@ -10,13 +11,13 @@
     {
         Transform          Layout    { get; }
 
-        IObservable<IView> OnHidden  { get; }
-        IObservable<IView> OnShown   { get; }
-        IObservable<IView> OnBeginHide  { get; }
-        IObservable<IView> OnBeginShow { get; }
-        IObservable<IView> OnClosed  { get; }
+        Observable<IView> OnHidden  { get; }
+        Observable<IView> OnShown   { get; }
+        Observable<IView> OnBeginHide  { get; }
+        Observable<IView> OnBeginShow { get; }
+        Observable<IView> OnClosed  { get; }
 
-        IObservable<Type> OnIntent { get; }
+        Observable<Type> OnIntent { get; }
 
         bool Contains(IView view);
  

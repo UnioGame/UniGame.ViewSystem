@@ -1,11 +1,11 @@
-﻿namespace UniModules.UniGame.UISystem.Runtime.Extensions
+﻿namespace UniGame.ViewSystem.Runtime
 {
     using System;
     using global::UniGame.ViewSystem.Runtime;
     using global::UniGame.Core.Runtime;
     using Cysharp.Threading.Tasks;
     using global::UniGame.UiSystem.Runtime;
-    using UniRx;
+    using R3;
     using UnityEngine;
 
     public static class ViewBaseExtensions
@@ -520,23 +520,27 @@
             viewTransform.localScale = Vector3.one;
         }
 
-        public static IObservable<TSource> OnHidden<TSource>(this TSource source) where TSource : IViewStatus
+        public static Observable<TSource> OnHidden<TSource>(this TSource source) where TSource : IViewStatus
             => GetObservable(source, ViewStatus.Hidden);
 
-        public static IObservable<TSource> OnBeginHide<TSource>(this TSource source) where TSource : IViewStatus
+        public static Observable<TSource> OnBeginHide<TSource>(this TSource source) where TSource : IViewStatus
             => GetObservable(source, ViewStatus.Hiding);
 
-        public static IObservable<TSource> OnBeginShow<TSource>(this TSource source) where TSource : IViewStatus
+        public static Observable<TSource> OnBeginShow<TSource>(this TSource source) where TSource : IViewStatus
             => GetObservable(source, ViewStatus.Showing);
 
-        public static IObservable<TSource> OnShown<TSource>(this TSource source) where TSource : IViewStatus
+        public static Observable<TSource> OnShown<TSource>(this TSource source) where TSource : IViewStatus
             => GetObservable(source, ViewStatus.Shown);
 
-        public static IObservable<TSource> OnClosed<TSource>(this TSource source) where TSource : IViewStatus
+        public static Observable<TSource> OnClosed<TSource>(this TSource source) where TSource : IViewStatus
             => GetObservable(source, ViewStatus.Closed);
 
-        public static IObservable<TSource> GetObservable<TSource>(this TSource source, ViewStatus status)
+        public static Observable<TSource> GetObservable<TSource>(this TSource source, ViewStatus status)
             where TSource : IViewStatus
-            => source.Status.Where(x => x == status).Select(x => source);
+        {
+            return source.Status
+                .Where(x => x == status)
+                .Select(x => source);
+        }
     }
 }

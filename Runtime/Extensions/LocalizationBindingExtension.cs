@@ -1,6 +1,6 @@
 ﻿using System;
 using TMPro;
-using UniGame.Localization.Runtime.UniModules.UniGame.Localization.Runtime;
+using UniGame.Localization.Runtime;
 using UniGame.Core.Runtime;
 using UnityEngine.Localization;
 

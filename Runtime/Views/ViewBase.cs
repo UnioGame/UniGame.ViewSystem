@@ -1,4 +1,4 @@
-﻿using UniModules.UniCore.Runtime.Extension;
+﻿using UniGame.Runtime.Extension;
 
 namespace UniGame.UiSystem.Runtime
 {
@@ -8,14 +8,14 @@ namespace UniGame.UiSystem.Runtime
     using JetBrains.Annotations;
     using UniCore.Runtime.ProfilerTools;
     using UniCore.Runtime.Attributes;
-    using UniModules.UniCore.Runtime.DataFlow;
-    using UniModules.UniGame.Core.Runtime.Rx;
+    using UniGame.Runtime.DataFlow;
+    using UniGame.Runtime.Rx;
     using Core.Runtime;
+    using R3;
     using ViewSystem.Runtime.Animations;
     using ViewSystem.Runtime.Views.Abstract;
-    using UniModules.UniGame.UISystem.Runtime;
     using ViewSystem.Runtime;
-    using UniRx;
+     
     using UnityEngine;
     using ViewSystem.Runtime.Binding;
 
@@ -133,7 +133,7 @@ namespace UniGame.UiSystem.Runtime
 
         public int ViewIdHash => viewIdHash;
         
-        public IReadOnlyReactiveProperty<bool> IsInitialized => _isInitialized;
+        public ReadOnlyReactiveProperty<bool> IsInitialized => _isInitialized;
 
         public GameObject Owner => gameObject;
         
@@ -169,12 +169,12 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         public virtual IViewsLayout Layout => _viewLayout ?? GameViewSystem.ViewSystem;
 
-        public IReadOnlyReactiveProperty<ViewStatus> Status => _status;
+        public ReadOnlyReactiveProperty<ViewStatus> Status => _status;
 
         /// <summary>
         /// Is View Active
         /// </summary>
-        public IReadOnlyReactiveProperty<bool> IsVisible => _visibility;
+        public ReadOnlyReactiveProperty<bool> IsVisible => _visibility;
 
         public bool IsTerminated => _lifeTimeDefinition.IsTerminated;
 
@@ -182,7 +182,7 @@ namespace UniGame.UiSystem.Runtime
 
         public IViewModel ViewModel { get; private set; }
         
-        public IObservable<IViewModel> OnViewModelChanged => _viewModelChanged;
+        public Observable<IViewModel> OnViewModelChanged => _viewModelChanged;
 
         #endregion public properties
 
@@ -353,11 +353,11 @@ namespace UniGame.UiSystem.Runtime
             await _closeTask;
         }
         
-        public IObservable<IView> SelectStatus(ViewStatus status)
+        public Observable<IView> SelectStatus(ViewStatus status)
         {
             return _status.
                 Where(x => x == status).
-                Select(x => this);
+                Select(x => this as IView);
         }
 
         public bool IsActive()
@@ -593,7 +593,7 @@ namespace UniGame.UiSystem.Runtime
             ViewModel            = null;
             _viewLayout          = null;
             
-            _visibility.Release();
+            _visibility.Dispose();
         }
 
         protected void OnDisable() => _progressLifeTime.Release();
@@ -601,7 +601,7 @@ namespace UniGame.UiSystem.Runtime
         protected void OnDestroy()
         {
             Destroy();
-            _status.Release();
+            _visibility.Dispose();
         }
 
         protected void Awake()

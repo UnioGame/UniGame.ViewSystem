@@ -3,10 +3,10 @@
     using System;
     using System.Linq;
     using Backgrounds.Abstract;
-    using UniModules.UniCore.Runtime.Rx.Extensions;
-    using UniModules.UniGame.UISystem.Runtime;
+    using R3;
+    using UniGame.Runtime.Rx.Extensions;
     using ViewSystem.Runtime;
-    using UniRx;
+     
     using UnityEngine;
 
     [Serializable]
@@ -58,8 +58,7 @@
             var isIntentActive = applyIntents && TryFindView(viewKey, out view) && view!=null;
             
             if (!isIntentActive) return result;
-            
-            if (view == ActiveView.Value) return result;
+            if (view == ActiveView.CurrentValue) return result;
             if (view.Transform.parent != Layout) return result;
                 
             view.Transform.SetAsLastSibling();
@@ -72,13 +71,15 @@
 
         protected override bool IsAnyViewActive()
         {
-            return _activeView != null && (_activeView.Status.Value == ViewStatus.Showing || _activeView.Status.Value == ViewStatus.Shown) ||
-                   LastView != null && (LastView.Status.Value == ViewStatus.Showing || LastView.Status.Value == ViewStatus.Shown);
+            return _activeView != null && (_activeView.Status.CurrentValue == ViewStatus.Showing || 
+                                           _activeView.Status.CurrentValue == ViewStatus.Shown) ||
+                   LastView != null && (LastView.Status.CurrentValue == ViewStatus.Showing || 
+                                        LastView.Status.CurrentValue == ViewStatus.Shown);
         }
 
         protected override void OnViewAdded<T>(T view)
         {
-            if (view.IsVisible.Value == false)
+            if (view.IsVisible.CurrentValue == false)
             {
                 view.Show();
             }

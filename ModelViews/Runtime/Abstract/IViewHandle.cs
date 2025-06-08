@@ -2,9 +2,9 @@
 {
     using System;
     using Core.Runtime;
-    using UniModules.UniGame.UISystem.Runtime;
+    using R3;
     using ViewSystem.Runtime;
-    using UniRx;
+     
 
     public interface IViewHandle : 
         IObservable<IViewHandle>, 
@@ -12,7 +12,7 @@
         IViewCommands,
         IDisposable
     {
-        IReadOnlyReactiveProperty<ViewStatus> Status { get; }
+        ReadOnlyReactiveProperty<ViewStatus> Status { get; }
 
         IView View { get; }
 

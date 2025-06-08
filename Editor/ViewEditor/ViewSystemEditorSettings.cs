@@ -9,8 +9,8 @@ namespace UniModules.UniGame.ViewSystem
     using System.Collections.Generic;
     using global::UniGame.ViewSystem.Runtime;
     using UniModules.Editor;
-    using UniModules.UniGame.Core.Runtime.Attributes;
-    using UniModules.UniGame.UISystem.Runtime.WindowStackControllers.Abstract;
+    using global::UniGame.Attributes;
+    using global::UniGame.ViewSystem.Runtime.WindowStackControllers.Abstract;
     using UnityEditor;
     using UnityEngine;
     using UnityEngine.AddressableAssets;

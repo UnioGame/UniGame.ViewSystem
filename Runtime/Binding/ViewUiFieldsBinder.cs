@@ -3,7 +3,7 @@
     using System;
     using System.Reflection;
     using System.Runtime.CompilerServices;
-    using UniModules.UniCore.Runtime.ReflectionUtils;
+    using UniGame.Runtime.ReflectionUtils;
 
     [Serializable]
     public class ViewUiFieldsBinder : IViewBinder

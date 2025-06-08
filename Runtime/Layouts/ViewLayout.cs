@@ -2,22 +2,23 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-    using UniModules.UniCore.Runtime.DataFlow;
+    using UniGame.Runtime.DataFlow;
     using UniGame.Runtime.ObjectPool;
     using UniGame.Runtime.ObjectPool.Extensions;
     using Core.Runtime;
-    using UniModules.UniGame.UISystem.Runtime;
     using ViewSystem.Runtime;
-    using UniRx;
+     
     using UnityEngine;
     using System;
+    using ObservableCollections;
+    using R3;
     using UnityEngine.Pool;
 
     [Serializable]
     public class ViewLayout : IViewLayout
     {
-        private readonly ReactiveCollection<IView> _views    = new ReactiveCollection<IView>();
-        private readonly LifeTimeDefinition        _lifeTime = new LifeTimeDefinition();
+        private readonly ObservableList<IView> _views    = new();
+        private readonly LifeTime        _lifeTime = new();
 
         private readonly Subject<IView>                _onViewHidden;
         private readonly Subject<IView>                _onViewBeginHide;
@@ -27,7 +28,7 @@
         private readonly Subject<Type>                 _onViewIntent;
         private readonly ReactiveProperty<IView> _activeView;
 
-        protected IReadOnlyReactiveCollection<IView> Views => _views;
+        protected IReadOnlyList<IView> Views => _views;
 
         public Transform Layout { get; protected set; }
 
@@ -35,13 +36,13 @@
         
         #region IViewStatus
 
-        public IObservable<IView> OnHidden    => _onViewHidden;
-        public IObservable<IView> OnShown     => _onViewShown;
-        public IObservable<IView> OnBeginHide => _onViewBeginHide;
-        public IObservable<IView> OnBeginShow => _onViewBeginShow;
-        public IObservable<IView> OnClosed    => _onViewClosed;
-        public IObservable<Type>  OnIntent    => _onViewIntent;
-        public IReadOnlyReactiveProperty<IView> ActiveView => _activeView;
+        public Observable<IView> OnHidden    => _onViewHidden;
+        public Observable<IView> OnShown     => _onViewShown;
+        public Observable<IView> OnBeginHide => _onViewBeginHide;
+        public Observable<IView> OnBeginShow => _onViewBeginShow;
+        public Observable<IView> OnClosed    => _onViewClosed;
+        public Observable<Type>  OnIntent    => _onViewIntent;
+        public ReadOnlyReactiveProperty<IView> ActiveView => _activeView;
 
         #endregion
 
@@ -70,7 +71,7 @@
 
         public void Dispose()
         {
-            _lifeTime.Terminate();
+            _lifeTime.Release();
 
             var viewList = ListPool<IView>.Get();
             
@@ -236,7 +237,7 @@
 
         protected virtual bool IsAnyViewActive()
         {
-            return _activeView.HasValue;
+            return _activeView.CurrentValue != null;
         }
 
         protected bool Remove(IView view)

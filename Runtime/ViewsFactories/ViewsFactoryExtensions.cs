@@ -6,7 +6,7 @@ using UniModules.UniGame.UiSystem.Runtime;
 using UniModules.UniGame.ViewSystem.Runtime.Extensions;
 using UnityEngine;
 
-namespace UniGame.ViewSystem.Runtime.Extensions
+namespace UniGame.ViewSystem.Runtime
 {
 
     public static class ViewsFactoryExtensions

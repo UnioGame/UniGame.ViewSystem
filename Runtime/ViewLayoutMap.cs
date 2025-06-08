@@ -1,7 +1,7 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
     using System;
-    using UniModules.UniGame.Core.Runtime.DataStructure;
+    using UniGame.DataStructure;
     using UniModules.UniGame.UiSystem.Runtime;
     using WindowStackControllers;
 

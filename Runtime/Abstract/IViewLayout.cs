@@ -1,9 +1,10 @@
-﻿using UniRx;
+﻿ 
 
 namespace UniGame.ViewSystem.Runtime
 {
     using System;
     using Core.Runtime;
+    using R3;
     using UiSystem.Runtime;
 
     public interface IViewLayout : 
@@ -11,7 +12,7 @@ namespace UniGame.ViewSystem.Runtime
         ILifeTimeContext,
         IReadOnlyViewLayout
     {
-        IReadOnlyReactiveProperty<IView> ActiveView { get; }
+        ReadOnlyReactiveProperty<IView> ActiveView { get; }
 
         LayoutIntentResult Intent(string viewKey);
         

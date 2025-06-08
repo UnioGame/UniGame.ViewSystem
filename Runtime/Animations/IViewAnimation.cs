@@ -3,7 +3,6 @@
     using Cysharp.Threading.Tasks;
     using global::UniGame.Core.Runtime;
     using Runtime;
-    using UniModules.UniGame.UISystem.Runtime;
 
     public interface IViewAnimation
     {
