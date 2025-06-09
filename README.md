@@ -88,10 +88,6 @@ Add to your project manifiest by path [%UnityProject%]/Packages/manifiest.json n
 }
 ```
 
-and now install via Package Manager
-
-![](https://github.com/UniGameTeam/UniGame.ViewSystem/blob/master/Readme/Assets/package_manager.png)
-
 ## Getting Started
 
 - Create View System Asset
