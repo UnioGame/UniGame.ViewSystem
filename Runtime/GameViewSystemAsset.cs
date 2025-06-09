@@ -35,7 +35,9 @@
         public ViewLayoutMap layoutMap = new();
 
         [Space]
+#if ODIN_INSPECTOR
         [ListDrawerSettings(ListElementLabelName = "@name")]
+#endif
         public List<ViewLayoutItem> customLayouts = new();
         
         [Space]
