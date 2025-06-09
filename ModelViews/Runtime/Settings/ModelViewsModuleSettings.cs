@@ -8,7 +8,7 @@
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using GameRuntime.Types;
-    using UiSystem.ModelViews.Runtime.Flow;
+    using UiSystem.Runtime;
     using UniCore.Runtime.Attributes;
     using Core.Runtime.SerializableType;
     using Core.Runtime;
@@ -19,7 +19,7 @@
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/ModelViewsModuleSettings", fileName = "ModelViewsModuleSettings")]
     public class ModelViewsModuleSettings : AsyncSource, IModelViewsSettings
     {
-        private static List<SType> _emptyList = new List<SType>();
+        private static List<SType> _emptyList = new();
 
         [Header("is auto rebuild active")]
         public bool isRebuildActive = true;
@@ -28,12 +28,12 @@
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.FolderPath]
 #endif
-        public List<string> updateTargets = new List<string>();
+        public List<string> updateTargets = new();
         
         [Space]
         [ReadOnlyValue]
         [SerializeField]
-        private ModelViewsTypeMap modelViewsTypeMap = new ModelViewsTypeMap();
+        private ModelViewsTypeMap modelViewsTypeMap = new();
 
         [SerializeField]
         private AssetReferenceUiSystemSource uiViewSystemSource;

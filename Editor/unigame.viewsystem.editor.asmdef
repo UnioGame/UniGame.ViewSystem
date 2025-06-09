@@ -2,6 +2,8 @@
     "name": "unigame.viewsystem.editor",
     "rootNamespace": "",
     "references": [
+        "GUID:2ed7c5348d9801a40a9fd7480dd6b981",
+        "GUID:18e001e7783f9fa4f91ffb0f7d0ecfc5",
         "GUID:5c6e9aa738dad73448283eae914b6a8c",
         "GUID:6632c725b5599b14c865359e6ecc36f4",
         "GUID:8e4577c9194c10845984cf27eb974fd1",
@@ -9,10 +11,7 @@
         "GUID:6cf219c1b8612014a948ff3571a01aac",
         "GUID:9e24947de15b9834991c9d8411ea37cf",
         "GUID:69448af7b92c7f342b298e06a37122aa",
-        "GUID:84651a3751eca9349aac36a66bba901b",
-        "GUID:560b04d1a97f54a4e82edc0cbbb69285",
-        "GUID:18e001e7783f9fa4f91ffb0f7d0ecfc5",
-        "GUID:a0b431bd9232ee0439a3722ec36414ed"
+        "GUID:84651a3751eca9349aac36a66bba901b"
     ],
     "includePlatforms": [
         "Editor"

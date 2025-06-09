@@ -1,5 +1,4 @@
-﻿using UniGame.Addressables.Reactive;
-using UniGame.AddressableTools.Runtime;
+﻿using UniGame.AddressableTools.Runtime;
 using UniGame.Core.Runtime;
 using UniGame.ViewSystem.Runtime;
 using UniGame.Localization.Runtime;

@@ -1,7 +1,7 @@
 ﻿namespace UniGame.UiSystem.ModelViews.Runtime.RxExtensions
 {
     using System;
-    using Flow;
+    using UiSystem.Runtime;
     using ViewSystem.Runtime;
 
     public static class RxViewHandle 

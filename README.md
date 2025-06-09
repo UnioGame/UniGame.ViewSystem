@@ -61,10 +61,17 @@ follow the instructions on home pages for these packages:
 
 ```
 
-"dependencies": {
+  "dependencies": {
+    "com.unity.localization": "1.5.4",
+    "com.unity.addressables": "2.6.0",
+    "com.unigame.addressablestools" : "https://github.com/UnioGame/unigame.addressables",
+    "com.unigame.unicore": "https://github.com/UnioGame/unigame.core.git",
+    "com.unigame.localization": "https://github.com/UnioGame/unigame.localization.git",
+    "com.unigame.rx": "https://github.com/UnioGame/unigame.rx.git",
+    "com.cysharp.unitask" : "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
     "com.cysharp.r3": "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity",
     "com.github-glitchenzo.nugetforunity": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity"
-}
+  },
 
 ```
 

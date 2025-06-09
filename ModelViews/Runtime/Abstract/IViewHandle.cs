@@ -1,4 +1,4 @@
-﻿namespace UniGame.UiSystem.ModelViews.Runtime.Flow
+﻿namespace UniGame.UiSystem.Runtime
 {
     using System;
     using Core.Runtime;

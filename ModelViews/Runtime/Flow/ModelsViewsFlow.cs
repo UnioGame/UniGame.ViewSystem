@@ -1,4 +1,4 @@
-﻿namespace UniGame.UiSystem.ModelViews.Runtime.Flow
+﻿namespace UniGame.UiSystem.Runtime
 {
     using System;
     using System.Collections.Generic;
@@ -18,8 +18,7 @@
         private static IModelViewsSettings _modelViewsSettings;
         
         
-        private static Dictionary<IViewModel,List<IViewHandle>> _viewsMap = 
-            new Dictionary<IViewModel, List<IViewHandle>>(256);
+        private static Dictionary<IViewModel,List<IViewHandle>> _viewsMap = new(256);
 
         
         public static void Initialize(IGameViewSystem gameViewSystem, IModelViewsSettings modelViewsSettings)

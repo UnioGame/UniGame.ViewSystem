@@ -1,4 +1,4 @@
-﻿namespace UniGame.UiSystem.ModelViews.Runtime.Flow
+﻿namespace UniGame.UiSystem.Runtime
 {
     using System;
     using UniGame.Runtime.DataFlow;
@@ -15,13 +15,13 @@
     /// </summary>
     public class ViewHandle : IViewHandle
     {
-        private LifeTimeDefinition _lifeTime     = new LifeTimeDefinition();
-        private LifeTimeDefinition _viewLifeTime = new LifeTimeDefinition();
+        private LifeTimeDefinition _lifeTime     = new();
+        private LifeTimeDefinition _viewLifeTime = new();
 
-        private ReactiveValue<IViewHandle> _observable = new ReactiveValue<IViewHandle>();
-        private ReactiveValue<ViewStatus>  _rxStatus     = new ReactiveValue<ViewStatus>();
+        private ReactiveValue<IViewHandle> _observable = new();
+        private ReactiveValue<ViewStatus>  _rxStatus     = new();
         private IView _view;
-        private ReactiveCommand _notifyCommand = new ReactiveCommand();
+        private ReactiveCommand _notifyCommand = new();
 
         private IViewModel _model;
         private Type       _modelType;
