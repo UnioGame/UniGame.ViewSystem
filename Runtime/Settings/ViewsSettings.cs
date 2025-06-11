@@ -1,7 +1,7 @@
 namespace UniGame.UiSystem.Runtime.Settings
 {
 #if UNITY_EDITOR
-    using UniModules.UniGame.AddressableExtensions.Editor;
+    using AddressableTools.Editor;
 #endif
      
     using System.Collections.Generic;
