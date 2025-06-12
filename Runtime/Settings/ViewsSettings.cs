@@ -19,7 +19,7 @@ namespace UniGame.UiSystem.Runtime.Settings
         public const string ViewTabKey = "Views";
         public const string SettingsTabKey = "Settings";
 
-        private static Color ViewsBackgroundColor = new Color(0.7f, 0.9f, 0.9f);
+        private static Color ViewsBackgroundColor = new(0.7f, 0.9f, 0.9f);
         
 #if ODIN_INSPECTOR
         [PropertyOrder(-1)]
@@ -38,14 +38,14 @@ namespace UniGame.UiSystem.Runtime.Settings
         [FolderPath]
         [GUIColor(nameof(ViewsBackgroundColor))]
 #endif
-        public List<string> uiViewsDefaultFolders = new List<string>();
+        public List<string> uiViewsDefaultFolders = new();
 
         [Header("View Assets Sources")]
 #if ODIN_INSPECTOR
         [TabGroup(SettingsTabKey)]
         [GUIColor(nameof(ViewsBackgroundColor))]
 #endif
-        public List<AssetReferenceGameObject> viewsAssetsSources = new List<AssetReferenceGameObject>();
+        public List<AssetReferenceGameObject> viewsAssetsSources = new();
         
         [Header("Skins folder")]
 #if ODIN_INSPECTOR
@@ -54,7 +54,7 @@ namespace UniGame.UiSystem.Runtime.Settings
         //[BoxGroup(nameof(ViewsGroup))]
         [FolderPath]
 #endif
-        public List<string> uiViewsSkinFolders = new List<string>();
+        public List<string> uiViewsSkinFolders = new();
 
         [Header("Registered Views")]
 #if ODIN_INSPECTOR
@@ -64,7 +64,7 @@ namespace UniGame.UiSystem.Runtime.Settings
         [PropertyOrder(-1)]
         [ListDrawerSettings(ListElementLabelName = "@ViewName")]
 #endif
-        public List<UiViewReference> uiViews = new List<UiViewReference>();
+        public List<UiViewReference> uiViews = new();
 
         [Space]
 #if ODIN_INSPECTOR
@@ -79,7 +79,7 @@ namespace UniGame.UiSystem.Runtime.Settings
         [TabGroup(SettingsTabKey)]
         [ShowIf(nameof(applyAddressablesGroup))]
 #endif
-        public List<string> labels = new List<string>();
+        public List<string> labels = new();
 
 #if ODIN_INSPECTOR
         [TabGroup(SettingsTabKey)]

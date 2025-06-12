@@ -11,21 +11,21 @@
     {
         #region static data
         
-        public static readonly UiViewReference Empty = new UiViewReference()
+        public static readonly UiViewReference Empty = new()
         {
             ViewName = "EMPTY",
             ModelType = typeof(EmptyViewModel),
             ViewModelType = typeof(EmptyViewModel),
         };
         
-        private static readonly UiReferenceList EmptyList = new UiReferenceList();
+        private static readonly UiReferenceList EmptyList = new();
         
         private static readonly MemorizeItem<string,string> KeyCache = 
             MemorizeTool.Memorize<string,string>(static x => x.ToLower());
 
         #endregion
         
-        public UiReferenceDictionary references = new UiReferenceDictionary(16);
+        public UiReferenceDictionary references = new(16);
 
         public IReadOnlyList<UiViewReference> this[string view] => Find(view);
         

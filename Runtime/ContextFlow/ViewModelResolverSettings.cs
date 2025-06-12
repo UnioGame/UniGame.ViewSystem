@@ -22,7 +22,7 @@ namespace UniGame.ViewSystem.Runtime
         [HideLabel]
         [GUIColor(0.5f,0.8f,0.4f)]
 #endif
-        public ViewModelResolver resolver = new ViewModelResolver();
+        public ViewModelResolver resolver = new();
 
         public bool IsValid(Type modelType) => resolver.IsValid(modelType);
 

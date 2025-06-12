@@ -95,7 +95,7 @@
             _onViewIntent.OnNext(typeof(T));
         }
 
-        public virtual LayoutIntentResult Intent(string viewKey) => new LayoutIntentResult()
+        public virtual LayoutIntentResult Intent(string viewKey) => new()
         {
             stopPropagation = false,
         };

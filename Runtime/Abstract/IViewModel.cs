@@ -3,6 +3,7 @@
     using System;
     using global::UniGame.Core.Runtime;
     using R3;
+    using UniGame.Runtime.Rx;
 
 
     public interface IViewModel : 

@@ -32,8 +32,21 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
         {
             return source == null ? view : view.Bind(source.AsObservable(), command);
         }
+        
+        
+        public static TView Bind<TView>(this TView view, 
+            ReactiveValue<LocalizedString> source, 
+            TextMeshProUGUI text)
+            where TView : class, IView
+        {
+            return Bind(view, source
+                    .Where(source, static (x,y) => y.HasValue),
+                text);
+        }
+        
 
-        public static TView Bind<TView>(this TView view, Observable<LocalizedString> source, 
+        public static TView Bind<TView>(this TView view, 
+            Observable<LocalizedString> source, 
             TextMeshProUGUI text)
             where TView : class, IView
         {
@@ -83,6 +96,22 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TView Bind<TView>(this TView view, ReactiveValue<AssetReferenceT<Sprite>> source, Image image)
+            where TView : class, IView
+        {
+            if (image == null) return view;
+            return !image ? view : view.Bind(source, x => Bind(view, x, image));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TView Bind<TView>(this TView view, ReactiveValue<AssetReferenceSprite> source, Image image)
+            where TView : class, IView
+        {
+            if (image == null) return view;
+            return !image ? view : view.Bind(source, x => Bind(view, x, image));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TView Bind<TView>(this TView view, Observable<AssetReference> source, Image image)
             where TView : class, IView
         {
@@ -90,7 +119,8 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             
             return !image
                 ? view
-                : view.Bind(source, x => Bind(view, x, image));
+                : view.Bind(source.Where(x => x!=null),
+                    x => Bind(view, x, image));
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -98,7 +128,8 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             Observable<AddressableValue<Sprite>> source, Image image)
             where TView : class, IView
         {
-            return view.Bind(source, x =>
+            return view.Bind(source.Where(static x => x !=null),
+                x =>
                 {
                     if (x?.reference == null) return;
                     Bind(view, x.reference, image);
@@ -170,7 +201,8 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
         }
         
         
-        public static TView BindAsync<TView>(this TView view, Observable<AssetReferenceT<Sprite>> source, Image image)
+        public static TView BindAsync<TView>(this TView view, 
+            Observable<AssetReferenceT<Sprite>> source, Image image)
             where TView : class, IView
         {
             if (image == null) return view;
@@ -185,7 +217,8 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
                 });
         }
 
-        public static TView Bind<TView, TValue>(this TView view, AssetReferenceT<TValue> source, Action<TValue> action)
+        public static TView Bind<TView, TValue>(this TView view, 
+            AssetReferenceT<TValue> source, Action<TValue> action)
             where TView : class, IView
             where TValue : Object
         {
@@ -214,26 +247,34 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             return view;
         }
 
+        public static IDisposable Bind(this ReactiveValue<string> source, TextMeshPro text)
+        {
+            return Bind(source.Where(source,
+                static (x,y) => y.HasValue), text);
+        }
 
         public static IDisposable Bind(this Observable<string> source, TextMeshPro text)
         {
-            return source.Subscribe(x => text.SetValue(x));
+            return source.Subscribe(text,static (x,y) => y.SetValue(x));
+        }
+        
+        public static IDisposable Bind(this ReactiveValue<string> source, TextMeshProUGUI text)
+        {
+            return Bind(source.Where(source,
+                static (x,y) => y.HasValue), text);
         }
         
         public static IDisposable Bind(this Observable<string> source, TextMeshProUGUI text)
         {
-            return source.Subscribe(x => text.SetValue(x));
+            return source.Subscribe(text,static (x,y) => y.SetValue(x));
         }
-
-        public static TView Bind<TView>(this TView view, Observable<Sprite> source, Button button)
+        
+        public static TView Bind<TView>(this TView view, ReactiveValue<string> source, TextMeshProUGUI text)
             where TView : ILifeTimeContext
         {
-            if (!button || !button.image)
-                return view;
-
-            return view.Bind(source, x => button.image.SetValue(x));
+            return Bind(view,source.Where(source,static (x,y)=>y.HasValue), text);
         }
-
+        
         public static TView Bind<TView>(this TView view, Observable<string> source, TextMeshProUGUI text)
             where TView : ILifeTimeContext
         {
@@ -248,18 +289,28 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             var stringObservable = source.Select(format);
             return view.Bind(stringObservable, text);
         }
-        
-        public static TView Bind<TView>(this TView view, Observable<int> source, int value)
+
+        public static TView Bind<TView>(this TView view, ReactiveValue<Sprite> source, Button button)
             where TView : ILifeTimeContext
         {
-            return view.Bind(source, x => value = x);
+            return Bind(view, source.Where(source,
+                static (x,y) => y.HasValue),
+                button);
+        }
+
+        public static TView Bind<TView>(this TView view, Observable<Sprite> source, Button button)
+            where TView : ILifeTimeContext
+        {
+            if (!button || !button.image) return view;
+
+            return view.Bind(source, x => button.image.SetValue(x));
         }
 
         public static TView Bind<TView>(this TView view, Observable<string> source, TextMeshPro text)
             where TView : ILifeTimeContext
         {
             if (!text) return view;
-            return view.Bind(source, x => text.text = x);
+            return view.Bind(source, x => text.SetValue(x));
         }
 
         public static TView Bind<TView>(this TView view, Observable<int> source, TextMeshPro text)
@@ -274,6 +325,30 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             return view.Bind(source,x => text.SetValue(x));
         }
         
+        public static TView Bind<TView>(this TView view,TMP_InputField source, ReactiveValue<int> value)
+            where TView : ILifeTimeContext
+        {
+            if (source == null) return view;
+            var observable = source.onValueChanged.AsObservable();
+            return view.Bind(observable, x =>
+            {
+                int.TryParse(x, out var result);
+                value.Value = result;
+            });
+        }
+        
+        public static TView Bind<TView>(this TView view,TMP_InputField source, ISubject<int> value)
+            where TView : ILifeTimeContext
+        {
+            if (source == null) return view;
+            var observable = source.onValueChanged.AsObservable();
+            return view.Bind(observable, x =>
+            {
+                int.TryParse(x, out var result);
+                value.OnNext(result);
+            });
+        }
+        
         public static TView Bind<TView>(this TView view,TMP_InputField source, ReactiveProperty<int> value)
             where TView : ILifeTimeContext
         {
@@ -286,7 +361,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             });
         }
         
-        public static TView Bind<TView>(this TView view,TMP_InputField source, IObserver<string> value)
+        public static TView Bind<TView>(this TView view,TMP_InputField source, Observer<string> value)
             where TView : ILifeTimeContext
         {
             if (source == null) return view;
@@ -294,13 +369,25 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             return view.Bind(observable, value);
         }
         
-        public static TView Bind<TView>(this TView view,TMP_InputField source, 
+        public static TView Bind<TView>(this TView view,
+            TMP_InputField source, 
             ReactiveProperty<string> value,bool initDefault = true)
             where TView : ILifeTimeContext
         {
             if (source == null || value == null) return view;
             if(initDefault)
                 value.Value = source.text;
+            
+            var observable = source.onValueChanged.AsObservable();
+            return view.Bind(observable, value);
+        }
+        
+        public static TView Bind<TView>(this TView view,TMP_InputField source, 
+            ReactiveValue<string> value,bool initDefault = true)
+            where TView : ILifeTimeContext
+        {
+            if (source == null || value == null) return view;
+            if(initDefault) value.Value = source.text;
             
             var observable = source.onValueChanged.AsObservable();
             return view.Bind(observable, value);
@@ -408,11 +495,27 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
                 : sender.Bind(source,x => image.SetValue(x));
         }
 
+        public static TView Bind<TView>(this TView view, ReactiveValue<bool> source, CanvasGroup group)
+            where TView : ILifeTimeContext
+        {
+            if (!group) return view;
+            return view.Bind(source.Where(source,static (x,y) => y.HasValue),
+                x => group.alpha = x ? 1 : 0);
+        }
+        
         public static TView Bind<TView>(this TView view, Observable<bool> source, CanvasGroup group)
             where TView : ILifeTimeContext
         {
             if (!group) return view;
             return view.Bind(source, x => group.alpha = x ? 1 : 0);
+        }
+        
+        public static TView Bind<TView>(this TView view, ReactiveValue<Texture> source, RawImage image)
+            where TView : ILifeTimeContext
+        {
+            if (image == null) return view;
+            return view.Bind(source.Where(source,static (x,y) => y.HasValue),
+                x => image.texture = x);
         }
 
         public static TView Bind<TView>(this TView view, Observable<Texture> source, RawImage image)
@@ -423,19 +526,40 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
                 : view.Bind(source.Where(x => x != null), x => image.texture = x);
         }
 
+        public static TView Bind<TView>(this TView view, ReactiveValue<bool> source, Toggle toggle)
+            where TView : ILifeTimeContext
+        {
+            return !toggle ? view : view.Bind(source, x => toggle.isOn = x);
+        }
+        
         public static TView Bind<TView>(this TView view, Observable<bool> source, Toggle toggle)
             where TView : ILifeTimeContext
         {
             return !toggle ? view : view.Bind(source, x => toggle.isOn = x);
         }
 
-
+        public static TView Bind<TView, TValue>(this TView sender, ReactiveValue<TValue> source, Button command)
+            where TView : ILifeTimeContext
+        {
+            return command == null 
+                ? sender 
+                : sender.Bind(source, x => command.onClick?.Invoke());
+        }
+        
         public static TView Bind<TView, TValue>(this TView sender, Observable<TValue> source, Button command)
             where TView : ILifeTimeContext
         {
             return command == null 
                 ? sender 
                 : sender.Bind(source, x => command.onClick?.Invoke());
+        }
+        
+        public static TView Bind<TView>(this TView sender, ReactiveValue<float> source, Slider slider)
+            where TView : ILifeTimeContext
+        {
+            return source == null || slider == null
+                ? sender
+                : sender.Bind(source, x => slider.value = x);
         }
 
         public static TView Bind<TView>(this TView sender, Observable<float> source, Slider slider)
@@ -446,7 +570,9 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
                 : sender.Bind(source, x => slider.value = x);
         }
         
-        public static TView Bind<TView>(this TView sender,Observable<float> maxValue, Observable<float> source, Slider slider)
+        public static TView Bind<TView>(this TView sender,
+            Observable<float> maxValue, 
+            Observable<float> source, Slider slider)
             where TView : ILifeTimeContext
         {
             if (source == null || slider == null) return sender;
@@ -454,12 +580,32 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             return sender.Bind(source,slider);
         }
         
-        public static TView Bind<TView>(this TView sender,Observable<int> maxValue, Observable<int> source, Slider slider)
+        public static TView Bind<TView>(this TView sender,
+            ReactiveValue<int> maxValue, 
+            ReactiveValue<int> source, Slider slider)
             where TView : ILifeTimeContext
         {
             if (source == null || slider == null) return sender;
             sender.Bind(maxValue,x => slider.maxValue = x);    
             return sender.Bind(source,slider);
+        }
+        
+        public static TView Bind<TView>(this TView sender,
+            Observable<int> maxValue, 
+            Observable<int> source, Slider slider)
+            where TView : ILifeTimeContext
+        {
+            if (source == null || slider == null) return sender;
+            sender.Bind(maxValue,x => slider.maxValue = x);    
+            return sender.Bind(source,slider);
+        }
+        
+        public static TView Bind<TView>(this TView sender, ReactiveValue<int> source, Slider slider)
+            where TView : ILifeTimeContext
+        {
+            return source == null || slider == null
+                ? sender
+                : sender.Bind(source, x => slider.value = x);
         }
         
         public static TView Bind<TView>(this TView sender, Observable<int> source, Slider slider)
@@ -535,7 +681,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             Observable<bool> source,Image image, Sprite on, Sprite off)
             where T : ILifeTimeContext
         {
-            var sourceObservable = source.Select(x => x ? on : off);
+            var sourceObservable = source.Select((on,off),(x,y) => x ? y.on : y.off);
             return Bind(sender, sourceObservable, image);
         }
         
@@ -543,7 +689,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             Observable<bool> source,Button image, Sprite on, Sprite off)
             where T : ILifeTimeContext
         {
-            var sourceObservable = source.Select(x => x ? on : off);
+            var sourceObservable = source.Select((on,off),(x,y) => x ? y.on : y.off);
             return Bind(sender, sourceObservable, image);
         }
         
@@ -601,7 +747,8 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             return !button ? view : view.Bind(source, x => button.interactable = x);
         }
 
-        public static TView Bind<TView>(this TView view, Button source, ReactiveCommand<Unit> command,
+        public static TView Bind<TView>(this TView view, Button source,
+            ReactiveCommand<Unit> command,
             int throttleInMilliseconds = 0)
             where TView : ILifeTimeContext
         {
@@ -660,9 +807,15 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
         public static TView Bind<TView,TData>(this TView view, Observable<TData> source, ReactiveCommand<TData> command)
             where TView : ILifeTimeContext
         {
-            return view.Bind(source, x => command.Execute(x));
+            return view.Bind(source, command.Execute);
         }
 
+        public static TSource Bind<TSource>(this TSource view, Toggle source, ReactiveValue<bool> value)
+            where TSource : ILifeTimeContext
+        {
+            return !source ? view : view.Bind(source.OnValueChangedAsObservable(), value);
+        }
+        
         public static TSource Bind<TSource>(this TSource view, Toggle source, ReactiveProperty<bool> value)
             where TSource : ILifeTimeContext
         {
@@ -693,9 +846,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             return view;
         }
 
-        public static TSource BindClose<TSource, T>(
-            this TSource view,
-            IView target)
+        public static TSource BindClose<TSource, T>(this TSource view, IView target)
             where TSource : IView
             where T : IViewModel
         {
@@ -713,7 +864,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
         {
             if (closeWith) view.BindClose(target);
 
-            view.Bind(source, x => target.Initialize(x, view.Layout)
+            view.Bind(source.Where(static x => x!=null), x => target.Initialize(x, view.Layout)
                 .AttachExternalCancellation(view.ModelLifeTime.Token)
                 .Forget());
 

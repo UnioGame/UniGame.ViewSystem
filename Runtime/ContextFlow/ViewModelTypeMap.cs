@@ -14,7 +14,7 @@ namespace UniGame.ViewSystem.Runtime
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.InlineProperty]
 #endif
-        public ViewReferencesMap viewsTypeMap = new ViewReferencesMap();
+        public ViewReferencesMap viewsTypeMap = new();
 
         #endregion
 

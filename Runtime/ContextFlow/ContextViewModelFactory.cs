@@ -14,7 +14,7 @@ namespace UniGame.ViewSystem.Runtime
         #region inspector
 
         [SerializeField] private DefaultConstructorViewModelFactory
-            _defaultConstructorFactory = new DefaultConstructorViewModelFactory();
+            _defaultConstructorFactory = new();
 
         #endregion
 
@@ -36,7 +36,7 @@ namespace UniGame.ViewSystem.Runtime
     public class ContextApiViewModelFactory : IViewModelResolver
     {
         [SerializeField] 
-        private ContextViewModelFactory _contextViewModelFactory = new ContextViewModelFactory();
+        private ContextViewModelFactory _contextViewModelFactory = new();
 
         public bool IsValid(Type modelType)
         {

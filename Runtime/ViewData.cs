@@ -7,7 +7,7 @@
     [Serializable]
     public class ViewData : ILifeTimeContext
     {
-        private readonly LifeTimeDefinition   _lifeTimeDefinition = new LifeTimeDefinition();
+        private readonly LifeTimeDefinition   _lifeTimeDefinition = new();
 
         public  ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
 

@@ -3,6 +3,7 @@ namespace UniGame.ViewSystem.Views.Windows
     using System;
     using Cysharp.Threading.Tasks;
     using R3;
+    using UniGame.Runtime.Rx;
     using UniGame.Runtime.Rx.Runtime.Extensions;
     using UniGame.UiSystem.Runtime;
      
@@ -12,7 +13,7 @@ namespace UniGame.ViewSystem.Views.Windows
     public class DialogView<TModel> : View<TModel>
         where TModel : DialogViewModel
     {
-        private readonly ReactiveCommand _onYesButtonClick = new ReactiveCommand();
+        private readonly ReactiveCommand _onYesButtonClick = new();
     
         #region inspector
 

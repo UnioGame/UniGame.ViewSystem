@@ -7,7 +7,6 @@ namespace ViewSystem.Modules.LitMotionSupport
     using UniGame.Core.Runtime;
     using UniGame.ViewSystem.Runtime;
     using UniGame.ViewSystem.Runtime.Views.Abstract;
-    using UniModules.UniGame.UISystem.Runtime;
     using UniModules.UniUiSystem.Runtime.Utils;
     using UnityEngine;
 

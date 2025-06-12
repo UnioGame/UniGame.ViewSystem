@@ -604,7 +604,7 @@ namespace UniGame.UI.Common
 		private bool m_Tracked = false;
 
 	#if UNITY_2017_4 || UNITY_2018_2_OR_NEWER
-		private static List<SlicedFilledImage> m_TrackedTexturelessImages = new List<SlicedFilledImage>();
+		private static List<SlicedFilledImage> m_TrackedTexturelessImages = new();
 		private static bool s_Initialized;
 	#endif
 

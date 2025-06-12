@@ -12,7 +12,7 @@
         [SerializeField] private TMP_Text _text;
         [SerializeField] private bool _rebuildOnTextUpdate = true;
         
-        public AnimationCurve VertexCurve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.25f, 2.0f), new Keyframe(0.5f, 0), new Keyframe(0.75f, 2.0f), new Keyframe(1, 0f));
+        public AnimationCurve VertexCurve = new(new Keyframe(0, 0), new Keyframe(0.25f, 2.0f), new Keyframe(0.5f, 0), new Keyframe(0.75f, 2.0f), new Keyframe(1, 0f));
         public float          CurveScale  = 1.0f;
 
         private void Awake()

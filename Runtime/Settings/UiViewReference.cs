@@ -57,7 +57,7 @@ namespace UniGame.UiSystem.Runtime.Settings
 
         public int PoolingPreloadCount = 1;
 
-        public List<AssetReferenceSpriteAtlas> Atlases = new List<AssetReferenceSpriteAtlas>();
+        public List<AssetReferenceSpriteAtlas> Atlases = new();
 
         public int Hash;
         

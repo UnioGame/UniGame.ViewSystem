@@ -36,7 +36,7 @@ namespace UniGame.UiSystem.Runtime.Settings
         [Space]
         [Header("Nested Views Sources")]
         [SerializeField] 
-        public List<NestedViewSourceSettings> sources = new List<NestedViewSourceSettings>();
+        public List<NestedViewSourceSettings> sources = new();
 
 #if ODIN_INSPECTOR
         [TabGroup(SettingsTabKey)]
@@ -57,7 +57,7 @@ namespace UniGame.UiSystem.Runtime.Settings
         [HideLabel]
         [GUIColor(0.5f,0.8f,0.4f)]
 #endif
-        public ViewModelResolver viewModelResolver = new ViewModelResolver();
+        public ViewModelResolver viewModelResolver = new();
 
         [Space(8)]
         [Header("Views Factory")]

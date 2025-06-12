@@ -47,7 +47,7 @@ namespace UniGame.UiSystem.Runtime
         
         #region private fields
 
-        private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
+        private LifeTimeDefinition _lifeTimeDefinition = new();
 
         private IViewFactory _viewFactory;
         private IViewLayoutContainer _viewLayouts;

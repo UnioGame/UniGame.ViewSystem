@@ -11,8 +11,8 @@
         public static BindingFlags BindFlags = BindingFlags.Instance | BindingFlags.Public |
                                               BindingFlags.NonPublic | BindingFlags.IgnoreCase;
         
-        public ViewFieldBinder fieldBinder = new ViewFieldBinder();
-        public ObservableToMethodBinder methodBinder = new ObservableToMethodBinder();
+        public ViewFieldBinder fieldBinder = new();
+        public ObservableToMethodBinder methodBinder = new();
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HasBinding(IView view)

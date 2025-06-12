@@ -10,7 +10,7 @@
         public const BindingFlags BindFlags = BindingFlags.Instance | BindingFlags.Public |
                                                 BindingFlags.NonPublic | BindingFlags.IgnoreCase;
         
-        public List<IViewBinder> binders = new List<IViewBinder>()
+        public List<IViewBinder> binders = new()
         {
             new ViewUiFieldsBinder(),
             new ViewDataBinder()

@@ -15,7 +15,7 @@ namespace UniGame.UiSystem.Runtime
         IViewResourceProvider, 
         IViewModelTypeMap
     {
-        private ViewModelTypeMap _viewModelTypeMap = new ViewModelTypeMap();
+        private ViewModelTypeMap _viewModelTypeMap = new();
 
 
         public void RegisterViewReferences(IEnumerable<UiViewReference> sourceViews)

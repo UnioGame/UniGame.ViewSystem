@@ -5,6 +5,7 @@ namespace UniGame.ViewSystem.Runtime.ViewModels
     using Context.Runtime;
     using global::UniGame.Core.Runtime;
     using R3;
+    using UniGame.Runtime.Rx;
     using UniGame.Runtime.Rx.Extensions;
     using UniModules.UniGame.ViewSystem.Runtime.Abstract;
      

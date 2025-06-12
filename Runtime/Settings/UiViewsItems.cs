@@ -15,6 +15,6 @@ namespace UniModules.UniGame.UiSystem.Runtime.Settings
         [Sirenix.OdinInspector.DrawWithUnity]
 #endif
         [DrawAssetReference]
-        public List<AssetReferenceGameObject> views = new List<AssetReferenceGameObject>();
+        public List<AssetReferenceGameObject> views = new();
     }
 }

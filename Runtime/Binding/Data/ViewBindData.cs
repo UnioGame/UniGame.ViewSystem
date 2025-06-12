@@ -33,7 +33,7 @@
         [TabGroup(BindTabKey)]
         [ListDrawerSettings(CustomAddFunction = nameof(AddField),ListElementLabelName = "label")]
 #endif
-        public List<FieldBindValue> values = new List<FieldBindValue>();
+        public List<FieldBindValue> values = new();
         
 #if ODIN_INSPECTOR
         [PropertySpace(8)]
@@ -41,7 +41,7 @@
         [TabGroup(BindTabKey)]
         [ListDrawerSettings(CustomAddFunction = nameof(AddMethod),ListElementLabelName = "label")]
 #endif
-        public List<MethodBindValue> methods = new List<MethodBindValue>();
+        public List<MethodBindValue> methods = new();
         
 #if ODIN_INSPECTOR
         [TabGroup(SettingsTabKey)]

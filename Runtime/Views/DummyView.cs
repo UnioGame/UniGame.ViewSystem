@@ -11,11 +11,11 @@ namespace UniGame.UiSystem.Runtime
 
     public sealed class DummyView : IView
     {
-        private readonly ReactiveProperty<ViewStatus> _viewStatusProperty = new ReactiveProperty<ViewStatus>(ViewStatus.None);
-        private readonly ReactiveProperty<bool> _isVisibleProperty = new ReactiveProperty<bool>(false);
-        private readonly ReactiveProperty<bool> _isInitializedProperty = new ReactiveProperty<bool>(false);
+        private readonly ReactiveProperty<ViewStatus> _viewStatusProperty = new(ViewStatus.None);
+        private readonly ReactiveProperty<bool> _isVisibleProperty = new(false);
+        private readonly ReactiveProperty<bool> _isInitializedProperty = new(false);
 
-        private static EmptyViewModel emptyViewModel = new EmptyViewModel();
+        private static EmptyViewModel emptyViewModel = new();
         private static DummyView      instance;
 
         public ILifeTime LifeTime => UniGame.Runtime.DataFlow.LifeTime.TerminatedLifetime;

@@ -57,7 +57,7 @@
 #if ODIN_INSPECTOR
         [ShowIf(nameof(enabled))] [FoldoutGroup("CanvasGroup")] 
 #endif
-        public CanvasGroupState hiddenState = new CanvasGroupState
+        public CanvasGroupState hiddenState = new()
         {
             Alpha = 0,
             BlockRaycasts = false,
@@ -68,7 +68,7 @@
 #if ODIN_INSPECTOR
         [ShowIf(nameof(enabled))] [FoldoutGroup("CanvasGroup")] 
 #endif
-        public CanvasGroupState visibleState = new CanvasGroupState
+        public CanvasGroupState visibleState = new()
         {
             Alpha = 1,
             BlockRaycasts = true,

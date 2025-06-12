@@ -9,8 +9,8 @@
         public static BindingFlags BindFlags = BindingFlags.Instance | BindingFlags.Public |
                                                BindingFlags.NonPublic | BindingFlags.IgnoreCase;
         
-        private ViewFieldBinder _fieldBinder = new ViewFieldBinder();
-        private ObservableToMethodBinder _methodBinder = new ObservableToMethodBinder();
+        private ViewFieldBinder _fieldBinder = new();
+        private ObservableToMethodBinder _methodBinder = new();
         
         public IView Bind(IView view, IViewModel model)
         {

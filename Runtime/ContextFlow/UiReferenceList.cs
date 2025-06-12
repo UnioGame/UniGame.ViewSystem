@@ -10,6 +10,6 @@ namespace UniGame.ViewSystem.Runtime
 #endif
     public class UiReferenceList
     {
-        public List<UiViewReference> references = new List<UiViewReference>(16);
+        public List<UiViewReference> references = new(16);
     }
 }

@@ -7,14 +7,14 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
 {
     public static class ViewOperationExtensions 
     {
-        private static readonly UiViewReference Empty = new UiViewReference()
+        private static readonly UiViewReference Empty = new()
         {
             ViewName = "EMPTY",
             ModelType = typeof(EmptyViewModel),
             ViewModelType = typeof(EmptyViewModel),
         };
         
-        private static List<UiViewReference> _cachedList = new List<UiViewReference>(16);
+        private static List<UiViewReference> _cachedList = new(16);
 
         public static UiViewReference SelectReference(
             this IEnumerable<UiViewReference> source, 

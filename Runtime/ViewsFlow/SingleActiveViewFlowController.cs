@@ -12,7 +12,7 @@
     public class SingleActiveScreenFlow : ViewFlowController
     {
         private static Type suspendType = typeof(IScreenSuspendingWindow);
-        private readonly ReactiveValue<bool> _screenSuspended = new ReactiveValue<bool>();
+        private readonly ReactiveValue<bool> _screenSuspended = new();
 
         protected override void OnActivate(IViewLayoutContainer layouts)
         {

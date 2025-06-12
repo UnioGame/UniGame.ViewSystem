@@ -14,7 +14,7 @@ namespace UniModules.UniGame.ViewSystem
 {
     public static class ViewSystemUtils
     {
-        public static readonly List<Type> Empty = new List<Type>(0);
+        public static readonly List<Type> Empty = new(0);
         
         public static readonly MemorizeItem<Type, IReadOnlyList<Type>> ModelsRealizationMap =
             MemorizeTool.Memorize<Type, IReadOnlyList<Type>>(type =>
