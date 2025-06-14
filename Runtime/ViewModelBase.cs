@@ -7,7 +7,8 @@ namespace UniGame.UiSystem.Runtime
     using R3;
     using UniGame.Runtime.Rx;
     using ViewSystem.Runtime;
-     
+    using ReactiveCommand = R3.ReactiveCommand;
+
 
     [Serializable]
     public class ViewModelBase : IViewModel
