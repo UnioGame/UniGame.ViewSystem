@@ -3,7 +3,7 @@ using UniGame.Core.Runtime;
 
 namespace UniModules.UniGame.ViewSystem
 {
-    public interface IViewAssemblerCommand : ICommand<ViewsSettings, bool>, IResetable
+    public interface IViewAssemblerCommand : ICommand<ViewsSettings, bool>, IResettable
     {
     }
 }
