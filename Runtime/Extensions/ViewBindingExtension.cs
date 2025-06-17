@@ -337,6 +337,14 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             });
         }
         
+        public static TView Bind<TView>(this TView view,TMP_Dropdown source, Action<int> value)
+            where TView : ILifeTimeContext
+        {
+            if (source == null || value == null) return view;
+            var observable = source.onValueChanged.AsObservable();
+            return view.Bind(observable, value);
+        }
+        
         public static TView Bind<TView>(this TView view,TMP_InputField source, ISubject<int> value)
             where TView : ILifeTimeContext
         {
