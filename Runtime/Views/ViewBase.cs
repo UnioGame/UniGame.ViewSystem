@@ -101,9 +101,9 @@ namespace UniGame.UiSystem.Runtime
         private Transform _transform;
         private ReactiveValue<bool> _isModelChanged = new();
 
-        private readonly LifeTimeDefinition _lifeTimeDefinition = new();
-        private readonly LifeTimeDefinition _progressLifeTime   = new();
-        private readonly LifeTimeDefinition _viewModelLifeTime   = new();
+        private readonly LifeTime _lifeTimeDefinition = new();
+        private readonly LifeTime _progressLifeTime   = new();
+        private readonly LifeTime _viewModelLifeTime   = new();
         private readonly Subject<IViewModel> _viewModelChanged = new();
         
         /// <summary>
@@ -495,7 +495,7 @@ namespace UniGame.UiSystem.Runtime
         }
 
         private async UniTask StartProgressAction(
-            LifeTimeDefinition lifeTime,
+            LifeTime lifeTime,
             Func<UniTask> action,
             Action finallyAction = null)
         {

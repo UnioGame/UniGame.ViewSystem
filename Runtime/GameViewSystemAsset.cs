@@ -46,7 +46,7 @@
         #endregion
 
         private IGameViewSystem    _gameViewSystem;
-        private LifeTimeDefinition _lifeTime = new();
+        private LifeTime _lifeTime = new();
 
         #region IViewModelProvider api
 
@@ -183,7 +183,7 @@
         
         private void Awake()
         {
-            _lifeTime = new LifeTimeDefinition();
+            _lifeTime = new LifeTime();
             
             Create().AttachExternalCancellation(_lifeTime.Token)
                 .Forget();

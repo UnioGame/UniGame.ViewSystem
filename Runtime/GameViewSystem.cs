@@ -47,7 +47,7 @@ namespace UniGame.UiSystem.Runtime
         
         #region private fields
 
-        private LifeTimeDefinition _lifeTimeDefinition = new();
+        private LifeTime _lifeTime = new();
 
         private IViewFactory _viewFactory;
         private IViewLayoutContainer _viewLayouts;
@@ -84,7 +84,7 @@ namespace UniGame.UiSystem.Runtime
         
         public IViewModelTypeMap ModelTypeMap => _modelTypeMap;
 
-        public ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
+        public ILifeTime LifeTime => _lifeTime;
 
         /// <summary>
         /// reactive views stream
@@ -97,7 +97,7 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// terminate game view system lifetime
         /// </summary>
-        public void Dispose() => _lifeTimeDefinition.Terminate();
+        public void Dispose() => _lifeTime.Terminate();
 
         #region IViewModelProvider api
 

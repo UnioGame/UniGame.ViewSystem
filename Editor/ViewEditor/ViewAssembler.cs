@@ -13,14 +13,14 @@ namespace UniGame.UiSystem.UI.Editor.UiEdito
     public static class ViewAssembler 
     {
         private static ViewsAssemblyBuilder settingsBuilder = new ViewsAssemblyBuilder();
-        private static LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
+        private static LifeTime _lifeTime = new LifeTime();
         
-        public static ILifeTime LifeTime => (_lifeTime ??= new LifeTimeDefinition());
+        public static ILifeTime LifeTime => (_lifeTime ??= new LifeTime());
         
         [InitializeOnLoadMethod]
         public static void Initialize()
         {
-            _lifeTime ??= new LifeTimeDefinition();
+            _lifeTime ??= new LifeTime();
             _lifeTime?.Release();
             
             MessageBroker.Default

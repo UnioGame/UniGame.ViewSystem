@@ -16,7 +16,7 @@ namespace UniGame.UI.Components
 
         [SerializeField] private ViewBase _view;
 
-        private LifeTimeDefinition _lifeTimeDefinition = new();
+        private LifeTime _lifeTimeDefinition = new();
         
         public void OnPointerUp(PointerEventData eventData)
         {

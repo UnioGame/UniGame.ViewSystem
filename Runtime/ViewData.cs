@@ -7,18 +7,18 @@
     [Serializable]
     public class ViewData : ILifeTimeContext
     {
-        private readonly LifeTimeDefinition   _lifeTimeDefinition = new();
+        private readonly LifeTime   _lifeTime = new();
 
-        public  ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
+        public  ILifeTime LifeTime => _lifeTime;
 
         public void Dispose()
         {
-            if (_lifeTimeDefinition.IsTerminated)
+            if (_lifeTime.IsTerminated)
                 return;
-            _lifeTimeDefinition.Terminate();
+            _lifeTime.Terminate();
             GC.SuppressFinalize(this);
         }
 
-        ~ViewData()  => _lifeTimeDefinition.Terminate();
+        ~ViewData()  => _lifeTime.Terminate();
     }
 }

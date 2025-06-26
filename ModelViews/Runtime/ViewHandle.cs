@@ -15,8 +15,8 @@
     /// </summary>
     public class ViewHandle : IViewHandle
     {
-        private LifeTimeDefinition _lifeTime     = new();
-        private LifeTimeDefinition _viewLifeTime = new();
+        private LifeTime _lifeTime     = new();
+        private LifeTime _viewLifeTime = new();
 
         private ReactiveValue<IViewHandle> _observable = new();
         private ReactiveValue<ViewStatus>  _rxStatus     = new();
