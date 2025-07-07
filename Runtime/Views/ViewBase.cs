@@ -573,7 +573,7 @@ namespace UniGame.UiSystem.Runtime
         
         private void InitialSetup()
         {
-            _lifeTimeDefinition.Release();
+            _lifeTimeDefinition.Restart();
             _isInitialized.Value = true;
             _status.Value  = ViewStatus.None;
             _internalViewStatus = ViewStatus.None;
