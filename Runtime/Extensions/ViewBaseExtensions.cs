@@ -1,7 +1,6 @@
 ﻿namespace UniGame.ViewSystem.Runtime
 {
     using System;
-    using global::UniGame.ViewSystem.Runtime;
     using global::UniGame.Core.Runtime;
     using Cysharp.Threading.Tasks;
     using global::UniGame.UiSystem.Runtime;

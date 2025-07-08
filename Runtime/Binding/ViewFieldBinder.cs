@@ -1,7 +1,7 @@
 ﻿namespace UniGame.ViewSystem.Runtime.Binding
 {
     using System;
-    using AddressableTools.Runtime.AssetReferencies;
+    using AddressableTools.Runtime;
     using R3;
     using UniGame.Runtime.Rx.Runtime.Extensions;
     using TMPro;
