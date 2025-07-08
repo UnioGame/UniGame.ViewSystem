@@ -239,8 +239,8 @@ namespace UniGame.UiSystem.Runtime
             // save current state
             _isViewOwner = ownViewModel;
             //restart view lifetime
-            _viewModelLifeTime.Release();
-            _progressLifeTime.Release();
+            _viewModelLifeTime.Restart();
+            _progressLifeTime.Restart();
             
             _isModelAttached = true;
             
