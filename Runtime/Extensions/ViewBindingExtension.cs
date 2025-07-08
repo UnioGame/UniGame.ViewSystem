@@ -7,6 +7,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
 {
     using System;
     using System.Runtime.CompilerServices;
+    using AddressableTools.Runtime.AssetReferencies;
     using Cysharp.Threading.Tasks;
     using TMPro;
     using ViewSystem.Runtime;

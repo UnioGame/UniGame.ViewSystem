@@ -2,6 +2,7 @@
 {
     using System;
     using AddressableTools.Runtime;
+    using AddressableTools.Runtime.AssetReferencies;
     using R3;
     using UniGame.Runtime.Rx.Runtime.Extensions;
     using TMPro;
