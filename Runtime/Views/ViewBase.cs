@@ -502,7 +502,7 @@ namespace UniGame.UiSystem.Runtime
             if (lifeTime.IsTerminated) 
                 return;
             
-            lifeTime.Release();
+            lifeTime.Restart();
 
             try
             {
@@ -540,7 +540,7 @@ namespace UniGame.UiSystem.Runtime
                 ViewModel = null;
             });
             
-            _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Release);
+            _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Restart);
         
             ModelLifeTime.AddCleanUpAction(() => _isModelAttached = false);
 
@@ -596,7 +596,7 @@ namespace UniGame.UiSystem.Runtime
             _visibility.Dispose();
         }
 
-        protected void OnDisable() => _progressLifeTime.Release();
+        protected void OnDisable() => _progressLifeTime.Restart();
 
         protected void OnDestroy()
         {
