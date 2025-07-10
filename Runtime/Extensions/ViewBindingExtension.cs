@@ -550,6 +550,14 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
                 ? sender 
                 : sender.Bind(source, x => command.onClick?.Invoke());
         }
+
+        public static TView Bind<TView>(this TView sender, ReactiveValue<bool> source, Button command)
+            where TView : ILifeTimeContext
+        {
+            return command == null
+                ? sender
+                : sender.Bind(source, x => command.interactable = x);
+        }
         
         public static TView Bind<TView, TValue>(this TView sender, Observable<TValue> source, Button command)
             where TView : ILifeTimeContext
