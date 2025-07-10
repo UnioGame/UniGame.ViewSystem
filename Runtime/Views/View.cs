@@ -5,8 +5,6 @@
     using R3;
     using UniGame.Runtime.Rx.Runtime.Extensions;
     using UniCore.Runtime.ProfilerTools;
-    using UniModules.UniGame.UiSystem.Runtime.Extensions;
-    using UniModules.UniUiSystem.Runtime.Utils;
     using ViewSystem.Runtime;
      
     using UnityEngine;

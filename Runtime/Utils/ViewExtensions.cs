@@ -3,8 +3,6 @@
     using System;
     using global::UniGame.ViewSystem.Runtime;
     using Cysharp.Threading.Tasks;
-    using UiSystem.Runtime;
-    using global::UniGame.Runtime.Extension;
     using R3;
     using UniModules.UniGame.UiSystem.Runtime;
     using UnityEngine;

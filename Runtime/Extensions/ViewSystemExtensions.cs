@@ -9,8 +9,6 @@ using UnityEngine.SceneManagement;
 
 namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
 {
-    using global::UniGame.Context.Runtime;
-
     public static class ViewSystemExtensions 
     {
         public static async UniTask<ILifeTime> Warmup(this AssetReferenceViewSettings settingsReference,ILifeTime lifeTime)

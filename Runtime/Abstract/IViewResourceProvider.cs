@@ -1,6 +1,4 @@
-﻿using UnityEngine.AddressableAssets;
-
-namespace UniGame.ViewSystem.Runtime
+﻿namespace UniGame.ViewSystem.Runtime
 {
     using global::UniGame.Core.Runtime;
     using Cysharp.Threading.Tasks;

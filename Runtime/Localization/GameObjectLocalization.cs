@@ -1,6 +1,5 @@
 namespace UniGame.Localization.Runtime.Components
 {
-    using System;
     using Cysharp.Threading.Tasks;
     using global::UniGame.Runtime.DataFlow;
     using R3;

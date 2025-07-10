@@ -1,6 +1,5 @@
 namespace UniGame.ViewSystem.Runtime
 {
-    using System;
     using R3;
 
     public interface IViewLayoutData

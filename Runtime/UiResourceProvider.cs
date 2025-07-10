@@ -1,6 +1,4 @@
 ﻿using UniGame.AddressableTools.Runtime;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace UniGame.UiSystem.Runtime
 {

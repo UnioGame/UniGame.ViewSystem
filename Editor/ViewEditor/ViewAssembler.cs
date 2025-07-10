@@ -21,7 +21,7 @@ namespace UniGame.UiSystem.UI.Editor.UiEdito
         public static void Initialize()
         {
             _lifeTime ??= new LifeTime();
-            _lifeTime?.Release();
+            _lifeTime?.Restart();
             
             MessageBroker.Default
                 .Receive<SettingsRebuildMessage>()

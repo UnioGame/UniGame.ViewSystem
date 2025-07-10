@@ -5,11 +5,9 @@ namespace UniGame.UiSystem.Runtime
     using UniGame.Runtime.DataFlow;
     using Core.Runtime;
     using R3;
-    using UniGame.Runtime.Rx;
     using ViewSystem.Runtime;
     using ReactiveCommand = R3.ReactiveCommand;
-
-
+    
     [Serializable]
     public class ViewModelBase : IViewModel
     {
@@ -30,14 +28,14 @@ namespace UniGame.UiSystem.Runtime
             if (_lifeTime.IsTerminated) return;
 
             _close.Dispose();
-            _lifeTime.Release();
+            _lifeTime.Terminate();
             GC.SuppressFinalize(this);
         }
 
         ~ViewModelBase()
         {
             _close.Dispose();
-            _lifeTime?.Release();
+            _lifeTime?.Terminate();
         }
     }
 }

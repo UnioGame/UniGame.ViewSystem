@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 using UniGame.AddressableTools.Runtime;
-using UniModules.UniGame.ViewSystem;
 
 namespace UniGame.UiSystem.Runtime.Settings
 {
     using System;
     using UniGame.Runtime.ReflectionUtils;
     using Core.Runtime.SerializableType;
-    using Core.Runtime.SerializableType.Attributes;
     using ViewSystem.Runtime;
     using UnityEngine;
     using UnityEngine.AddressableAssets;

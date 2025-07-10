@@ -1,5 +1,4 @@
-﻿using UniGame.ViewSystem.Runtime;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace UniGame.ViewSystem.Runtime
 {

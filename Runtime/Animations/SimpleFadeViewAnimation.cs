@@ -7,7 +7,6 @@
     using Runtime;
     using global::UniModules.UniUiSystem.Runtime.Utils;
     using UnityEngine;
-    using UnityEngine.Serialization;
 
 #if ODIN_INSPECTOR
     using Sirenix.OdinInspector;

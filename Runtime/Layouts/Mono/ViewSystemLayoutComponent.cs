@@ -9,8 +9,6 @@
     using R3;
     using ViewSystem.Runtime;
     using ViewSystem.Runtime.WindowStackControllers.Abstract;
-     
-    using UnityEngine.Serialization;
 
 #if ODIN_INSPECTOR
     using Sirenix.OdinInspector;

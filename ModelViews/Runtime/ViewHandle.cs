@@ -58,9 +58,10 @@
             _lifeTime.AddDispose(_rxStatus);
 
             _lifeTime.AddCleanUpAction(CleanUp);
-            _lifeTime.AddCleanUpAction(_viewLifeTime.Release);
+            _lifeTime.AddCleanUpAction(_viewLifeTime.Terminate);
 
-            _rxStatus.Subscribe(x => _notifyCommand.Execute()).
+            _rxStatus.Subscribe(this,
+                    (x,y) => y._notifyCommand.Execute()).
                 AddTo(_lifeTime);
 
             _notifyCommand.
@@ -104,6 +105,7 @@
         public void Close() => View?.Close();
 
         public IView Show() => View?.Show();
+        
         public async UniTask<IView> ShowAsync() => Show();
 
         public void Hide() => View?.Hide();
@@ -126,7 +128,7 @@
             if (view == View)
                 return;
 
-            _viewLifeTime.Release();
+            _viewLifeTime.Restart();
                                     
             _view = view;
 
@@ -137,7 +139,7 @@
                 Do(x => _rxStatus.Value = x).
                 Where(x => x == ViewStatus.Closed).
                 Do(x => _view = null).
-                Do(x => _viewLifeTime.Release()).
+                Do(x => _viewLifeTime.Terminate()).
                 Subscribe().
                 AddTo(_viewLifeTime);
 

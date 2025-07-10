@@ -9,14 +9,16 @@ namespace UniGame.UI.Components
     using UnityEngine.EventSystems;
     using UnityEngine.UI;
 
-    public class ViewCloseHandler : MonoBehaviour, IPointerUpHandler, IPointerDownHandler, IPointerClickHandler
+    public class ViewCloseHandler : MonoBehaviour, 
+        IPointerUpHandler,
+        IPointerDownHandler, IPointerClickHandler
     {
         [SerializeField] private bool _closeOnMissclick = true;
         [SerializeField] private bool _closeOnBackButtonPressed = true;
 
         [SerializeField] private ViewBase _view;
 
-        private LifeTime _lifeTimeDefinition = new();
+        private LifeTime _lifeTime = new();
         
         public void OnPointerUp(PointerEventData eventData)
         {
@@ -48,20 +50,14 @@ namespace UniGame.UI.Components
             if (_closeOnBackButtonPressed)
             {
                 Observable.EveryUpdate()
-                          .Subscribe(_ => HandleBackButton())
-                          .AddTo(_lifeTimeDefinition);
+                          .Subscribe(this,static (x,y) => y.HandleBackButton())
+                          .AddTo(_lifeTime);
             }
         }
 
-        private void OnDisable()
-        {
-            _lifeTimeDefinition.Release();
-        }
+        private void OnDisable() =>  _lifeTime.Restart();
 
-        private void OnDestroy()
-        {
-            _lifeTimeDefinition.Terminate();
-        }
+        private void OnDestroy() => _lifeTime.Terminate();
 
         private void HandleBackButton()
         {

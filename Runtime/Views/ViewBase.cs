@@ -6,7 +6,6 @@ namespace UniGame.UiSystem.Runtime
     using System.Threading;
     using Cysharp.Threading.Tasks;
     using JetBrains.Annotations;
-    using UniCore.Runtime.ProfilerTools;
     using UniCore.Runtime.Attributes;
     using UniGame.Runtime.DataFlow;
     using UniGame.Runtime.Rx;

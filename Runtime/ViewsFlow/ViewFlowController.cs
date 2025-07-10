@@ -19,7 +19,7 @@
         
         public void Activate(IViewLayoutContainer controllerContainer)
         {
-            _lifeTimeDefinition.Release();
+            _lifeTimeDefinition.Restart();
             _lifeTimeDefinition.AddCleanUpAction(() => _controllerContainer = null);
 
             _controllerContainer = controllerContainer;

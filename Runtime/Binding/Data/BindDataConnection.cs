@@ -1,8 +1,6 @@
 ﻿namespace UniGame.ViewSystem.Runtime.Binding
 {
     using System;
-    using System.Reflection;
-    using UnityEngine.Serialization;
 
     [Serializable]
     public struct BindDataConnection

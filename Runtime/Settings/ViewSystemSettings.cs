@@ -139,7 +139,7 @@ namespace UniGame.UiSystem.Runtime.Settings
             }
         }
 
-        public void Dispose() => _lifeTime?.Release();
+        public void Dispose() => _lifeTime?.Terminate();
 
         public async UniTask Initialize()
         {

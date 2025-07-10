@@ -1,6 +1,4 @@
-﻿using UniGame.ViewSystem.Runtime;
-
-namespace UniGame.ViewSystem.Runtime
+﻿namespace UniGame.ViewSystem.Runtime
 {
     using R3;
 

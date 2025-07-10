@@ -71,7 +71,7 @@
 
         public void Dispose()
         {
-            _lifeTime.Release();
+            _lifeTime.Terminate();
 
             var viewList = ListPool<IView>.Get();
             
