@@ -43,13 +43,14 @@ namespace UniGame.Localization.Runtime.Components
         {
             if (asset == _asset) return;
             
-            if(_instance!=null) Destroy(_instance);
+            if(_instance!=null) 
+                Destroy(_instance);
             
             if (asset == null) return;
             
             _asset = asset;
             _instance = Instantiate(_asset, parent);
-            _instance.DespawnWith(_lifeTime);
+            _instance.DestroyWith(_lifeTime);
         }
 
         private void OnDisable()
