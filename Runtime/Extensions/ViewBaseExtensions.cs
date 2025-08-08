@@ -209,11 +209,12 @@
             Transform parent = null,
             string skinTag = null,
             string viewName = null,
-            bool stayWorld = false)
+            bool stayWorld = false,
+            ILifeTime lifeTime = null)
             where T : class, IView
         {
-            var view =
-                await source.CreateChildViewAsync(viewModel, typeof(T), parent, skinTag, viewName, stayWorld) as T;
+            var view = await source
+                .CreateChildViewAsync(viewModel, typeof(T), parent, skinTag, viewName, stayWorld,lifeTime) as T;
             return view;
         }
 
@@ -224,10 +225,12 @@
             Transform parent = null,
             string skinTag = null,
             string viewName = null,
-            bool stayWorld = false)
+            bool stayWorld = false,
+            ILifeTime lifeTime = null)
         {
             parent = parent ? parent : source.Transform;
-            var view = await source.Layout.Create(viewModel, viewType.Name, skinTag, parent, viewName, stayWorld);
+            var view = await source.Layout
+                .Create(viewModel, viewType.Name, skinTag, parent, viewName, stayWorld,lifeTime);
 
             var viewTransform = view.Transform;
             view.Owner.layer = source.Owner.layer;
@@ -269,10 +272,11 @@
             Transform parent = null,
             string skinTag = null,
             string viewName = null,
-            bool stayWorld = false)
+            bool stayWorld = false,
+            ILifeTime lifeTime = null)
             where T : class, IView
         {
-            var view = await CreateChildViewAsync<T>(source, viewModel, parent, skinTag, viewName, stayWorld);
+            var view = await CreateChildViewAsync<T>(source, viewModel, parent, skinTag, viewName, stayWorld,lifeTime);
             await view.ShowAsync();
             return view;
         }
