@@ -34,7 +34,7 @@ namespace UniGame.UiSystem.Runtime
 
         ~ViewModelBase()
         {
-            _close.Dispose();
+            _close?.Dispose();
             _lifeTime?.Terminate();
         }
     }

@@ -233,7 +233,7 @@ namespace UniGame.UiSystem.Runtime
 
         public async UniTask<IView> Initialize(IViewModel model, bool ownViewModel = false)
         {
-            if (gameObject == null) return this;
+            if (this == null || gameObject == null) return this;
             
             // save current state
             _isViewOwner = ownViewModel;
