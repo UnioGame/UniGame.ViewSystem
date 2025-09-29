@@ -137,7 +137,15 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             if (image == null) return view;
             return !image ? view : view.Bind(source, x => Bind(view, x, image));
         }
-
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TView Bind<TView>(this TView view, ReactiveValue<LocalizedSprite> source, Image image)
+            where TView : class, IView
+        {
+            if (image == null) return view;
+            return !image ? view : view.Bind(source, x => Bind(view, x, image));
+        }
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TView Bind<TView>(this TView view, Observable<AssetReference> source, Image image)
             where TView : class, IView
