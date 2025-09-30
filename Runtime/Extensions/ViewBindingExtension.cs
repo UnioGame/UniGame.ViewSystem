@@ -87,6 +87,12 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
         {
             return source == null ? view : view.Bind(source.AsObservable(), text);
         }
+        
+        public static TView Bind<TView>(this TView view, LocalizedSprite source, Image image)
+            where TView : class, IView
+        {
+            return source == null ? view : view.Bind(source.AsObservable(), image);
+        }
 
         public static TView Bind<TView>(this TView view, LocalizeStringEvent source, TextMeshProUGUI text)
             where TView : class, IView
