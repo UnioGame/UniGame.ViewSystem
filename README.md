@@ -99,7 +99,11 @@ Add to your project manifiest by path [%UnityProject%]/Packages/manifiest.json n
 
 ### Create Settings
 
-![](https://i.gyazo.com/15833fe0019b9570d68cab6ba20d3df6.png)
+```csharp
+[MenuItem("Assets/UniGame/ViewSystem/Create ViewSystem")]
+```
+
+![](https://ibb.co/zVgHttfm)
 
 
 ### SetUp Views Locations

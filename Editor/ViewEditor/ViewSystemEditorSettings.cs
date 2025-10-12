@@ -7,6 +7,7 @@ namespace UniModules.UniGame.ViewSystem
 {
     using System;
     using System.Collections.Generic;
+    using global::UniGame.AddressableTools.Editor;
     using global::UniGame.ViewSystem.Runtime;
     using UniModules.Editor;
     using global::UniGame.Attributes;
@@ -61,7 +62,7 @@ namespace UniModules.UniGame.ViewSystem
         }
 
 
-        [MenuItem("Assets/UniGame/ViewSystem/Create ViewSystem Prefab")]
+        [MenuItem("Assets/UniGame/ViewSystem/Create ViewSystem")]
         public static void CreateViewSystemPrefab()
         {
             var activeObject = Selection.activeObject;
@@ -82,6 +83,7 @@ namespace UniModules.UniGame.ViewSystem
 
             var view = viewSystemPrefab.CopyAsset<GameViewSystemAsset>(viewSystemPrefab.name,path);
             var settingsAsset = settings.CopyAsset<ViewSystemSettings>(settings.name, path);
+            settingsAsset.MakeAddressable();
 
             settingsAsset.isActive = true;
             view.settings = new AssetReferenceT<ViewSystemSettings>(settingsAsset.GetGUID());
