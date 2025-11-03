@@ -8,6 +8,8 @@
 
     public class MonoViewAnimation : MonoBehaviour, IViewAnimation
     {
+        public bool isEnabled = false;
+        public bool IsEnabled => isEnabled;
         
         public UniTask PlayAnimation(IView view, ViewStatus status,ILifeTime lifeTime)
         {

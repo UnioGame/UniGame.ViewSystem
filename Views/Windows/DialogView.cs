@@ -51,7 +51,7 @@ namespace UniGame.ViewSystem.Views.Windows
     }
 
     [Serializable]
-    public class DialogViewModel : ViewModelBase
+    public class DialogViewModel : ViewModel
     {
         public ReactiveCommand<bool> result = new ();
     }
