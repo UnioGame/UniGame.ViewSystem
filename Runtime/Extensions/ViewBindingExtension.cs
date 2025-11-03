@@ -681,6 +681,14 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             return sender.Bind(observable, command);
         }
         
+        public static TView Bind<TView>(this TView sender, Slider source, Action<float> command)
+            where TView : ILifeTimeContext
+        {
+            if (source == null || sender == null) return sender;
+            var observable = source.OnValueChangedAsObservable();
+            return sender.Bind(observable, command);
+        }
+        
         public static TView Bind<TView>(this TView sender, Button source, Action command)
             where TView : ILifeTimeContext
         {
