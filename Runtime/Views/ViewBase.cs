@@ -394,7 +394,7 @@ namespace UniGame.UiSystem.Runtime
         {
             SetStatus(ViewStatus.Hiding);
             
-            await OnCloseProgress(_progressLifeTime);
+            await OnHideProgress(_progressLifeTime);
         }
         
         /// <summary>
@@ -405,7 +405,7 @@ namespace UniGame.UiSystem.Runtime
             SetStatus(ViewStatus.Hiding);
             
             //wait until user defined closing operation complete
-            await OnHidingProgress(_progressLifeTime);
+            await OnHideProgress(_progressLifeTime);
 
             SetStatus(ViewStatus.Hidden);
         }
@@ -458,15 +458,6 @@ namespace UniGame.UiSystem.Runtime
         }
 
         /// <summary>
-        /// close continuation
-        /// use hiding progress by default
-        /// </summary>
-        protected virtual async UniTask OnCloseProgress(ILifeTime progressLifeTime)
-        {
-            await PlayAnimation(progressLifeTime);
-        }
-
-        /// <summary>
         /// showing continuation
         /// </summary>
         protected virtual async UniTask OnShowProgress(ILifeTime progressLifeTime)
@@ -477,7 +468,7 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// hiding continuation
         /// </summary>
-        protected virtual async UniTask OnHidingProgress(ILifeTime progressLifeTime)
+        protected virtual async UniTask OnHideProgress(ILifeTime progressLifeTime)
         {
             await PlayAnimation(progressLifeTime);
         }

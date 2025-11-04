@@ -22,20 +22,8 @@
         private Sequence _hideSequence;
         private Sequence _showSequence;
 #endif
-        
-        protected override async UniTask OnCloseProgress(ILifeTime progressLifeTime)
-        {
-#if ENABLE_DOTWEEN
-            DoTweenExtension.KillSequence(ref _showSequence);
-            DoTweenExtension.KillSequence(ref _hideSequence);
-            
-            _hideSequence = GetHideSequence();
-             await _hideSequence.WaitForCompletionTweenAsync();
-#endif
-            return;
-        }
 
-        protected override async UniTask OnHidingProgress(ILifeTime progressLifeTime)
+        protected override async UniTask OnHideProgress(ILifeTime progressLifeTime)
         {
 #if ENABLE_DOTWEEN
             DoTweenExtension.KillSequence(ref _showSequence);
