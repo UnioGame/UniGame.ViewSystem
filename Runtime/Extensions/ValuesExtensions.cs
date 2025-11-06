@@ -137,6 +137,22 @@
         {
             SetValueAsync(target, sprite).Forget();
         }
+        
+        public static void SetValue(this RawImage target, AssetReferenceT<Texture2D> sprite)
+        {
+            SetValueAsync(target, sprite).Forget();
+        }
+        
+        public static async UniTask<bool> SetValueAsync(this RawImage target, AssetReferenceT<Texture2D> sprite)
+        {
+            if (target == null || 
+                sprite == null || 
+                sprite.RuntimeKeyIsValid() == false) return false;
+            
+            var lifeTime = target.GetAssetLifeTime();
+            var value = await sprite.LoadAssetTaskAsync(lifeTime);
+            return SetValue(target, value);
+        }
 
         public static async UniTask<bool> SetValueAsync(this Image target, AssetReferenceT<Sprite> sprite)
         {
@@ -148,6 +164,7 @@
             var value = await sprite.LoadAssetTaskAsync<Sprite>(lifeTime);
             return SetValue(target, value);
         }
+        
         
         public static async UniTask<bool> SetValueAsync(this Image target, UniTask<Sprite> sprite)
         {
@@ -186,6 +203,18 @@
             target.enabled = enabled;
             
             if(enabled) target.texture = value.texture;
+            return true;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool SetValue(this RawImage target, Texture2D value)
+        {
+            if (target == null) return false;
+            
+            var enabled = value != null;
+            target.enabled = enabled;
+            
+            if(enabled) target.texture = value;
             return true;
         }
         
