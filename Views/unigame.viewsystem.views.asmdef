@@ -23,7 +23,8 @@
         "UnityEngine.TestRunner",
         "DOTween.Modules",
         "UniTask.DOTween",
-        "unigame.dotween.runtime"
+        "unigame.dotween.runtime",
+        "unigame.unicore.logger"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
