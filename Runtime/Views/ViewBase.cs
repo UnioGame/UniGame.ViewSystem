@@ -250,7 +250,7 @@ namespace UniGame.UiSystem.Runtime
             }
             
             InitializeHandlers(model);
-            BindLifeTimeActions(model);
+            BindLifeTimeActions();
 
             Animation = SelectAnimation();
 
@@ -521,20 +521,10 @@ namespace UniGame.UiSystem.Runtime
                 AddTo(_lifeTimeDefinition);
         }
         
-        private void BindLifeTimeActions(IViewModel model)
+        private void BindLifeTimeActions()
         {
             _isModelChanged.Value = false;
             //bind model lifetime to local
-            var modelLifeTime = model.LifeTime;
-            if (model.IsDisposeWithModel)
-            {
-                modelLifeTime.ComposeCleanUp(_viewModelLifeTime, () =>
-                {
-                    if (Equals(ViewModel, model))
-                        Destroy();
-                });
-            }
-
             _viewModelLifeTime.AddCleanUpAction(() =>
             {
                 if (_isViewOwner) 

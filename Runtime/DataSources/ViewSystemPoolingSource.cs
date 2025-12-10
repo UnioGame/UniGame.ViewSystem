@@ -11,7 +11,7 @@ namespace UniGame.ViewSystem.Runtime.DataSources
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/View System Pooling", fileName = "View Pooling Asset")]
     public class ViewSystemPoolingSource : ScriptableObject,IAsyncDataSource
     {
-        public List<AssetReferenceViewSettings> sources = new List<AssetReferenceViewSettings>();
+        public List<AssetReferenceViewSettings> sources = new();
 
         public UniTask<IContext> RegisterAsync(IContext context)
         {
