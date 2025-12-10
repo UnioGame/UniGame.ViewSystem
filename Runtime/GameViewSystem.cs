@@ -119,7 +119,7 @@ namespace UniGame.UiSystem.Runtime
             where TView : class, IView
         {
             var observable = ViewCreated.OfType<IView, TView>();
-            var view       = Get<TView>();
+            var view       = GetView<TView>();
             observable = view == null
                 ? observable
                 : observable.Merge(Observable.Return(view));
@@ -250,11 +250,23 @@ namespace UniGame.UiSystem.Runtime
             return await CreateViewInLayout<IView>(viewModel, viewType, OverlayType, skinTag, viewName);
         }
 
-        public T Get<T>() where T : class, IView
+        public T GetView<T>() where T : class, IView
         {
             foreach (var controller in _viewLayouts.Controllers)
             {
                 var v = controller.Get<T>();
+                if (v != null)
+                    return v;
+            }
+
+            return null;
+        }
+        
+        public IView GetView(Type viewType) 
+        {
+            foreach (var controller in _viewLayouts.Controllers)
+            {
+                var v = controller.Get(viewType);
                 if (v != null)
                     return v;
             }

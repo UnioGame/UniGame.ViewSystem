@@ -23,6 +23,8 @@
  
         TView Get<TView>() where TView :class, IView;
         
+        IView Get(Type viewType);
+        
         List<TView> GetAll<TView>() where TView : class, IView;
 
     }

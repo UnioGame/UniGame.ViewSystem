@@ -153,9 +153,14 @@
         public IViewLayout GetLayout(ViewType type) => ViewSystem.GetLayout(type);
         public IViewLayout GetLayout(string id) => ViewSystem.GetLayout(id);
 
-        public T Get<T>() where T : class, IView
+        public T GetView<T>() where T : class, IView
         {
-            return ViewSystem.Get<T>();
+            return ViewSystem.GetView<T>();
+        }
+
+        public IView GetView(Type viewType)
+        {
+            return ViewSystem.GetView(viewType);
         }
 
         public void CloseAll() => ViewSystem.CloseAll();

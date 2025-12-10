@@ -74,6 +74,11 @@
         {
             return LayoutController.Get<TView>();
         }
+        
+        public IView Get(Type viewType)
+        {
+            return LayoutController.Get(viewType);
+        }
 
         public List<TView> GetAll<TView>() where TView : class, IView
         {

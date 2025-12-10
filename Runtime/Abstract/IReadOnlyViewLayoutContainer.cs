@@ -1,5 +1,6 @@
 ﻿namespace UniGame.ViewSystem.Runtime
 {
+    using System;
     using UniModules.UniGame.UiSystem.Runtime;
 
     public interface IReadOnlyViewLayoutContainer
@@ -9,6 +10,8 @@
         /// </summary>
         IReadOnlyViewLayout this[ViewType type] { get; }
 
-        TView Get<TView>()  where TView : class,IView;
+        TView GetView<TView>()  where TView : class,IView;
+
+        IView GetView(Type viewType);
     }
 }
