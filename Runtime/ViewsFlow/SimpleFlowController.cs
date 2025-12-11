@@ -2,18 +2,25 @@
 {
     using System;
     using UniGame.Runtime.DataFlow;
-    using UniModules.UniGame.UiSystem.Runtime;
     using Core.Runtime;
     using R3;
     using ViewSystem.Runtime;
      
     using UnityEngine.SceneManagement;
+    using ViewsFlow;
+
     
     [Serializable]
-    public class ViewFlowController : IViewFlowController
+    public class SimpleFlowController : IViewFlowController
     {
-        private readonly LifeTime _lifeTimeDefinition = new();
-        protected IViewLayoutContainer _controllerContainer;
+        private SimpleFlowSettings _settings;
+        private LifeTime _lifeTimeDefinition = new();
+        private IViewLayoutContainer _controllerContainer;
+        
+        public SimpleFlowController(SimpleFlowSettings settings)
+        {
+            _settings = settings;
+        }
 
         public ILifeTime LifeTime => _lifeTimeDefinition;
         
@@ -35,8 +42,11 @@
         
         protected virtual void OnSceneActivate(Scene current, Scene next)
         {
-            _controllerContainer.GetLayout(ViewType.Screen).CloseAll();
-            _controllerContainer.GetLayout(ViewType.Window).CloseAll();
+            foreach (var settingsLayout in _settings.Layouts)
+            {
+                var layout = _controllerContainer.GetLayout(settingsLayout.Layout);
+                layout?.CloseAll();
+            }
         }
 
         protected virtual void OnSceneLoaded(Scene current, LoadSceneMode mode)

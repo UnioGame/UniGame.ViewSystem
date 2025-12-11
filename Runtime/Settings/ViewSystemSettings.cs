@@ -27,6 +27,7 @@ namespace UniGame.UiSystem.Runtime.Settings
     public class ViewSystemSettings : ViewsSettings, ICompletionStatus, IDisposable
     {
         #region inspector
+        
 
 #if ODIN_INSPECTOR
         [TabGroup(SettingsTabKey)]
@@ -37,19 +38,19 @@ namespace UniGame.UiSystem.Runtime.Settings
         [Header("Nested Views Sources")]
         [SerializeField] 
         public List<NestedViewSourceSettings> sources = new();
-
+        
 #if ODIN_INSPECTOR
         [TabGroup(SettingsTabKey)]
-        [DrawWithUnity]
         [InlineEditor]
         [GUIColor(0.8f,0.8f,0.2f)]
 #endif
+        [Tooltip("Controlling behavior of view between layouts")]
         [SerializeField]
-        [AssetFilter(typeof(ViewFlowControllerAsset))]
-        public ViewFlowControllerAsset layoutFlow;
+        public BaseFlowControllerAsset layoutFlow;
 
         [Space(8)]
         [Header("ViewModels Resolver")]
+        [Tooltip("Resolve ViewModel types at runtime for views")]
         [SerializeField]
 #if ODIN_INSPECTOR
         [TabGroup(SettingsTabKey)]
@@ -150,7 +151,9 @@ namespace UniGame.UiSystem.Runtime.Settings
             IsComplete = false;
             isStarted = true;
 
-            FlowController = layoutFlow.Create();
+            FlowController = layoutFlow == null 
+                ? new SimpleFlowController(new SimpleFlowSettings())
+                : layoutFlow.Create();
 
             uiResourceProvider ??= new UiResourceProvider();
             uiResourceProvider.RegisterViewReferences(Views);

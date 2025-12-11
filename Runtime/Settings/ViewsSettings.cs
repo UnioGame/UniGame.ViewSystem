@@ -55,7 +55,7 @@ namespace UniGame.UiSystem.Runtime.Settings
         [FolderPath]
 #endif
         public List<string> uiViewsSkinFolders = new();
-
+        
         [Header("Registered Views")]
 #if ODIN_INSPECTOR
         [TabGroup(ViewTabKey)]
