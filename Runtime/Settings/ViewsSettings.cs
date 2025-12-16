@@ -32,6 +32,11 @@ namespace UniGame.UiSystem.Runtime.Settings
 #endif
         public bool isActive = true;
 
+#if ODIN_INSPECTOR
+        [TabGroup(SettingsTabKey)]
+#endif
+        public bool useViewPooling = false;
+        
         [Header("Default views")]
 #if ODIN_INSPECTOR
         [TabGroup(SettingsTabKey)]
