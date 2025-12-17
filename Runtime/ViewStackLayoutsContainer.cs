@@ -3,6 +3,7 @@ using UniGame.Runtime.Utils;
 
 namespace UniGame.UiSystem.Runtime
 {
+    using System;
     using System.Collections.Generic;
     using UniModules.UniGame.UiSystem.Runtime;
     using ViewSystem.Runtime;
@@ -26,11 +27,22 @@ namespace UniGame.UiSystem.Runtime
         
         public IReadOnlyViewLayout this[ViewType type] => GetLayout(type);
         
-        public TView Get<TView>()  where TView : class, IView
+        public TView GetView<TView>()  where TView : class, IView
         {
             foreach (var viewLayout in _layouts) {
                 var layout = viewLayout.Value;
                 var view = layout.Get<TView>();
+                if (view!=null) return view;
+            }
+
+            return null;
+        }
+
+        public IView GetView(Type viewType)
+        {
+            foreach (var viewLayout in _layouts) {
+                var layout = viewLayout.Value;
+                var view = layout.Get(viewType);
                 if (view!=null) return view;
             }
 

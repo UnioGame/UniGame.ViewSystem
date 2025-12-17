@@ -109,7 +109,7 @@ namespace UniModules.UniGame.ViewSystem
                 .FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == ViewSystemConstants.BaseViewType);
 
             if (viewInterface == null)
-                return typeof(ViewModelBase);
+                return typeof(ViewModel);
             
             var modelsArgs = viewInterface.GetGenericArguments();
             var modelType = modelsArgs.FirstOrDefault();

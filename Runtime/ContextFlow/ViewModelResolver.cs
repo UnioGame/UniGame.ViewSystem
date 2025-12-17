@@ -62,7 +62,7 @@ namespace UniGame.ViewSystem.Runtime
                 return model;
             }
 
-            return new ViewModelBase();
+            return new ViewModel();
         }
         
     }

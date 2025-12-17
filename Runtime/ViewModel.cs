@@ -9,7 +9,7 @@ namespace UniGame.UiSystem.Runtime
     using ReactiveCommand = R3.ReactiveCommand;
     
     [Serializable]
-    public class ViewModelBase : IViewModel
+    public class ViewModel : IViewModel
     {
         private LifeTime _lifeTime = new();
         private ReactiveCommand _close = new();
@@ -32,10 +32,16 @@ namespace UniGame.UiSystem.Runtime
             GC.SuppressFinalize(this);
         }
 
-        ~ViewModelBase()
+        ~ViewModel()
         {
             _close?.Dispose();
             _lifeTime?.Terminate();
         }
+    }
+    
+    [Serializable]
+    public class BaseViewModel : ViewModel
+    {
+        
     }
 }

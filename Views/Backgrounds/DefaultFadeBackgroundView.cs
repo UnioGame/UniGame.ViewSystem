@@ -11,7 +11,7 @@
         [SerializeField, Range(0.0f, 1.0f)]
         public float duration = 0.3f;
         
-        protected override async UniTask OnHidingProgress(ILifeTime progressLifeTime)
+        protected override async UniTask OnHideProgress(ILifeTime progressLifeTime)
         {
             await AnimateFade(1, 0, duration);
         }

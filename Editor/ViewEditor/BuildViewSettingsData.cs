@@ -13,8 +13,8 @@ namespace UniModules.UniGame.ViewSystem
 {
     public class BuildViewSettingsData : IViewAssemblerCommand
     {
-        private HashSet<IView> proceedViews = new HashSet<IView>();
-        private List<UiViewReference> previousReferences = new List<UiViewReference>();
+        private HashSet<IView> proceedViews = new();
+        private List<UiViewReference> previousReferences = new();
 
         public bool Execute(ViewsSettings settings)
         {
@@ -95,7 +95,8 @@ namespace UniModules.UniGame.ViewSystem
         }
 
         public UiViewReference UpdateViewReferenceData(UiViewReference viewDescription, 
-            IView view, bool defaultView = true,
+            IView view, 
+            bool defaultView = true,
             bool overrideAddressableGroup = false,
             string addressableGroup = null)
         {
@@ -106,7 +107,7 @@ namespace UniModules.UniGame.ViewSystem
             ApplyViewAddressable(gameObject, overrideAddressableGroup, addressableGroup);
 
             var assetReference = gameObject.PrefabToAssetReference();
-            if (assetReference.RuntimeKeyIsValid() == false)
+            if (!assetReference.RuntimeKeyIsValid())
             {
                 GameLog.LogError($"Asset {gameObject.name} by path {assetPath} wrong addressable asset");
                 return null;
@@ -126,6 +127,8 @@ namespace UniModules.UniGame.ViewSystem
             viewDescription.ViewName = assetReference.editorAsset.name;
             viewDescription.PoolingPreloadCount = viewDescription.PoolingPreloadCount;
             viewDescription.Hash = viewDescription.GetHashCode();
+            viewDescription.UsePooling = viewDescription.UsePooling;
+            viewDescription.PoolingPreloadCount = viewDescription.PoolingPreloadCount;
             
             return viewDescription;
         }
@@ -197,6 +200,7 @@ namespace UniModules.UniGame.ViewSystem
             }
             
             viewReference.PoolingPreloadCount = overrideValue.PoolingPreloadCount;
+            viewReference.UsePooling = overrideValue.UsePooling;
         }
 
         private void AddView(ViewsSettings settings, IView view, bool defaultView, string groupName)
@@ -212,10 +216,11 @@ namespace UniModules.UniGame.ViewSystem
             var gameObject = assetView.gameObject;
             var guid = gameObject.GetGUID();
 
-            if (views.Any(x => string.Equals(guid, x.AssetGUID)))
-                return;
+            foreach (var x in views)
+                if (string.Equals(guid, x.AssetGUID)) return;
 
-            var viewReference = CreateViewReference(view, defaultView, 
+            var viewReference = CreateViewReference(view, 
+                defaultView, 
                 settings.applyAddressablesGroup, groupName);
             
             views.Add(viewReference);

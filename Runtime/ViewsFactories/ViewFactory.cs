@@ -9,7 +9,7 @@ namespace UniGame.UiSystem.Runtime
     using Cysharp.Threading.Tasks;
     using UniCore.Runtime.ProfilerTools;
     using UniGame.Runtime.ObjectPool.Extensions;
-    using UniGame.Common;
+    using Common;
     using Core.Runtime;
     using ViewSystem.Runtime;
     using Object = UnityEngine.Object;
@@ -43,30 +43,32 @@ namespace UniGame.UiSystem.Runtime
             viewDisposable.Initialize();
 
             //load view source by filter parameters
-            var item = await _resourceProvider.GetViewReferenceAsync(viewId, skinTag, viewName);
+            var viewReference = await _resourceProvider.GetViewReferenceAsync(viewId, skinTag, viewName);
 
-            if (item == null)
+            if (viewReference == null)
             {
                 Debug.LogError($"{nameof(UiResourceProvider)} ITEM MISSING {viewId} skin:{skinTag} viewName:{viewName}");
                 return null;
             }
 
-            var result = item.View;
+            var result = viewReference.View;
  
             //create view instance
-            var viewResult   = await Create(result,viewDisposable.LifeTime, parent,stayWorldPosition);
+            var viewResult   = await Create(result,viewDisposable.LifeTime,
+                parent,stayWorldPosition,viewReference.UsePooling);
+            
             var view         = viewResult.View;
             var viewLifeTime = viewResult.AssetLifeTime;
             
             //if loading failed release resource immediately
             if (view == null) {
                 viewDisposable.Dispose();
-                GameLog.LogError($"Factory {this.GetType().Name} View of Type {viewId} not loaded or cancelled");
+                GameLog.LogError($"Factory {GetType().Name} View of Type {viewId} not loaded or cancelled");
                 return null;
             }
 
             viewLifeTime.AddDispose(viewDisposable);
-            view.SetSourceName(viewId,item.ViewName);
+            view.SetSourceName(viewId,viewReference.ViewName);
             
             return view;
         }
@@ -78,18 +80,26 @@ namespace UniGame.UiSystem.Runtime
             AssetReferenceGameObject asset,
             ILifeTime lifeTime,
             Transform parent = null,
-            bool stayPosition = false)
+            bool stayPosition = false,
+            bool usePooling = false,
+            int preloadCount = 0)
         {
-            if (asset.RuntimeKeyIsValid() == false) return new ViewResult();
+            if (!asset.RuntimeKeyIsValid()) return new ViewResult();
 
-            var sourceView = await LoadAssetReferenceAsset(asset, lifeTime); // await asset.LoadAssetTaskAsync(lifeTime);
+            var sourceView = await LoadAssetReferenceAsset(asset, lifeTime);
 
             //operation was cancelled
             if(sourceView == null) return new ViewResult();
 
             var viewTransform = sourceView.transform;
+            var hasPool = sourceView.HasPool();
+
+            if (usePooling && !hasPool)
+                sourceView.CreatePool(preloadCount);
             
-            var gameObjectView = sourceView.HasCustomPoolLifeTime()
+            var takeFromPool = usePooling || hasPool;
+            
+            var gameObjectView = takeFromPool
                 ? sourceView.Spawn(viewTransform.position, viewTransform.rotation, parent, stayPosition) 
                 : Object.Instantiate(sourceView, parent, stayPosition);
 

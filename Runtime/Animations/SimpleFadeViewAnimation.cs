@@ -75,7 +75,9 @@
         };
 
         #endregion
-        
+
+        public bool IsEnabled => enabled;
+
         public async UniTask PlayAnimation(IView view, ViewStatus status,ILifeTime lifeTime)
         {
             if (!enabled) return;

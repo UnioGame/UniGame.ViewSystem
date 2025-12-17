@@ -118,7 +118,23 @@
 
         public TView Get<TView>() where TView : class, IView
         {
-            return (TView) _views.LastOrDefault(v => v is TView);
+            foreach (var view in _views)
+            {
+                if(view is TView targetView) return  targetView;
+            }
+
+            return default;
+        }
+        
+        public IView Get(Type viewType) 
+        {
+            foreach (var view in _views)
+            {
+                if(view.GetType() == viewType) 
+                    return  view;
+            }
+
+            return default;
         }
 
         /// <summary>

@@ -3,7 +3,7 @@
     using UniGame.UiSystem.Runtime;
     using UniGame.UiSystem.Runtime.Backgrounds.Abstract;
 
-    public class DefaultBackgroundViewModel : ViewModelBase, IBackgroundViewModel
+    public class DefaultBackgroundViewModel : ViewModel, IBackgroundViewModel
     {
     }
 }

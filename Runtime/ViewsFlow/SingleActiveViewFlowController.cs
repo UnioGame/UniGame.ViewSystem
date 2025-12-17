@@ -9,7 +9,7 @@
      
 
     [Serializable]
-    public class SingleActiveScreenFlow : ViewFlowController
+    public class SingleActiveScreenFlow : BaseFlowController
     {
         private static Type suspendType = typeof(IScreenSuspendingWindow);
         private readonly ReactiveValue<bool> _screenSuspended = new();

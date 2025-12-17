@@ -422,7 +422,7 @@
         /// <returns></returns>
         public static T GetView<T>(this IView source) where T : Component, IView
         {
-            return source.Layout.Get<T>();
+            return source.Layout.GetView<T>();
         }
 
         public static T DestroyWith<T>(this T view, ILifeTime lifeTime) where T : IView

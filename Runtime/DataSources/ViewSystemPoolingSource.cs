@@ -9,11 +9,11 @@ namespace UniGame.ViewSystem.Runtime.DataSources
     using UnityEngine;
     
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/View System Pooling", fileName = "View Pooling Asset")]
-    public class ViewSystemPoolingSource : ScriptableObject,IAsyncDataSource
+    public class ViewSystemPoolingSource : DataSourceAsset
     {
         public List<AssetReferenceViewSettings> sources = new();
-
-        public UniTask<IContext> RegisterAsync(IContext context)
+        
+        protected override UniTask<IContext> OnRegisterAsync(IContext context)
         {
             foreach (var reference in sources)
                 reference.Warmup(context.LifeTime).Forget();

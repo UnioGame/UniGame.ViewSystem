@@ -4,7 +4,7 @@
     using UnityEngine;
 
     [CreateAssetMenu(menuName = "UniGame/ViewSystem/Flow/SingleScreenFlow",fileName = nameof(SingleActiveScreenFlow))]
-    public class SingleActiveScreenFlowAsset : ViewFlowControllerAsset
+    public class SingleActiveScreenFlowAsset : BaseFlowControllerAsset
     {
         public override IViewFlowController Create()
         {

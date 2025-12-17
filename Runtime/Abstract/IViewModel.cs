@@ -6,7 +6,8 @@ namespace UniGame.ViewSystem.Runtime
     using R3;
     
     public interface IViewModel : 
-        IDisposable, ILifeTimeContext,
+        IDisposable, 
+        ILifeTimeContext,
         ICloseableViewModel
     {
         

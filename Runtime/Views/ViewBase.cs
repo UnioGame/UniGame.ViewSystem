@@ -249,7 +249,7 @@ namespace UniGame.UiSystem.Runtime
             }
             
             InitializeHandlers(model);
-            BindLifeTimeActions(model);
+            BindLifeTimeActions();
 
             Animation = SelectAnimation();
             
@@ -285,7 +285,7 @@ namespace UniGame.UiSystem.Runtime
             if(!SetInternalStatus(ViewStatus.Shown))
                 return this;
             
-            await StartProgressAction(_progressLifeTime, OnShow)
+            await StartProgressAction(_progressLifeTime, OnShowAction)
                 .AttachExternalCancellation(_progressLifeTime.Token);
             
             return this;
@@ -309,7 +309,7 @@ namespace UniGame.UiSystem.Runtime
 
             if(_hideTask.Status == UniTaskStatus.Pending) return;
             
-            _hideTask = StartProgressAction(_progressLifeTime, OnHide)
+            _hideTask = StartProgressAction(_progressLifeTime, OnHideAction)
                 .AttachExternalCancellation(_progressLifeTime.Token);
             
             _hideTask.Forget();
@@ -345,7 +345,7 @@ namespace UniGame.UiSystem.Runtime
                 return;
             }
             
-            _closeTask =  StartProgressAction(_progressLifeTime, OnClose, Destroy)
+            _closeTask =  StartProgressAction(_progressLifeTime, OnCloseAction, Destroy)
                 .Preserve()
                 .AttachExternalCancellation(_progressLifeTime.Token);
             
@@ -390,22 +390,22 @@ namespace UniGame.UiSystem.Runtime
         /// windows auto terminated on close complete
         /// </summary>
         /// <returns></returns>
-        private async UniTask OnClose()
+        private async UniTask OnCloseAction()
         {
             SetStatus(ViewStatus.Hiding);
             
-            await OnCloseProgress(_progressLifeTime);
+            await OnHideProgress(_progressLifeTime);
         }
         
         /// <summary>
         /// hide process
         /// </summary>
-        private async UniTask OnHide()
+        private async UniTask OnHideAction()
         {
             SetStatus(ViewStatus.Hiding);
             
             //wait until user defined closing operation complete
-            await OnHidingProgress(_progressLifeTime);
+            await OnHideProgress(_progressLifeTime);
 
             SetStatus(ViewStatus.Hidden);
         }
@@ -413,7 +413,7 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// show process
         /// </summary>
-        private async UniTask OnShow()
+        private async UniTask OnShowAction()
         {
             if (!SetStatus(ViewStatus.Showing))
                 return;
@@ -453,17 +453,8 @@ namespace UniGame.UiSystem.Runtime
 
         public async UniTask PlayAnimation(ILifeTime animationLifeTime)
         {
-            if (Animation == null) return;
+            if (Animation == null || Animation.IsEnabled == false) return;
             await Animation.PlayAnimation(this, _status.Value, animationLifeTime);
-        }
-
-        /// <summary>
-        /// close continuation
-        /// use hiding progress by default
-        /// </summary>
-        protected virtual async UniTask OnCloseProgress(ILifeTime progressLifeTime)
-        {
-            await PlayAnimation(progressLifeTime);
         }
 
         /// <summary>
@@ -477,7 +468,7 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// hiding continuation
         /// </summary>
-        protected virtual async UniTask OnHidingProgress(ILifeTime progressLifeTime)
+        protected virtual async UniTask OnHideProgress(ILifeTime progressLifeTime)
         {
             await PlayAnimation(progressLifeTime);
         }
@@ -528,7 +519,7 @@ namespace UniGame.UiSystem.Runtime
                 AddTo(_lifeTimeDefinition);
         }
         
-        private void BindLifeTimeActions(IViewModel model)
+        private void BindLifeTimeActions()
         {
             _isModelChanged.Value = false;
 

@@ -6,6 +6,7 @@
 
     public interface IViewAnimation
     {
+        public bool IsEnabled { get; }
         UniTask PlayAnimation(IView view, ViewStatus status, ILifeTime lifeTime);
     }
 }

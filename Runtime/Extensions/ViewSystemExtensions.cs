@@ -9,6 +9,9 @@ using UnityEngine.SceneManagement;
 
 namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
 {
+    using System.Threading;
+    using UnityEngine.Pool;
+
     public static class ViewSystemExtensions 
     {
         public static async UniTask<ILifeTime> Warmup(this AssetReferenceViewSettings settingsReference,ILifeTime lifeTime)
@@ -39,19 +42,27 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
         public static async UniTask<ILifeTime> Warmup(this IViewsSettings settings,ILifeTime lifeTime,int preloadCount = 0)
         {
             var viewHandles = settings.Views;
+            var tasks = ListPool<UniTask<GameObject>>.Get();
+            tasks.Clear();
+
+            foreach (var viewHandle in viewHandles)
+                tasks.Add(WarmUpUiReference(viewHandle,lifeTime,preloadCount,lifeTime.Token));
             
-            var views = await UniTask
-                .WhenAll(viewHandles.Select(x => WarmUpUiReference(x,lifeTime,preloadCount)))
+            await UniTask.WhenAll(tasks)
                 .AttachExternalCancellation(lifeTime.Token);
+            
+            tasks.Clear();
+            ListPool<UniTask<GameObject>>.Release(tasks);
             
             return lifeTime;
         }
 
-        public static async UniTask<GameObject> WarmUpUiReference(UiViewReference reference, ILifeTime lifeTime,int preloadCount = 0)
+        public static async UniTask<GameObject> WarmUpUiReference(UiViewReference reference, ILifeTime lifeTime,int preloadCount = 0,
+            CancellationToken cancellationToken = default)
         {
             var count = preloadCount >= reference.PoolingPreloadCount ? preloadCount : reference.PoolingPreloadCount;
             var view  = reference.View;
-            var asset = await view.CreatePool(lifeTime,count);
+            var asset = await view.CreatePool(lifeTime,count).AttachExternalCancellation(cancellationToken);
             return asset;
         }
         

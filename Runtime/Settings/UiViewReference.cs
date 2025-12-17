@@ -53,8 +53,12 @@ namespace UniGame.UiSystem.Runtime.Settings
         [Space(2)]
         public SType ViewModelType;
 
-        public int PoolingPreloadCount = 1;
+        [Header("Pooling Settings")]
+        public bool UsePooling = false;
+        
+        public int PoolingPreloadCount = 0;
 
+        [Header("Sprite Atlases")]
         public List<AssetReferenceSpriteAtlas> Atlases = new();
 
         public int Hash;

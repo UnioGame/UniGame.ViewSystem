@@ -31,7 +31,7 @@ namespace UniModules.UniGame.ViewSystem
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.ValueDropdown(nameof(GetFlowTypes))]
 #endif
-        public ViewFlowControllerAsset defaultFlowAsset;
+        public SimpleFlowControllerAsset defaultFlowAsset;
 
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Required]
@@ -40,9 +40,9 @@ namespace UniModules.UniGame.ViewSystem
         public ViewLayoutType defaultLayoutType;
 
         
-        public List<ViewFlowControllerAsset> GetFlowTypes()
+        public List<SimpleFlowControllerAsset> GetFlowTypes()
         {
-            return AssetEditorTools.GetAssets<ViewFlowControllerAsset>();
+            return AssetEditorTools.GetAssets<SimpleFlowControllerAsset>();
         }
         
         #region static data
