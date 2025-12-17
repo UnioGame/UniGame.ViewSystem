@@ -6,7 +6,7 @@ namespace UniGame.ViewSystem.Inspector
     /// <summary>
     /// Adds a title/header above a field in the inspector
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class TitleAttribute : InspectorAttributeBase
     {
         /// <summary>
