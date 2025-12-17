@@ -1,0 +1,14 @@
+{
+    "name": "unigame.viewsystem.inspector.runtime",
+    "rootNamespace": "UniGame.ViewSystem.Inspector",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

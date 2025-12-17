@@ -1,0 +1,14 @@
+{
+    "name": "unigame.viewsystem.inspector.example",
+    "rootNamespace": "UniGame.ViewSystem.Inspector",
+    "references": ["GUID:9cf2f7aae1ccc8947925126fe3753abe"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

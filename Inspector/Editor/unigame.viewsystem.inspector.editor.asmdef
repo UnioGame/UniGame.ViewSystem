@@ -1,0 +1,19 @@
+{
+    "name": "unigame.viewsystem.inspector.editor",
+    "rootNamespace": "UniGame.ViewSystem.Inspector.Editor",
+    "references": [
+        "GUID:unigame.viewsystem.inspector.runtime",
+        "GUID:9cf2f7aae1ccc8947925126fe3753abe"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
