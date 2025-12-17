@@ -12,3 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eba57352c67bf94e85a80b8b2c2b44c, type: 3}
   m_Name: DefaultFlow
   m_EditorClassIdentifier: 
+  settings:
+    Layouts:
+    - Layout: Screen
+      CloseOnSceneLoad: 1
+    - Layout: Window
+      CloseOnSceneLoad: 1
+    - Layout: Overlay
+      CloseOnSceneLoad: 0
