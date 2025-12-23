@@ -100,9 +100,9 @@ namespace UniGame.UiSystem.Runtime
         private Transform _transform;
         private ReactiveValue<bool> _isModelChanged = new();
 
-        private readonly LifeTime _lifeTimeDefinition = new();
+        private readonly LifeTime _viewLifeTime = new();
         private readonly LifeTime _progressLifeTime   = new();
-        private readonly LifeTime _viewModelLifeTime   = new();
+        private readonly LifeTime _modelLifeTime   = new();
         private readonly Subject<IViewModel> _viewModelChanged = new();
         
         /// <summary>
@@ -143,11 +143,11 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>
         /// View LifeTime
         /// </summary>
-        public virtual ILifeTime LifeTime => _viewModelLifeTime;
+        public virtual ILifeTime LifeTime => _modelLifeTime;
 
-        public ILifeTime ModelLifeTime => _viewModelLifeTime;
+        public ILifeTime ModelLifeTime => _modelLifeTime;
         
-        public ILifeTime ViewLifeTime  => _lifeTimeDefinition;
+        public ILifeTime ViewLifeTime  => _viewLifeTime;
 
         public IViewAnimation Animation { get; set; }
         
@@ -175,7 +175,7 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         public ReadOnlyReactiveProperty<bool> IsVisible => _visibility;
 
-        public bool IsTerminated => _lifeTimeDefinition.IsTerminated;
+        public bool IsTerminated => _viewLifeTime.IsTerminated;
 
         public bool IsModelAttached => _isModelAttached;
 
@@ -194,8 +194,8 @@ namespace UniGame.UiSystem.Runtime
         {
             SetInternalStatus(ViewStatus.Closed);
             SetStatus(ViewStatus.Closed);
-            _viewModelLifeTime.Terminate();
-            _lifeTimeDefinition.Terminate();
+            _modelLifeTime.Terminate();
+            _viewLifeTime.Terminate();
         }
 
         public void BindLayout(IViewsLayout layoutProvider)
@@ -238,7 +238,7 @@ namespace UniGame.UiSystem.Runtime
             // save current state
             _isViewOwner = ownViewModel;
             //restart view lifetime
-            _viewModelLifeTime.Restart();
+            _modelLifeTime.Restart();
             _progressLifeTime.Restart();
             
             _isModelAttached = true;
@@ -248,7 +248,14 @@ namespace UniGame.UiSystem.Runtime
                 InitialSetup();
             }
             
-            InitializeHandlers(model);
+            ViewModel = model;
+
+            _isVisible = _visibility.Value;
+            
+            _visibility.
+                Subscribe(this,static (shown,view) => view._isVisible = shown).
+                AddTo(_modelLifeTime);
+            
             BindLifeTimeActions();
 
             Animation = SelectAnimation();
@@ -355,8 +362,8 @@ namespace UniGame.UiSystem.Runtime
         public Observable<IView> SelectStatus(ViewStatus status)
         {
             return _status.
-                Where(x => x == status).
-                Select(x => this as IView);
+                Where(status,static (x,y) => x == y).
+                Select(this,static (x,y) => y as IView);
         }
 
         public bool IsActive()
@@ -425,7 +432,7 @@ namespace UniGame.UiSystem.Runtime
 
         protected bool SetStatus(ViewStatus status)
         {
-            if (_lifeTimeDefinition.IsTerminated || _internalViewStatus == ViewStatus.Closed)
+            if (_viewLifeTime.IsTerminated || _internalViewStatus == ViewStatus.Closed)
             {
                 _status.Value     = ViewStatus.Closed;
                 _visibility.Value = false;
@@ -507,41 +514,28 @@ namespace UniGame.UiSystem.Runtime
             }
             
         }
-
-        private void InitializeHandlers(IViewModel model)
-        {
-            ViewModel = model;
-
-            _isVisible = _visibility.Value;
-            
-            _visibility.
-                Subscribe(x => _isVisible = x).
-                AddTo(_lifeTimeDefinition);
-        }
         
         private void BindLifeTimeActions()
         {
             _isModelChanged.Value = false;
 
-            _viewModelLifeTime.AddCleanUpAction(() =>
+            _modelLifeTime.AddCleanUpAction(this,static x =>
             {
-                if (_isViewOwner) 
-                    ViewModel.Cancel();
-                ViewModel = null;
+                if (x._isViewOwner) x.ViewModel.Cancel();
+                x.ViewModel = null;
             });
             
-            _viewModelLifeTime.AddCleanUpAction(_progressLifeTime.Restart);
+            _modelLifeTime.AddCleanUpAction(_progressLifeTime.Restart);
         
-            ModelLifeTime.AddCleanUpAction(() => _isModelAttached = false);
+            _modelLifeTime.AddCleanUpAction(this,static x => x._isModelAttached = false);
 
             if (enableModelUpdate)
             {
-                OnEndOfFrameCheck(_viewModelLifeTime.Token)
-                    .Forget();
+                OnEndOfFrameCheck(_modelLifeTime.Token).Forget();
             }
             
 #if UNITY_EDITOR
-            _status.Subscribe(x => _editorViewStatus = x)
+            _status.Subscribe(this,static (x,y) => y._editorViewStatus = x)
                 .AddTo(ViewLifeTime);
 #endif
         }
@@ -563,11 +557,11 @@ namespace UniGame.UiSystem.Runtime
         
         private void InitialSetup()
         {
-            _lifeTimeDefinition.Restart();
+            _viewLifeTime.Restart();
             _isInitialized.Value = true;
             _status.Value  = ViewStatus.None;
             _internalViewStatus = ViewStatus.None;
-            _viewModelLifeTime.AddTo(ViewLifeTime);
+            _modelLifeTime.AddTo(ViewLifeTime);
             _progressLifeTime.AddTo(ViewLifeTime);
             
             ViewLifeTime.AddCleanUpAction(OnViewDestroy);
@@ -582,8 +576,6 @@ namespace UniGame.UiSystem.Runtime
             
             ViewModel            = null;
             _viewLayout          = null;
-            
-            _visibility.Dispose();
         }
 
         protected void OnDisable() => _progressLifeTime.Restart();
@@ -591,7 +583,6 @@ namespace UniGame.UiSystem.Runtime
         protected void OnDestroy()
         {
             Destroy();
-            _visibility.Dispose();
         }
 
         protected void Awake()

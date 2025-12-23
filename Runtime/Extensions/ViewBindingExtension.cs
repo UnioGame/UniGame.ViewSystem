@@ -23,23 +23,11 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
     public static class ViewBindingExtension
     {
         #region localization
-        
-        public static IDisposable Bind(this LocalizedString source, TextMeshProUGUI text, int frameThrottle = 1)
-        {
-            if (text == null) return source;
-            return source.Bind(x => text.SetValue(x),frameThrottle);
-        }
 
         public static TSource Bind<TSource>(this TSource source,
             LocalizedString localizedString, 
-            TextMeshProUGUI text, int frameThrottle = 1)
-            where TSource : ILifeTimeContext
-        {
-            return source.Bind(localizedString,x => text.SetValue(x), frameThrottle);
-        }
-        
-        public static TSource Bind<TSource>(this TSource source,LocalizedString localizedString, 
-            Action<string> action, int frameThrottle = 1)
+            Action<string> action, 
+            int frameThrottle = 1)
             where TSource : ILifeTimeContext
         {
             if (source == null) return source;
@@ -66,24 +54,21 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             TextMeshProUGUI text)
             where TView : class, IView
         {
-            return Bind(view, source
-                    .Where(source, static (x,y) => y.HasValue),
-                text);
+            return Bind(view, source.Where(source, static (x,y) => y.HasValue), text);
         }
         
 
         public static TView Bind<TView>(this TView view, 
             Observable<LocalizedString> source, 
             TextMeshProUGUI text)
-            where TView : class, IView
+            where TView : class, ILifeTimeContext
         {
-            return source == null 
-                ? view 
-                : view.Bind(source, x => view.Bind(x, text));
+            if(view == null || source == null) return view;
+            return view.Bind(source, x => view.Bind(x, text));
         }
         
         public static TView Bind<TView>(this TView view, LocalizedString source, TextMeshProUGUI text)
-            where TView : class, IView
+            where TView : ILifeTimeContext
         {
             return source == null ? view : view.Bind(source.AsObservable(), text);
         }
