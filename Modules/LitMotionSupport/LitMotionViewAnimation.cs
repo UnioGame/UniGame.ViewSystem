@@ -54,7 +54,9 @@ namespace ViewSystem.Modules.LitMotionSupport
             canvasGroup ??= gameObject.AddComponent<CanvasGroup>(); 
             return canvasGroup;
         }
-        
+
+        public bool IsEnabled => enabled;
+
         public async UniTask PlayAnimation(IView view, ViewStatus status,ILifeTime lifeTime)
         {
             if (!enabled) return;

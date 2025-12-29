@@ -6,6 +6,7 @@ using UniGame.UiSystem.Runtime;
 namespace UniGame.Runtime.Rx.Runtime.Extensions
 {
     using System;
+    using System.Collections.Generic;
     using System.Runtime.CompilerServices;
     using Cysharp.Threading.Tasks;
     using TMPro;
@@ -672,6 +673,98 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             if (source == null || sender == null) return sender;
             var observable = source.OnValueChangedAsObservable();
             return sender.Bind(observable, command);
+        }
+
+
+        public static TView Bind<TView,TModel,TChild>(this TView sender,
+            Observable<List<TModel>> source,
+            List<TChild> views,
+            Action<List<TModel>,List<TChild>,Transform> command,
+            Transform container = null)
+            where TView : IView
+        {
+            if(sender == null || source == null) return sender;
+            var lifeTime = sender.LifeTime;
+            
+            if (lifeTime.IsTerminated) return sender;
+            
+            return sender.Bind(source, x => command(x,views,container ?? sender.Transform));
+        }
+        
+        /// <summary>
+        ///  Bind list of models to list of views and create new views if needed
+        /// </summary>
+        public static TView Bind<TView,TChildView,TModel>(
+            this TView sender,
+            ReactiveValue<List<TModel>> source,
+            List<TChildView> views,
+            Transform container = null)
+            where TView : IView
+            where TModel : IViewModel
+            where TChildView : class, IView
+        {
+            return sender.Bind(source as Observable<List<TModel>>, views, container);
+        }
+        
+        /// <summary>
+        ///  Bind list of models to list of views and create new views if needed
+        /// </summary>
+        public static TView Bind<TView,TChildView,TModel>(
+            this TView sender,
+            Observable<List<TModel>> source,
+            List<TChildView> views,
+            Transform container = null)
+            where TView : IView
+            where TModel : IViewModel
+            where TChildView : class, IView
+        {
+            foreach (var view in views)
+                view.GameObject.SetActive(false);
+            
+            if(sender == null || source == null) return sender;
+            var lifeTime = sender.LifeTime;
+            
+            if (lifeTime.IsTerminated) return sender;
+            
+            return sender.Bind(source, x => InitializeListViews(sender,x,views,container ?? sender.Transform)
+                .AttachExternalCancellation(lifeTime.Token)
+                .Forget());
+        }
+
+        
+        public static async UniTask InitializeListViews<TView, TViewModel>(this IView source,List<TViewModel> models,List<TView> views,Transform parent = null)
+            where TViewModel : IViewModel
+            where TView : class, IView
+        {
+            var amount = Math.Min(views.Count, models.Count);
+            var index = 0;
+        
+            for (var i = 0; i < amount; i++)
+            {
+                var buttonView = views[i];
+                var buttonModel = models[i];
+                
+                buttonView.GameObject.SetActive(true);
+                buttonView.Initialize(buttonModel).Forget();
+   
+                index++;
+            }
+            
+            var targetParent = parent ? parent : source.Transform;
+
+            for (var i = index; i < views.Count; i++)
+            {
+                index++;
+                var model = models[i];
+                var buttonView = await source.ShowChildViewAsync<TView>(model,targetParent);
+                views.Add(buttonView);
+            }
+
+            for (var i = index; i < views.Count; i++)
+            {
+                var buttonView = views[i];
+                buttonView.GameObject.SetActive(false);
+            }
         }
         
         public static TView Bind<TView>(this TView sender, Button source, Action command)
