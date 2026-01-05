@@ -752,7 +752,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             
             var targetParent = parent ? parent : source.Transform;
 
-            for (var i = index; i < views.Count; i++)
+            for (var i = index; i < models.Count; i++)
             {
                 index++;
                 var model = models[i];
