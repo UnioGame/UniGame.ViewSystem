@@ -111,7 +111,7 @@
             
             if (backgroundFactory != null) {
                 backgroundView = backgroundFactory
-                    .Create(layoutCanvas?.transform);
+                    .Create(transform);
                 backgroundView.Hide();
             }
             
@@ -120,7 +120,7 @@
 
             var layoutAsset = Instantiate(layoutBehaviour);
             
-            return layoutAsset.Create(layoutCanvas.transform, backgroundView);
+            return layoutAsset.Create(transform, backgroundView);
         }
 
         protected void OnDestroy()
