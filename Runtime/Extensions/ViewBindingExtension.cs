@@ -674,22 +674,6 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             var observable = source.OnValueChangedAsObservable();
             return sender.Bind(observable, command);
         }
-
-
-        public static TView Bind<TView,TModel,TChild>(this TView sender,
-            Observable<List<TModel>> source,
-            List<TChild> views,
-            Action<List<TModel>,List<TChild>,Transform> command,
-            Transform container = null)
-            where TView : IView
-        {
-            if(sender == null || source == null) return sender;
-            var lifeTime = sender.LifeTime;
-            
-            if (lifeTime.IsTerminated) return sender;
-            
-            return sender.Bind(source, x => command(x,views,container ?? sender.Transform));
-        }
         
         /// <summary>
         ///  Bind list of models to list of views and create new views if needed
@@ -713,7 +697,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             this TView sender,
             Observable<List<TModel>> source,
             List<TChildView> views,
-            Transform container = null)
+            Transform container)
             where TView : IView
             where TModel : IViewModel
             where TChildView : class, IView
@@ -726,9 +710,11 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             
             if (lifeTime.IsTerminated) return sender;
             
-            return sender.Bind(source, x => InitializeListViews(sender,x,views,container ?? sender.Transform)
-                .AttachExternalCancellation(lifeTime.Token)
-                .Forget());
+            return sender.Bind(source,async x =>
+            {
+                await InitializeListViews(sender, x, views, container ?? sender.Transform)
+                    .AttachExternalCancellation(lifeTime.Token);
+            });
         }
 
         
