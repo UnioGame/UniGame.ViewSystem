@@ -15,6 +15,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
     using UnityEngine.UI;
     using R3;
     using Common;
+    using UniModules.UniGame.UiSystem.Runtime;
     using Utils;
     using UnityEngine.AddressableAssets;
     using UnityEngine.Localization;
@@ -785,6 +786,70 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             return sender.Bind(source.OnClickAsObservable(), command);
         }
 
+        
+        public static IView BindWindow<TWindow>(this IView view, Button source,Action<TWindow> command = null)
+            where TWindow : class, IView
+        {
+            return view.BindView(source.OnClickAsObservable(),nameof(ViewType.Window), command);
+        }
+        
+        public static IView BindWindow<TWindow>(this IView view, Observable<Unit> source,Action<TWindow> command = null)
+            where TWindow : class, IView
+        {
+            return view.BindView(source,nameof(ViewType.Window), command);
+        }
+
+        public static IView BindWindow<TValue, TWindow>(this IView view, Observable<TValue> source,Action<TWindow> command = null)
+            where TWindow : class, IView
+        {
+            return view.BindView(source,nameof(ViewType.Window), command);
+        }
+        
+        public static IView BindCreate<TModel, TView>(this IView view, Observable<TModel> source,Transform parent, Action<TView> command = null)
+            where TModel : IViewModel
+            where TView : class, IView
+        {
+            if (view == null) return view;
+            
+            var viewLifeTime = view.LifeTime;
+            var layout = view.Layout;
+            
+            view.Bind(source, async x =>
+            {
+                if (viewLifeTime.IsTerminated) return;
+
+                var childView = await layout.Create<TView>(x, view.LifeTime, parent);
+                if (childView == null) return;
+
+                childView.GameObject.SetActive(true);
+                
+                command?.Invoke(childView);
+            });
+
+            return view;
+        }
+        
+        public static TSource BindView<TSource, TValue, TView>(this TSource view, Observable<TValue> source,string layoutType, Action<TView> command = null)
+            where TSource : IView 
+            where TView : class, IView
+        {
+            if (view == null) return view;
+            
+            var viewLifeTime = view.LifeTime;
+            var layout = view.Layout;
+            
+            view.Bind(source, async x =>
+            {
+                if (viewLifeTime.IsTerminated) return;
+                
+                var window = await layout.Open(typeof(TView).Name,layoutType) as TView;
+                if (window == null) return;
+                
+                command?.Invoke(window);
+            });
+
+            return view;
+        }
         
                 
         public static T BindLifeTime<T>(this T sender, Action disableAction)
