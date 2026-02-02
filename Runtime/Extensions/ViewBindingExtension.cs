@@ -124,7 +124,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TView Bind<TView>(this TView view, ReactiveValue<AssetReferenceSprite> source, Image image)
+        public static TView Bind<TView>(this TView view, Observable<AssetReferenceSprite> source, Image image)
             where TView : class, IView
         {
             if (image == null) return view;
@@ -683,12 +683,13 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             this TView sender,
             ReactiveValue<List<TModel>> source,
             List<TChildView> views,
-            Transform container = null)
+            Transform container = null,
+            Action<TChildView> viewAction = null)
             where TView : IView
             where TModel : IViewModel
             where TChildView : class, IView
         {
-            return sender.Bind(source as Observable<List<TModel>>, views, container);
+            return sender.Bind(source as Observable<List<TModel>>, views, container,viewAction);
         }
         
         /// <summary>
@@ -698,7 +699,8 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             this TView sender,
             Observable<List<TModel>> source,
             List<TChildView> views,
-            Transform container)
+            Transform container,
+            Action<TChildView> viewAction = null)
             where TView : IView
             where TModel : IViewModel
             where TChildView : class, IView
@@ -713,13 +715,17 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             
             return sender.Bind(source,async x =>
             {
-                await InitializeListViews(sender, x, views, container ?? sender.Transform)
+                await InitializeListViews(sender, x, views, container ?? sender.Transform,viewAction)
                     .AttachExternalCancellation(lifeTime.Token);
             });
         }
 
         
-        public static async UniTask InitializeListViews<TView, TViewModel>(this IView source,List<TViewModel> models,List<TView> views,Transform parent = null)
+        public static async UniTask InitializeListViews<TView, TViewModel>(this IView source,
+                List<TViewModel> models,
+                List<TView> views,
+                Transform parent = null,
+                Action<TView> viewAction = null)
             where TViewModel : IViewModel
             where TView : class, IView
         {
@@ -752,6 +758,31 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
                 var buttonView = views[i];
                 buttonView.GameObject.SetActive(false);
             }
+
+            if (viewAction != null)
+            {
+                for (var i = 0; i < index; i++)
+                {
+                    var view = views[i];
+                    viewAction?.Invoke(view);
+                }
+            }
+
+        }
+        
+        public static TView Bind<TView>(this TView sender, IEnumerable<Button> source, Action command)
+            where TView : ILifeTimeContext
+        {
+            if (source == null || sender == null) return sender;
+
+            foreach (var button in source)
+            {
+                if(button == null) continue;
+                var observable = button.OnClickAsObservable();
+                sender.Bind(observable, command);
+            }
+
+            return sender;
         }
         
         public static TView Bind<TView>(this TView sender, Button source, Action command)
