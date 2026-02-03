@@ -3,7 +3,6 @@ namespace UniGame.ViewSystem.Views.Windows
     using System;
     using Cysharp.Threading.Tasks;
     using R3;
-    using UniGame.Runtime.Rx;
     using UniGame.Runtime.Rx.Runtime.Extensions;
     using UniGame.UiSystem.Runtime;
      
