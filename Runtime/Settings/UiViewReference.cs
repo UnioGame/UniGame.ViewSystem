@@ -109,7 +109,7 @@ namespace UniGame.UiSystem.Runtime.Settings
             }
         }
         
-        public IEnumerable<ValueDropdownItem<SType>> GetTypeDropdown(Type type,bool allowAbstract = false)
+        public static IEnumerable<ValueDropdownItem<SType>> GetTypeDropdown(Type type,bool allowAbstract = false)
         {
 #if UNITY_EDITOR
             if (type == null)
@@ -137,7 +137,7 @@ namespace UniGame.UiSystem.Runtime.Settings
             yield break;
         }
         
-        private IEnumerable<ValueDropdownItem<SType>> GetModelDropdowns()
+        public IEnumerable<ValueDropdownItem<SType>> GetModelDropdowns()
         {
             foreach (var item in GetTypeDropdown(typeof(IViewModel),true))
             {
