@@ -11,6 +11,7 @@ namespace UniGame.UiSystem.Runtime
     using UniGame.Runtime.ObjectPool.Extensions;
     using Common;
     using Core.Runtime;
+    using UniGame.Runtime.DataFlow;
     using ViewSystem.Runtime;
     using Object = UnityEngine.Object;
     
@@ -39,9 +40,6 @@ namespace UniGame.UiSystem.Runtime
         {
             await _readyStatus;
 
-            var viewDisposable = new DisposableLifetime();
-            viewDisposable.Initialize();
-
             //load view source by filter parameters
             var viewReference = await _resourceProvider.GetViewReferenceAsync(viewId, skinTag, viewName);
 
@@ -52,22 +50,22 @@ namespace UniGame.UiSystem.Runtime
             }
 
             var result = viewReference.View;
- 
+            var loadLifeTime = new LifeTime();
+            
             //create view instance
-            var viewResult   = await Create(result,viewDisposable.LifeTime,
-                parent,stayWorldPosition,viewReference.UsePooling);
+            var viewResult   = await Create(result,loadLifeTime, parent,stayWorldPosition,viewReference.UsePooling);
             
             var view         = viewResult.View;
             var viewLifeTime = viewResult.AssetLifeTime;
             
             //if loading failed release resource immediately
             if (view == null) {
-                viewDisposable.Dispose();
+                loadLifeTime.Dispose();
                 GameLog.LogError($"Factory {GetType().Name} View of Type {viewId} not loaded or cancelled");
                 return null;
             }
 
-            viewLifeTime.AddDispose(viewDisposable);
+            viewLifeTime.AddDispose(loadLifeTime);
             view.SetSourceName(viewId,viewReference.ViewName);
             
             return view;
@@ -126,7 +124,6 @@ namespace UniGame.UiSystem.Runtime
         {
             if (_assetReferenceMap.TryGetValue(asset.AssetGUID, out var gameObject) && gameObject != null)
                 return gameObject;
-            
             var sourceView = await asset.LoadAssetTaskAsync(lifeTime);
             _assetReferenceMap[asset.AssetGUID] = sourceView;
             return sourceView;
