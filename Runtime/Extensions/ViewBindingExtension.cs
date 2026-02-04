@@ -804,6 +804,18 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
 
             return sender;
         }
+        
+        public static TView Bind<TView>(this TView sender, IReadOnlyList<Button> sources, Action command)
+            where TView : ILifeTimeContext
+        {
+            if (sources == null || sources.Count <= 0)
+                return sender;
+            
+            foreach (var source in sources) 
+                sender.Bind(source, command);
+
+            return sender;
+        }
 
         public static TView Bind<TView>(this TView sender, Button source, Action<Unit> command)
             where TView : ILifeTimeContext
