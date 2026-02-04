@@ -31,6 +31,7 @@
 
             return null;
 #endif
+            return null;
         }
         
     }
