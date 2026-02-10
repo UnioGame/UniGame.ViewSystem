@@ -33,7 +33,8 @@
             string viewName = null,
             ILifeTime ownerLifeTime = null);
 
-        UniTask<IView> Create(string viewType, string layoutType,
+        UniTask<IView> Create(string viewType, 
+            string layoutType,
             string skinTag = "",
             string viewName = null,
             ILifeTime ownerLifeTime = null);

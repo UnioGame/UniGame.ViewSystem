@@ -42,7 +42,7 @@
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool SetValue(this TextMeshProUGUI text, string value)
+        public static bool SetValue(this TMP_Text text, string value)
         {
             if (text == null || 
                 value == null) return false;
@@ -78,7 +78,7 @@
             return true;
         }
         
-        public static bool SetValue(this TextMeshProUGUI text, string value, StringComparison comparison)
+        public static bool SetValue(this TMP_Text text, string value, StringComparison comparison)
         {
             if (!text) return false;
             
@@ -90,7 +90,7 @@
         }
 
         
-        public static bool SetValue(this TextMeshProUGUI text, Color color)
+        public static bool SetValue(this TMP_Text text, Color color)
         {
             if (!text) return false;
             
@@ -119,7 +119,7 @@
             return true;
         }
 
-        public static bool SetValue(this TextMeshProUGUI text, int value)
+        public static bool SetValue(this TMP_Text text, int value)
         {
             if (!text) return false;
             

@@ -118,7 +118,7 @@ namespace UniGame.UiSystem.Runtime
         public Observable<TView> ObserveView<TView>()
             where TView : class, IView
         {
-            var observable = ViewCreated.OfType<IView, TView>();
+            var observable = _viewCreatedSubject.OfType<IView, TView>();
             var view       = GetView<TView>();
             observable = view == null
                 ? observable
@@ -162,9 +162,6 @@ namespace UniGame.UiSystem.Runtime
             ILifeTime ownerLifeTime = null)
         {
             var view = await CreateView(viewType, skinTag, parent, viewName, stayWorld,ownerLifeTime);
-            //fire view data
-            _viewCreatedSubject.OnNext(view);
-            
             return view;
         }
         

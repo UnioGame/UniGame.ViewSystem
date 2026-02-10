@@ -15,6 +15,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
     using UnityEngine.UI;
     using R3;
     using Common;
+    using UniModules.UniGame.UiSystem.Runtime;
     using Utils;
     using UnityEngine.AddressableAssets;
     using UnityEngine.Localization;
@@ -123,7 +124,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TView Bind<TView>(this TView view, ReactiveValue<AssetReferenceSprite> source, Image image)
+        public static TView Bind<TView>(this TView view, Observable<AssetReferenceSprite> source, Image image)
             where TView : class, IView
         {
             if (image == null) return view;
@@ -674,22 +675,6 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             var observable = source.OnValueChangedAsObservable();
             return sender.Bind(observable, command);
         }
-
-
-        public static TView Bind<TView,TModel,TChild>(this TView sender,
-            Observable<List<TModel>> source,
-            List<TChild> views,
-            Action<List<TModel>,List<TChild>,Transform> command,
-            Transform container = null)
-            where TView : IView
-        {
-            if(sender == null || source == null) return sender;
-            var lifeTime = sender.LifeTime;
-            
-            if (lifeTime.IsTerminated) return sender;
-            
-            return sender.Bind(source, x => command(x,views,container ?? sender.Transform));
-        }
         
         /// <summary>
         ///  Bind list of models to list of views and create new views if needed
@@ -698,12 +683,13 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             this TView sender,
             ReactiveValue<List<TModel>> source,
             List<TChildView> views,
-            Transform container = null)
+            Transform container = null,
+            Action<TChildView> viewAction = null)
             where TView : IView
             where TModel : IViewModel
             where TChildView : class, IView
         {
-            return sender.Bind(source as Observable<List<TModel>>, views, container);
+            return sender.Bind(source as Observable<List<TModel>>, views, container,viewAction);
         }
         
         /// <summary>
@@ -713,7 +699,8 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             this TView sender,
             Observable<List<TModel>> source,
             List<TChildView> views,
-            Transform container = null)
+            Transform container,
+            Action<TChildView> viewAction = null)
             where TView : IView
             where TModel : IViewModel
             where TChildView : class, IView
@@ -726,13 +713,19 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             
             if (lifeTime.IsTerminated) return sender;
             
-            return sender.Bind(source, x => InitializeListViews(sender,x,views,container ?? sender.Transform)
-                .AttachExternalCancellation(lifeTime.Token)
-                .Forget());
+            return sender.Bind(source,async x =>
+            {
+                await InitializeListViews(sender, x, views, container ?? sender.Transform,viewAction)
+                    .AttachExternalCancellation(lifeTime.Token);
+            });
         }
 
         
-        public static async UniTask InitializeListViews<TView, TViewModel>(this IView source,List<TViewModel> models,List<TView> views,Transform parent = null)
+        public static async UniTask InitializeListViews<TView, TViewModel>(this IView source,
+                List<TViewModel> models,
+                List<TView> views,
+                Transform parent = null,
+                Action<TView> viewAction = null)
             where TViewModel : IViewModel
             where TView : class, IView
         {
@@ -765,6 +758,31 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
                 var buttonView = views[i];
                 buttonView.GameObject.SetActive(false);
             }
+
+            if (viewAction != null)
+            {
+                for (var i = 0; i < index; i++)
+                {
+                    var view = views[i];
+                    viewAction?.Invoke(view);
+                }
+            }
+
+        }
+        
+        public static TView Bind<TView>(this TView sender, IEnumerable<Button> source, Action command)
+            where TView : ILifeTimeContext
+        {
+            if (source == null || sender == null) return sender;
+
+            foreach (var button in source)
+            {
+                if(button == null) continue;
+                var observable = button.OnClickAsObservable();
+                sender.Bind(observable, command);
+            }
+
+            return sender;
         }
         
         public static TView Bind<TView>(this TView sender, Button source, Action command)
@@ -786,6 +804,18 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
 
             return sender;
         }
+        
+        public static TView Bind<TView>(this TView sender, IReadOnlyList<Button> sources, Action command)
+            where TView : ILifeTimeContext
+        {
+            if (sources == null || sources.Count <= 0)
+                return sender;
+            
+            foreach (var source in sources) 
+                sender.Bind(source, command);
+
+            return sender;
+        }
 
         public static TView Bind<TView>(this TView sender, Button source, Action<Unit> command)
             where TView : ILifeTimeContext
@@ -799,6 +829,70 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             return sender.Bind(source.OnClickAsObservable(), command);
         }
 
+        
+        public static IView BindWindow<TWindow>(this IView view, Button source,Action<TWindow> command = null)
+            where TWindow : class, IView
+        {
+            return view.BindView(source.OnClickAsObservable(),nameof(ViewType.Window), command);
+        }
+        
+        public static IView BindWindow<TWindow>(this IView view, Observable<Unit> source,Action<TWindow> command = null)
+            where TWindow : class, IView
+        {
+            return view.BindView(source,nameof(ViewType.Window), command);
+        }
+
+        public static IView BindWindow<TValue, TWindow>(this IView view, Observable<TValue> source,Action<TWindow> command = null)
+            where TWindow : class, IView
+        {
+            return view.BindView(source,nameof(ViewType.Window), command);
+        }
+        
+        public static IView BindCreate<TModel, TView>(this IView view, Observable<TModel> source,Transform parent, Action<TView> command = null)
+            where TModel : IViewModel
+            where TView : class, IView
+        {
+            if (view == null) return view;
+            
+            var viewLifeTime = view.LifeTime;
+            var layout = view.Layout;
+            
+            view.Bind(source, async x =>
+            {
+                if (viewLifeTime.IsTerminated) return;
+
+                var childView = await layout.Create<TView>(x, view.LifeTime, parent);
+                if (childView == null) return;
+
+                childView.GameObject.SetActive(true);
+                
+                command?.Invoke(childView);
+            });
+
+            return view;
+        }
+        
+        public static TSource BindView<TSource, TValue, TView>(this TSource view, Observable<TValue> source,string layoutType, Action<TView> command = null)
+            where TSource : IView 
+            where TView : class, IView
+        {
+            if (view == null) return view;
+            
+            var viewLifeTime = view.LifeTime;
+            var layout = view.Layout;
+            
+            view.Bind(source, async x =>
+            {
+                if (viewLifeTime.IsTerminated) return;
+                
+                var window = await layout.Open(typeof(TView).Name,layoutType) as TView;
+                if (window == null) return;
+                
+                command?.Invoke(window);
+            });
+
+            return view;
+        }
         
                 
         public static T BindLifeTime<T>(this T sender, Action disableAction)

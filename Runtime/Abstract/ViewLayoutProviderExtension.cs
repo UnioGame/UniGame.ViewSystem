@@ -5,7 +5,6 @@ namespace UniGame.ViewSystem.Runtime
 
     public static class ViewLayoutProviderExtension
     {
-
         public static async UniTask<IView> OpenWindow(this IViewsLayout provider, Type viewType, string skinTag = "",
             string viewName = null)
         {
