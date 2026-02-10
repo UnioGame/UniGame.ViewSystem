@@ -15,6 +15,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
     using UnityEngine.UI;
     using R3;
     using Common;
+    using DataFlow;
     using UniModules.UniGame.UiSystem.Runtime;
     using Utils;
     using UnityEngine.AddressableAssets;
@@ -848,6 +849,30 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             return view.BindView(source,nameof(ViewType.Window), command);
         }
         
+        public static IView BindView<TView>(this IView view, Observable<bool> source,Transform parent, Action<TView> command = null)
+            where TView : class, IView
+        {
+            if(view == null) return view;
+            var lifeTime = view.LifeTime;
+            if(lifeTime.IsTerminated) return view;
+
+            var childLifeTIme = new LifeTime();
+            childLifeTIme.AddTo(lifeTime);
+
+            view.Bind(source, async x =>
+            {
+                if (!x)
+                {
+                    childLifeTIme.Restart();
+                    return;
+                }
+                var childView = await view.ShowChildViewAsync<TView>(parent);
+                childView?.CloseWith(childLifeTIme);
+            });
+            
+            return view;
+        }
+        
         public static IView BindCreate<TModel, TView>(this IView view, Observable<TModel> source,Transform parent, Action<TView> command = null)
             where TModel : IViewModel
             where TView : class, IView
@@ -990,6 +1015,15 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             where TView : ILifeTimeContext
         {
             return !button ? view : view.Bind(source, x => button.interactable = x);
+        }
+        
+        public static TView BindUpdate<TView>(this TView view, Action action)
+            where TView : ILifeTimeContext
+        {
+            if (view == null) return view;
+            var lifeTime = view.LifeTime;
+            var observable = Observable.EveryUpdate(lifeTime.Token);
+            return view.Bind(observable, action);
         }
 
         public static TView Bind<TView>(this TView view, Button source,
