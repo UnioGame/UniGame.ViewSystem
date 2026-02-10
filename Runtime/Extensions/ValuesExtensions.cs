@@ -184,13 +184,16 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool SetValue(this Image target, Sprite value)
         {
-            if (target == null) return false;
+            if (target == null)
+                return false;
             
             var enabled = value != null;
             target.enabled = enabled;
             
-            if(enabled) target.sprite = value;
+            if(!enabled) 
+                return false;
             
+            target.sprite = value;
             return true;
         }
         
