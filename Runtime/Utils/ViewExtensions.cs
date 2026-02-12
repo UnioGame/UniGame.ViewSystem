@@ -93,6 +93,12 @@
                 .Where(x => x == status)
                 .FirstAsync(cancellationToken:lifeTime.Token);
         }
+        
+        public static async UniTask CloseAndAwait(this IView view)
+        {
+            view.Close();
+            await view.AwaitClose();
+        }
 
         public static async UniTask AwaitClose(this IView view)
         {
