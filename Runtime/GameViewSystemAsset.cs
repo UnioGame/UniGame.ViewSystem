@@ -68,7 +68,7 @@
 
         public ILifeTime LifeTime => _lifeTime;
 
-        public IEnumerable<IViewLayout> Controllers => ViewSystem.Controllers;
+        public IEnumerable<IViewLayout> Layouts => ViewSystem.Layouts;
         
         public IReadOnlyViewLayout this[ViewType type] => ViewSystem[type];
 
@@ -177,9 +177,14 @@
             return ViewSystem.OpenView(viewModel, viewType, layout, skinTag, viewName);
         }
 
-        public UniTask<T> InitializeView<T>(T view, IViewModel viewModel) where T : IView
+        public UniTask<T> InitializeView<T>(T view, IViewModel viewModel,IViewLayout layout) where T : IView
         {
-            return _gameViewSystem.InitializeView(view, viewModel);
+            return _gameViewSystem.InitializeView(view, viewModel,layout);
+        }
+
+        public UniTask<IViewModel> CreateViewModel(string viewType)
+        {
+            return _gameViewSystem.CreateViewModel(viewType);
         }
 
         public void Dispose() => _lifeTime.Terminate();

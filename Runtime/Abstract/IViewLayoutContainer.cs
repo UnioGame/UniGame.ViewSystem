@@ -5,7 +5,7 @@
 
     public interface IViewLayoutContainer : IReadOnlyViewLayoutContainer
     {
-        IEnumerable<IViewLayout> Controllers { get; }
+        IEnumerable<IViewLayout> Layouts { get; }
 
         bool HasLayout(string id);
         

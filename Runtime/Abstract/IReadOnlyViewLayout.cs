@@ -25,7 +25,7 @@
         
         IView Get(Type viewType);
         
-        List<TView> GetAll<TView>() where TView : class, IView;
+        IEnumerable<TView> GetAll<TView>() where TView : class, IView;
 
     }
 }

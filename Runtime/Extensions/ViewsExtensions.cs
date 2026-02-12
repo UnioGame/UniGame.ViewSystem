@@ -1,13 +1,14 @@
 ﻿namespace UniGame.ViewSystem.Runtime
 {
     using System;
+    using System.Runtime.CompilerServices;
     using global::UniGame.Core.Runtime;
     using Cysharp.Threading.Tasks;
     using global::UniGame.UiSystem.Runtime;
     using R3;
     using UnityEngine;
 
-    public static class ViewBaseExtensions
+    public static class ViewsExtensions
     {
         /// <summary>
         /// Create a new view (see <see cref="IView"/> or <see cref="ViewBase"/>) with view model (see <see cref="IViewModel"/>).
@@ -214,7 +215,7 @@
             where T : class, IView
         {
             var view = await source
-                .CreateChildViewAsync(viewModel, typeof(T), parent, skinTag, viewName, stayWorld,lifeTime) as T;
+                .CreateChildViewAsync(viewModel, typeof(T), parent, skinTag, viewName, stayWorld, lifeTime) as T;
             return view;
         }
 
@@ -230,7 +231,7 @@
         {
             parent = parent ? parent : source.Transform;
             var view = await source.Layout
-                .Create(viewModel, viewType.Name, skinTag, parent, viewName, stayWorld,lifeTime);
+                .Create(viewModel, viewType.Name, skinTag, parent, viewName, stayWorld, lifeTime);
 
             var viewTransform = view.Transform;
             view.Owner.layer = source.Owner.layer;
@@ -276,7 +277,7 @@
             ILifeTime lifeTime = null)
             where T : class, IView
         {
-            var view = await CreateChildViewAsync<T>(source, viewModel, parent, skinTag, viewName, stayWorld,lifeTime);
+            var view = await source.CreateChildViewAsync<T>(viewModel, parent, skinTag, viewName, stayWorld, lifeTime);
             await view.ShowAsync();
             return view;
         }
@@ -475,7 +476,7 @@
         {
             if (view != null)
             {
-                lifeTime.AddCleanUpAction(() => view.Show());
+                lifeTime.AddCleanUpAction(view, x => x.Show());
             }
 
             return view;
@@ -492,8 +493,7 @@
             where T : ViewBase
         {
             var sourceTransform = source.Transform;
-
-            AddAsChild(source, view, sourceTransform, worldPositionStays);
+            source.AddAsChild(view, sourceTransform, worldPositionStays);
         }
 
         /// <summary>
@@ -523,27 +523,51 @@
             viewTransform.localScale = Vector3.one;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Observable<TSource> OnHidden<TSource>(this TSource source) where TSource : IViewStatus
-            => GetObservable(source, ViewStatus.Hidden);
+            => source.GetObservable(ViewStatus.Hidden);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Observable<TSource> OnBeginHide<TSource>(this TSource source) where TSource : IViewStatus
-            => GetObservable(source, ViewStatus.Hiding);
+            => source.GetObservable(ViewStatus.Hiding);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Observable<TSource> OnBeginShow<TSource>(this TSource source) where TSource : IViewStatus
-            => GetObservable(source, ViewStatus.Showing);
+            => source.GetObservable(ViewStatus.Showing);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Observable<TSource> OnShown<TSource>(this TSource source) where TSource : IViewStatus
-            => GetObservable(source, ViewStatus.Shown);
+            => source.GetObservable(ViewStatus.Shown);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Observable<TSource> OnClosed<TSource>(this TSource source) where TSource : IViewStatus
-            => GetObservable(source, ViewStatus.Closed);
+            => source.GetObservable(ViewStatus.Closed);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Observable<TSource> GetObservable<TSource>(this TSource source, ViewStatus status)
             where TSource : IViewStatus
         {
             return source.Status
-                .Where(x => x == status)
-                .Select(x => source);
+                .Where(status, static (x, y) => x == y)
+                .Select(source, static (x, y) => y);
+        }
+        
+        public static async UniTask<IView> RegisterView(this IView view)
+        {
+            var viewSystem = GameViewSystem.ViewSystem;
+            if (viewSystem == null || view == null) return view;
+
+            var viewModel = await viewSystem.CreateViewModel(view.GetType().Name);
+            return await view.RegisterView(viewModel,null);
+        }
+
+        public static async UniTask<IView> RegisterView(this IView view, IViewModel viewModel, IViewLayout layout = null)
+        {
+            var viewSystem = GameViewSystem.ViewSystem;
+            if (viewSystem == null) return view;
+            
+            await viewSystem.InitializeView(view, viewModel, layout);
+            return view;
         }
     }
 }

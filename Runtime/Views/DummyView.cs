@@ -6,6 +6,7 @@ namespace UniGame.UiSystem.Runtime
     using Cysharp.Threading.Tasks;
     using Core.Runtime;
     using R3;
+    using UniGame.Runtime.Rx;
     using ViewSystem.Runtime;
      
 
@@ -14,6 +15,7 @@ namespace UniGame.UiSystem.Runtime
         private readonly ReactiveProperty<ViewStatus> _viewStatusProperty = new(ViewStatus.None);
         private readonly ReactiveProperty<bool> _isVisibleProperty = new(false);
         private readonly ReactiveProperty<bool> _isInitializedProperty = new(false);
+        private readonly ReactiveValue<IView> _statusChangedProperty = new();
 
         private static EmptyViewModel emptyViewModel = new();
         private static DummyView      instance;
@@ -37,6 +39,9 @@ namespace UniGame.UiSystem.Runtime
         public ReadOnlyReactiveProperty<bool> IsVisible     => _isVisibleProperty;
         public ReadOnlyReactiveProperty<bool> IsInitialized => _isInitializedProperty;
         public IViewModel                      ViewModel     => emptyViewModel;
+
+        public ReadOnlyReactiveProperty<IView> StatusChanged => _statusChangedProperty;
+
         public Observable<IViewModel> OnViewModelChanged => Observable.Empty<IViewModel>();
         public string SourceName { get; set; }
         public string ViewId { get; set; }

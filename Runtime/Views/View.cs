@@ -40,7 +40,7 @@
         {
             await base.OnInitialize(model);
             
-            LifeTime.AddCleanUpAction(() => _viewModel.Value = null);
+            LifeTime.AddCleanUpAction(this,x => x._viewModel.Value = null);
 
             var modelData = model as TViewModel;
             _viewModel.Value = modelData;

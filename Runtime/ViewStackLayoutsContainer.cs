@@ -65,7 +65,7 @@ namespace UniGame.UiSystem.Runtime
             return GetLayout(id) != _dummyController;
         }
         
-        public IEnumerable<IViewLayout> Controllers => _layouts.Values;
+        public IEnumerable<IViewLayout> Layouts => _layouts.Values;
 
         public bool RemoveLayout(IViewLayout layout)
         {

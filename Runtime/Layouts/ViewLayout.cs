@@ -140,16 +140,13 @@
         /// <summary>
         /// select all view of target type into new container
         /// </summary>
-        public List<TView> GetAll<TView>() where TView : class, IView
+        public IEnumerable<TView> GetAll<TView>() where TView : class, IView
         {
-            var list = this.Spawn<List<TView>>();
             foreach (var view in _views)
             {
                 if (view is TView targetView)
-                    list.Add(targetView);
+                    yield return targetView;
             }
-
-            return list;
         }
 
         public void ShowLast()
@@ -221,9 +218,10 @@
         protected void AddView<TView>(TView view)
             where TView : class, IView
         {
-            view.Status
-                .Subscribe(x => ViewStatusChanged(view, x))
+            view.StatusChanged
+                .Subscribe(this,static (x,y) => y.ViewStatusChanged(x, x.Status.CurrentValue))
                 .AddTo(LifeTime);
+            
             Add(view);
         }
 

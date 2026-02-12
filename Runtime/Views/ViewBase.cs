@@ -95,15 +95,18 @@ namespace UniGame.UiSystem.Runtime
 
         #region private fields
 
-        private IViewAnimation _monoAnimation;
-        private RectTransform _rectTransform;
-        private Transform _transform;
-        private ReactiveValue<bool> _isModelChanged = new();
 
         private readonly LifeTime _viewLifeTime = new();
         private readonly LifeTime _progressLifeTime   = new();
         private readonly LifeTime _modelLifeTime   = new();
         private readonly Subject<IViewModel> _viewModelChanged = new();
+        
+        private IViewAnimation _monoAnimation;
+        private RectTransform _rectTransform;
+        private Transform _transform;
+        private ReactiveValue<bool> _isModelChanged = new();
+        private UniTask _hideTask;
+        private UniTask _closeTask;
         
         /// <summary>
         /// ui element visibility status
@@ -114,9 +117,9 @@ namespace UniGame.UiSystem.Runtime
         /// view statuses reactions
         /// </summary>
         private readonly ReactiveValue<ViewStatus> _status = new(ViewStatus.None);
+        private readonly ReactiveValue<IView> _statusChanged = new();
 
         private IViewsLayout _viewLayout;
-
         private bool _isViewOwner;
         private bool _isModelAttached;
         
@@ -169,6 +172,8 @@ namespace UniGame.UiSystem.Runtime
         public virtual IViewsLayout Layout => _viewLayout ?? GameViewSystem.ViewSystem;
 
         public ReadOnlyReactiveProperty<ViewStatus> Status => _status;
+        
+        public ReadOnlyReactiveProperty<IView> StatusChanged => _statusChanged;
 
         /// <summary>
         /// Is View Active
@@ -298,6 +303,7 @@ namespace UniGame.UiSystem.Runtime
             return this;
         }
 
+
         /// <summary>
         /// hide view without release it
         /// </summary>
@@ -305,7 +311,6 @@ namespace UniGame.UiSystem.Runtime
         [Button]
         [ShowIf(nameof(IsCommandsAction))]
 #endif
-        private UniTask _hideTask;
         public void Hide()
         {
             if(!SetInternalStatus(ViewStatus.Hidden))
@@ -322,7 +327,7 @@ namespace UniGame.UiSystem.Runtime
             _hideTask.Forget();
 
         }
-
+        
         /// <summary>
         /// end of view lifetime
         /// </summary>
@@ -330,8 +335,6 @@ namespace UniGame.UiSystem.Runtime
         [Button]
         [ShowIf(nameof(IsCommandsAction))]
 #endif
-        private UniTask _closeTask;
-        
         public void Close()
         {
             CloseAsync().Forget();
@@ -580,14 +583,13 @@ namespace UniGame.UiSystem.Runtime
 
         protected void OnDisable() => _progressLifeTime.Restart();
 
-        protected void OnDestroy()
-        {
-            Destroy();
-        }
+        protected void OnDestroy() => Destroy();
 
         protected void Awake()
         {
             _status.Subscribe(OnViewStatus);
+            _status.Subscribe(this, static (x, y) => y._statusChanged.OnNext(y));
+            
             OnAwake();
         }
 

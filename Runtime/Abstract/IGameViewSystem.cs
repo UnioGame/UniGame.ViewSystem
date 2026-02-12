@@ -11,10 +11,11 @@
     {
         void CloseAll(ViewType viewType);
 
-        UniTask<IView> OpenView(IViewModel viewModel, string viewType, string layout, string skinTag = "",
-            string viewName = null);
+        UniTask<IView> OpenView(IViewModel viewModel, string viewType, string layout, string skinTag = "", string viewName = null);
         
-        UniTask<T> InitializeView<T>(T view, IViewModel viewModel) where T : IView;
+        UniTask<T> InitializeView<T>(T view, IViewModel viewModel,IViewLayout layout) where T : IView;
+        
+        UniTask<IViewModel> CreateViewModel(string viewType);
     }
 
 }

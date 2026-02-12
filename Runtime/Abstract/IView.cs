@@ -37,6 +37,8 @@ namespace UniGame.ViewSystem.Runtime
 
         IViewModel ViewModel { get; }
         
+        ReadOnlyReactiveProperty<IView> StatusChanged { get; }
+        
         Observable<IViewModel> OnViewModelChanged { get; }
         
         string SourceName { get; }

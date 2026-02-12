@@ -80,7 +80,7 @@
             return LayoutController.Get(viewType);
         }
 
-        public List<TView> GetAll<TView>() where TView : class, IView
+        public IEnumerable<TView> GetAll<TView>() where TView : class, IView
         {
             return LayoutController.GetAll<TView>();
         }
