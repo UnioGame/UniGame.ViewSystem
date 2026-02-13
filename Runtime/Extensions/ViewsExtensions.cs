@@ -2,6 +2,7 @@
 {
     using System;
     using System.Runtime.CompilerServices;
+    using System.Threading;
     using global::UniGame.Core.Runtime;
     using Cysharp.Threading.Tasks;
     using global::UniGame.UiSystem.Runtime;
@@ -552,13 +553,13 @@
                 .Select(source, static (x, y) => y);
         }
         
-        public static async UniTask<IView> RegisterView(this IView view)
+        public static async UniTask<IView> RegisterView(this IView view,CancellationToken cancellationToken = default)
         {
             var viewSystem = GameViewSystem.ViewSystem;
             if (viewSystem == null || view == null) return view;
 
             var viewModel = await viewSystem.CreateViewModel(view.GetType().Name);
-            return await view.RegisterView(viewModel,null);
+            return await view.RegisterView(viewModel,null).AttachExternalCancellation<IView>(cancellationToken);
         }
 
         public static async UniTask<IView> RegisterView(this IView view, IViewModel viewModel, IViewLayout layout = null)

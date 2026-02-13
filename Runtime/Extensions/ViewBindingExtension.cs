@@ -801,6 +801,34 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             return sender;
         }
         
+        /// <summary>
+        /// bind view to initialize it with default view model and register into view system
+        /// </summary>
+        public static TView BindView<TView>(this TView sender, IView view, Action<IView> command)
+            where TView : ILifeTimeContext
+        {
+            sender.BindViewAsync(view, command)
+                .AttachExternalCancellation<TView>(sender.LifeTime.Token)
+                .Forget();
+            
+            return sender;
+        }
+        
+        public static async UniTask<TView> BindViewAsync<TView>(this TView sender, IView view, Action<IView> command)
+            where TView : ILifeTimeContext
+        {
+            if(sender == null || view == null) return sender;
+
+            var lifeTime = sender.LifeTime;
+            if(lifeTime.IsTerminated) return sender;
+            
+            await view.RegisterView(cancellationToken:lifeTime.Token);
+
+            command.Invoke(view);
+            
+            return sender;
+        }
+        
         public static TView Bind<TView>(this TView sender, Button source, Action command)
             where TView : ILifeTimeContext
         {
