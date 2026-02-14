@@ -15,16 +15,14 @@ namespace UniGame.Localization.Runtime.Components
     
     public class TMPLocalization : MonoBehaviour
     {
-        public TextMeshPro text;
-        public TextMeshProUGUI textUGUI;
+        public TMP_Text textUGUI;
         public LocalizedString localization;
         
         private LifeTime _lifeTime = new();
 
         private void Awake()
         {
-            text ??= GetComponent<TextMeshPro>();
-            textUGUI ??= GetComponent<TextMeshProUGUI>();
+            textUGUI ??= GetComponent<TMP_Text>();
         }
         
 #if ODIN_INSPECTOR
@@ -34,9 +32,7 @@ namespace UniGame.Localization.Runtime.Components
         {
             var value = localization.GetLocalizedString();
             
-            text ??= GetComponent<TextMeshPro>();
-            textUGUI ??= GetComponent<TextMeshProUGUI>();
-            text.SetValue(value);
+            textUGUI ??= GetComponent<TMP_Text>();
             textUGUI.SetValue(value);
         }
 
@@ -46,7 +42,6 @@ namespace UniGame.Localization.Runtime.Components
             
             localization.AsObservable()
                 .Do(x => textUGUI.SetValue(x))
-                .Do(x => text.SetValue(x))
                 .Subscribe()
                 .AddTo(_lifeTime);
         }
