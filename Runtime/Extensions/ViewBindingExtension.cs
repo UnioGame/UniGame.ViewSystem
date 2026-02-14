@@ -398,6 +398,50 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             });
         }
         
+        public static TSource Bind<TSource>(this TSource view, 
+            IEnumerable<Observable<Unit>> source,
+            Action action) where TSource : ILifeTimeContext
+        {
+            if (source == null || action == null) return view;
+
+            foreach (var value in source)
+            {
+                if(value==null) continue;
+                view.Bind(value, action);
+            }
+            
+            return view;
+        }
+        
+        public static TSource Bind<TSource,TValue>(this TSource view, 
+            IEnumerable<Observable<TValue>> source,
+            Action<TValue> action) where TSource : ILifeTimeContext
+        {
+            if (source == null || action == null) return view;
+
+            foreach (var value in source)
+            {
+                if(value==null) continue;
+                view.Bind(value, action);
+            }
+            
+            return view;
+        }
+        
+        public static TSource Bind<TSource>(this TSource view, IEnumerable<ReactiveCommand> source,
+            Action action) where TSource : ILifeTimeContext
+        {
+            if (source == null || action == null) return view;
+
+            foreach (var value in source)
+            {
+                if(value==null) continue;
+                view.Bind(value, action);
+            }
+            
+            return view;
+        }
+        
         public static TView Bind<TView>(this TView view,TMP_InputField source, Observer<string> value)
             where TView : ILifeTimeContext
         {
