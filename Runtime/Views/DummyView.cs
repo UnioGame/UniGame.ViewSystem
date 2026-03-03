@@ -95,7 +95,7 @@ namespace UniGame.UiSystem.Runtime
             SourceName = sourceName;
         }
 
-        public UniTask<IView> Initialize(IViewModel vm, bool isViewOwner = false)
+        public UniTask<IView> Initialize(IViewModel vm)
         {
             // do nothing
             return UniTask.FromResult<IView>(this);

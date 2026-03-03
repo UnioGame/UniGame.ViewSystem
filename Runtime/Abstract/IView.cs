@@ -56,12 +56,11 @@ namespace UniGame.ViewSystem.Runtime
         /// <param name="sourceName"></param>
         void SetSourceName(string viewId,string sourceName);
 
-        UniTask<IView> Initialize(IViewModel vm, bool ownViewModel = false);
+        UniTask<IView> Initialize(IViewModel vm);
     }
     
     public interface IModelView : IView
     {
         ILifeTime ModelLifeTime { get; }
-        
     }
 }

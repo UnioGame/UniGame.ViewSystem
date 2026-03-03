@@ -1,6 +1,4 @@
-﻿using UniGame.Runtime.Extension;
-
-namespace UniGame.UiSystem.Runtime
+﻿namespace UniGame.UiSystem.Runtime
 {
     using System;
     using System.Threading;
@@ -120,7 +118,6 @@ namespace UniGame.UiSystem.Runtime
         private readonly ReactiveValue<IView> _statusChanged = new();
 
         private IViewsLayout _viewLayout;
-        private bool _isViewOwner;
         private bool _isModelAttached;
         
         protected bool IsCommandsAction => Application.isPlaying;
@@ -236,12 +233,10 @@ namespace UniGame.UiSystem.Runtime
             sourceName = source;
         }
 
-        public async UniTask<IView> Initialize(IViewModel model, bool ownViewModel = false)
+        public async UniTask<IView> Initialize(IViewModel model)
         {
             if (this == null || gameObject == null) return this;
             
-            // save current state
-            _isViewOwner = ownViewModel;
             //restart view lifetime
             _modelLifeTime.Restart();
             _progressLifeTime.Restart();
@@ -522,14 +517,8 @@ namespace UniGame.UiSystem.Runtime
         {
             _isModelChanged.Value = false;
 
-            _modelLifeTime.AddCleanUpAction(this,static x =>
-            {
-                if (x._isViewOwner) x.ViewModel.Cancel();
-                x.ViewModel = null;
-            });
-            
+            _modelLifeTime.AddCleanUpAction(this,static x => { x.ViewModel = null; });
             _modelLifeTime.AddCleanUpAction(_progressLifeTime.Restart);
-        
             _modelLifeTime.AddCleanUpAction(this,static x => x._isModelAttached = false);
 
             if (enableModelUpdate)
