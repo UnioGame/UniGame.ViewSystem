@@ -729,12 +729,13 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             ReactiveValue<List<TModel>> source,
             List<TChildView> views,
             Transform container = null,
-            Action<TChildView> viewAction = null)
+            Action<TChildView> viewAction = null,
+            Action<List<TChildView>> onComplete = null)
             where TView : IView
             where TModel : IViewModel
             where TChildView : class, IView
         {
-            return sender.Bind(source as Observable<List<TModel>>, views, container,viewAction);
+            return sender.Bind(source as Observable<List<TModel>>, views, container,viewAction,onComplete);
         }
         
         /// <summary>
@@ -745,7 +746,8 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             Observable<List<TModel>> source,
             List<TChildView> views,
             Transform container,
-            Action<TChildView> viewAction = null)
+            Action<TChildView> viewAction = null,
+            Action<List<TChildView>> onComplete = null)
             where TView : IView
             where TModel : IViewModel
             where TChildView : class, IView
@@ -760,8 +762,9 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             
             return sender.Bind(source,async x =>
             {
-                await InitializeListViews(sender, x, views, container ?? sender.Transform,viewAction)
+                await sender.InitializeListViews(x, views, container ?? sender.Transform,viewAction)
                     .AttachExternalCancellation(lifeTime.Token);
+                onComplete?.Invoke(views);
             });
         }
 
@@ -921,6 +924,12 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             where TView : ILifeTimeContext
         {
             return sender.Bind(source, () => command(Unit.Default));
+        }
+        
+        public static TView Bind<TView>(this TView sender, Button source, ReactiveCommand<Unit> command)
+            where TView : ILifeTimeContext
+        {
+            return sender.Bind(source.OnClickAsObservable(), command);
         }
         
         public static TView Bind<TView>(this TView sender, Button source, Func<UniTask> command)
