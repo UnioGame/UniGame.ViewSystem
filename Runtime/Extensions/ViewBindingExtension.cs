@@ -788,11 +788,11 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
         
             for (var i = 0; i < amount; i++)
             {
-                var buttonView = views[i];
+                var itemView = views[i];
                 var buttonModel = models[i];
                 
-                buttonView.GameObject.SetActive(true);
-                buttonView.Initialize(buttonModel).Forget();
+                itemView.GameObject.SetActive(true);
+                itemView.RegisterView(buttonModel).Forget();
    
                 index++;
             }
