@@ -268,11 +268,17 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
 
         #endregion
 
-        public static async UniTask<TView> Bind<TView, TModel>(this TView view, TModel model, IView target)
+        public static TView Bind<TView, TModel>(this TView view, TModel model, IView target)
             where TView : class, IView
             where TModel : IViewModel
         {
-            await target.Initialize(model);
+            if(view == null || view.LifeTime.IsTerminated) return view;
+            var lifeTime = view.LifeTime;
+            
+            target.Initialize(model)
+                .AttachExternalCancellation<IView>(lifeTime.Token)
+                .Forget();
+            
             return view;
         }
 
