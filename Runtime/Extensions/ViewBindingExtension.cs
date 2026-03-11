@@ -795,11 +795,11 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             for (var i = 0; i < amount; i++)
             {
                 var itemView = views[i];
-                var buttonModel = models[i];
+                var viewModel = models[i];
                 
                 itemView.GameObject.SetActive(true);
-                itemView.RegisterView(buttonModel).Forget();
-   
+                itemView.RegisterView(viewModel).Forget();
+                
                 index++;
             }
             
@@ -1263,8 +1263,10 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
         {
             if (closeWith) view.BindClose(target);
 
-            view.Bind(source.Where(static x => x!=null), x => target.Initialize(x, view.Layout)
-                .AttachExternalCancellation(view.ModelLifeTime.Token)
+            var modelObservable = source.Where(static x => x != null);
+            
+            view.Bind(target,modelObservable,static (x,y) => y.RegisterView(x)
+                .AttachExternalCancellation(y.LifeTime.Token)
                 .Forget());
 
             return view;
