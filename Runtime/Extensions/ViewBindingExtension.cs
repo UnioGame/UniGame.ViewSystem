@@ -275,7 +275,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             if(view == null || view.LifeTime.IsTerminated) return view;
             var lifeTime = view.LifeTime;
             
-            target.Initialize(model)
+            target.RegisterView(model)
                 .AttachExternalCancellation<IView>(lifeTime.Token)
                 .Forget();
             
