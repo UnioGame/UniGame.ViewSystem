@@ -749,7 +749,100 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
         {
             return sender.Bind(source as Observable<List<TModel>>, views, container,viewAction,onComplete);
         }
+
+        /// <summary>
+        ///  Bind list of models to list of views and create new views if needed
+        /// </summary>
+        public static TView Bind<TView, TChildView, TData>(
+            this TView sender,
+            ReactiveValue<List<TData>> source,
+            List<TChildView> views,
+            Action<TChildView, TData> viewAction,
+            Transform container,
+            Action<List<TChildView>> onComplete = null)
+            where TView : IView
+            where TChildView : class, IView
+        {
+            return sender.Bind(source.AsObservable(), views, container,viewAction,onComplete);
+        }
+
+        /// <summary>
+        ///  Bind list of models to list of views and create new views if needed
+        /// </summary>
+        public static TView Bind<TView,TChildView,TData>(
+            this TView sender,
+            Observable<List<TData>> source,
+            List<TChildView> views,
+            Transform container,
+            Action<TChildView,TData> viewAction,
+            Action<List<TChildView>> onComplete = null)
+            where TView : IView
+            where TChildView : class, IView
+        {
+            foreach (var view in views)
+                view.GameObject.SetActive(false);
+            
+            if(sender == null || source == null) return sender;
+            var lifeTime = sender.LifeTime;
+            
+            if (lifeTime.IsTerminated) return sender;
+            
+            var parent = container ?? sender.Transform;
+            
+            return sender.Bind(views,source,async (x,y) =>
+            {
+                await sender.InitializeListViews(y,x,viewAction, parent)
+                    .AttachExternalCancellation(lifeTime.Token);
+                onComplete?.Invoke(views);
+            });
+        }
+
+        public static async UniTask InitializeListViews<TView, TData>(
+            this IView source,
+            List<TView> views,
+            List<TData> data,
+            Action<TView,TData> viewAction,
+            Transform parent = null) where TView : class, IView
+        {
+            var amount = Math.Min(views.Count, data.Count);
+            var index = 0;
         
+            for (var i = 0; i < amount; i++)
+            {
+                var itemView = views[i];
+                itemView.GameObject.SetActive(true);
+                itemView.RegisterView().Forget();
+                
+                index++;
+            }
+            
+            var targetParent = parent ? parent : source.Transform;
+
+            for (var i = index; i < data.Count; i++)
+            {
+                index++;
+                var buttonView = await source.ShowChildViewAsync<TView>(targetParent);
+                views.Add(buttonView);
+            }
+
+            for (var i = index; i < views.Count; i++)
+            {
+                var buttonView = views[i];
+                buttonView.GameObject.SetActive(false);
+            }
+
+            if (viewAction != null)
+            {
+                for (var i = 0; i < data.Count; i++)
+                {
+                    var view = views[i];
+                    var dataItem = data[i];
+                    viewAction.Invoke(view,dataItem);
+                }
+            }
+        }
+
+                
         /// <summary>
         ///  Bind list of models to list of views and create new views if needed
         /// </summary>
@@ -772,11 +865,13 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             
             if (lifeTime.IsTerminated) return sender;
             
-            return sender.Bind(source,async x =>
+            var parent = container ?? sender.Transform;
+            
+            return sender.Bind(views,source,async (x,y) =>
             {
-                await sender.InitializeListViews(x, views, container ?? sender.Transform,viewAction)
+                await sender.InitializeListViews(x, y,parent , viewAction)
                     .AttachExternalCancellation(lifeTime.Token);
-                onComplete?.Invoke(views);
+                onComplete?.Invoke(y);
             });
         }
 

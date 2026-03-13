@@ -557,7 +557,7 @@
         {
             var viewSystem = GameViewSystem.ViewSystem;
             if (viewSystem == null || view == null) return view;
-
+            
             var viewModel = await viewSystem.CreateViewModel(view.GetType().Name);
             return await view.RegisterView(viewModel,null).AttachExternalCancellation<IView>(cancellationToken);
         }
