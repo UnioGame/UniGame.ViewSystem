@@ -24,7 +24,14 @@ MVVM View System for Unity3D
   - [Pooling Support](#pooling-support)
   - [API References](#api-references)
     - [Views \& ViewModels](#views--viewmodels)
+      - [View Lifetime Management](#view-lifetime-management)
+        - [Two-Level LifeTime System](#two-level-lifetime-system)
+          - [Example: ViewLifeTime vs ModelLifeTime](#example-viewlifetime-vs-modellifetime)
+        - [ViewLifeTime vs ModelLifeTime](#viewlifetime-vs-modellifetime)
+        - [Automatic Subscription Cleanup](#automatic-subscription-cleanup)
+        - [View Status States](#view-status-states)
     - [Reactive Binding](#reactive-binding)
+      - [Zero-Allocation Binding (Performance Optimization)](#zero-allocation-binding-performance-optimization)
       - [Bind To UGUI](#bind-to-ugui)
       - [Behaviour bindings](#behaviour-bindings)
   - [Examples](#examples)
@@ -171,6 +178,7 @@ You can manualy trigger rebuild:
 
 
 ## Skins Support
+
 Different flavours of the same view type can be created by utilizing skins. When a skin tag is provided on view creation the corresponding skin is instantiated (if it's been registered prior to it). Skin tag can be provided as a string or a variable of SkinId type (which allows choosing one of the registered tags from a dropdown list and implicitly converts it to a string)
 ```cs
 void ExampleFunc(SkinId largeDemoView) {
@@ -251,11 +259,336 @@ public class ZenjectViewFactory  : IViewFactory
 
 ### Views & ViewModels
 
+The View System uses MVVM principles to manage UI with reactive data binding and automatic lifetime management.
+
+#### View Lifetime Management
+
+View System implements a sophisticated **two-level lifetime management** system that ensures proper cleanup of subscriptions and resources. This is critical for preventing memory leaks and managing complex UI hierarchies.
+
+##### Two-Level LifeTime System
+
+Each View maintains **two independent LifeTimes** that serve different purposes:
+
+**ViewLifeTime** - Lifespan of the View Instance
+- Created when View is instantiated
+- Lives throughout entire View lifecycle (from creation to destruction)
+- Manages resources that persist for the entire View lifecycle
+- Terminated only when View is destroyed
+- Used for: animations independent of model, component lifecycle events, long-lived resources
+
+**ModelLifeTime** (aka `LifeTime`) - Lifespan of Data Subscriptions
+- Created/restarted each time View is initialized with a model
+- Manages all Observable subscriptions to model data
+- **Automatically restarted** when model is changed
+- Old subscriptions are automatically disconnected when restarted
+- Used for: data binding, reactive streams, model-dependent operations
+
+**Diagram: LifeTime Management Flow**
+
+```
+View Created
+  |
+  +--- ViewLifeTime.Start() ───────────────────────────────┐
+        (Lives for entire View)                              |
+                                                              |
+  RegisterView(Model1)                                       |
+  |
+  +--- ModelLifeTime.Restart()                              |
+        |                                                    |
+        +--- Subscribe to Model1 data                        |
+        |    (health, mana, etc.)                            |
+        |                                                    |
+        +--- Active Subscriptions ●●●                       |
+                                                              |
+  RegisterView(Model2)  ← Model Changed!                     |
+        |                                                    |
+        +--- ModelLifeTime.Restart()                         |
+        |    (Old subscriptions auto-disconnected)           |
+        |                                                    |
+        +--- Subscribe to Model2 data                        |
+        |    (fresh subscriptions)                           |
+        |                                                    |
+        +--- Active Subscriptions ●●●                       |
+                                                              |
+  Close()/Destroy()                                          |
+  |                                                          |
+  +--- ViewLifeTime.Terminate() ◄──────────────────────────┘
+        ModelLifeTime.Terminate()
+        Resources Released
+        View Destroyed
+```
+
+###### Example: ViewLifeTime vs ModelLifeTime
+
+```csharp
+public class HealthBarView : ViewBase<CharacterViewModel>
+{
+    [SerializeField] private Image healthFill;
+    
+    protected override UniTask OnInitialize(CharacterViewModel model)
+    {
+        this.Bind(model.CurrentHealth, UpdateHealthBar);
+        return UniTask.CompletedTask;
+    }
+
+}
+```
+
+##### ViewLifeTime vs ModelLifeTime
+
+**Use ViewLifeTime for:**
+
+
+**Use ModelLifeTime (LifeTime) for:**
+
+- All data bindings to Observable fields
+- Async operations triggered by model changes
+- Model-dependent subscriptions
+- React to data stream events
+
+```csharp
+// RECOMMENDED: Using Bind extensions
+this.Bind(model.Health, UpdateDisplay);
+
+// ALTERNATIVE: Direct Rx approach (what Bind does internally)
+model.Health
+    .Subscribe(UpdateDisplay)
+    .AddTo(LifeTime);
+```
+
+**Key Difference:**
+- ViewLifeTime: "Keep this while View exists"
+- ModelLifeTime: "Keep this while this Model is active"
+
+##### Automatic Subscription Cleanup
+
+When a View is reinitialized with a new model, the system automatically cleans up old subscriptions:
+
+```csharp
+// Example: Character select screen with Bind extensions
+
+public class CharacterDetailsView : ViewBase<CharacterViewModel>
+{
+    [SerializeField] private TextMeshProUGUI nameText;
+    [SerializeField] private Slider healthSlider;
+    
+    protected override UniTask OnInitialize(CharacterViewModel model)
+    {
+        // RECOMMENDED: Using Bind extensions (auto-managed)
+        this.Bind(model.Name, nameText)
+            .Bind(model.Health, healthSlider);
+        
+        return UniTask.CompletedTask;
+    }
+}
+
+// In controller code:
+var character1ViewModel = new CharacterViewModel { Name = new("Hero") };
+var character2ViewModel = new CharacterViewModel { Name = new("Villain") };
+
+// User selects character 1
+await detailsView.RegisterView(character1ViewModel);
+// → OnInitialize() bound to character1 stats
+// → Subscriptions connected to character1 data
+
+// User selects character 2
+await detailsView.RegisterView(character2ViewModel);
+// → OnInitialize() called again
+// → OLD subscriptions to character1 automatically → DISCONNECTED
+// → NEW subscriptions to character2 → CREATED
+// → No memory leak, no duplicate subscriptions
+```
+
+**Without LifeTime Management (Memory Leak):**
+
+```csharp
+// ❌ WRONG - This leaks memory!
+public void BadExample(CharacterViewModel model)
+{
+    model.Health.Subscribe(x => UpdateUI(x));  // Never unsubscribes!
+    // If you call this 100 times with different models,
+    // you'll have 100 active subscriptions
+}
+```
+
+**With LifeTime Management - Bind Extensions (RECOMMENDED):**
+
+```csharp
+// ✅ CORRECT - Using Bind (fluent API)
+public void GoodExampleWithBind(CharacterViewModel model)
+{
+    this.Bind(model.Health, UpdateUI);
+    // Auto-managed lifetime, disconnects on model change
+}
+```
+
+##### View Status States
+
+Views have distinct status states throughout their lifecycle:
+
+| Status | Meaning | Next State |
+|--------|---------|------------|
+| **None** | Initial state | Shown, Hidden |
+| **Shown** | View is visible and active | Hiding |
+| **Showing** | Animation in progress | Shown |
+| **Hidden** | View exists but not visible | Shown, Closed |
+| **Hiding** | Hide animation in progress | Hidden |
+| **Closed** | View destroyed, lifecycle ended | (final) |
+
+
+**Complete Status Flow Diagram:**
+
+```
+RegisterView(model)
+  ↓
+Initialize(model)
+  ↓
+Status: None
+  ↓
+Show() called
+  ↓
+Status: Showing → OnShowAction() plays animation
+  ↓
+Status: Shown
+  ↓
+Hide() called
+  ↓
+Status: Hiding → OnHideAction() plays animation
+  ↓
+Status: Hidden
+  ↓
+Close() called
+  ↓
+Status: Closed → Destroy() → ViewLifeTime.Terminate()
+```
+
+**Observable Status Tracking:**
+
+```csharp
+// RECOMMENDED: Using Bind extensions
+this.Bind(view.SelectStatus(ViewStatus.Hidden), 
+    v => Debug.Log($"{v.SourceName} is hidden"));
+
+// ALTERNATIVE: Direct Rx approach
+view.Status
+    .Where(status => status == ViewStatus.Shown)
+    .Subscribe(_ => Debug.Log("View is now visible"))
+    .AddTo(lifeTime);
+
+// ALTERNATIVE: Using SelectStatus helper
+view.SelectStatus(ViewStatus.Hidden)
+    .Subscribe(v => Debug.Log($"{v.SourceName} is hidden"))
+    .AddTo(lifeTime);
+```
+
+**Lifecycle Hooks by Status:**
+
+```csharp
+public class MyView : ViewBase<MyViewModel>
+{
+    [SerializeField] private Button closeButton;
+    
+    protected override UniTask OnInitialize(MyViewModel model)
+    {
+        // Called right after model attachment
+        // Status: None → Shown (transitioning)
+        
+        // Bind button to close command
+        this.Bind(closeButton, model.CloseCommand);
+        
+        // Or with action
+        this.Bind(closeButton, Close);
+        
+        return UniTask.CompletedTask;
+    }
+    
+    protected override UniTask OnShowAction()
+    {
+        // Called when transitioning to Shown
+        // Use for entrance animations
+        return PlayEntranceAnimation();
+    }
+    
+    protected override UniTask OnHideAction()
+    {
+        // Called when transitioning to Hidden  
+        // Use for exit animations
+        return PlayExitAnimation();
+    }
+}
+```
+
+
 ### Reactive Binding
 
-All base Bind extensions use ViewModelLifetime" thats allow auto disconnect from data streams when ViewModel changed
+All base Bind extensions use ViewModelLifetime that allows auto disconnect from data streams when ViewModel changed.
 
-Binding extensions allow you easy connect you view and data sources with rich set flow syntax and support Rx method and async/await semantics
+Binding extensions allow you to easily connect your view and data sources with a rich flow syntax and support Rx methods and async/await semantics.
+
+#### Zero-Allocation Binding (Performance Optimization)
+
+Bind extensions support **static lambda expressions** to eliminate closure allocations. This is especially important in performance-critical scenarios like frequent updates or animations.
+
+**Static Lambda - Zero Allocation Closures:**
+
+A `static` lambda cannot capture any local variables, which prevents the compiler from creating a display class for closure storage:
+
+```csharp
+// ✅ RECOMMENDED: Static lambda - zero allocation
+// Compiler doesn't create display class for closure
+this.Bind(model, purchaseStream, static (model, stream) => 
+    stream.purchase.Execute(stream));
+
+// ❌ Non-static lambda - closure allocation
+// Compiler creates display class to capture variables
+this.Bind(model, purchaseStream, (model, stream) => 
+    stream.purchase.Execute(stream));
+```
+
+**When to use static lambdas:**
+- Combining multiple observable streams
+- High-frequency updates (animations, real-time data)
+- Performance-critical UI sections
+- The lambda doesn't need to capture `this` or local variables
+
+**Example - Static Lambda Binding:**
+
+```csharp
+public class PurchaseView : ViewBase<PurchaseViewModel>
+{
+    [SerializeField] private Button purchaseButton;
+    
+    protected override UniTask OnInitialize(PurchaseViewModel model)
+    {
+        // Zero-allocation: static lambda combines two streams
+        this.Bind(model, model.PurchaseStream, 
+              static (purchaseData,viewModel) => viewModel.purchase.Execute(purchaseData));
+        
+        return UniTask.CompletedTask;
+    }
+}
+```
+
+**Static Lambda vs Direct Method Reference:**
+
+```csharp
+// ✅ Direct method reference - simple binding, zero allocation
+this.Bind(model.Health, UpdateUI);
+
+// ✅ Static lambda - complex binding with multiple parameters, zero allocation
+this.Bind(model, itemStream, static (item,m) => m.ProcessItem(item));
+
+// ❌ Non-static lambda - allocates closure class
+this.Bind(model, itemStream, (item,m) => model.ProcessItemAndReport(item));  
+// Captures 'model' in display class - not needed
+```
+
+**Static Lambda Requirements (C# 9+):**
+- Cannot use `this` reference
+- Cannot capture local variables
+- Can only use method parameters and static members
+- Compiler enforces these restrictions and prevents allocation
+
 
 #### Bind To UGUI 
 
@@ -315,11 +648,8 @@ protected override UniTask OnViewInitialize(WindowViewModel model)
 [Serializable]
 public class WindowViewModel : ViewModelBase
 {
-    public ReactiveProperty<string> label = new ReactiveProperty<string>();
-    public ReactiveProperty<string> value = new ReactiveProperty<string>();
-    
-    public IObservable<string> Label => label;
-    public IObservable<string> Value => value;
+    public ReactiveProperty<string> label = new();
+    public ReactiveProperty<string> value = new();
 }
 
 public TextMeshProUGUI label;
@@ -327,17 +657,13 @@ public TextMeshProUGUI value;
 
 protected override UniTask OnViewInitialize(WindowViewModel model)
 {
-    this.Bind(model.Label,label)
-        .Bind(model.Value,value);
+    this.Bind(model.label,label)
+        .Bind(model.value,value);
     
     return UniTask.CompletedTask;
 }
 
 ```
-
-- Image methods
-
-- LocaliztionString methods
 
 #### Behaviour bindings
 
