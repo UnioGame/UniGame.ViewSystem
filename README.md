@@ -32,6 +32,7 @@ MVVM View System for Unity3D
         - [View Status States](#view-status-states)
     - [Reactive Binding](#reactive-binding)
       - [Zero-Allocation Binding (Performance Optimization)](#zero-allocation-binding-performance-optimization)
+      - [BindData - Combining View and Model](#binddata---combining-view-and-model)
       - [Bind To UGUI](#bind-to-ugui)
       - [Behaviour bindings](#behaviour-bindings)
   - [Examples](#examples)
@@ -589,6 +590,52 @@ this.Bind(model, itemStream, (item,m) => model.ProcessItemAndReport(item));
 - Can only use method parameters and static members
 - Compiler enforces these restrictions and prevents allocation
 
+#### BindData - Combining View and Model
+
+The `BindData` extension methods are optimized for scenarios where you need **both the View context and data stream values** in a single callback. They eliminate closure allocations by using static lambdas internally.
+
+**BindData Overloads:**
+
+```csharp
+// Variant 1: View only + callback with data
+view.BindData(model, dataStream, action);  // action receives: context
+
+// Variant 2: View + Data + callback with both
+view.BindData(model, dataStream, static x => ProcessData(x.Data, x.Source));
+
+// Variant 3: View + Data + Stream value
+view.BindData(model, dataStream, static x => x.Data.ProcessItem(x.Source, x.Value));
+```
+
+**Advantages Over Regular Bind:**
+
+1. **Zero-Allocation Context Passing**: Pass both View and Model data without closure allocation
+2. **Static Lambda Friendly**: Built to work seamlessly with static lambdas
+3. **Multiple Data Sources**: Combine and process multiple reactive streams together
+4. **Fluent API**: Returns the sender for method chaining
+
+**Example - BindData with Model Update:**
+
+```csharp
+public class DetailsView : View<SomeViewModel>
+{
+    protected override UniTask OnInitialize(SomeViewModel model)
+    {
+        // Zero-allocation: combines stream + view context
+        // x.Data = model, x.Source = this (view), x.Value = stream value
+        this.BindData(model, model.Id, static x => x.Data.SomeMethod(x.Source))
+            .BindData(model, model.Updated, static x => x.Data.SomeMethod(x.Source));
+        
+        return UniTask.CompletedTask;
+    }
+}
+
+public class SomeViewModel : ViewModel
+{
+    public ReactiveProperty<int> Id { get; } = new();
+    public ReactiveCommand<Unit> Updated { get; } = new();
+}
+```
 
 #### Bind To UGUI 
 
