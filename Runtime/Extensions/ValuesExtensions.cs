@@ -138,6 +138,11 @@
             SetValueAsync(target, sprite).Forget();
         }
         
+        public static void SetValue(this Image target, AssetReferenceSprite sprite)
+        {
+            SetValueAsync(target, sprite).Forget();
+        }
+        
         public static void SetValue(this RawImage target, AssetReferenceT<Texture2D> sprite)
         {
             SetValueAsync(target, sprite).Forget();

@@ -1018,7 +1018,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
         public static TView Bind<TView>(this TView sender, IReadOnlyList<Button> sources, Action command)
             where TView : ILifeTimeContext
         {
-            if (sources == null || sources.Count <= 0)
+            if (sources is not { Count: > 0 })
                 return sender;
             
             foreach (var source in sources) 
@@ -1036,6 +1036,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
         public static TView Bind<TView>(this TView sender, Button source, ReactiveCommand<Unit> command)
             where TView : ILifeTimeContext
         {
+            if(source == null || command == null) return sender;
             return sender.Bind(source.OnClickAsObservable(), command);
         }
         

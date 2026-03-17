@@ -11,7 +11,7 @@ namespace ViewSystem.Modules.LitMotionSupport
     using UnityEngine;
 
     [Serializable]
-    public class LitMotionViewAnimation : IViewAnimation
+    public class LitMotionViewAnimation : IViewAnimation,IDisposable
     {
         #region inspector
         
@@ -124,9 +124,31 @@ namespace ViewSystem.Modules.LitMotionSupport
             hideAnimation.Stop();
             
             animation.Restart();
+
+            var context = new LitMotionViewAnimationContext()
+            {
+                animation = animation,
+                view = view
+            };
             
-            await UniTask.WaitWhile(animation, x => x.IsPlaying);
+            await UniTask.WaitWhile(context, x => 
+                !context.view.LifeTime.IsTerminated && 
+                context.view.GameObject!=null &&
+                x.animation.IsPlaying);
+            
+            animation.Stop();
         }
 
+        public void Dispose()
+        {
+            showAnimation?.Stop();
+            hideAnimation?.Stop();
+        }
+    }
+
+    public struct LitMotionViewAnimationContext
+    {
+        public LitMotionAnimation animation;
+        public IView view;
     }
 }
