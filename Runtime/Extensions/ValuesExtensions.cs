@@ -2,12 +2,14 @@
 {
     using System;
     using System.Runtime.CompilerServices;
+    using System.Threading;
     using AddressableTools.Runtime;
     using Core.Runtime;
     using Cysharp.Threading.Tasks;
     using Localization.Runtime;
     using R3;
     using TMPro;
+    using UniGame.Runtime.DataFlow;
     using UniGame.Runtime.Utils;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
@@ -159,18 +161,21 @@
             return SetValue(target, value);
         }
 
-        public static async UniTask<bool> SetValueAsync(this Image target, AssetReferenceT<Sprite> sprite)
+        public static async UniTask<bool> SetValueAsync(this Image target, AssetReferenceT<Sprite> sprite, CancellationToken extraCancellation = default)
         {
             if (target == null || 
                 sprite == null || 
                 sprite.RuntimeKeyIsValid() == false) return false;
             
             var lifeTime = target.GetAssetLifeTime();
-            var value = await sprite.LoadAssetTaskAsync<Sprite>(lifeTime);
+
+            var value = await sprite
+                .LoadAssetTaskAsync(lifeTime)
+                .AttachExternalCancellation(extraCancellation);
+            
             return SetValue(target, value);
         }
-        
-        
+
         public static async UniTask<bool> SetValueAsync(this Image target, UniTask<Sprite> sprite)
         {
             if (target == null) return false;
