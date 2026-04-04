@@ -25,7 +25,7 @@
             var lifeTime = context.LifeTime;
             
             var viewSystemAsset = await viewSystemSource
-                .LoadGameObjectAssetTaskAsync(lifeTime);
+                .LoadGameObjectTaskAsync(lifeTime);
             var viewObject = Instantiate(viewSystemAsset.gameObject);
             var viewAsset = viewObject.GetComponent<GameViewSystemAsset>();
 

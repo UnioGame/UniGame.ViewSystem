@@ -70,7 +70,7 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
         {
             var lifeTime = lifeTimeObject.GetLifeTime();
             var reference = settingsReference.reference;
-            var viewSettings = await reference.LoadAssetInstanceTaskAsync(lifeTime,true);
+            var viewSettings = await reference.LoadInstanceTaskAsync(lifeTime,true);
 
             if (viewSettings == null)
                 return LifeTime.TerminatedLifetime;
