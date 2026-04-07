@@ -144,7 +144,7 @@
             try
             {
                 var time = unscaledTime ? Time.unscaledTime : Time.time;
-                while (!token.IsCancellationRequested && time < finishTime)
+                while (!token.IsCancellationRequested && canvasGroup != null && time < finishTime)
                 {
                     var timePassed = (time - startTime);
                     var progress = timePassed / duration;
@@ -156,7 +156,7 @@
             }
             finally
             {
-                canvasGroup.SetState(to);
+                canvasGroup?.SetState(to);
             }
         }
     }
