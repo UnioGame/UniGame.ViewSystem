@@ -573,6 +573,7 @@ namespace UniGame.UiSystem.Runtime
             if (view == null) return;
 
             view.Destroy();
+            
             var asset = view as Component;
             if (asset == null) return;
 
@@ -581,7 +582,6 @@ namespace UniGame.UiSystem.Runtime
 
             var target = asset.gameObject;
             target.DespawnNextFrame();
-            
         }
 
         #endregion

@@ -126,6 +126,8 @@
         
         #region public properties
 
+        public bool IsAlive => !LifeTime.IsTerminated;
+        
         public string SourceName => sourceName;
         
         public string ViewId => viewId;

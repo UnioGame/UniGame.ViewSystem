@@ -93,7 +93,7 @@ namespace UniGame.UiSystem.Runtime
             var hasPool = sourceView.HasPool();
 
             if (usePooling && !hasPool)
-                sourceView.CreatePool(preloadCount);
+                hasPool = sourceView.CreatePool(preloadCount);
             
             var takeFromPool = usePooling || hasPool;
             
@@ -102,6 +102,7 @@ namespace UniGame.UiSystem.Runtime
                 : Object.Instantiate(sourceView, parent, stayPosition);
 
             var isActive = gameObjectView.activeSelf;
+            
             if (isActive)
             {
                 gameObjectView.SetActive(false);
@@ -115,6 +116,7 @@ namespace UniGame.UiSystem.Runtime
             
             return new ViewResult()
             {
+                Source = sourceView,
                 View = view,
                 AssetLifeTime = assetLifeTime
             };
@@ -131,6 +133,7 @@ namespace UniGame.UiSystem.Runtime
 
         public struct ViewResult
         {
+            public GameObject Source;
             public IView     View;
             public ILifeTime AssetLifeTime;
         }

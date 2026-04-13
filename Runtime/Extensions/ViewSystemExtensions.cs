@@ -46,7 +46,7 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
             tasks.Clear();
 
             foreach (var viewHandle in viewHandles)
-                tasks.Add(WarmUpUiReference(viewHandle,lifeTime,preloadCount,lifeTime.Token));
+                tasks.Add(WarmUpUiReference(viewHandle,preloadCount,lifeTime.Token));
             
             await UniTask.WhenAll(tasks)
                 .AttachExternalCancellation(lifeTime.Token);
@@ -57,12 +57,11 @@ namespace UniModules.UniGame.ViewSystem.Runtime.Extensions
             return lifeTime;
         }
 
-        public static async UniTask<GameObject> WarmUpUiReference(UiViewReference reference, ILifeTime lifeTime,int preloadCount = 0,
-            CancellationToken cancellationToken = default)
+        public static async UniTask<GameObject> WarmUpUiReference(UiViewReference reference, int preloadCount = 0, CancellationToken cancellationToken = default)
         {
             var count = preloadCount >= reference.PoolingPreloadCount ? preloadCount : reference.PoolingPreloadCount;
             var view  = reference.View;
-            var asset = await view.CreatePool(lifeTime,count).AttachExternalCancellation(cancellationToken);
+            var asset = await view.CreatePoolAsync(count).AttachExternalCancellation(cancellationToken);
             return asset;
         }
         

@@ -25,7 +25,9 @@ namespace UniGame.UiSystem.Runtime
         public ReadOnlyReactiveProperty<ViewStatus> Status => _viewStatusProperty;
 
         public Type ModelType => typeof(IViewModel);
-        
+
+        public bool IsAlive => true;
+
         public IViewsLayout Layout => GameViewSystem.ViewSystem;
 
         public GameObject Owner     => null;

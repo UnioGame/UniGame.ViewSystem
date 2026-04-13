@@ -15,6 +15,8 @@ namespace UniGame.ViewSystem.Runtime
     {
         Type ModelType { get; }
         
+        bool IsAlive { get; }
+        
         public IViewsLayout Layout { get; }
         
         public GameObject Owner { get; }
