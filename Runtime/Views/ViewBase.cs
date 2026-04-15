@@ -1,6 +1,7 @@
 ﻿namespace UniGame.UiSystem.Runtime
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading;
     using Cysharp.Threading.Tasks;
     using JetBrains.Annotations;
@@ -14,6 +15,7 @@
     using ViewSystem.Runtime;
      
     using UnityEngine;
+    using UnityEngine.Pool;
     using ViewSystem.Runtime.Binding;
 
 #if ODIN_INSPECTOR
@@ -38,6 +40,8 @@
 #endif
         [SerializeReference]
         public IViewAnimation viewAnimation = new SimpleFadeViewAnimation();
+        
+        public List<ViewBase> nestedViews = new();
         
 #if ODIN_INSPECTOR
         [ShowIf(nameof(IsCommandsAction))]
@@ -262,9 +266,11 @@
 
             Animation = SelectAnimation();
             
-            PlayAnimation(_progressLifeTime)
-                .Forget();
+            PlayAnimation(_progressLifeTime).Forget();
 
+            //initialize nested views
+            await InitializeNestedViews();
+            
             //custom initialization
             await OnInitialize(model);
 
@@ -274,6 +280,24 @@
             _viewModelChanged.OnNext(model);
 
             return this;
+        }
+
+        private async UniTask InitializeNestedViews()
+        {
+            var nestedTasks = ListPool<UniTask>.Get();
+            nestedTasks.Clear();
+
+            foreach (var nestedView in nestedViews)
+            {
+                if(nestedView == null) continue;
+                var task = nestedView.RegisterView(destroyCancellationToken);
+                nestedTasks.Add(task);
+            }
+
+            await UniTask.WhenAll(nestedTasks).AttachExternalCancellation(destroyCancellationToken);
+            
+            nestedTasks.Clear();
+            ListPool<UniTask>.Release(nestedTasks);
         }
 
         /// <summary>
