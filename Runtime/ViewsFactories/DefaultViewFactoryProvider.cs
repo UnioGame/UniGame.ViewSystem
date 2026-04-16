@@ -12,8 +12,8 @@ namespace Game.Modules.unigame.unimodules.UniGame.ViewSystem.Runtime.ViewsFactor
     {
         public async UniTask<IViewFactory> CreateViewFactoryAsync(ViewSystemSettings settings)
         {
-            var factory  = new ViewFactory(new AsyncLazy(settings.WaitForInitialize),
-                settings.ResourceProvider);
+            var asyncStatus = new AsyncLazy(settings.WaitForInitialize);
+            var factory  = new ViewFactory(asyncStatus, settings.ResourceProvider);
             return factory;
         }
     }

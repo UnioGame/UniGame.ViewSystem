@@ -17,9 +17,10 @@ namespace UniGame.UiSystem.Runtime
     
     public class ViewFactory : IViewFactory
     {
-        private readonly AsyncLazy                      _readyStatus;
-        private readonly IViewResourceProvider          _resourceProvider;
-        private readonly Dictionary<string, GameObject> _assetReferenceMap;
+        private AsyncLazy                      _readyStatus;
+        private IViewResourceProvider          _resourceProvider;
+        private Dictionary<string, GameObject> _assetReferenceMap;
+        private LifeTime _lifeTime = new();
 
         public ViewFactory(
             AsyncLazy readyStatus,
@@ -51,9 +52,11 @@ namespace UniGame.UiSystem.Runtime
 
             var result = viewReference.View;
             var loadLifeTime = new LifeTime();
+            var usePooling = viewReference.UsePooling;
+            var keepInMemory = viewReference.KeepInMemory;
             
             //create view instance
-            var viewResult   = await Create(result,loadLifeTime, parent,stayWorldPosition,viewReference.UsePooling);
+            var viewResult   = await Create(result,loadLifeTime, parent,stayWorldPosition,usePooling);
             
             var view         = viewResult.View;
             var viewLifeTime = viewResult.AssetLifeTime;
@@ -65,7 +68,13 @@ namespace UniGame.UiSystem.Runtime
                 return null;
             }
 
-            viewLifeTime.AddDispose(loadLifeTime);
+            var memoryLifeTime = viewLifeTime;
+            
+            //if view need to be keeped in memory even if pooling is disabled
+            if(!usePooling && keepInMemory)
+                memoryLifeTime = _lifeTime;
+            
+            memoryLifeTime.AddDispose(loadLifeTime);
             view.SetSourceName(viewId,viewReference.ViewName);
             
             return view;
@@ -131,6 +140,10 @@ namespace UniGame.UiSystem.Runtime
             return sourceView;
         }
 
+
+        public void Dispose() => _lifeTime.Terminate();
+        
+        
         public struct ViewResult
         {
             public GameObject Source;

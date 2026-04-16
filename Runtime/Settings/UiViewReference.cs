@@ -52,8 +52,12 @@ namespace UniGame.UiSystem.Runtime.Settings
 #endif
         [Space(2)]
         public SType ViewModelType;
+        
+        [Tooltip("if true, when loaded view addressable bundle keep in memory during game")]
+        public bool KeepInMemory = false;
 
         [Header("Pooling Settings")]
+        [Tooltip("if true, when you create view it's instance will taken from the pool and returned to pool on close")]
         public bool UsePooling = false;
         
         public int PoolingPreloadCount = 0;

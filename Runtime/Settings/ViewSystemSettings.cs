@@ -27,7 +27,6 @@ namespace UniGame.UiSystem.Runtime.Settings
     public class ViewSystemSettings : ViewsSettings, ICompletionStatus, IDisposable
     {
         #region inspector
-        
 
 #if ODIN_INSPECTOR
         [TabGroup(SettingsTabKey)]

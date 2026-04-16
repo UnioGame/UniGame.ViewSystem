@@ -214,6 +214,7 @@
             //create view factory specific for settings
             var viewProvider = settingsAsset.viewsFactory ?? new DefaultViewFactoryProvider();
             var factory  = await viewProvider.CreateViewFactoryAsync(settingsAsset);
+            factory.AddTo(LifeTime);
             
             //fill layouts
             var stackMap = new Dictionary<string, IViewLayout>(4);

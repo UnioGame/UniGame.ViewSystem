@@ -128,6 +128,7 @@ namespace UniModules.UniGame.ViewSystem
             viewDescription.PoolingPreloadCount = viewDescription.PoolingPreloadCount;
             viewDescription.Hash = viewDescription.GetHashCode();
             viewDescription.UsePooling = viewDescription.UsePooling;
+            viewDescription.KeepInMemory = viewDescription.KeepInMemory;
             viewDescription.PoolingPreloadCount = viewDescription.PoolingPreloadCount;
             
             return viewDescription;
@@ -195,12 +196,11 @@ namespace UniModules.UniGame.ViewSystem
             
             var type = overrideValue.ViewModelType.Type;
             if (type is { IsAbstract: false, IsInterface: false })
-            {
                 viewReference.ViewModelType = overrideValue.ViewModelType;
-            }
             
             viewReference.PoolingPreloadCount = overrideValue.PoolingPreloadCount;
             viewReference.UsePooling = overrideValue.UsePooling;
+            viewReference.KeepInMemory = overrideValue.KeepInMemory;
         }
 
         private void AddView(ViewsSettings settings, IView view, bool defaultView, string groupName)

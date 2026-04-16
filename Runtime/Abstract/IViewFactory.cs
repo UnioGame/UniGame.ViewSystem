@@ -1,9 +1,10 @@
 ﻿namespace UniGame.ViewSystem.Runtime
 {
+    using System;
     using Cysharp.Threading.Tasks;
     using UnityEngine;
 
-    public interface IViewFactory
+    public interface IViewFactory : IDisposable
     {
         UniTask<IView> Create(
             string viewId, 
