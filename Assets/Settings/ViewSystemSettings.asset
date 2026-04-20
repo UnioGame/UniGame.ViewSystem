@@ -15,6 +15,7 @@ MonoBehaviour:
   sourceName: GameViewSystemSettings
   isActive: 0
   useViewPooling: 0
+  keepInMemory: 0
   uiViewsDefaultFolders: []
   viewsAssetsSources: []
   uiViewsSkinFolders: []
