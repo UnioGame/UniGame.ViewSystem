@@ -1,6 +1,7 @@
 namespace ViewSystem.Modules.LitMotionSupport
 {
     using System;
+    using System.Threading;
     using Cysharp.Threading.Tasks;
     using LitMotion.Animation;
     using Sirenix.OdinInspector;
@@ -43,7 +44,6 @@ namespace ViewSystem.Modules.LitMotionSupport
         public CanvasGroup group;
         public LitMotionAnimation showAnimation;
         public LitMotionAnimation hideAnimation;
-
         
         #endregion
 
@@ -114,6 +114,7 @@ namespace ViewSystem.Modules.LitMotionSupport
             await UniTask.WaitForEndOfFrame();
             
             SetCanvasGroupValue(view,1);
+            
             await PlayAnimation(view, hideAnimation)
                 .AttachExternalCancellation(lifeTime.Token);
         }
@@ -125,16 +126,19 @@ namespace ViewSystem.Modules.LitMotionSupport
             
             animation.Restart();
 
+            var token = view.LifeTime.Token;
+            
             var context = new LitMotionViewAnimationContext()
             {
                 animation = animation,
-                view = view
+                view = view,
+                cancellation = token,
             };
             
-            await UniTask.WaitWhile(context, x => 
-                !context.view.LifeTime.IsTerminated && 
-                context.view.GameObject!=null &&
-                x.animation.IsPlaying);
+            await UniTask.WaitWhile(context,static x => 
+                !x.view.LifeTime.IsTerminated && 
+                x.view.GameObject!=null &&
+                x.animation.IsPlaying,cancellationToken:token);
             
             animation.Stop();
         }
@@ -150,5 +154,6 @@ namespace ViewSystem.Modules.LitMotionSupport
     {
         public LitMotionAnimation animation;
         public IView view;
+        public CancellationToken cancellation;
     }
 }

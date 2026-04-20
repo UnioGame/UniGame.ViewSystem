@@ -140,9 +140,9 @@
         
         public ReadOnlyReactiveProperty<bool> IsInitialized => _isInitialized;
 
-        public GameObject Owner => gameObject;
+        public GameObject Owner =>  this != null ? gameObject : null;
         
-        public GameObject GameObject => gameObject;
+        public GameObject GameObject => this != null ? gameObject : null;
 
         public virtual Type ModelType => typeof(IViewModel);
 
