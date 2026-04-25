@@ -38,6 +38,8 @@ namespace ViewSystem.Modules.LitMotionSupport
 
         public bool controlCanvasGroup = true;
         
+        public bool stopWhenFinished = true;
+        
 #if ODIN_INSPECTOR
         [ShowIf(nameof(controlCanvasGroup))]
 #endif
@@ -118,11 +120,16 @@ namespace ViewSystem.Modules.LitMotionSupport
             await PlayAnimation(view, hideAnimation)
                 .AttachExternalCancellation(lifeTime.Token);
         }
+
+        public void Stop()
+        {
+            showAnimation?.Stop();
+            hideAnimation?.Stop();
+        }
         
         public async UniTask PlayAnimation(IView view, LitMotionAnimation animation)
         {
-            showAnimation.Stop();
-            hideAnimation.Stop();
+            Stop();
             
             animation.Restart();
 
@@ -140,13 +147,13 @@ namespace ViewSystem.Modules.LitMotionSupport
                 x.view.GameObject!=null &&
                 x.animation.IsPlaying,cancellationToken:token);
             
-            animation.Stop();
+            if(stopWhenFinished)    
+                animation.Stop();
         }
 
         public void Dispose()
         {
-            showAnimation?.Stop();
-            hideAnimation?.Stop();
+            Stop();
         }
     }
 

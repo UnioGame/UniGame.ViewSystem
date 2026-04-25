@@ -1340,6 +1340,26 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             source.CloseWith(view.LifeTime);
             return view;
         }
+        
+        public static TView BindOnClose<TView>(this TView view, Action<TView> action)
+            where TView : IView
+        {
+            var lifeTime = view.LifeTime;
+            if(lifeTime.IsTerminated) return view;
+            var closeObservable = view.OnClosed();
+
+            return view.Bind(closeObservable, action);
+        }
+        
+        public static TView BindOnClose<TView>(this TView view, Action action)
+            where TView : IView
+        {
+            var lifeTime = view.LifeTime;
+            if(lifeTime.IsTerminated) return view;
+            var closeObservable = view.OnClosed();
+
+            return view.Bind(closeObservable, action);
+        }
 
         public static TSource BindClose<TSource, T>(this TSource view, IView target)
             where TSource : IView
