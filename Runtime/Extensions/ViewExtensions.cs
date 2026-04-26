@@ -1,6 +1,7 @@
 ﻿namespace UniGame.ViewSystem.Runtime.Utils
 {
     using System;
+    using System.Threading;
     using global::UniGame.ViewSystem.Runtime;
     using Cysharp.Threading.Tasks;
     using R3;
@@ -100,9 +101,9 @@
             await view.AwaitClose();
         }
 
-        public static async UniTask AwaitClose(this IView view)
+        public static async UniTask AwaitClose(this IView view,CancellationToken cancellationToken = default)
         {
-            while (view.LifeTime.IsTerminated == false)
+            while (!view.LifeTime.IsTerminated && !cancellationToken.IsCancellationRequested)
                 await UniTask.Yield();
         }
         
