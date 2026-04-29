@@ -5,6 +5,7 @@
     using UniGame.UiSystem.Runtime.Settings;
     using UniGame.Runtime.Utils;
     using UniGame.DataStructure;
+    using UnityEngine;
 
     [Serializable]
     public class ViewReferencesMap : IViewReferencesMap
@@ -42,19 +43,27 @@
 
         public void Add(UiViewReference reference)
         {
-            if(reference?.Type == null)
+            if (reference == null)
                 return;
 
-            var viewName = reference.ViewName;
-            
             var type = (Type)reference.Type;
-            var modelTypeName = (Type)reference.ModelType;
-            var viewModelTypeName = (Type)reference.ViewModelType;
+            var modelType = (Type)reference.ModelType;
+            var viewModelType = (Type)reference.ViewModelType;
+
+            if (type == null || modelType == null || viewModelType == null)
+            {
+                Debug.LogWarning($"ViewSystem: skip invalid UiViewReference '{reference.ViewName ?? reference.AssetGUID}' because serialized view/model type is missing. View={type?.Name ?? "null"} Model={modelType?.Name ?? "null"} ViewModel={viewModelType?.Name ?? "null"}");
+                return;
+            }
+
+            var viewName = string.IsNullOrWhiteSpace(reference.ViewName)
+                ? type.Name
+                : reference.ViewName;
 
             var targetName = KeyCache[viewName];
             var targetType = KeyCache[type.Name];
-            var targetModelName = KeyCache[modelTypeName.Name];
-            var targetViewModelName = KeyCache[viewModelTypeName.Name];
+            var targetModelName = KeyCache[modelType.Name];
+            var targetViewModelName = KeyCache[viewModelType.Name];
             
             AddReference(targetName,reference);
             AddReference(targetType,reference);

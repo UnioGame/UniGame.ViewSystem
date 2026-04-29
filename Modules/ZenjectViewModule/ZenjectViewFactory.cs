@@ -32,5 +32,10 @@ namespace Game.Modules.ViewSystem.ZenjectViewModule
             _container.InjectGameObject(viewObject);
             return view;
         }
+
+        public void Dispose()
+        {
+            _viewFactory.Dispose();
+        }
     }
 }
