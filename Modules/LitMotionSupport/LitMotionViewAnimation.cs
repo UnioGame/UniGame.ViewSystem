@@ -4,13 +4,16 @@ namespace ViewSystem.Modules.LitMotionSupport
     using System.Threading;
     using Cysharp.Threading.Tasks;
     using LitMotion.Animation;
-    using Sirenix.OdinInspector;
     using UniGame.Core.Runtime;
     using UniGame.ViewSystem.Runtime;
     using UniGame.ViewSystem.Runtime.Views.Abstract;
     using UniModules.UniUiSystem.Runtime.Utils;
     using UnityEngine;
 
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+#endif
+    
     [Serializable]
     public class LitMotionViewAnimation : IViewAnimation,IDisposable
     {

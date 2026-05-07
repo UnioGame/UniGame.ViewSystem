@@ -34,6 +34,7 @@
 
         public GameObject viewInstance;
         
+#if ODIN_INSPECTOR
         public IEnumerable<ValueDropdownItem<SType>> GetViewsDropdown()
         {
             foreach (var viewType in UiViewReference.GetTypeDropdown(typeof(IView)))
@@ -41,6 +42,8 @@
                 yield return viewType;
             }
         }
+#endif
+
         
         public async UniTask CreateViewAsync()
         {
