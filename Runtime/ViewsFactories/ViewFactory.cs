@@ -19,14 +19,10 @@ namespace UniGame.UiSystem.Runtime
     {
         private AsyncLazy                      _readyStatus;
         private IViewResourceProvider          _resourceProvider;
-        private Dictionary<string, GameObject> _assetReferenceMap;
         private LifeTime _lifeTime = new();
 
-        public ViewFactory(
-            AsyncLazy readyStatus,
-            IViewResourceProvider viewResourceProvider)
+        public ViewFactory(AsyncLazy readyStatus, IViewResourceProvider viewResourceProvider)
         {
-            _assetReferenceMap = new Dictionary<string, GameObject>();
             _readyStatus       = readyStatus;
             _resourceProvider = viewResourceProvider;
             _resourceProvider = viewResourceProvider;
@@ -133,11 +129,14 @@ namespace UniGame.UiSystem.Runtime
 
         protected async UniTask<GameObject> LoadAssetReferenceAsset(AssetReferenceGameObject asset,ILifeTime lifeTime)
         {
-            if (_assetReferenceMap.TryGetValue(asset.AssetGUID, out var gameObject) && gameObject != null)
-                return gameObject;
-            var sourceView = await asset.LoadAssetTaskAsync(lifeTime);
-            _assetReferenceMap[asset.AssetGUID] = sourceView;
-            return sourceView;
+            var guid = asset.AssetGUID;
+
+            var loadResult = await guid.LoadAssetReferenceAsync<GameObject>(
+                lifeTime,
+                false,
+                lifeTime.Token);
+            
+            return loadResult.Result;
         }
 
 
