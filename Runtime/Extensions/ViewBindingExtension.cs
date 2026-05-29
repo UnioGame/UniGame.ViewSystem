@@ -348,6 +348,13 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             return view.Bind(source, x => text.SetValue(x));
         }
 
+        public static TView Bind<TView>(this TView view, Observable<string> source, TMP_Text text)
+            where TView : ILifeTimeContext
+        {
+            if (!text) return view;
+            return view.Bind(source, x => text.SetValue(x));
+        }
+        
         public static TView Bind<TView>(this TView view, Observable<int> source, TextMeshPro text)
             where TView : ILifeTimeContext
         {
