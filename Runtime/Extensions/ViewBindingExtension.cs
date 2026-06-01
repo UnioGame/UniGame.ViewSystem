@@ -54,7 +54,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
         
         public static TView Bind<TView>(this TView view, 
             ReactiveValue<LocalizedString> source, 
-            TextMeshProUGUI text)
+            TMP_Text text)
             where TView : class, IView
         {
             return Bind(view, source.Where(source, static (x,y) => y.HasValue), text);
@@ -63,14 +63,14 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
 
         public static TView Bind<TView>(this TView view, 
             Observable<LocalizedString> source, 
-            TextMeshProUGUI text)
+            TMP_Text text)
             where TView : class, ILifeTimeContext
         {
             if(view == null || source == null) return view;
             return view.Bind(source, x => view.Bind(x, text));
         }
         
-        public static TView Bind<TView>(this TView view, LocalizedString source, TextMeshProUGUI text)
+        public static TView Bind<TView>(this TView view, LocalizedString source, TMP_Text text)
             where TView : ILifeTimeContext
         {
             return source == null ? view : view.Bind(source.AsObservable(), text);
@@ -82,7 +82,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             return source == null ? view : view.Bind(source.AsObservable(), image);
         }
 
-        public static TView Bind<TView>(this TView view, LocalizeStringEvent source, TextMeshProUGUI text)
+        public static TView Bind<TView>(this TView view, LocalizeStringEvent source, TMP_Text text)
             where TView : class, IView
         {
             return source == null || source.StringReference == null || source.StringReference.IsEmpty
@@ -293,32 +293,26 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             return source.Subscribe(text,static (x,y) => y.SetValue(x));
         }
         
-        public static IDisposable Bind(this ReactiveValue<string> source, TextMeshProUGUI text)
+        public static IDisposable Bind(this ReactiveValue<string> source, TMP_Text text)
         {
             return Bind(source.Where(source,
                 static (x,y) => y.HasValue), text);
         }
         
-        public static IDisposable Bind(this Observable<string> source, TextMeshProUGUI text)
+        public static IDisposable Bind(this Observable<string> source, TMP_Text text)
         {
             return source.Subscribe(text,static (x,y) => y.SetValue(x));
         }
         
-        public static TView Bind<TView>(this TView view, ReactiveValue<string> source, TextMeshProUGUI text)
+        public static TView Bind<TView>(this TView view, ReactiveValue<string> source, TMP_Text text)
             where TView : ILifeTimeContext
         {
             return Bind(view,source.Where(source,static (x,y)=>y.HasValue), text);
         }
-        
-        public static TView Bind<TView>(this TView view, Observable<string> source, TextMeshProUGUI text)
-            where TView : ILifeTimeContext
-        {
-            return view.Bind(source, x => text.SetValue(x));
-        }
 
         public static TView Bind<TView, TValue>(this TView view,
             Observable<TValue> source,
-            Func<TValue, string> format, TextMeshProUGUI text)
+            Func<TValue, string> format, TMP_Text text)
             where TView : ILifeTimeContext
         {
             var stringObservable = source.Select(format);
@@ -515,7 +509,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             return view.Bind(text,source,static (x,y) => y.SetValue(x.ToStringFromCache()));
         }
         
-        public static TView Bind<TView>(this TView view, Observable<Color> source, TextMeshProUGUI text)
+        public static TView Bind<TView>(this TView view, Observable<Color> source, TMP_Text text)
             where TView : ILifeTimeContext
         {
             return view.Bind(text,source,static (x,y) => y.SetValue(x));
@@ -539,19 +533,19 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             return view.Bind(button,source,static (x,y) => y.SetValue(x));
         }
 
-        public static TView Bind<TView>(this TView view, Observable<int> source, TextMeshProUGUI text)
+        public static TView Bind<TView>(this TView view, Observable<int> source, TMP_Text text)
             where TView : ILifeTimeContext
         {
             return view.Bind(text,source,static (x,y) => y.SetValue(x.ToStringFromCache()));
         }
         
-        public static TView Bind<TView>(this TView view, Observable<long> source, TextMeshProUGUI text)
+        public static TView Bind<TView>(this TView view, Observable<long> source, TMP_Text text)
             where TView : ILifeTimeContext
         {
             return view.Bind(text,source,static (x,y) => y.SetValue(x.ToString()));
         }
         
-        public static TView Bind<TView>(this TView view, Observable<float> source, TextMeshProUGUI text)
+        public static TView Bind<TView>(this TView view, Observable<float> source, TMP_Text text)
             where TView : ILifeTimeContext
         {
             return view.Bind(text,source,static (x,y) => y.SetValue(x.ToStringFromCache()));
