@@ -7,6 +7,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Runtime.CompilerServices;
     using Cysharp.Threading.Tasks;
     using TMPro;
@@ -16,6 +17,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
     using R3;
     using Common;
     using DataFlow;
+    using ObservableCollections;
     using UniModules.UniGame.UiSystem.Runtime;
     using Utils;
     using UnityEngine.AddressableAssets;
@@ -748,7 +750,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             where TModel : IViewModel
             where TChildView : class, IView
         {
-            return sender.Bind(source as Observable<List<TModel>>, views, container,viewAction,onComplete);
+            return sender.Bind(source.AsObservable(), views, container,viewAction,onComplete);
         }
 
         /// <summary>
