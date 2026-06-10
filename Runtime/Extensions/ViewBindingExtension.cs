@@ -278,7 +278,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             var lifeTime = view.LifeTime;
             
             target.RegisterView(model)
-                .AttachExternalCancellation<IView>(lifeTime.Token)
+                .AttachExternalCancellation(lifeTime.Token)
                 .Forget();
             
             return view;
@@ -845,7 +845,6 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             }
         }
 
-                
         /// <summary>
         ///  Bind list of models to list of views and create new views if needed
         /// </summary>
@@ -952,7 +951,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             if(sender == null || view == null) return sender;
             
             view.RegisterView()
-                .AttachExternalCancellation<IView>(sender.LifeTime.Token)
+                .AttachExternalCancellation(sender.LifeTime.Token)
                 .Forget();
             
             return sender;
@@ -965,7 +964,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             where TView : ILifeTimeContext
         {
             sender.BindViewAsync(view, command)
-                .AttachExternalCancellation<TView>(sender.LifeTime.Token)
+                .AttachExternalCancellation(sender.LifeTime.Token)
                 .Forget();
             
             return sender;

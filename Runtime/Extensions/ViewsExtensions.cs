@@ -559,7 +559,7 @@
             if (viewSystem == null || view == null) return view;
             
             var viewModel = await viewSystem.CreateViewModel(view.GetType().Name);
-            return await view.RegisterView(viewModel,null).AttachExternalCancellation<IView>(cancellationToken);
+            return await view.RegisterView(viewModel,null).AttachExternalCancellation(cancellationToken);
         }
 
         public static async UniTask<IView> RegisterView(this IView view, IViewModel viewModel, IViewLayout layout = null)
