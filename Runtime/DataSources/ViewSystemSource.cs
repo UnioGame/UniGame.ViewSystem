@@ -35,7 +35,7 @@
             var time = DateTime.Now - startDate;
             Debug.Log($"{nameof(IGameViewSystem)} {nameof(ViewSystemSource)} Duration Before {time.TotalMilliseconds} Start {DateTime.Now.ToLongTimeString()}");
 
-            await UniTask.WaitUntil(() => viewAsset.IsReady == true);
+            await UniTask.WaitUntil(viewAsset,static x => x.IsReady == true,cancellationToken:lifeTime.Token);
 
             time = DateTime.Now - startDate;
             Debug.Log($"{nameof(IGameViewSystem)} {nameof(ViewSystemSource)} Duration Ready {time.TotalMilliseconds} Start {DateTime.Now.ToLongTimeString()}");
