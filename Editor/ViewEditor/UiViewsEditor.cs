@@ -1,6 +1,7 @@
-﻿using UniGame.UiSystem.Runtime.Settings;
+﻿using UnityEngine;
+
+using UniGame.UiSystem.Runtime.Settings;
 using UnityEditor;
-using UnityEngine;
 
 namespace UniModules.UniGame.ViewSystem
 {
@@ -16,7 +17,7 @@ namespace UniModules.UniGame.ViewSystem
             base.OnInspectorGUI();
 
             if (GUILayout.Button("rebuild")) {
-                builder.RebuildAll();
+                builder.Build((ViewsSettings)target);
             }
         }
     }

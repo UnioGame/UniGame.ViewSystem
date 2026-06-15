@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System;
 using UniCore.Runtime.ProfilerTools;
 using UniGame.UiSystem.Runtime.Settings;
 using UniModules.Editor;
@@ -125,11 +126,7 @@ namespace UniModules.UniGame.ViewSystem
             viewDescription.ViewModelType = viewModelType;
             viewDescription.View = assetReference;
             viewDescription.ViewName = assetReference.editorAsset.name;
-            viewDescription.PoolingPreloadCount = viewDescription.PoolingPreloadCount;
             viewDescription.Hash = viewDescription.GetHashCode();
-            viewDescription.UsePooling = viewDescription.UsePooling;
-            viewDescription.KeepInMemory = viewDescription.KeepInMemory;
-            viewDescription.PoolingPreloadCount = viewDescription.PoolingPreloadCount;
             
             return viewDescription;
         }
@@ -190,7 +187,12 @@ namespace UniModules.UniGame.ViewSystem
         private void ApplyOverrideValues(UiViewReference viewReference,List<UiViewReference> values)
         {
             var overrideValue = values
-                .FirstOrDefault(x => x.Hash == viewReference.Hash);
+                .FirstOrDefault(x => string.Equals(x.AssetGUID, viewReference.AssetGUID, StringComparison.Ordinal));
+
+            overrideValue ??= values
+                .FirstOrDefault(x =>
+                    string.Equals(x.ViewName, viewReference.ViewName, StringComparison.Ordinal) &&
+                    string.Equals(x.Tag, viewReference.Tag, StringComparison.Ordinal));
             
             if (overrideValue == null) return;
             

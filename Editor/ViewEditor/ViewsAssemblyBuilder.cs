@@ -1,14 +1,15 @@
 ﻿using UniCore.Runtime.ProfilerTools;
 using UniGame.UiSystem.Runtime.Settings;
-using UniModules.Editor;
 
 namespace UniModules.UniGame.ViewSystem
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using global::UniGame.ViewSystem.Editor.EditorAssets;
     using UniModules.Editor;
     using global::UniGame.ViewSystem.Runtime;
+    using UnityEditor;
     using UnityEditor.AddressableAssets;
     using UnityEditor.AddressableAssets.Settings;
 
@@ -43,24 +44,26 @@ namespace UniModules.UniGame.ViewSystem
 
         public void RebuildViewSettings()
         {
-            var viewSettings = AssetEditorTools.GetAssets<ViewsSettings>();
+            var viewSettings = AssetEditorTools
+                .GetAssets<ViewsSettings>()
+                .Where(IsProjectViewSettings);
+
             foreach (var setting in viewSettings)
-            {
                 Build(setting);
-                setting.MarkDirty();
-            }
+
+            AssetDatabase.SaveAssets();
         }
 
         public void Build(ViewsSettings settings)
         {
-            addressableAssetSettings = AddressableAssetSettingsDefaultObject.Settings;
-            
-            if (settings.isActive == false) return;
-
             if (!settings) {
                 GameLog.LogError($"EMPTY UiManagerSettings on UiAssemblyBuilder.Build");
                 return;
             }
+
+            if (settings.isActive == false) return;
+
+            addressableAssetSettings = AddressableAssetSettingsDefaultObject.Settings;
 
             ApplyViewSettingsPipeline(settings);
             
@@ -97,6 +100,14 @@ namespace UniModules.UniGame.ViewSystem
             }
 
             return settings;
+        }
+
+        private static bool IsProjectViewSettings(ViewsSettings settings)
+        {
+            if (!settings) return false;
+
+            var path = AssetDatabase.GetAssetPath(settings);
+            return path.StartsWith("Assets/", StringComparison.OrdinalIgnoreCase);
         }
 
         public void Reset()
