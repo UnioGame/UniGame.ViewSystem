@@ -1,7 +1,6 @@
 namespace ViewSystem.Modules.LitMotionSupport
 {
     using System;
-    using System.Threading;
     using Cysharp.Threading.Tasks;
     using LitMotion.Animation;
     using UniGame.Core.Runtime;
@@ -88,6 +87,7 @@ namespace ViewSystem.Modules.LitMotionSupport
         public void SetCanvasGroupValue(IView view, float value)
         {
             if (!controlCanvasGroup) return;
+            if (!IsViewAlive(view)) return;
             
             var canvasGroup = GetGroup(view);
             canvasGroup.SetState(value);
@@ -97,31 +97,36 @@ namespace ViewSystem.Modules.LitMotionSupport
         {
             if(!animateShowing) return;
 
-            await UniTask.WaitForEndOfFrame();
+            var canceled = await UniTask.WaitForEndOfFrame(lifeTime.Token)
+                .SuppressCancellationThrow();
+
+            if (canceled || !IsViewAlive(view))
+                return;
             
             SetCanvasGroupValue(view,1);
             
-            await PlayAnimation(view, showAnimation)
-                .AttachExternalCancellation(lifeTime.Token);
+            await PlayAnimation(view, showAnimation, lifeTime);
         }
 
         public async UniTask Close(IView view, ILifeTime lifeTime)
         {
             if (!animateClosing) return;
-            await PlayAnimation(view, hideAnimation)
-                .AttachExternalCancellation(lifeTime.Token);
+            await PlayAnimation(view, hideAnimation, lifeTime);
         }
 
         public async UniTask Hide(IView view, ILifeTime lifeTime)
         {
             if (!animateHiding) return;
             
-            await UniTask.WaitForEndOfFrame();
+            var canceled = await UniTask.WaitForEndOfFrame(lifeTime.Token)
+                .SuppressCancellationThrow();
+
+            if (canceled || !IsViewAlive(view))
+                return;
             
             SetCanvasGroupValue(view,1);
             
-            await PlayAnimation(view, hideAnimation)
-                .AttachExternalCancellation(lifeTime.Token);
+            await PlayAnimation(view, hideAnimation, lifeTime);
         }
 
         public void Stop()
@@ -130,28 +135,46 @@ namespace ViewSystem.Modules.LitMotionSupport
             hideAnimation?.Stop();
         }
         
-        public async UniTask PlayAnimation(IView view, LitMotionAnimation animation)
+        public async UniTask PlayAnimation(IView view, LitMotionAnimation animation, ILifeTime lifeTime)
         {
             Stop();
+
+            if (animation == null || lifeTime.IsTerminated || !IsViewAlive(view))
+                return;
+
+            lifeTime.AddCleanUpAction(Stop);
             
             animation.Restart();
-
-            var token = view.LifeTime.Token;
             
             var context = new LitMotionViewAnimationContext()
             {
                 animation = animation,
                 view = view,
-                cancellation = token,
+                lifeTime = lifeTime,
             };
-            
-            await UniTask.WaitWhile(context,static x => 
-                !x.view.LifeTime.IsTerminated && 
-                x.view.GameObject!=null &&
-                x.animation.IsPlaying,cancellationToken:token);
-            
-            if(stopWhenFinished)    
-                animation.Stop();
+
+            var canceled = false;
+
+            try
+            {
+                canceled = await UniTask.WaitWhile(context,static x => 
+                    !x.lifeTime.IsTerminated &&
+                    IsViewAlive(x.view) &&
+                    x.animation.IsPlaying,cancellationToken:lifeTime.Token)
+                    .SuppressCancellationThrow();
+            }
+            finally
+            {
+                if (canceled || lifeTime.IsTerminated || !IsViewAlive(view) || stopWhenFinished)
+                    animation.Stop();
+            }
+        }
+
+        private static bool IsViewAlive(IView view)
+        {
+            return view != null &&
+                   !view.LifeTime.IsTerminated &&
+                   view.GameObject != null;
         }
 
         public void Dispose()
@@ -164,6 +187,6 @@ namespace ViewSystem.Modules.LitMotionSupport
     {
         public LitMotionAnimation animation;
         public IView view;
-        public CancellationToken cancellation;
+        public ILifeTime lifeTime;
     }
 }
