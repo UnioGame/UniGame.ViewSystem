@@ -23,6 +23,8 @@
 #endif
     public class GameViewSystemAsset : MonoBehaviour, IGameViewSystem
     {
+        private const string ScreensLayoutName = "Screens";
+
         #region inspector data
         
 #if ODIN_INSPECTOR
@@ -47,6 +49,9 @@
 
         private IGameViewSystem    _gameViewSystem;
         private LifeTime _lifeTime = new();
+        private Canvas _screensCanvas;
+        private int _screensDefaultSortingOrder;
+        private bool _screensSortingOrderCached;
 
         #region IViewModelProvider api
 
@@ -189,6 +194,26 @@
 
         public void Dispose() => _lifeTime.Terminate();
 
+        public bool TrySetScreensSortingOrder(int sortingOrder)
+        {
+            var canvas = GetScreensCanvas();
+            if (canvas == null)
+                return false;
+
+            canvas.sortingOrder = sortingOrder;
+            return true;
+        }
+
+        public bool TryRestoreScreensSortingOrder()
+        {
+            var canvas = GetScreensCanvas();
+            if (canvas == null || !_screensSortingOrderCached)
+                return false;
+
+            canvas.sortingOrder = _screensDefaultSortingOrder;
+            return true;
+        }
+
         #endregion
         
         private void Awake()
@@ -239,6 +264,25 @@
             _gameViewSystem = gameSystem.AddTo(LifeTime);
             
             return gameSystem;
+        }
+
+        private Canvas GetScreensCanvas()
+        {
+            if (_screensCanvas != null)
+                return _screensCanvas;
+
+            var screenTransform = transform.Find(ScreensLayoutName);
+            if (screenTransform == null)
+                return null;
+
+            _screensCanvas = screenTransform.GetComponent<Canvas>();
+            if (_screensCanvas != null && !_screensSortingOrderCached)
+            {
+                _screensDefaultSortingOrder = _screensCanvas.sortingOrder;
+                _screensSortingOrderCached = true;
+            }
+
+            return _screensCanvas;
         }
 
     }
