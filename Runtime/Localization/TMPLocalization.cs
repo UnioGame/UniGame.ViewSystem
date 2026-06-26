@@ -36,6 +36,11 @@ namespace UniGame.Localization.Runtime.Components
             textUGUI.SetValue(value);
         }
 
+#if UNITY_EDITOR
+        private void Reset() => 
+            textUGUI ??= GetComponent<TMP_Text>();
+#endif
+        
         private void OnEnable()
         {
             _lifeTime.Restart();
