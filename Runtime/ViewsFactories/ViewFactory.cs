@@ -112,7 +112,18 @@ namespace UniGame.UiSystem.Runtime
             {
                 gameObjectView.SetActive(false);
                 await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate,lifeTime.Token);
-                gameObjectView.SetActive(true);
+                if(gameObjectView!=null)
+                    gameObjectView.SetActive(true);
+            }
+
+            if (gameObjectView == null)
+            {
+                return new ViewResult()
+                {
+                    AssetLifeTime = lifeTime,
+                    Source = sourceView,
+                    View = null,
+                };
             }
             
             //create instance of view
