@@ -1298,13 +1298,19 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
         public static TView Bind<TView>(this TView view, Observable<Unit> source, ReactiveCommand<Unit> command)
             where TView : ILifeTimeContext
         {
-            return view.Bind(source, x => command.Execute(Unit.Default));
+            return ReactiveBindingExtensions.Bind<TView, Unit>(
+                view,
+                source,
+                (Action<Unit>)(_ => command.Execute(Unit.Default)));
         }
         
         public static TView Bind<TView,TData>(this TView view, Observable<TData> source, ReactiveCommand<TData> command)
             where TView : ILifeTimeContext
         {
-            return view.Bind(source, command.Execute);
+            return ReactiveBindingExtensions.Bind<TView, TData>(
+                view,
+                source,
+                (Action<TData>)command.Execute);
         }
 
         public static TSource Bind<TSource>(this TSource view, Toggle source, ReactiveValue<bool> value)
@@ -1350,7 +1356,11 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             if(lifeTime.IsTerminated) return view;
             var closeObservable = view.OnClosed();
 
-            return view.Bind(closeObservable, action);
+            closeObservable
+                .Subscribe(action)
+                .AddTo(lifeTime);
+
+            return view;
         }
         
         public static TView BindOnClose<TView,TData>(this TView view,TData data, Action<TData> action)
@@ -1363,7 +1373,10 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             var dataObservable = closeObservable
                 .Select(data, static (x,y) => y);
             
-            return view.Bind(dataObservable, action);
+            return ReactiveBindingExtensions.Bind<TView, TData>(
+                view,
+                dataObservable,
+                (Action<TData>)action);
         }
         
         public static TView BindOnClose<TView>(this TView view, Action action)
