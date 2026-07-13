@@ -224,6 +224,7 @@ namespace UniModules.UniGame.ViewSystem
             var viewReference = CreateViewReference(view, 
                 defaultView, 
                 settings.applyAddressablesGroup, groupName);
+            viewReference.UsePooling = settings.useViewPooling;
             
             views.Add(viewReference);
         }
