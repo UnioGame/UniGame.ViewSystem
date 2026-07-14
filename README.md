@@ -22,6 +22,7 @@ MVVM View System for Unity3D
     - [Custom Views Factory](#custom-views-factory)
       - [Enable Zenject DI Support](#enable-zenject-di-support)
   - [Pooling Support](#pooling-support)
+  - [View State Snapshots](#view-state-snapshots)
   - [API References](#api-references)
     - [Views \& ViewModels](#views--viewmodels)
       - [View Lifetime Management](#view-lifetime-management)
@@ -255,6 +256,86 @@ public class ZenjectViewFactory  : IViewFactory
 ```
 
 ## Pooling Support
+
+## View State Snapshots
+
+`ViewStateSnapshot` is an opt-in utility for capturing and restoring the visual baseline of pooled or repeatedly initialized views. Any `UnityEngine.Object` can act as the snapshot owner and identifier.
+
+Only explicitly registered objects and properties are captured. The API does not scan the view hierarchy and does not capture ViewModels, Animator state, Spine state, tweens, or dynamic content.
+
+```csharp
+using UniGame.ViewSystem.Runtime;
+
+public sealed class InventoryPanel : View<InventoryPanelViewModel>
+{
+    [SerializeField] private RectTransform panel;
+    [SerializeField] private List<RectTransform> icons;
+    [SerializeField] private Image background;
+    [SerializeField] private GameObject loadingIndicator;
+
+    protected override UniTask OnInitialize(InventoryPanelViewModel model)
+    {
+        this.CacheViewState(panel, ViewTransformStateFlags.AnchoredPosition)
+            .Cache(icons,
+                ViewTransformStateFlags.AnchoredPosition |
+                ViewTransformStateFlags.LocalScale)
+            .CacheColor(background)
+            .CacheActive(loadingIndicator);
+
+        this.RestoreViewState();
+        return UniTask.CompletedTask;
+    }
+}
+```
+
+The first cache call captures the baseline. Caching the same `RectTransform` again merges additional flags without replacing the original values.
+
+### Transform flags
+
+`ViewTransformStateFlags` supports:
+
+- `AnchoredPosition` (`anchoredPosition3D`)
+- `SizeDelta`
+- `Anchors` (`anchorMin` and `anchorMax`)
+- `Pivot`
+- `LocalRotation`
+- `LocalScale`
+- `All`
+
+Transforms are restored first, followed by graphic colors and active states.
+
+### Explicit snapshot access
+
+The snapshot can be stored and restored explicitly:
+
+```csharp
+ViewStateSnapshot snapshot = this
+    .CacheViewState(panel, ViewTransformStateFlags.All)
+    .CacheColor(background);
+
+this.RestoreViewState(snapshot);
+```
+
+`RestoreViewState(owner, snapshot)` succeeds only when the snapshot is still registered for that owner. `snapshot.Restore()` can also be used when ownership has already been established by the caller.
+
+Use `TryGetViewState()` for a lookup without creating a snapshot. Use `ReleaseViewState()` to return the snapshot to the class pool and allow the next cache call to capture a new baseline:
+
+```csharp
+if (this.TryGetViewState(out var snapshot))
+    snapshot.Restore();
+
+this.ReleaseViewState();
+```
+
+### Lifetime and allocation behavior
+
+- Snapshots are stored per owner and are released automatically with the owner's Unity asset lifetime.
+- A pooled view keeps its original snapshot across model/view lifetime restarts.
+- Releasing a view's model lifetime does not release its snapshot.
+- Each pooled `ViewStateSnapshot` owns reusable transform, color, and active-state dictionaries. Returning it to the pool clears the dictionaries but preserves their capacity.
+- Repeated restore operations do not create delegates or temporary collections.
+- The API is intended for the Unity main thread.
+- Captured targets must not be destroyed before their snapshot owner.
 
 ## API References
 
