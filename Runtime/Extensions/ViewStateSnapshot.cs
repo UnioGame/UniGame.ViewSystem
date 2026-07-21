@@ -27,6 +27,9 @@ namespace UniGame.ViewSystem.Runtime
 
         public ViewStateSnapshot Cache(RectTransform target, ViewTransformStateFlags flags)
         {
+            if (!target)
+                return this;
+
             var instanceId = target.GetInstanceID();
             if (Transforms.TryGetValue(instanceId, out var state))
             {
