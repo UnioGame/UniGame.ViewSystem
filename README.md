@@ -257,6 +257,14 @@ public class ZenjectViewFactory  : IViewFactory
 
 ## Pooling Support
 
+When `ViewFactory` creates or reuses a view whose root is a `RectTransform`, it restores the
+root anchors, pivot, size, anchored position, local rotation, and local scale from the source
+prefab before reactivating the instance. With `stayWorldPosition` enabled, the world position
+and rotation are preserved after the layout reset.
+
+This automatic reset applies only to the view root. Use a view state snapshot for child
+transforms and other visual properties changed by animations or runtime presentation logic.
+
 ## View State Snapshots
 
 `ViewStateSnapshot` is an opt-in utility for capturing and restoring the visual baseline of pooled or repeatedly initialized views. Any `UnityEngine.Object` can act as the snapshot owner and identifier.
