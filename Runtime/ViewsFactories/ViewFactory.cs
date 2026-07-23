@@ -106,16 +106,6 @@ namespace UniGame.UiSystem.Runtime
                 ? sourceView.Spawn(viewTransform.position, viewTransform.rotation, parent, stayPosition) 
                 : Object.Instantiate(sourceView, parent, stayPosition);
 
-            var isActive = gameObjectView.activeSelf;
-            
-            if (isActive)
-            {
-                gameObjectView.SetActive(false);
-                await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate,lifeTime.Token);
-                if(gameObjectView!=null)
-                    gameObjectView.SetActive(true);
-            }
-
             if (gameObjectView == null)
             {
                 return new ViewResult()
@@ -125,7 +115,21 @@ namespace UniGame.UiSystem.Runtime
                     View = null,
                 };
             }
+
+            var isActive = gameObjectView.activeSelf;
             
+            if (isActive)
+                gameObjectView.SetActive(false);
+
+            RestorePrefabRectTransform(sourceView, gameObjectView, stayPosition);
+
+            if (isActive)
+            {
+                await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate,lifeTime.Token);
+                if(gameObjectView!=null)
+                    gameObjectView.SetActive(true);
+            }
+
             //create instance of view
             var view          = gameObjectView.GetComponent<IView>();
             var assetLifeTime = gameObjectView.GetAssetLifeTime();
@@ -136,6 +140,30 @@ namespace UniGame.UiSystem.Runtime
                 View = view,
                 AssetLifeTime = assetLifeTime
             };
+        }
+
+        private static void RestorePrefabRectTransform(
+            GameObject source,
+            GameObject instance,
+            bool stayWorldPosition)
+        {
+            if (source.transform is not RectTransform sourceRect ||
+                instance.transform is not RectTransform instanceRect)
+                return;
+
+            var worldPosition = instanceRect.position;
+            var worldRotation = instanceRect.rotation;
+
+            instanceRect.anchorMin = sourceRect.anchorMin;
+            instanceRect.anchorMax = sourceRect.anchorMax;
+            instanceRect.pivot = sourceRect.pivot;
+            instanceRect.sizeDelta = sourceRect.sizeDelta;
+            instanceRect.anchoredPosition3D = sourceRect.anchoredPosition3D;
+            instanceRect.localRotation = sourceRect.localRotation;
+            instanceRect.localScale = sourceRect.localScale;
+
+            if (stayWorldPosition)
+                instanceRect.SetPositionAndRotation(worldPosition, worldRotation);
         }
 
         protected async UniTask<GameObject> LoadAssetReferenceAsset(AssetReferenceGameObject asset,ILifeTime lifeTime)
