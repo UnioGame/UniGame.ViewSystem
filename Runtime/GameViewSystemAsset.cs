@@ -108,13 +108,13 @@
 
 
         public async UniTask<IView> Create(Type viewType, Transform parent = null,string skinTag = "",string viewName = null,
-            bool stayWorldPosition = false, ILifeTime ownerLifeTime = null)
+            bool stayWorldPosition = false, ILifeTime ownerLifeTime = null, bool activateOnCreate = true)
         {
-            return await ViewSystem.Create(viewType, parent,skinTag, viewName, stayWorldPosition, ownerLifeTime);
+            return await ViewSystem.Create(viewType, parent,skinTag, viewName, stayWorldPosition, ownerLifeTime, activateOnCreate);
         }
 
-        public UniTask<IView> Create(IViewModel viewModel, string viewType, string skinTag = "", Transform parent = null, string viewName = null, bool stayWorld = false,ILifeTime ownerLifeTime = null) =>
-            ViewSystem.Create(viewModel, viewType, skinTag, parent, viewName,stayWorld,ownerLifeTime);
+        public UniTask<IView> Create(IViewModel viewModel, string viewType, string skinTag = "", Transform parent = null, string viewName = null, bool stayWorld = false,ILifeTime ownerLifeTime = null, bool activateOnCreate = true) =>
+            ViewSystem.Create(viewModel, viewType, skinTag, parent, viewName,stayWorld,ownerLifeTime,activateOnCreate);
 
         public UniTask<IView> OpenWindow(IViewModel viewModel, string viewType, string skinTag = "", string viewName = null) => ViewSystem.OpenWindow(viewModel, viewType, skinTag, viewName);
 
@@ -129,15 +129,15 @@
         public UniTask<IView> CreateOverlay(IViewModel viewModel, string viewType, string skinTag = "", string viewName = null) => ViewSystem.CreateOverlay(viewModel, viewType, skinTag, viewName);
 
         public UniTask<IView> Create(string viewType, ViewType layoutType, 
-            string skinTag = "", string viewName = null, ILifeTime ownerLifeTime = null)
+            string skinTag = "", string viewName = null, ILifeTime ownerLifeTime = null, bool activateOnCreate = true)
         {
-            return ViewSystem.Create(viewType, layoutType, skinTag, viewName, ownerLifeTime);
+            return ViewSystem.Create(viewType, layoutType, skinTag, viewName, ownerLifeTime, activateOnCreate);
         }
         
         public UniTask<IView> Create(string viewType, string layoutType, 
-            string skinTag = "", string viewName = null, ILifeTime ownerLifeTime = null)
+            string skinTag = "", string viewName = null, ILifeTime ownerLifeTime = null, bool activateOnCreate = true)
         {
-            return ViewSystem.Create(viewType, layoutType, skinTag, viewName, ownerLifeTime);
+            return ViewSystem.Create(viewType, layoutType, skinTag, viewName, ownerLifeTime, activateOnCreate);
         }
 
         public bool HasLayout(string id)

@@ -11,6 +11,7 @@
             string skinTag = "", 
             Transform parent = null, 
             string viewName = null,
-            bool stayWorldPosition = false);
+            bool stayWorldPosition = false,
+            bool activateOnCreate = true);
     }
 }
