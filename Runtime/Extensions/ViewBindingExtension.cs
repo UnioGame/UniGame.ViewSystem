@@ -341,14 +341,14 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             where TView : ILifeTimeContext
         {
             if (!text) return view;
-            return view.Bind(source, x => text.SetValue(x));
+            return view.Bind(text, source, static (value, target) => target.SetValue(value));
         }
 
         public static TView Bind<TView>(this TView view, Observable<string> source, TMP_Text text)
             where TView : ILifeTimeContext
         {
             if (!text) return view;
-            return view.Bind(source, x => text.SetValue(x));
+            return view.Bind(text, source, static (value, target) => target.SetValue(value));
         }
         
         public static TView Bind<TView>(this TView view, Observable<int> source, TextMeshPro text)
@@ -1159,9 +1159,9 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             ISignalValueProperty<bool> value)
             where TView : ILifeTimeContext
         {
-            return source == null
+            return source == null || value == null
                 ? sender
-                : sender.Bind(source.OnClickAsObservable(), () => value.SetValue(true));
+                : sender.Bind(value, source.OnClickAsObservable(), static (_, target) => target.SetValue(true));
         }
         
                 
