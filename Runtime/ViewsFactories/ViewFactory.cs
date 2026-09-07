@@ -33,7 +33,8 @@ namespace UniGame.UiSystem.Runtime
             string skinTag = "",
             Transform parent = null,
             string viewName = "",
-            bool stayWorldPosition = false)
+            bool stayWorldPosition = false,
+            bool activateOnCreate = true)
         {
             await _readyStatus;
 
@@ -52,7 +53,7 @@ namespace UniGame.UiSystem.Runtime
             var keepInMemory = viewReference.KeepInMemory;
             
             //create view instance
-            var viewResult   = await Create(result,loadLifeTime, parent,stayWorldPosition,usePooling);
+            var viewResult   = await Create(result,loadLifeTime, parent,stayWorldPosition,usePooling, activateOnCreate: activateOnCreate);
             
             var view         = viewResult.View;
             var viewLifeTime = viewResult.AssetLifeTime;
@@ -85,7 +86,8 @@ namespace UniGame.UiSystem.Runtime
             Transform parent = null,
             bool stayPosition = false,
             bool usePooling = false,
-            int preloadCount = 0)
+            int preloadCount = 0,
+            bool activateOnCreate = true)
         {
             if (!asset.RuntimeKeyIsValid()) return new ViewResult();
 
@@ -123,7 +125,7 @@ namespace UniGame.UiSystem.Runtime
 
             RestorePrefabRectTransform(sourceView, gameObjectView, stayPosition);
 
-            if (isActive)
+            if (isActive && activateOnCreate)
             {
                 await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate,lifeTime.Token);
                 if(gameObjectView!=null)
