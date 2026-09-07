@@ -1,4 +1,4 @@
-﻿namespace UniGame.Views.Backgrounds
+namespace UniGame.Views.Backgrounds
 {
     using UiSystem.Runtime;
     using UniGame.UiSystem.Runtime.Backgrounds.Abstract;
@@ -7,7 +7,6 @@
     using UnityEngine;
 
 #if ENABLE_DOTWEEN
-    using DoTween.Runtime.Extensions;
     using DG.Tweening;
 #endif
     
@@ -26,34 +25,33 @@
         protected override async UniTask OnHideProgress(ILifeTime progressLifeTime)
         {
 #if ENABLE_DOTWEEN
-            DoTweenExtension.KillSequence(ref _showSequence);
-            DoTweenExtension.KillSequence(ref _hideSequence);
+            _showSequence?.Kill();
+            _showSequence = null;
+            _hideSequence?.Kill();
+            _hideSequence = null;
             
             _hideSequence = GetHideSequence();
             
-            await _hideSequence.WaitForCompletionTweenAsync();
+            await _hideSequence.AsyncWaitForCompletion();
 #endif
         }
 
         protected override async UniTask OnShowProgress(ILifeTime progressLifeTime)
         {
 #if ENABLE_DOTWEEN
-            DoTweenExtension.KillSequence(ref _showSequence);
-            DoTweenExtension.KillSequence(ref _hideSequence);
+            _showSequence?.Kill();
+            _showSequence = null;
+            _hideSequence?.Kill();
+            _hideSequence = null;
             
             _showSequence = GetShowSequence();
-            await _showSequence.WaitForCompletionTweenAsync();
+            await _showSequence.AsyncWaitForCompletion();
 #endif
         }
 
 #if ENABLE_DOTWEEN
         private Sequence GetShowSequence()
         {
-            GameLog.LogRuntime("SHOW BACKGROUND AND ENABLE BLUR");
-            
-            if(enableBlur)
-                KawaseBlurGlobalSettings.EnableBlur();
-
             var sequence  = DOTween.Sequence();
             var fadeTween = CanvasGroup.DOFade(1.0f, _duration);
 
@@ -67,12 +65,7 @@
             var sequence  = DOTween.Sequence();
             var fadeTween = CanvasGroup.DOFade(0.0f, _duration);
 
-            sequence.Join(fadeTween)
-                .OnComplete(() =>
-                {
-                    GameLog.LogRuntime("HIDE BACKGROUND AND DISABLE BLUR");
-                    KawaseBlurGlobalSettings.DisableBlur();
-                });
+            sequence.Join(fadeTween);
             
             return sequence;
         }
