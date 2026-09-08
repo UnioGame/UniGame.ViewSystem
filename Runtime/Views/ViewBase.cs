@@ -484,8 +484,13 @@
 
         public async UniTask PlayAnimation(ILifeTime animationLifeTime)
         {
-            if (Animation == null || Animation.IsEnabled == false) return;
-            await Animation.PlayAnimation(this, _status.Value, animationLifeTime);
+            var animation = Animation;
+            if (animation == null ||
+                animation is UnityEngine.Object unityObject && unityObject == null ||
+                animation.IsEnabled == false)
+                return;
+
+            await animation.PlayAnimation(this, _status.Value, animationLifeTime);
         }
 
         /// <summary>
