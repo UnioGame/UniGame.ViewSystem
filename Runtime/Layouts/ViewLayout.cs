@@ -172,7 +172,7 @@ namespace UniGame.UiSystem.Runtime
             AllViewsAction<T>(x => true, y => y.Hide());
         }
 
-        public void HideAll()
+        public virtual void HideAll()
         {
             AllViewsAction<IView>(x => true, x => x.Hide());
         }
