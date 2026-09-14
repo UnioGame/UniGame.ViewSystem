@@ -1,0 +1,7 @@
+{
+  "name": "unigame.viewsystem.uitoolkit.tests",
+  "references": ["unigame.viewsystem.runtime"],
+  "includePlatforms": ["Editor"],
+  "optionalUnityReferences": ["TestAssemblies"],
+  "autoReferenced": false
+}

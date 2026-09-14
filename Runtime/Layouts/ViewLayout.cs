@@ -1,4 +1,4 @@
-﻿namespace UniGame.UiSystem.Runtime
+namespace UniGame.UiSystem.Runtime
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -29,6 +29,12 @@
         private readonly ReactiveProperty<IView> _activeView;
 
         protected IReadOnlyList<IView> Views => _views;
+
+        /// <summary>Ordered stack snapshot for optional presentation adapters.</summary>
+        public IReadOnlyList<IView> OrderedViews => _views;
+
+        /// <summary>Raised only when stack membership or order changes.</summary>
+        public event Action<IReadOnlyList<IView>> OrderChanged;
 
         public Transform Layout { get; protected set; }
 
@@ -86,6 +92,7 @@
             
             viewList.Despawn();
             _views.Clear();
+            NotifyOrderChanged();
         }
 
         public bool Contains(IView view) => _views.Contains(view);
@@ -181,6 +188,7 @@
             buffer.AddRange(_views);
 
             _views.Clear();
+            NotifyOrderChanged();
             foreach (var view in buffer)
             {
                 if (view != null)
@@ -258,15 +266,20 @@
         {
             if (view == null || !Contains(view))
                 return false;
-            return _views.Remove(view);
+            var removed = _views.Remove(view);
+            if (removed) NotifyOrderChanged();
+            return removed;
         }
 
         protected bool Add(IView view)
         {
             if (Contains(view)) return false;
             _views.Add(view);
+            NotifyOrderChanged();
             return true;
         }
+
+        private void NotifyOrderChanged() => OrderChanged?.Invoke(_views);
 
         private void AllViewsAction<TView>(Func<TView, bool> predicate, Action<TView> action)
             where TView : IView

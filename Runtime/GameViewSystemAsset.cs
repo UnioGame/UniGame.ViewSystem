@@ -1,4 +1,4 @@
-﻿namespace UniGame.UiSystem.Runtime
+namespace UniGame.UiSystem.Runtime
 {
     using UniGame.AddressableTools.Runtime;
     using UnityEngine;
@@ -48,6 +48,7 @@
         #endregion
 
         private IGameViewSystem    _gameViewSystem;
+        private ViewSystemSettings _runtimeSettings;
         private LifeTime _lifeTime = new();
         private Canvas _screensCanvas;
         private int _screensDefaultSortingOrder;
@@ -70,6 +71,18 @@
         public IGameViewSystem ViewSystem => _gameViewSystem;
 
         public bool IsReady => _gameViewSystem != null;
+        /// <summary>Runtime settings instance used by this asset, exposed for deterministic sandbox readiness.</summary>
+        public ViewSystemSettings RuntimeSettings => _runtimeSettings;
+
+        /// <summary>Waits for the same ViewSystem settings and game system used by production navigation.</summary>
+        public async UniTask WaitForInitialize()
+        {
+            if (_runtimeSettings != null)
+                await _runtimeSettings.WaitForInitialize();
+
+            while (this != null && _gameViewSystem == null)
+                await UniTask.Yield();
+        }
 
         public ILifeTime LifeTime => _lifeTime;
 
@@ -232,6 +245,7 @@
             
             var settingsAsset = await settings.LoadAssetTaskAsync(LifeTime);
             settingsAsset = Instantiate(settingsAsset);
+            _runtimeSettings = settingsAsset;
             settingsAsset.DestroyWith(LifeTime);
             
             await settingsAsset.Initialize();
