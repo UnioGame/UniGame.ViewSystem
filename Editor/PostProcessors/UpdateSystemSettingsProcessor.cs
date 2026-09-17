@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,7 +34,7 @@ namespace UniGame.UiSystem.Editor.PostProcessors
         public static void Rebuild(ViewsSettings settings)
         {
             settings.Build();
-            settings.SetDirty();
+            UnityEditor.EditorUtility.SetDirty(settings);
             GameLog.Log($"Rebuild Ui View Settings",Color.blue);
         }
 

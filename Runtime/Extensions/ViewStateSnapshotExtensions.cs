@@ -6,19 +6,24 @@ namespace UniGame.ViewSystem.Runtime
     using UniGame.Runtime.ObjectPool;
     using UnityEngine;
     using Object = UnityEngine.Object;
+#if UNITY_6000_3_OR_NEWER
+    using ObjectId = UnityEngine.EntityId;
+#else
+    using ObjectId = System.Int32;
+#endif
 
     public static class ViewStateSnapshotExtensions
     {
         private const int DefaultCapacity = 32;
 
-        private static readonly Dictionary<int, RegistryEntry> Registry = new(DefaultCapacity);
+        private static readonly Dictionary<ObjectId, RegistryEntry> Registry = new(DefaultCapacity);
 
         public static ViewStateSnapshot CacheViewState(this Object owner)
         {
             if (owner == null)
                 throw new ArgumentNullException(nameof(owner));
 
-            var instanceId = owner.GetInstanceID();
+            var instanceId = GetObjectId(owner);
             if (Registry.TryGetValue(instanceId, out var entry))
             {
                 if (ReferenceEquals(entry.Owner, owner))
@@ -46,7 +51,7 @@ namespace UniGame.ViewSystem.Runtime
         public static bool TryGetViewState(this Object owner, out ViewStateSnapshot snapshot)
         {
             if (owner != null &&
-                Registry.TryGetValue(owner.GetInstanceID(), out var entry) &&
+                Registry.TryGetValue(GetObjectId(owner), out var entry) &&
                 ReferenceEquals(entry.Owner, owner))
             {
                 snapshot = entry.Snapshot;
@@ -81,13 +86,22 @@ namespace UniGame.ViewSystem.Runtime
             if (owner == null)
                 return false;
 
-            var instanceId = owner.GetInstanceID();
+            var instanceId = GetObjectId(owner);
             if (!Registry.TryGetValue(instanceId, out var entry) ||
                 !ReferenceEquals(entry.Owner, owner))
                 return false;
 
             Release(instanceId);
             return true;
+        }
+
+        private static ObjectId GetObjectId(Object owner)
+        {
+#if UNITY_6000_3_OR_NEWER
+            return owner.GetEntityId();
+#else
+            return owner.GetInstanceID();
+#endif
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -99,7 +113,7 @@ namespace UniGame.ViewSystem.Runtime
             Registry.Clear();
         }
 
-        private static void Release(int instanceId)
+        private static void Release(ObjectId instanceId)
         {
             if (!Registry.Remove(instanceId, out var entry))
                 return;

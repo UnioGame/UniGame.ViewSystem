@@ -33,9 +33,11 @@ namespace UniGame.UI
 
         public float minWidth => _minWidth;
         public float preferredWidth => Mathf.Min(_textMesh.preferredWidth, _maxWidth);
+        public float maxWidth => _maxWidth;
         public float flexibleWidth => 1;
         public float minHeight => _minHeight;
         public float preferredHeight => Mathf.Min(_textMesh.preferredHeight, _maxHeight);
+        public float maxHeight => _maxHeight;
         public float flexibleHeight => 1;
         public int layoutPriority => _layoutPriority;
     }

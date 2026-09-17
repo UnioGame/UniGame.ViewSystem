@@ -4,6 +4,11 @@ namespace UniGame.ViewSystem.Runtime
     using System.Collections.Generic;
     using UniGame.Core.Runtime.ObjectPool;
     using UnityEngine;
+#if UNITY_6000_3_OR_NEWER
+    using ObjectId = UnityEngine.EntityId;
+#else
+    using ObjectId = System.Int32;
+#endif
     using UnityEngine.UI;
 
     [Flags]
@@ -21,16 +26,16 @@ namespace UniGame.ViewSystem.Runtime
 
     public sealed class ViewStateSnapshot : IPoolable
     {
-        public readonly Dictionary<int, TransformState> Transforms = new(8);
-        public readonly Dictionary<int, ColorState> Colors = new(4);
-        public readonly Dictionary<int, ActiveState> ActiveStates = new(4);
+        public readonly Dictionary<ObjectId, TransformState> Transforms = new(8);
+        public readonly Dictionary<ObjectId, ColorState> Colors = new(4);
+        public readonly Dictionary<ObjectId, ActiveState> ActiveStates = new(4);
 
         public ViewStateSnapshot Cache(RectTransform target, ViewTransformStateFlags flags)
         {
             if (!target)
                 return this;
 
-            var instanceId = target.GetInstanceID();
+            var instanceId = GetObjectId(target);
             if (Transforms.TryGetValue(instanceId, out var state))
             {
                 state.Flags |= flags;
@@ -66,7 +71,7 @@ namespace UniGame.ViewSystem.Runtime
 
         public ViewStateSnapshot CacheColor(Graphic target)
         {
-            var instanceId = target.GetInstanceID();
+            var instanceId = GetObjectId(target);
             if (!Colors.ContainsKey(instanceId))
                 Colors.Add(instanceId, new ColorState(target, target.color));
 
@@ -75,11 +80,20 @@ namespace UniGame.ViewSystem.Runtime
 
         public ViewStateSnapshot CacheActive(GameObject target)
         {
-            var instanceId = target.GetInstanceID();
+            var instanceId = GetObjectId(target);
             if (!ActiveStates.ContainsKey(instanceId))
                 ActiveStates.Add(instanceId, new ActiveState(target, target.activeSelf));
 
             return this;
+        }
+
+        private static ObjectId GetObjectId(UnityEngine.Object target)
+        {
+#if UNITY_6000_3_OR_NEWER
+            return target.GetEntityId();
+#else
+            return target.GetInstanceID();
+#endif
         }
 
         public ViewStateSnapshot Restore()

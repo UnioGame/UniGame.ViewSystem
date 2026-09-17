@@ -1,4 +1,4 @@
-﻿// Source: https://gist.github.com/yasirkula/391fa12bc173acdf5ac48c466f180708
+// Source: https://gist.github.com/yasirkula/391fa12bc173acdf5ac48c466f180708
 namespace UniGame.UI.Common
 {
     using System;
@@ -221,7 +221,7 @@ namespace UniGame.UI.Common
 
 		protected SlicedFilledImage()
 		{
-			useLegacyMeshGeneration = false;
+			
 		}
 
 		protected override void OnEnable()
@@ -489,6 +489,8 @@ namespace UniGame.UI.Common
 		float ILayoutElement.minHeight { get { return 0; } }
 		float ILayoutElement.flexibleWidth { get { return -1; } }
 		float ILayoutElement.flexibleHeight { get { return -1; } }
+		float ILayoutElement.maxWidth { get { return LayoutUtility.DefaultMaxSize; } }
+		float ILayoutElement.maxHeight { get { return LayoutUtility.DefaultMaxSize; } }
 
 		float ILayoutElement.preferredWidth
 		{
