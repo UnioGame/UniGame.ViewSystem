@@ -23,9 +23,10 @@ namespace Game.Modules.ViewSystem.ZenjectViewModule
             string skinTag = "", 
             Transform parent = null, 
             string viewName = null,
-            bool stayWorldPosition = false)
+            bool stayWorldPosition = false,
+            bool activateOnCreate = true)
         {
-            var view = await _viewFactory.Create(viewId, skinTag, parent, viewName, stayWorldPosition);
+            var view = await _viewFactory.Create(viewId, skinTag, parent, viewName, stayWorldPosition, activateOnCreate);
             if (view == null || view.GameObject == null) return view;
             var viewObject = view.GameObject;
             

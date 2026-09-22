@@ -1,4 +1,4 @@
-﻿namespace UniGame.UiSystem.Runtime
+namespace UniGame.UiSystem.Runtime
 {
     using UniGame.AddressableTools.Runtime;
     using UnityEngine;
@@ -48,6 +48,7 @@
         #endregion
 
         private IGameViewSystem    _gameViewSystem;
+        private ViewSystemSettings _runtimeSettings;
         private LifeTime _lifeTime = new();
         private Canvas _screensCanvas;
         private int _screensDefaultSortingOrder;
@@ -70,6 +71,18 @@
         public IGameViewSystem ViewSystem => _gameViewSystem;
 
         public bool IsReady => _gameViewSystem != null;
+        /// <summary>Runtime settings instance used by this asset, exposed for deterministic sandbox readiness.</summary>
+        public ViewSystemSettings RuntimeSettings => _runtimeSettings;
+
+        /// <summary>Waits for the same ViewSystem settings and game system used by production navigation.</summary>
+        public async UniTask WaitForInitialize()
+        {
+            if (_runtimeSettings != null)
+                await _runtimeSettings.WaitForInitialize();
+
+            while (this != null && _gameViewSystem == null)
+                await UniTask.Yield();
+        }
 
         public ILifeTime LifeTime => _lifeTime;
 
@@ -108,13 +121,13 @@
 
 
         public async UniTask<IView> Create(Type viewType, Transform parent = null,string skinTag = "",string viewName = null,
-            bool stayWorldPosition = false, ILifeTime ownerLifeTime = null)
+            bool stayWorldPosition = false, ILifeTime ownerLifeTime = null, bool activateOnCreate = true)
         {
-            return await ViewSystem.Create(viewType, parent,skinTag, viewName, stayWorldPosition, ownerLifeTime);
+            return await ViewSystem.Create(viewType, parent,skinTag, viewName, stayWorldPosition, ownerLifeTime, activateOnCreate);
         }
 
-        public UniTask<IView> Create(IViewModel viewModel, string viewType, string skinTag = "", Transform parent = null, string viewName = null, bool stayWorld = false,ILifeTime ownerLifeTime = null) =>
-            ViewSystem.Create(viewModel, viewType, skinTag, parent, viewName,stayWorld,ownerLifeTime);
+        public UniTask<IView> Create(IViewModel viewModel, string viewType, string skinTag = "", Transform parent = null, string viewName = null, bool stayWorld = false,ILifeTime ownerLifeTime = null, bool activateOnCreate = true) =>
+            ViewSystem.Create(viewModel, viewType, skinTag, parent, viewName,stayWorld,ownerLifeTime,activateOnCreate);
 
         public UniTask<IView> OpenWindow(IViewModel viewModel, string viewType, string skinTag = "", string viewName = null) => ViewSystem.OpenWindow(viewModel, viewType, skinTag, viewName);
 
@@ -129,15 +142,15 @@
         public UniTask<IView> CreateOverlay(IViewModel viewModel, string viewType, string skinTag = "", string viewName = null) => ViewSystem.CreateOverlay(viewModel, viewType, skinTag, viewName);
 
         public UniTask<IView> Create(string viewType, ViewType layoutType, 
-            string skinTag = "", string viewName = null, ILifeTime ownerLifeTime = null)
+            string skinTag = "", string viewName = null, ILifeTime ownerLifeTime = null, bool activateOnCreate = true)
         {
-            return ViewSystem.Create(viewType, layoutType, skinTag, viewName, ownerLifeTime);
+            return ViewSystem.Create(viewType, layoutType, skinTag, viewName, ownerLifeTime, activateOnCreate);
         }
         
         public UniTask<IView> Create(string viewType, string layoutType, 
-            string skinTag = "", string viewName = null, ILifeTime ownerLifeTime = null)
+            string skinTag = "", string viewName = null, ILifeTime ownerLifeTime = null, bool activateOnCreate = true)
         {
-            return ViewSystem.Create(viewType, layoutType, skinTag, viewName, ownerLifeTime);
+            return ViewSystem.Create(viewType, layoutType, skinTag, viewName, ownerLifeTime, activateOnCreate);
         }
 
         public bool HasLayout(string id)
@@ -232,6 +245,7 @@
             
             var settingsAsset = await settings.LoadAssetTaskAsync(LifeTime);
             settingsAsset = Instantiate(settingsAsset);
+            _runtimeSettings = settingsAsset;
             settingsAsset.DestroyWith(LifeTime);
             
             await settingsAsset.Initialize();

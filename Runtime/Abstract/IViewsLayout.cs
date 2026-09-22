@@ -31,12 +31,14 @@
 
         public UniTask<IView> Create(string viewType, ViewType layoutType, string skinTag = "",
             string viewName = null,
-            ILifeTime ownerLifeTime = null);
+            ILifeTime ownerLifeTime = null,
+            bool activateOnCreate = true);
 
         UniTask<IView> Create(string viewType, 
             string layoutType,
             string skinTag = "",
             string viewName = null,
-            ILifeTime ownerLifeTime = null);
+            ILifeTime ownerLifeTime = null,
+            bool activateOnCreate = true);
     }
 }

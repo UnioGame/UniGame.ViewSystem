@@ -137,9 +137,10 @@ namespace UniGame.UiSystem.Runtime
             Transform parent = null,
             string viewName = null,
             bool stayWorld = false,
-            ILifeTime ownerLifeTime = null)
+            ILifeTime ownerLifeTime = null,
+            bool activateOnCreate = true)
         {
-            var view = await Create(viewModel, viewType.Name, skinTag, parent, viewName, stayWorld, ownerLifeTime);
+            var view = await Create(viewModel, viewType.Name, skinTag, parent, viewName, stayWorld, ownerLifeTime, activateOnCreate);
             return view;
         }
 
@@ -153,9 +154,10 @@ namespace UniGame.UiSystem.Runtime
             Transform parent = null,
             string viewName = null,
             bool stayWorld = false,
-            ILifeTime ownerLifeTime = null)
+            ILifeTime ownerLifeTime = null,
+            bool activateOnCreate = true)
         {
-            var view = await CreateView(viewModel, viewType,string.Empty, skinTag, parent, viewName, stayWorld, ownerLifeTime);
+            var view = await CreateView(viewModel, viewType,string.Empty, skinTag, parent, viewName, stayWorld, ownerLifeTime, activateOnCreate);
             return view;
         }
 
@@ -165,9 +167,10 @@ namespace UniGame.UiSystem.Runtime
             string skinTag = "",
             string viewName = null,
             bool stayWorld = false,
-            ILifeTime ownerLifeTime = null)
+            ILifeTime ownerLifeTime = null,
+            bool activateOnCreate = true)
         {
-            var view = await CreateView(viewType, skinTag, parent, viewName, stayWorld, ownerLifeTime);
+            var view = await CreateView(viewType, skinTag, parent, viewName, stayWorld, ownerLifeTime, activateOnCreate);
             return view;
         }
 
@@ -338,7 +341,8 @@ namespace UniGame.UiSystem.Runtime
             Transform parent = null,
             string viewName = null,
             bool stayWorld = false,
-            ILifeTime ownerLifeTime = null)
+            ILifeTime ownerLifeTime = null,
+            bool activateOnCreate = true)
         {
             var layout = _viewLayouts.GetLayout(layoutType);
             if (layout != null)
@@ -359,7 +363,7 @@ namespace UniGame.UiSystem.Runtime
             try
             {
                 var viewResult = await _viewFactory
-                    .Create(viewType, skinTag, parent, viewName, stayWorld)
+                    .Create(viewType, skinTag, parent, viewName, stayWorld, activateOnCreate)
                     .AttachExternalCancellation(LifeTime.Token)
                     .SuppressCancellationThrow();
 
@@ -394,9 +398,10 @@ namespace UniGame.UiSystem.Runtime
             Transform parent = null,
             string viewName = null,
             bool stayWorld = false,
-            ILifeTime ownerLifeTime = null)
+            ILifeTime ownerLifeTime = null,
+            bool activateOnCreate = true)
         {
-            var view = await CreateView(viewModel, viewType.Name, string.Empty,skinTag, parent, viewName, stayWorld, ownerLifeTime);
+            var view = await CreateView(viewModel, viewType.Name, string.Empty,skinTag, parent, viewName, stayWorld, ownerLifeTime, activateOnCreate);
             return view;
         }
 
@@ -407,9 +412,10 @@ namespace UniGame.UiSystem.Runtime
             Transform parent = null,
             string viewName = null,
             bool stayWorld = false,
-            ILifeTime ownerLifeTime = null)
+            ILifeTime ownerLifeTime = null,
+            bool activateOnCreate = true)
         {
-            var view = await CreateView(viewType.Name, skinTag, parent, viewName, stayWorld, ownerLifeTime);
+            var view = await CreateView(viewType.Name, skinTag, parent, viewName, stayWorld, ownerLifeTime, activateOnCreate);
             return view;
         }
 
@@ -419,10 +425,11 @@ namespace UniGame.UiSystem.Runtime
             Transform parent = null,
             string viewName = null,
             bool stayWorld = false,
-            ILifeTime ownerLifeTime = null)
+            ILifeTime ownerLifeTime = null,
+            bool activateOnCreate = true)
         {
             var model = await CreateViewModel(viewType);
-            var view = await Create(model, viewType, skinTag, parent, viewName, stayWorld, ownerLifeTime);
+            var view = await Create(model, viewType, skinTag, parent, viewName, stayWorld, ownerLifeTime, activateOnCreate);
             return view;
         }
 
@@ -454,9 +461,10 @@ namespace UniGame.UiSystem.Runtime
             ViewType layoutType,
             string skinTag = "",
             string viewName = null,
-            ILifeTime ownerLifeTime = null)
+            ILifeTime ownerLifeTime = null,
+            bool activateOnCreate = true)
         {
-            return await Create(viewType, layoutType.ToStringFromCache(), skinTag, viewName, ownerLifeTime);
+            return await Create(viewType, layoutType.ToStringFromCache(), skinTag, viewName, ownerLifeTime, activateOnCreate);
         }
 
         public async UniTask<IView> Create(
@@ -464,10 +472,11 @@ namespace UniGame.UiSystem.Runtime
             string layoutType,
             string skinTag = "",
             string viewName = null,
-            ILifeTime ownerLifeTime = null)
+            ILifeTime ownerLifeTime = null,
+            bool activateOnCreate = true)
         {
             var model = await CreateViewModel(viewType);
-            var view = await CreateView(model, viewType,layoutType, skinTag, null, viewName,  false, ownerLifeTime);
+            var view = await CreateView(model, viewType,layoutType, skinTag, null, viewName,  false, ownerLifeTime, activateOnCreate);
             return view;
         }
 

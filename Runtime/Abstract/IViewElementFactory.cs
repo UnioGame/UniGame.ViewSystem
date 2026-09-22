@@ -14,7 +14,8 @@ namespace UniGame.ViewSystem.Runtime
             string skinTag = "",
             string viewName = null,
             bool stayWorldPosition = false,
-            ILifeTime ownerLifeTime = null);
+            ILifeTime ownerLifeTime = null,
+            bool activateOnCreate = true);
         
         UniTask<IView> Create(
             IViewModel viewModel,
@@ -23,6 +24,7 @@ namespace UniGame.ViewSystem.Runtime
             Transform parent = null,
             string viewName = null,
             bool stayWorldPosition = false,
-            ILifeTime ownerLifeTime = null);
+            ILifeTime ownerLifeTime = null,
+            bool activateOnCreate = true);
     }
 }

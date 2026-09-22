@@ -1,4 +1,4 @@
-﻿namespace UniGame.UiSystem.Runtime
+namespace UniGame.UiSystem.Runtime
 {
     using System;
     using System.Collections.Generic;
@@ -484,8 +484,13 @@
 
         public async UniTask PlayAnimation(ILifeTime animationLifeTime)
         {
-            if (Animation == null || Animation.IsEnabled == false) return;
-            await Animation.PlayAnimation(this, _status.Value, animationLifeTime);
+            var animation = Animation;
+            if (animation == null ||
+                animation is UnityEngine.Object unityObject && unityObject == null ||
+                animation.IsEnabled == false)
+                return;
+
+            await animation.PlayAnimation(this, _status.Value, animationLifeTime);
         }
 
         /// <summary>
@@ -596,7 +601,11 @@
             _viewLayout          = null;
         }
 
-        protected void OnDisable() => _progressLifeTime.Restart();
+        protected void OnDisable()
+        {
+            OnViewDisable();
+            _progressLifeTime.Restart();
+        }
 
         protected void OnDestroy() => Destroy();
 
@@ -612,11 +621,15 @@
         {
             var animation = SelectAnimation();
             animation?.PlayAnimation(this, _status.Value, _progressLifeTime);
+            OnViewEnable();
         }
 
         protected void OnValidate() => OnViewValidate();
 
         protected virtual void OnViewEnable(){ }
+
+        /// <summary>Called when Unity disables the view so optional integrations can release transient subscriptions.</summary>
+        protected virtual void OnViewDisable(){ }
         
         protected virtual void OnAwake() { }
         

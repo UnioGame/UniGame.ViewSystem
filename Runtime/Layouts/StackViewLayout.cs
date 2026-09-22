@@ -21,8 +21,16 @@
         
         private IBackgroundView _background;
         private IView _activeView;
+        private bool _suppressActivation;
 
         public IView LastView => Views.LastOrDefault(x => x != _activeView);
+
+        public override void HideAll()
+        {
+            _suppressActivation = true;
+            try { base.HideAll(); }
+            finally { _suppressActivation = false; }
+        }
     
         public void Initialize(Transform layout, IBackgroundView background)
         {
@@ -113,7 +121,13 @@
         private void HideView(IView view)
         {
             _activeView = null;
-            
+
+            if (_suppressActivation)
+            {
+                _background?.Hide();
+                return;
+            }
+
             var lastView = Views.LastOrDefault(x => x != view);
             if (lastView == null) 
             {
