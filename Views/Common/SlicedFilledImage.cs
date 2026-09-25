@@ -489,9 +489,14 @@ namespace UniGame.UI.Common
 		float ILayoutElement.minHeight { get { return 0; } }
 		float ILayoutElement.flexibleWidth { get { return -1; } }
 		float ILayoutElement.flexibleHeight { get { return -1; } }
+
+#if UNITY_6000_6_OR_NEWER
+		
 		float ILayoutElement.maxWidth { get { return LayoutUtility.DefaultMaxSize; } }
 		float ILayoutElement.maxHeight { get { return LayoutUtility.DefaultMaxSize; } }
 
+#endif
+		
 		float ILayoutElement.preferredWidth
 		{
 			get
