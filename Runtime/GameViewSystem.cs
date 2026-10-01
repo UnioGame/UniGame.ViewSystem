@@ -378,7 +378,9 @@ namespace UniGame.UiSystem.Runtime
 
             if (failed)
             {
-                GameLog.LogError($"ViewSystem: Try Create view with type: {viewType} | skin:{skinTag} | parent: {parent}: name: {viewName} FAILED");
+                // a creation cancelled because the view system or its owner is shutting down is expected, not an error
+                if (!LifeTime.IsTerminated && !lifeTime.IsTerminated)
+                    GameLog.LogError($"ViewSystem: Try Create view with type: {viewType} | skin:{skinTag} | parent: {parent}: name: {viewName} FAILED");
                 Destroy(view);
                 return DummyView.Create();
             }
@@ -559,6 +561,13 @@ namespace UniGame.UiSystem.Runtime
                 factoryView.BindLayout(this);
 
             await view.Initialize(viewModel);
+
+            // the view system (or the target layout) was disposed while the view initialized: do not push into a dead layout
+            if (LifeTime.IsTerminated || (layout != null && layout.LifeTime.IsTerminated))
+            {
+                Destroy(view);
+                return view;
+            }
 
             //_viewBinderProcessor.Bind(view, viewModel);
 
