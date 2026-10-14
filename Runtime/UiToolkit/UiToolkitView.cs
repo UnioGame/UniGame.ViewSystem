@@ -30,10 +30,16 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             LifeTime.AddCleanUpAction(presentation.ClearBindings);
             await base.OnInitialize(model);
 
-            if (gameObject.activeInHierarchy && presentation.Document != null && presentation.Document.isActiveAndEnabled)
+            if (gameObject.activeInHierarchy && presentation.HasActiveHost)
             {
                 presentation.Initialize(ViewId);
-                await OnInitializeToolkit(model, presentation.Root);
+                presentation.RootChanged -= OnRootChanged;
+                presentation.RootChanged += OnRootChanged;
+                if (presentation.IsReady)
+                    await BindToolkit(model, presentation, presentation.Root);
+                else
+                    await UniTask.WaitUntil(() => presentation.IsReady)
+                        .AttachExternalCancellation(LifeTime.Token);
             }
             else
             {
@@ -41,7 +47,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             }
         }
 
-        /// <summary>Bind the current model to the current UIDocument tree.</summary>
+        /// <summary>Bind the current model to the current UI Toolkit tree.</summary>
         protected virtual UniTask OnInitializeToolkit(TViewModel model, UnityEngine.UIElements.VisualElement root) => UniTask.CompletedTask;
 
         protected override void OnViewEnable()
@@ -49,6 +55,8 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             base.OnViewEnable();
             var presentation = Presentation;
             if (presentation == null) return;
+            presentation.RootChanged -= OnRootChanged;
+            presentation.RootChanged += OnRootChanged;
 
             if (Model == null)
             {
@@ -64,12 +72,18 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
                 presentation.SetVisible(Status.CurrentValue is ViewStatus.Showing or ViewStatus.Shown);
             }
 
-            RebindToolkit(Model, presentation).Forget();
+            if (presentation.IsReady)
+                RebindToolkit(Model, presentation, presentation.Root).Forget();
         }
 
         protected override void OnViewDisable()
         {
-            Presentation?.Suspend();
+            var presentation = Presentation;
+            if (presentation != null)
+            {
+                presentation.RootChanged -= OnRootChanged;
+                presentation.Suspend();
+            }
             base.OnViewDisable();
         }
 
@@ -79,9 +93,27 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             Presentation?.SetVisible(status == ViewStatus.Showing || status == ViewStatus.Shown);
         }
 
-        private async UniTask RebindToolkit(TViewModel model, UiToolkitViewPresentation presentation)
+        private void OnRootChanged(UnityEngine.UIElements.VisualElement root)
         {
-            await OnInitializeToolkit(model, presentation.Root);
+            if (Model != null && isActiveAndEnabled && root != null)
+                RebindToolkit(Model, Presentation, root).Forget();
+        }
+
+        private async UniTask BindToolkit(
+            TViewModel model,
+            UiToolkitViewPresentation presentation,
+            UnityEngine.UIElements.VisualElement root)
+        {
+            await OnInitializeToolkit(model, root);
+        }
+
+        private async UniTask RebindToolkit(
+            TViewModel model,
+            UiToolkitViewPresentation presentation,
+            UnityEngine.UIElements.VisualElement root)
+        {
+            presentation.ClearBindings();
+            await BindToolkit(model, presentation, root);
         }
     }
 }

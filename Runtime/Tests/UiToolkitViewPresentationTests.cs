@@ -10,6 +10,38 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.Tests
     {
         private const string VisualTreePath = "Assets/Game.Content/Ui/UIToolkitSandbox/UXML/UIToolkitSmokeOverlay.uxml";
         private const string PanelSettingsPath = "Assets/Game.Content/Ui/_Settings/UIDefaultPanelSettings-Overlay.asset";
+        private const string WorldspaceVisualTreePath = "Assets/Game.Content/Ui/WorldspaceUIToolkit/BarkView.uxml";
+        private const string WorldspacePanelSettingsPath = "Assets/Game.Content/Ui/_Settings/UIDefaultPanelSettings-Worldspace.asset";
+
+        [Test]
+        public void PanelRendererIsSupportedAsNonInteractiveWorldspaceHost()
+        {
+            var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(WorldspaceVisualTreePath);
+            var panelSettings = AssetDatabase.LoadAssetAtPath<PanelSettings>(WorldspacePanelSettingsPath);
+            Assert.That(tree, Is.Not.Null);
+            Assert.That(panelSettings, Is.Not.Null);
+
+            var gameObject = new GameObject("UITK PanelRenderer presentation test");
+            gameObject.SetActive(false);
+            var renderer = gameObject.AddComponent<PanelRenderer>();
+            renderer.visualTreeAsset = tree;
+            renderer.panelSettings = panelSettings;
+            renderer.worldSpaceSizeMode = WorldSpaceSizeMode.Dynamic;
+            var presentation = gameObject.AddComponent<UiToolkitViewPresentation>();
+            presentation.panelRenderer = renderer;
+            presentation.acceptInput = false;
+            gameObject.SetActive(true);
+            try
+            {
+                presentation.Initialize("PanelRendererTest");
+
+                Assert.That(presentation.HasActiveHost, Is.True);
+                Assert.That(presentation.IsReady, Is.True);
+                Assert.That(presentation.Root, Is.Not.Null);
+                Assert.That(presentation.Root.pickingMode, Is.EqualTo(PickingMode.Ignore));
+            }
+            finally { Object.DestroyImmediate(gameObject); }
+        }
 
         [Test]
         public void BindingLifetimeIsReleasedExactlyOnceAcrossTwentyPoolCycles()

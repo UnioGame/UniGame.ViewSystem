@@ -73,7 +73,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
                 var adapter = view.GameObject.GetComponent<UiToolkitMixedOrderAdapter>() ??
                               view.GameObject.AddComponent<UiToolkitMixedOrderAdapter>();
                 _adapters[view] = adapter;
-                adapter.Apply(index, ReferenceEquals(view, top));
+                adapter.Apply(index, ReferenceEquals(view, top) && AcceptsInput(view));
             }
 
             RemoveAdaptersOutsideStack(views);
@@ -123,9 +123,17 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             for (var index = views.Count - 1; index >= 0; index--)
             {
                 var view = views[index];
-                if (view != null && view.GameObject != null && view.Status.CurrentValue is ViewStatus.Showing or ViewStatus.Shown) return view;
+                if (view != null && view.GameObject != null && AcceptsInput(view) &&
+                    view.Status.CurrentValue is ViewStatus.Showing or ViewStatus.Shown)
+                    return view;
             }
             return null;
+        }
+
+        private static bool AcceptsInput(IView view)
+        {
+            var presentation = view?.GameObject?.GetComponent<UiToolkitViewPresentation>();
+            return presentation == null || presentation.acceptInput;
         }
 
         private static bool BelongsTo(GameObject candidate, GameObject owner) =>

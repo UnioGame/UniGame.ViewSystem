@@ -5,8 +5,8 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 
     /// <summary>
     /// Applies one ViewSystem stack position to either presentation type. Each
-    /// UIDocument receives a runtime PanelSettings instance, while the configured
-    /// source asset is restored when the adapter is released.
+    /// UIDocument and PanelRenderer receive a runtime PanelSettings instance,
+    /// while the configured source asset is restored when the adapter is released.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class UiToolkitMixedOrderAdapter : MonoBehaviour
@@ -14,6 +14,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         [SerializeField] private int orderStep = 10;
 
         private UIDocument _document;
+        private PanelRenderer _panelRenderer;
         private PanelSettings _sourcePanel;
         private PanelSettings _runtimePanel;
         private Canvas _canvas;
@@ -41,6 +42,8 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         {
             if (_document != null && _runtimePanel != null && _document.panelSettings == _runtimePanel)
                 _document.panelSettings = _sourcePanel;
+            if (_panelRenderer != null && _runtimePanel != null && _panelRenderer.panelSettings == _runtimePanel)
+                _panelRenderer.panelSettings = _sourcePanel;
             if (_runtimePanel != null)
             {
                 if (Application.isPlaying) Destroy(_runtimePanel);
@@ -48,6 +51,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             }
             _runtimePanel = null;
             _sourcePanel = null;
+            _panelRenderer = null;
 
             if (_canvas != null)
             {
@@ -77,18 +81,26 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         private void ApplyToolkitOrder(int sortingOrder, bool acceptsInput)
         {
             _document ??= GetComponent<UIDocument>();
-            if (_document == null) return;
+            _panelRenderer ??= GetComponent<PanelRenderer>();
+            if (_document == null && _panelRenderer == null) return;
             if (_runtimePanel == null)
             {
-                _sourcePanel = _document.panelSettings;
+                _sourcePanel = _document != null
+                    ? _document.panelSettings
+                    : _panelRenderer.panelSettings;
                 if (_sourcePanel == null)
                     throw new System.InvalidOperationException($"Mixed UI adapter on '{name}' requires PanelSettings.");
                 _runtimePanel = Instantiate(_sourcePanel);
                 _runtimePanel.name = $"{_sourcePanel.name} ({name} runtime)";
-                _document.panelSettings = _runtimePanel;
+                if (_document != null)
+                    _document.panelSettings = _runtimePanel;
+                else
+                    _panelRenderer.panelSettings = _runtimePanel;
             }
             _runtimePanel.sortingOrder = sortingOrder;
-            var root = _document.rootVisualElement;
+            var root = _document != null
+                ? _document.rootVisualElement
+                : GetComponent<UiToolkitViewPresentation>()?.Root;
             if (root != null)
             {
                 if (!ReferenceEquals(_orderedRoot, root))
