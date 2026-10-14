@@ -17,8 +17,15 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         private PanelSettings _sourcePanel;
         private PanelSettings _runtimePanel;
         private Canvas _canvas;
+        private CanvasGroup _canvasGroup;
+        private bool _addedCanvasGroup;
+        private bool _sourceCanvasGroupInteractable;
+        private bool _sourceCanvasGroupBlocksRaycasts;
         private int _sourceCanvasOrder;
         private bool _sourceOverrideSorting;
+        private PickingMode _sourcePickingMode;
+        private VisualElement _orderedRoot;
+        private bool _hasSourcePickingMode;
 
         public int CurrentStackIndex { get; private set; } = -1;
 
@@ -35,16 +42,35 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             if (_document != null && _runtimePanel != null && _document.panelSettings == _runtimePanel)
                 _document.panelSettings = _sourcePanel;
             if (_runtimePanel != null)
-                Destroy(_runtimePanel);
+            {
+                if (Application.isPlaying) Destroy(_runtimePanel);
+                else DestroyImmediate(_runtimePanel);
+            }
             _runtimePanel = null;
+            _sourcePanel = null;
 
             if (_canvas != null)
             {
                 _canvas.overrideSorting = _sourceOverrideSorting;
                 _canvas.sortingOrder = _sourceCanvasOrder;
-                var group = _canvas.GetComponent<CanvasGroup>();
-                if (group != null) { group.interactable = true; group.blocksRaycasts = true; }
             }
+            if (_canvasGroup != null)
+            {
+                _canvasGroup.interactable = _sourceCanvasGroupInteractable;
+                _canvasGroup.blocksRaycasts = _sourceCanvasGroupBlocksRaycasts;
+                if (_addedCanvasGroup)
+                {
+                    if (Application.isPlaying) Destroy(_canvasGroup);
+                    else DestroyImmediate(_canvasGroup);
+                }
+            }
+            _canvas = null;
+            _canvasGroup = null;
+            _addedCanvasGroup = false;
+            if (_orderedRoot != null && _hasSourcePickingMode)
+                _orderedRoot.pickingMode = _sourcePickingMode;
+            _orderedRoot = null;
+            _hasSourcePickingMode = false;
             CurrentStackIndex = -1;
         }
 
@@ -64,7 +90,15 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             _runtimePanel.sortingOrder = sortingOrder;
             var root = _document.rootVisualElement;
             if (root != null)
+            {
+                if (!ReferenceEquals(_orderedRoot, root))
+                {
+                    _orderedRoot = root;
+                    _sourcePickingMode = root.pickingMode;
+                    _hasSourcePickingMode = true;
+                }
                 root.pickingMode = acceptsInput ? PickingMode.Position : PickingMode.Ignore;
+            }
         }
 
         private void ApplyCanvasOrder(int sortingOrder, bool acceptsInput)
@@ -78,12 +112,24 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             }
             _canvas.overrideSorting = true;
             _canvas.sortingOrder = sortingOrder;
-            var group = _canvas.GetComponent<CanvasGroup>() ?? _canvas.gameObject.AddComponent<CanvasGroup>();
-            group.interactable = acceptsInput;
-            group.blocksRaycasts = acceptsInput;
+            if (_canvasGroup == null)
+            {
+                _canvasGroup = _canvas.GetComponent<CanvasGroup>();
+                if (_canvasGroup == null)
+                {
+                    _canvasGroup = _canvas.gameObject.AddComponent<CanvasGroup>();
+                    _addedCanvasGroup = true;
+                }
+                else
+                {
+                    _sourceCanvasGroupInteractable = _canvasGroup.interactable;
+                    _sourceCanvasGroupBlocksRaycasts = _canvasGroup.blocksRaycasts;
+                }
+            }
+            _canvasGroup.interactable = acceptsInput;
+            _canvasGroup.blocksRaycasts = acceptsInput;
         }
 
-        private void OnDisable() => Release();
         private void OnDestroy() => Release();
     }
 }

@@ -23,7 +23,7 @@ namespace UniGame.UiSystem.Runtime
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Button]
 #endif
-        public void Dispose()
+        public virtual void Dispose()
         {
             if (_lifeTime.IsTerminated) return;
 

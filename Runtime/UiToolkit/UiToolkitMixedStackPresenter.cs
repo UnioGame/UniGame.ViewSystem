@@ -10,7 +10,10 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
     public sealed class UiToolkitMixedStackPresenter : IDisposable
     {
         private readonly ViewLayout _layout;
+        private readonly Dictionary<IView, UiToolkitMixedOrderAdapter> _adapters = new();
         private GameObject _previousSelectedObject;
+        private bool _isApplying;
+        private bool _applyPending;
 
         public UiToolkitMixedStackPresenter(ViewLayout layout)
         {
@@ -22,11 +25,37 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         public void Dispose()
         {
             _layout.OrderChanged -= Apply;
-            foreach (var view in _layout.OrderedViews)
-                view?.GameObject?.GetComponent<UiToolkitMixedOrderAdapter>()?.Release();
+            foreach (var adapter in _adapters.Values)
+                adapter?.Release();
+            _adapters.Clear();
         }
 
+        public void Refresh() => Apply(_layout.OrderedViews);
+
         private void Apply(IReadOnlyList<IView> views)
+        {
+            if (_isApplying)
+            {
+                _applyPending = true;
+                return;
+            }
+
+            _isApplying = true;
+            try
+            {
+                do
+                {
+                    _applyPending = false;
+                    ApplyCurrentStack(_layout.OrderedViews);
+                } while (_applyPending);
+            }
+            finally
+            {
+                _isApplying = false;
+            }
+        }
+
+        private void ApplyCurrentStack(IReadOnlyList<IView> views)
         {
             var top = LastInteractive(views);
             var eventSystem = EventSystem.current;
@@ -43,8 +72,11 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
                 if (view?.GameObject == null) continue;
                 var adapter = view.GameObject.GetComponent<UiToolkitMixedOrderAdapter>() ??
                               view.GameObject.AddComponent<UiToolkitMixedOrderAdapter>();
+                _adapters[view] = adapter;
                 adapter.Apply(index, ReferenceEquals(view, top));
             }
+
+            RemoveAdaptersOutsideStack(views);
 
             if (top?.GameObject == null) return;
             var toolkit = top.GameObject.GetComponent<UiToolkitViewPresentation>();
@@ -61,6 +93,31 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
                 eventSystem.SetSelectedGameObject(FirstSelectable(top.GameObject));
         }
 
+        private void RemoveAdaptersOutsideStack(IReadOnlyList<IView> views)
+        {
+            var removed = new List<IView>();
+            foreach (var pair in _adapters)
+            {
+                if (!Contains(views, pair.Key)) removed.Add(pair.Key);
+            }
+
+            foreach (var view in removed)
+            {
+                _adapters[view]?.Release();
+                _adapters.Remove(view);
+            }
+        }
+
+        private static bool Contains(IReadOnlyList<IView> views, IView target)
+        {
+            for (var index = 0; index < views.Count; index++)
+            {
+                if (ReferenceEquals(views[index], target)) return true;
+            }
+
+            return false;
+        }
+
         private static IView LastInteractive(IReadOnlyList<IView> views)
         {
             for (var index = views.Count - 1; index >= 0; index--)
@@ -72,7 +129,8 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         }
 
         private static bool BelongsTo(GameObject candidate, GameObject owner) =>
-            candidate != null && owner != null && candidate.transform.IsChildOf(owner.transform);
+            candidate != null && owner != null &&
+            (candidate == owner || candidate.transform.IsChildOf(owner.transform));
 
         private static GameObject FirstSelectable(GameObject owner)
         {

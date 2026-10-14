@@ -96,6 +96,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         {
             _suspended = true;
             ApplyVisibility();
+            ClearBindings();
             Root?.Blur();
             Root?.ReleasePointer(0);
         }

@@ -27,10 +27,18 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             if (presentation == null)
                 throw new System.InvalidOperationException($"UITK view '{ViewId}' on '{name}' requires {nameof(UiToolkitViewPresentation)}.");
 
-            presentation.Initialize(ViewId);
             LifeTime.AddCleanUpAction(presentation.ClearBindings);
             await base.OnInitialize(model);
-            await OnInitializeToolkit(model, presentation.Root);
+
+            if (gameObject.activeInHierarchy && presentation.Document != null && presentation.Document.isActiveAndEnabled)
+            {
+                presentation.Initialize(ViewId);
+                await OnInitializeToolkit(model, presentation.Root);
+            }
+            else
+            {
+                presentation.ClearBindings();
+            }
         }
 
         /// <summary>Bind the current model to the current UIDocument tree.</summary>
@@ -39,7 +47,24 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         protected override void OnViewEnable()
         {
             base.OnViewEnable();
-            Presentation?.RefreshTree(ViewId);
+            var presentation = Presentation;
+            if (presentation == null) return;
+
+            if (Model == null)
+            {
+                presentation.RefreshTree(ViewId);
+                return;
+            }
+
+            if (presentation.IsReady)
+                presentation.RefreshTree(ViewId);
+            else
+            {
+                presentation.Initialize(ViewId);
+                presentation.SetVisible(Status.CurrentValue is ViewStatus.Showing or ViewStatus.Shown);
+            }
+
+            RebindToolkit(Model, presentation).Forget();
         }
 
         protected override void OnViewDisable()
@@ -52,6 +77,11 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         {
             base.OnViewStatus(status);
             Presentation?.SetVisible(status == ViewStatus.Showing || status == ViewStatus.Shown);
+        }
+
+        private async UniTask RebindToolkit(TViewModel model, UiToolkitViewPresentation presentation)
+        {
+            await OnInitializeToolkit(model, presentation.Root);
         }
     }
 }

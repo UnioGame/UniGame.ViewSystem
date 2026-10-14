@@ -168,7 +168,7 @@ namespace UniGame.UiSystem.Runtime
                 instanceRect.SetPositionAndRotation(worldPosition, worldRotation);
         }
 
-        protected async UniTask<GameObject> LoadAssetReferenceAsset(AssetReferenceGameObject asset,ILifeTime lifeTime)
+        protected virtual async UniTask<GameObject> LoadAssetReferenceAsset(AssetReferenceGameObject asset,ILifeTime lifeTime)
         {
             var guid = asset.AssetGUID;
 

@@ -8,8 +8,8 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.Tests
 
     public sealed class UiToolkitViewPresentationTests
     {
-        private const string VisualTreePath = "Assets/GameContent/UI/UISandbox/UISandbox.uxml";
-        private const string PanelSettingsPath = "Assets/GameAssets/UI Toolkit/PanelSettings.asset";
+        private const string VisualTreePath = "Assets/Game.Content/Ui/UIToolkitSandbox/UXML/UIToolkitSmokeOverlay.uxml";
+        private const string PanelSettingsPath = "Assets/Game.Content/Ui/_Settings/UIDefaultPanelSettings-Overlay.asset";
 
         [Test]
         public void BindingLifetimeIsReleasedExactlyOnceAcrossTwentyPoolCycles()

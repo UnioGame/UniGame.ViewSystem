@@ -1,6 +1,11 @@
 {
   "name": "unigame.viewsystem.uitoolkit.tests",
-  "references": ["unigame.viewsystem.runtime"],
+  "references": [
+    "unigame.viewsystem.runtime",
+    "unigame.unicore.runtime",
+    "UniTask",
+    "Unity.Addressables"
+  ],
   "includePlatforms": ["Editor"],
   "optionalUnityReferences": ["TestAssemblies"],
   "autoReferenced": false
