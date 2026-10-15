@@ -39,6 +39,13 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.Tests
                 Assert.That(presentation.IsReady, Is.True);
                 Assert.That(presentation.Root, Is.Not.Null);
                 Assert.That(presentation.Root.pickingMode, Is.EqualTo(PickingMode.Ignore));
+                var content = presentation.Root.Q<VisualElement>(className: UiToolkitViewPresentation.ContentClassName);
+                Assert.That(content.ClassListContains(UiToolkitViewPresentation.HiddenClassName), Is.True);
+                presentation.SetVisible(true);
+                Assert.That(content.ClassListContains(UiToolkitViewPresentation.HiddenClassName), Is.False);
+                presentation.SetVisible(false);
+                Assert.That(content.ClassListContains(UiToolkitViewPresentation.HiddenClassName), Is.True);
+                Assert.That(renderer.forceRenderingOff, Is.False);
             }
             finally { Object.DestroyImmediate(gameObject); }
         }
@@ -46,7 +53,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.Tests
         [Test]
         public void BindingLifetimeIsReleasedExactlyOnceAcrossTwentyPoolCycles()
         {
-            var gameObject = CreateConfiguredDocument("UITK presentation test", out var presentation);
+            var gameObject = CreateConfiguredPanelRenderer("UITK presentation test", out var presentation);
             try
             {
                 var released = 0;
@@ -65,7 +72,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.Tests
         [Test]
         public void DisableEnableRefreshesTheRuntimeTreeAndDropsOldBindings()
         {
-            var gameObject = CreateConfiguredDocument("UITK tree test", out var presentation);
+            var gameObject = CreateConfiguredPanelRenderer("UITK tree test", out var presentation);
             try
             {
                 presentation.Initialize();
@@ -85,7 +92,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.Tests
             finally { Object.DestroyImmediate(gameObject); }
         }
 
-        private static GameObject CreateConfiguredDocument(string name, out UiToolkitViewPresentation presentation)
+        private static GameObject CreateConfiguredPanelRenderer(string name, out UiToolkitViewPresentation presentation)
         {
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(VisualTreePath);
             var panelSettings = AssetDatabase.LoadAssetAtPath<PanelSettings>(PanelSettingsPath);
@@ -94,10 +101,10 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.Tests
 
             var gameObject = new GameObject(name);
             gameObject.SetActive(false);
-            var document = gameObject.AddComponent<UIDocument>();
+            var renderer = gameObject.AddComponent<PanelRenderer>();
             presentation = gameObject.AddComponent<UiToolkitViewPresentation>();
-            document.visualTreeAsset = visualTree;
-            document.panelSettings = panelSettings;
+            renderer.visualTreeAsset = visualTree;
+            renderer.panelSettings = panelSettings;
             gameObject.SetActive(true);
             return gameObject;
         }

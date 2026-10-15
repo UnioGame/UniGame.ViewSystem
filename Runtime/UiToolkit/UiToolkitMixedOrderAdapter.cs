@@ -4,8 +4,8 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
     using UnityEngine.UIElements;
 
     /// <summary>
-    /// Applies one ViewSystem stack position to either presentation type. Each
-    /// UIDocument and PanelRenderer receive a runtime PanelSettings instance,
+    /// Applies one ViewSystem stack position to a PanelRenderer. Each renderer
+    /// receives a runtime PanelSettings instance,
     /// while the configured source asset is restored when the adapter is released.
     /// </summary>
     [DisallowMultipleComponent]
@@ -13,7 +13,6 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
     {
         [SerializeField] private int orderStep = 10;
 
-        private UIDocument _document;
         private PanelRenderer _panelRenderer;
         private PanelSettings _sourcePanel;
         private PanelSettings _runtimePanel;
@@ -24,9 +23,6 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         private bool _sourceCanvasGroupBlocksRaycasts;
         private int _sourceCanvasOrder;
         private bool _sourceOverrideSorting;
-        private PickingMode _sourcePickingMode;
-        private VisualElement _orderedRoot;
-        private bool _hasSourcePickingMode;
 
         public int CurrentStackIndex { get; private set; } = -1;
 
@@ -40,10 +36,11 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 
         public void Release()
         {
-            if (_document != null && _runtimePanel != null && _document.panelSettings == _runtimePanel)
-                _document.panelSettings = _sourcePanel;
             if (_panelRenderer != null && _runtimePanel != null && _panelRenderer.panelSettings == _runtimePanel)
+            {
+                GetComponent<UiToolkitViewPresentation>()?.PrepareForPanelReload();
                 _panelRenderer.panelSettings = _sourcePanel;
+            }
             if (_runtimePanel != null)
             {
                 if (Application.isPlaying) Destroy(_runtimePanel);
@@ -71,46 +68,26 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             _canvas = null;
             _canvasGroup = null;
             _addedCanvasGroup = false;
-            if (_orderedRoot != null && _hasSourcePickingMode)
-                _orderedRoot.pickingMode = _sourcePickingMode;
-            _orderedRoot = null;
-            _hasSourcePickingMode = false;
+            GetComponent<UiToolkitViewPresentation>()?.SetStackInputAllowed(true);
             CurrentStackIndex = -1;
         }
 
         private void ApplyToolkitOrder(int sortingOrder, bool acceptsInput)
         {
-            _document ??= GetComponent<UIDocument>();
             _panelRenderer ??= GetComponent<PanelRenderer>();
-            if (_document == null && _panelRenderer == null) return;
+            if (_panelRenderer == null) return;
             if (_runtimePanel == null)
             {
-                _sourcePanel = _document != null
-                    ? _document.panelSettings
-                    : _panelRenderer.panelSettings;
+                _sourcePanel = _panelRenderer.panelSettings;
                 if (_sourcePanel == null)
                     throw new System.InvalidOperationException($"Mixed UI adapter on '{name}' requires PanelSettings.");
                 _runtimePanel = Instantiate(_sourcePanel);
                 _runtimePanel.name = $"{_sourcePanel.name} ({name} runtime)";
-                if (_document != null)
-                    _document.panelSettings = _runtimePanel;
-                else
-                    _panelRenderer.panelSettings = _runtimePanel;
+                GetComponent<UiToolkitViewPresentation>()?.PrepareForPanelReload();
+                _panelRenderer.panelSettings = _runtimePanel;
             }
             _runtimePanel.sortingOrder = sortingOrder;
-            var root = _document != null
-                ? _document.rootVisualElement
-                : GetComponent<UiToolkitViewPresentation>()?.Root;
-            if (root != null)
-            {
-                if (!ReferenceEquals(_orderedRoot, root))
-                {
-                    _orderedRoot = root;
-                    _sourcePickingMode = root.pickingMode;
-                    _hasSourcePickingMode = true;
-                }
-                root.pickingMode = acceptsInput ? PickingMode.Position : PickingMode.Ignore;
-            }
+            GetComponent<UiToolkitViewPresentation>()?.SetStackInputAllowed(acceptsInput);
         }
 
         private void ApplyCanvasOrder(int sortingOrder, bool acceptsInput)

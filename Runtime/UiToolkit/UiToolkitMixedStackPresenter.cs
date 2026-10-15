@@ -6,7 +6,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
     using UnityEngine;
     using UnityEngine.EventSystems;
 
-    /// <summary>Maps the ordered ViewSystem stack to Canvas and UIDocument ordering.</summary>
+    /// <summary>Maps the ordered ViewSystem stack to Canvas and PanelRenderer ordering.</summary>
     public sealed class UiToolkitMixedStackPresenter : IDisposable
     {
         private readonly ViewLayout _layout;

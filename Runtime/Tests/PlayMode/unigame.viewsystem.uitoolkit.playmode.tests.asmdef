@@ -8,7 +8,7 @@
     "UniTask",
     "Unity.Addressables"
   ],
-  "includePlatforms": [],
+  "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": false,

@@ -3,6 +3,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
     using System.Collections;
     using Cysharp.Threading.Tasks;
     using NUnit.Framework;
+    using UnityEditor;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
     using UnityEngine.EventSystems;
@@ -17,6 +18,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
     public sealed class UiToolkitViewSystemPlayModeTests
     {
         internal const string ValidPrefabGuid = "d26de4d05349c7f45aa86728cadb8a34";
+        private const string VisualTreePath = "Assets/Game.Content/Ui/UIToolkitSandbox/UXML/UIToolkitSmokeTestPopup.uxml";
 
         [UnityTest]
         public IEnumerator ViewRebindsModelTreeAfterDisableAndReleasesBindingsOnClose() =>
@@ -27,7 +29,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
             LayoutsMixedStack().ToCoroutine();
 
         [UnityTest]
-        public IEnumerator ViewFactoryCreatesUidocumentPrefabAndSupportsPoolReuse() =>
+        public IEnumerator ViewFactoryCreatesPanelRendererPrefabAndSupportsPoolReuse() =>
             CreatesAndReusesPrefab().ToCoroutine();
 
         private static async UniTask RebindsAfterDisable()
@@ -56,7 +58,6 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
             }
             finally
             {
-                Object.Destroy(gameObject.GetComponent<UIDocument>().visualTreeAsset);
                 Object.Destroy(gameObject);
                 Object.Destroy(panelSettings);
             }
@@ -77,7 +78,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
             canvasGroup.blocksRaycasts = false;
             var eventSystemObject = new GameObject("UITK stack EventSystem");
             var eventSystem = eventSystemObject.AddComponent<EventSystem>();
-            var sourcePanel = toolkitView.Presentation.Document.panelSettings;
+            var sourcePanel = toolkitView.Presentation.PanelRenderer.panelSettings;
             var layout = new ViewLayout();
 
             try
@@ -98,8 +99,8 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
                 Assert.That(canvas.sortingOrder, Is.EqualTo(0));
                 Assert.That(canvasGroup.interactable, Is.False);
                 Assert.That(canvasGroup.blocksRaycasts, Is.False);
-                Assert.That(toolkitView.Presentation.Document.panelSettings, Is.Not.SameAs(sourcePanel));
-                Assert.That(toolkitView.Presentation.Document.panelSettings.sortingOrder, Is.EqualTo(10));
+                Assert.That(toolkitView.Presentation.PanelRenderer.panelSettings, Is.Not.SameAs(sourcePanel));
+                Assert.That(toolkitView.Presentation.PanelRenderer.panelSettings.sortingOrder, Is.EqualTo(10));
                 Assert.That(eventSystem.currentSelectedGameObject, Is.Null);
 
                 layout.Close(toolkitView);
@@ -109,7 +110,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
                 Assert.That(canvasGroup.interactable, Is.True);
                 Assert.That(canvasGroup.blocksRaycasts, Is.True);
                 Assert.That(eventSystem.currentSelectedGameObject, Is.SameAs(button.gameObject));
-                Assert.That(toolkitView.Presentation.Document.panelSettings, Is.SameAs(sourcePanel));
+                Assert.That(toolkitView.Presentation.PanelRenderer.panelSettings, Is.SameAs(sourcePanel));
                 Assert.That(canvasOrder.CurrentStackIndex, Is.EqualTo(0));
 
                 layout.Dispose();
@@ -120,13 +121,12 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
                 Assert.That(canvas.sortingOrder, Is.EqualTo(17));
                 Assert.That(canvasGroup.interactable, Is.False);
                 Assert.That(canvasGroup.blocksRaycasts, Is.False);
-                Assert.That(toolkitView.Presentation.Document.panelSettings, Is.SameAs(sourcePanel));
+                Assert.That(toolkitView.Presentation.PanelRenderer.panelSettings, Is.SameAs(sourcePanel));
                 Assert.That(toolkitObject.GetComponent<UiToolkitMixedOrderAdapter>().CurrentStackIndex, Is.EqualTo(-1));
             }
             finally
             {
                 layout.Dispose();
-                Object.Destroy(toolkitView.Presentation.Document.visualTreeAsset);
                 Object.Destroy(toolkitObject);
                 Object.Destroy(canvasObject);
                 Object.Destroy(eventSystemObject);
@@ -137,7 +137,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
         private static async UniTask CreatesAndReusesPrefab()
         {
             var source = CreateToolkitView("UITK factory source", out _, out var panelSettings);
-            var sourcePanel = source.GetComponent<UIDocument>().panelSettings;
+            var sourcePanel = source.GetComponent<PanelRenderer>().panelSettings;
             var lifetime = new LifeTime();
             var factory = new UiToolkitViewFactoryPlayModeTestAdapter(source);
             GameObject created = null;
@@ -148,19 +148,18 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
                 Assert.That(result.View, Is.Not.Null);
                 created = result.View.GameObject;
                 Assert.That(created, Is.Not.SameAs(source));
-                Assert.That(created.GetComponent<UIDocument>().panelSettings, Is.SameAs(sourcePanel));
+                Assert.That(created.GetComponent<PanelRenderer>().panelSettings, Is.SameAs(sourcePanel));
 
                 ObjectPool.Despawn(created);
                 var reused = await factory.CreateForTest(lifetime, true);
                 Assert.That(reused.View.GameObject, Is.SameAs(created));
-                Assert.That(reused.View.GameObject.GetComponent<UIDocument>().panelSettings, Is.SameAs(sourcePanel));
+                Assert.That(reused.View.GameObject.GetComponent<PanelRenderer>().panelSettings, Is.SameAs(sourcePanel));
             }
             finally
             {
                 lifetime.Terminate();
                 factory.Dispose();
                 ObjectPool.DestroyPool(source);
-                Object.Destroy(source.GetComponent<UIDocument>().visualTreeAsset);
                 Object.Destroy(source);
                 Object.Destroy(panelSettings);
             }
@@ -173,10 +172,11 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
         {
             var gameObject = new GameObject(name, typeof(RectTransform));
             gameObject.SetActive(false);
-            var document = gameObject.AddComponent<UIDocument>();
+            var renderer = gameObject.AddComponent<PanelRenderer>();
             panelSettings = ScriptableObject.CreateInstance<PanelSettings>();
-            document.panelSettings = panelSettings;
-            document.visualTreeAsset = ScriptableObject.CreateInstance<VisualTreeAsset>();
+            renderer.panelSettings = panelSettings;
+            renderer.visualTreeAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(VisualTreePath);
+            Assert.That(renderer.visualTreeAsset, Is.Not.Null, $"Missing UITK test VisualTreeAsset at '{VisualTreePath}'.");
             gameObject.AddComponent<UiToolkitViewPresentation>();
             view = gameObject.AddComponent<UiToolkitStackPlayModeTestView>();
             view.viewAnimation = new UniGame.ViewSystem.Runtime.Animations.SimpleFadeViewAnimation();

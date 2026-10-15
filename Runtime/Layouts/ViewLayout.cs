@@ -124,7 +124,7 @@ namespace UniGame.UiSystem.Runtime
 
             if (_uiToolkitMixedStackPresenter == null &&
                 view?.GameObject != null &&
-                view.GameObject.GetComponent<UIDocument>() != null)
+                view.GameObject.GetComponent<PanelRenderer>() != null)
             {
                 _uiToolkitMixedStackPresenter = new UiToolkitMixedStackPresenter(this);
                 _lifeTime.AddDispose(_uiToolkitMixedStackPresenter);
