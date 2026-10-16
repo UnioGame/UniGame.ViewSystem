@@ -34,9 +34,18 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         public void Apply(int stackIndex, bool acceptsInput)
         {
             CurrentStackIndex = stackIndex;
-            var sortingOrder = stackIndex * Mathf.Max(1, orderStep);
+            // Stack positions are relative to the layout's root canvas (e.g. Screens 100, Windows 300),
+            // so a UI Toolkit window never drops below another layout or a scene canvas.
+            var sortingOrder = LayoutBaseOrder() + stackIndex * Mathf.Max(1, orderStep);
             ApplyToolkitOrder(sortingOrder, acceptsInput);
             ApplyCanvasOrder(sortingOrder, acceptsInput);
+        }
+
+        private int LayoutBaseOrder()
+        {
+            var parent = transform.parent;
+            var canvas = parent != null ? parent.GetComponentInParent<Canvas>() : null;
+            return canvas != null ? canvas.rootCanvas.sortingOrder : 0;
         }
 
         public void Release()
