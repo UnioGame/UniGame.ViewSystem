@@ -91,6 +91,14 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         {
             _panelRenderer ??= GetComponent<UiToolkitHost>();
             if (_panelRenderer == null) return;
+#if !UNITY_6000_6_OR_NEWER
+            // A nested UIDocument renders inside its parent's panel; it has no panel order of its own.
+            if (_panelRenderer.parentUI != null)
+            {
+                GetComponent<UiToolkitViewPresentation>()?.SetStackInputAllowed(acceptsInput);
+                return;
+            }
+#endif
             if (_runtimePanel == null)
             {
                 _sourcePanel = _panelRenderer.panelSettings;
