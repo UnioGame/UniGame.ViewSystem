@@ -110,7 +110,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             ClearBindings();
             _root = null;
             _content = null;
-            _sourcePickingModes.Clear();
+            RestorePickingModes();
             _initialized = false;
             _lastPanelVersion = -1;
         }
@@ -223,7 +223,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             if (changed)
             {
                 ClearBindings();
-                _sourcePickingModes.Clear();
+                RestorePickingModes();
                 _root = root;
                 _content = content;
             }
@@ -242,6 +242,21 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
                 _content.EnableInClassList(HiddenClassName, !active);
             if (_root != null)
                 ApplyPickingMode(_root, active && acceptInput && _stackAllowsInput && _externalAllowsInput);
+        }
+
+        /// <summary>
+        /// Puts back the authored picking modes before forgetting them. UIDocument keeps its tree across
+        /// panel switches, so clearing without restoring would record the gated "Ignore" as the source.
+        /// </summary>
+        private void RestorePickingModes()
+        {
+            foreach (var pair in _sourcePickingModes)
+            {
+                if (pair.Key != null)
+                    pair.Key.pickingMode = pair.Value;
+            }
+
+            _sourcePickingModes.Clear();
         }
 
         private void ApplyPickingMode(VisualElement element, bool acceptsInput)
@@ -273,7 +288,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             ClearBindings();
             _root = null;
             _content = null;
-            _sourcePickingModes.Clear();
+            RestorePickingModes();
             _initialized = false;
             _suspended = true;
             _stackAllowsInput = true;
