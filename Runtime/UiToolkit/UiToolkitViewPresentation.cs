@@ -44,6 +44,12 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 #else
         public UIDocument Document => Host;
 #endif
+#if UNITY_6000_6_OR_NEWER
+        private bool IsNestedHost => false;
+#else
+        /// <summary>A UIDocument under another UIDocument renders in its parent's panel.</summary>
+        private bool IsNestedHost => Host != null && Host.parentUI != null;
+#endif
         public VisualElement Root => _root;
         public bool IsReady => _initialized && _root != null && _content != null;
         public bool HasActiveHost => Host != null && Host.enabled && Host.gameObject.activeInHierarchy;
@@ -65,7 +71,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             if (!string.IsNullOrWhiteSpace(viewId)) _viewId = viewId;
             if (Host == null)
                 throw Error($"{nameof(UiToolkitHost)} component is missing");
-            if (Host.panelSettings == null)
+            if (Host.panelSettings == null && !IsNestedHost)
                 throw Error($"{nameof(UiToolkitHost)}.panelSettings is missing");
             if (Host.visualTreeAsset == null)
                 throw Error($"{nameof(UiToolkitHost)}.visualTreeAsset is missing");

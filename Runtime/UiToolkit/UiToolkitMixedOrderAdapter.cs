@@ -53,6 +53,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             if (_panelRenderer != null && _runtimePanel != null && _panelRenderer.panelSettings == _runtimePanel)
             {
                 GetComponent<UiToolkitViewPresentation>()?.PrepareForPanelReload();
+                SetNestedPanels(_sourcePanel);
                 _panelRenderer.panelSettings = _sourcePanel;
             }
             if (_runtimePanel != null)
@@ -98,10 +99,26 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
                 _runtimePanel = Instantiate(_sourcePanel);
                 _runtimePanel.name = $"{_sourcePanel.name} ({name} runtime)";
                 GetComponent<UiToolkitViewPresentation>()?.PrepareForPanelReload();
+                SetNestedPanels(_runtimePanel);
                 _panelRenderer.panelSettings = _runtimePanel;
             }
             _runtimePanel.sortingOrder = sortingOrder;
             GetComponent<UiToolkitViewPresentation>()?.SetStackInputAllowed(acceptsInput);
+        }
+
+        /// <summary>
+        /// UIDocuments nested under this view (child views attached to its tree) must share the parent's
+        /// PanelSettings; otherwise Unity asserts when the parent switches to its runtime panel.
+        /// </summary>
+        private void SetNestedPanels(PanelSettings panel)
+        {
+#if !UNITY_6000_6_OR_NEWER
+            foreach (var nested in GetComponentsInChildren<UiToolkitHost>(true))
+            {
+                if (nested != _panelRenderer && nested.panelSettings != panel)
+                    nested.panelSettings = panel;
+            }
+#endif
         }
 
         private void ApplyCanvasOrder(int sortingOrder, bool acceptsInput)
