@@ -2,6 +2,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 {
     using System;
     using System.Collections.Generic;
+    using R3;
     using UniGame.ViewSystem.Runtime;
     using UnityEngine;
     using UnityEngine.EventSystems;
@@ -11,6 +12,9 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
     {
         private readonly ViewLayout _layout;
         private readonly Dictionary<IView, UiToolkitMixedOrderAdapter> _adapters = new();
+        // Input goes to the top Showing/Shown view, but views are pushed before their status changes,
+        // so the stack is re-applied whenever a stacked view's status changes.
+        private readonly Dictionary<IView, IDisposable> _statusSubscriptions = new();
         private GameObject _previousSelectedObject;
         private bool _isApplying;
         private bool _applyPending;
@@ -28,6 +32,9 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             foreach (var adapter in _adapters.Values)
                 adapter?.Release();
             _adapters.Clear();
+            foreach (var subscription in _statusSubscriptions.Values)
+                subscription.Dispose();
+            _statusSubscriptions.Clear();
         }
 
         public void Refresh() => Apply(_layout.OrderedViews);
@@ -73,6 +80,8 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
                 var adapter = view.GameObject.GetComponent<UiToolkitMixedOrderAdapter>() ??
                               view.GameObject.AddComponent<UiToolkitMixedOrderAdapter>();
                 _adapters[view] = adapter;
+                if (!_statusSubscriptions.ContainsKey(view))
+                    _statusSubscriptions[view] = view.Status.Skip(1).Subscribe(this, static (_, presenter) => presenter.Refresh());
                 adapter.Apply(index, ReferenceEquals(view, top) && AcceptsInput(view));
             }
 
@@ -105,6 +114,8 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             {
                 _adapters[view]?.Release();
                 _adapters.Remove(view);
+                if (_statusSubscriptions.Remove(view, out var subscription))
+                    subscription.Dispose();
             }
         }
 
