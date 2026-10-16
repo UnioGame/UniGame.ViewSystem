@@ -34,6 +34,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         private bool _suspended;
         private bool _requestedVisible;
         private bool _stackAllowsInput = true;
+        private bool _externalAllowsInput = true;
         private int _lastPanelVersion = -1;
         private string _viewId;
 
@@ -123,6 +124,17 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         public void SetStackInputAllowed(bool allowed)
         {
             _stackAllowsInput = allowed;
+            ApplyVisibility();
+        }
+
+        /// <summary>
+        /// Input gate owned by the game (e.g. modality across layouts). Combined with the stack gate:
+        /// the tree is pickable only when both allow input.
+        /// </summary>
+        public void SetExternalInputAllowed(bool allowed)
+        {
+            if (_externalAllowsInput == allowed) return;
+            _externalAllowsInput = allowed;
             ApplyVisibility();
         }
 
@@ -229,7 +241,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             if (_content != null)
                 _content.EnableInClassList(HiddenClassName, !active);
             if (_root != null)
-                ApplyPickingMode(_root, active && acceptInput && _stackAllowsInput);
+                ApplyPickingMode(_root, active && acceptInput && _stackAllowsInput && _externalAllowsInput);
         }
 
         private void ApplyPickingMode(VisualElement element, bool acceptsInput)
