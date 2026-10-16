@@ -14,7 +14,7 @@
   "overrideReferences": false,
   "precompiledReferences": [],
   "autoReferenced": false,
-  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+  "defineConstraints": ["UNITY_INCLUDE_TESTS", "UNITY_6000_6_OR_NEWER"],
   "versionDefines": [],
   "optionalUnityReferences": ["TestAssemblies"],
   "noEngineReferences": false

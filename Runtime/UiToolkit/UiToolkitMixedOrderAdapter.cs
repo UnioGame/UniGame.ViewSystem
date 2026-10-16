@@ -2,10 +2,15 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 {
     using UnityEngine;
     using UnityEngine.UIElements;
+#if UNITY_6000_6_OR_NEWER
+    using UiToolkitHost = UnityEngine.UIElements.PanelRenderer;
+#else
+    using UiToolkitHost = UnityEngine.UIElements.UIDocument;
+#endif
 
     /// <summary>
-    /// Applies one ViewSystem stack position to a PanelRenderer. Each renderer
-    /// receives a runtime PanelSettings instance,
+    /// Applies one ViewSystem stack position to a UI Toolkit host (PanelRenderer
+    /// on Unity 6.6+, UIDocument before). Each host receives a runtime PanelSettings instance,
     /// while the configured source asset is restored when the adapter is released.
     /// </summary>
     [DisallowMultipleComponent]
@@ -13,7 +18,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
     {
         [SerializeField] private int orderStep = 10;
 
-        private PanelRenderer _panelRenderer;
+        private UiToolkitHost _panelRenderer;
         private PanelSettings _sourcePanel;
         private PanelSettings _runtimePanel;
         private Canvas _canvas;
@@ -74,7 +79,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 
         private void ApplyToolkitOrder(int sortingOrder, bool acceptsInput)
         {
-            _panelRenderer ??= GetComponent<PanelRenderer>();
+            _panelRenderer ??= GetComponent<UiToolkitHost>();
             if (_panelRenderer == null) return;
             if (_runtimePanel == null)
             {

@@ -8,5 +8,6 @@
   ],
   "includePlatforms": ["Editor"],
   "optionalUnityReferences": ["TestAssemblies"],
-  "autoReferenced": false
+  "autoReferenced": false,
+  "defineConstraints": ["UNITY_6000_6_OR_NEWER"]
 }
