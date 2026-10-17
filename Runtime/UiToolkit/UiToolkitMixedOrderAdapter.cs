@@ -53,8 +53,10 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             if (_panelRenderer != null && _runtimePanel != null && _panelRenderer.panelSettings == _runtimePanel)
             {
                 GetComponent<UiToolkitViewPresentation>()?.PrepareForPanelReload();
-                SetNestedPanels(_sourcePanel);
+                // A nested UIDocument must follow its parent's panel; setting it while the parent still uses the runtime
+                // panel fails Unity's panelSettings assertion (seen when the menu scene is torn down on a language switch).
                 _panelRenderer.panelSettings = _sourcePanel;
+                SetNestedPanels(_sourcePanel);
             }
             if (_runtimePanel != null)
             {
@@ -107,8 +109,8 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
                 _runtimePanel = Instantiate(_sourcePanel);
                 _runtimePanel.name = $"{_sourcePanel.name} ({name} runtime)";
                 GetComponent<UiToolkitViewPresentation>()?.PrepareForPanelReload();
-                SetNestedPanels(_runtimePanel);
                 _panelRenderer.panelSettings = _runtimePanel;
+                SetNestedPanels(_runtimePanel);
             }
             _runtimePanel.sortingOrder = sortingOrder;
             GetComponent<UiToolkitViewPresentation>()?.SetStackInputAllowed(acceptsInput);

@@ -26,6 +26,23 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         public UiToolkitHost host;
         public bool acceptInput = true;
 
+        /// <summary>
+        /// For passive overlays whose elements must stay tappable next to the interactive top view (menu widgets):
+        /// the stack gate no longer turns the tree unpickable; only <see cref="SetExternalInputAllowed"/> does.
+        /// </summary>
+        public bool IgnoreStackInputGate
+        {
+            get => _ignoreStackInputGate;
+            set
+            {
+                if (_ignoreStackInputGate == value) return;
+                _ignoreStackInputGate = value;
+                ApplyVisibility();
+            }
+        }
+
+        private bool _ignoreStackInputGate;
+
         private readonly List<Action> _unbindActions = new();
         private readonly Dictionary<VisualElement, PickingMode> _sourcePickingModes = new();
         private VisualElement _root;
@@ -247,7 +264,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             if (_content != null)
                 _content.EnableInClassList(HiddenClassName, !active);
             if (_root != null)
-                ApplyPickingMode(_root, active && acceptInput && _stackAllowsInput && _externalAllowsInput);
+                ApplyPickingMode(_root, active && acceptInput && (_stackAllowsInput || _ignoreStackInputGate) && _externalAllowsInput);
         }
 
         /// <summary>
