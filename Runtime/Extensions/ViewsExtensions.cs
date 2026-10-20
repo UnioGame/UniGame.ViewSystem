@@ -236,6 +236,8 @@
             var view = await source.Layout
                 .Create(viewModel, viewType.Name, skinTag, parent, viewName, stayWorld, lifeTime, activateOnCreate);
 
+            if (view == null) return null;
+
             var viewTransform = view.Transform;
             view.Owner.layer = source.Owner.layer;
             viewTransform.localScale = Vector3.one;
@@ -283,6 +285,7 @@
             where T : class, IView
         {
             var view = await source.CreateChildViewAsync<T>(viewModel, parent, skinTag, viewName, stayWorld, lifeTime, activateOnCreate);
+            if (view == null) return null;
             await view.ShowAsync();
             return view;
         }

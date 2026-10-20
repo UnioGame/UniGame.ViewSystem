@@ -51,30 +51,37 @@ namespace UniGame.UiSystem.Runtime
             var loadLifeTime = new LifeTime();
             var usePooling = viewReference.UsePooling;
             var keepInMemory = viewReference.KeepInMemory;
-            
-            //create view instance
-            var viewResult   = await Create(result,loadLifeTime, parent,stayWorldPosition,usePooling, activateOnCreate: activateOnCreate);
-            
-            var view         = viewResult.View;
-            var viewLifeTime = viewResult.AssetLifeTime;
-            
-            //if loading failed release resource immediately
-            if (view == null) {
-                loadLifeTime.Dispose();
-                GameLog.LogError($"Factory {GetType().Name} View of Type {viewId} not loaded or cancelled");
-                return null;
-            }
+            var hadParent = parent != null;
+            var ownershipTransferred = false;
 
-            var memoryLifeTime = viewLifeTime;
-            
-            //if view need to be keeped in memory even if pooling is disabled
-            if(!usePooling && keepInMemory)
-                memoryLifeTime = _lifeTime;
-            
-            memoryLifeTime.AddDispose(loadLifeTime);
-            view.SetSourceName(viewId,viewReference.ViewName);
-            
-            return view;
+            try
+            {
+                var viewResult = await Create(result, loadLifeTime, parent, stayWorldPosition, usePooling,
+                    activateOnCreate: activateOnCreate);
+                var view = viewResult.View;
+
+                if (view == null)
+                {
+                    if (!hadParent || parent != null)
+                        GameLog.LogError($"Factory {GetType().Name} View of Type {viewId} not loaded or cancelled");
+                    return null;
+                }
+
+                var memoryLifeTime = viewResult.AssetLifeTime;
+                if (!usePooling && keepInMemory)
+                    memoryLifeTime = _lifeTime;
+
+                memoryLifeTime.AddDispose(loadLifeTime);
+                ownershipTransferred = true;
+                view.SetSourceName(viewId, viewReference.ViewName);
+                return view;
+            }
+            finally
+            {
+                // Failed or interrupted creation never transferred the loaded prefab to an instance.
+                if (!ownershipTransferred)
+                    loadLifeTime.Dispose();
+            }
         }
         
         /// <summary>
@@ -91,10 +98,11 @@ namespace UniGame.UiSystem.Runtime
         {
             if (!asset.RuntimeKeyIsValid()) return new ViewResult();
 
+            var hadParent = parent != null;
             var sourceView = await LoadAssetReferenceAsset(asset, lifeTime);
 
             //operation was cancelled
-            if(sourceView == null) return new ViewResult();
+            if (sourceView == null || (hadParent && parent == null)) return new ViewResult();
 
             var viewTransform = sourceView.transform;
             var hasPool = sourceView.HasPool();
@@ -128,8 +136,8 @@ namespace UniGame.UiSystem.Runtime
             if (isActive && activateOnCreate)
             {
                 await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate,lifeTime.Token);
-                if(gameObjectView!=null)
-                    gameObjectView.SetActive(true);
+                if (gameObjectView == null) return new ViewResult();
+                gameObjectView.SetActive(true);
             }
 
             //create instance of view

@@ -869,12 +869,15 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             
             var parent = container ?? sender.Transform;
             
-            return sender.Bind(views,source,async (x,y) =>
+            var token = lifeTime.Token;
+            async UniTask InitializeAsync(List<TModel> models, List<TChildView> items)
             {
-                await sender.InitializeListViews(x, y,parent , viewAction)
-                    .AttachExternalCancellation(lifeTime.Token);
-                onComplete?.Invoke(y);
-            });
+                await sender.InitializeListViews(models, items, parent, viewAction);
+                if (!token.IsCancellationRequested)
+                    onComplete?.Invoke(items);
+            }
+
+            return sender.Bind(views, source, (x, y) => InitializeAsync(x, y).Forget());
         }
 
         
@@ -886,6 +889,9 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
             where TViewModel : IViewModel
             where TView : class, IView
         {
+            var token = source.LifeTime.Token;
+            if (token.IsCancellationRequested) return;
+
             var amount = Math.Min(views.Count, models.Count);
             var index = 0;
         
@@ -904,9 +910,16 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
 
             for (var i = index; i < models.Count; i++)
             {
+                if (token.IsCancellationRequested) return;
                 index++;
                 var model = models[i];
                 var buttonView = await source.ShowChildViewAsync<TView>(model,targetParent);
+                if (token.IsCancellationRequested)
+                {
+                    if (buttonView?.GameObject != null)
+                        views.Add(buttonView);
+                    return;
+                }
                 views.Add(buttonView);
             }
 

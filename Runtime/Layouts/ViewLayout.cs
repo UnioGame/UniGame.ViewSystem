@@ -227,8 +227,9 @@ namespace UniGame.UiSystem.Runtime
             where TView : class, IView
         {
             view.StatusChanged
+                .TakeUntil(LifeTime.Token)
                 .Subscribe(this,static (x,y) => y.ViewStatusChanged(x, x.Status.CurrentValue))
-                .AddTo(LifeTime);
+                .AddTo(view.LifeTime);
             
             Add(view);
         }
