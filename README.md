@@ -615,6 +615,15 @@ All base Bind extensions use ViewModelLifetime that allows auto disconnect from 
 
 Binding extensions allow you to easily connect your view and data sources with a rich flow syntax and support Rx methods and async/await semantics.
 
+UI Toolkit views use `UniGame.UiSystem.Runtime.UiToolkit.UiToolkitReactiveBindingExtensions.Bind`
+for labels, buttons, progress bars, toggles, colors, visibility, USS classes,
+render callbacks, button signals, and text field input. A boolean value bound
+to a `VisualElement` controls visibility by default. Pass
+`UiToolkitBindingMode.Enabled` to control whether the element is enabled, or a
+USS class name to toggle that class. These bindings are released when the
+presentation tree is replaced; views without `UiToolkitViewPresentation` use
+their `LifeTime` instead.
+
 #### Zero-Allocation Binding (Performance Optimization)
 
 Bind extensions support **static lambda expressions** to eliminate closure allocations. This is especially important in performance-critical scenarios like frequent updates or animations.

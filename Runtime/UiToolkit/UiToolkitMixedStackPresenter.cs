@@ -6,6 +6,12 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
     using UnityEngine;
     using UnityEngine.EventSystems;
 
+    /// <summary>Allows visible windows in the same group to receive pointer input together.</summary>
+    public interface IUiToolkitSharedInputView
+    {
+        string SharedInputGroup { get; }
+    }
+
     /// <summary>Maps the ordered ViewSystem stack to Canvas and PanelRenderer ordering.</summary>
     public sealed class UiToolkitMixedStackPresenter : IDisposable
     {
@@ -73,7 +79,8 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
                 var adapter = view.GameObject.GetComponent<UiToolkitMixedOrderAdapter>() ??
                               view.GameObject.AddComponent<UiToolkitMixedOrderAdapter>();
                 _adapters[view] = adapter;
-                adapter.Apply(index, ReferenceEquals(view, top) && AcceptsInput(view));
+                adapter.Apply(index, AcceptsInput(view) &&
+                    (ReferenceEquals(view, top) || SharesInputGroup(view, top)));
             }
 
             RemoveAdaptersOutsideStack(views);
@@ -135,6 +142,12 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             var presentation = view?.GameObject?.GetComponent<UiToolkitViewPresentation>();
             return presentation == null || presentation.acceptInput;
         }
+
+        private static bool SharesInputGroup(IView view, IView top) =>
+            view is IUiToolkitSharedInputView member &&
+            top is IUiToolkitSharedInputView active &&
+            !string.IsNullOrWhiteSpace(member.SharedInputGroup) &&
+            string.Equals(member.SharedInputGroup, active.SharedInputGroup, StringComparison.Ordinal);
 
         private static bool BelongsTo(GameObject candidate, GameObject owner) =>
             candidate != null && owner != null &&
