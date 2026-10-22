@@ -58,7 +58,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 1809030831
+  m_SortingLayerID: 0
   m_SortingOrder: 300
   m_TargetDisplay: 0
 --- !u!114 &4444143577815009918
@@ -281,7 +281,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 1809030831
+  m_SortingLayerID: 0
   m_SortingOrder: 200
   m_TargetDisplay: 0
 --- !u!114 &7387079578710871592
@@ -382,7 +382,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 1809030831
+  m_SortingLayerID: 0
   m_SortingOrder: 100
   m_TargetDisplay: 0
 --- !u!114 &7387079579963990727

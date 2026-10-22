@@ -569,7 +569,15 @@ namespace UniGame.UiSystem.Runtime
 
             //register into default layout
             layout ??= GetLayout(string.Empty);
-            layout?.Push(view);
+            try
+            {
+                layout?.Push(view);
+            }
+            catch
+            {
+                view.Destroy();
+                throw;
+            }
 
             //fire view data
             _viewCreatedSubject.OnNext(view);

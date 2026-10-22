@@ -32,7 +32,10 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         {
             _layout.OrderChanged -= Apply;
             foreach (var adapter in _adapters.Values)
+            {
+                if (adapter != null) adapter.RequestedOrderChanged -= Refresh;
                 adapter?.Release();
+            }
             _adapters.Clear();
         }
 
@@ -63,9 +66,15 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 
         private void ApplyCurrentStack(IReadOnlyList<IView> views)
         {
-            var top = LastInteractive(views);
+            foreach (var view in views)
+            {
+                if (view?.GameObject != null) EnsureAdapter(view);
+            }
+
+            var top = LastInteractive(views, out var highestOrder, out var topOrderCount);
+            var hasOrderTie = topOrderCount > 1;
             var eventSystem = EventSystem.current;
-            if (eventSystem != null && eventSystem.currentSelectedGameObject != null &&
+            if (!hasOrderTie && eventSystem != null && eventSystem.currentSelectedGameObject != null &&
                 !BelongsTo(eventSystem.currentSelectedGameObject, top?.GameObject))
             {
                 _previousSelectedObject = eventSystem.currentSelectedGameObject;
@@ -76,16 +85,15 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             {
                 var view = views[index];
                 if (view?.GameObject == null) continue;
-                var adapter = view.GameObject.GetComponent<UiToolkitMixedOrderAdapter>() ??
-                              view.GameObject.AddComponent<UiToolkitMixedOrderAdapter>();
-                _adapters[view] = adapter;
+                var adapter = _adapters[view];
                 adapter.Apply(index, AcceptsInput(view) &&
-                    (ReferenceEquals(view, top) || SharesInputGroup(view, top)));
+                    (IsInteractiveAtOrder(view, adapter, index, highestOrder) || SharesInputGroup(view, top)),
+                    _layout.LayerType);
             }
 
             RemoveAdaptersOutsideStack(views);
 
-            if (top?.GameObject == null) return;
+            if (top?.GameObject == null || hasOrderTie) return;
             var toolkit = top as IUiToolkitView;
             if (toolkit != null)
             {
@@ -100,6 +108,18 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
                 eventSystem.SetSelectedGameObject(FirstSelectable(top.GameObject));
         }
 
+        private UiToolkitMixedOrderAdapter EnsureAdapter(IView view)
+        {
+            if (_adapters.TryGetValue(view, out var adapter) && adapter != null)
+                return adapter;
+
+            adapter = view.GameObject.GetComponent<UiToolkitMixedOrderAdapter>() ??
+                      view.GameObject.AddComponent<UiToolkitMixedOrderAdapter>();
+            adapter.RequestedOrderChanged += Refresh;
+            _adapters[view] = adapter;
+            return adapter;
+        }
+
         private void RemoveAdaptersOutsideStack(IReadOnlyList<IView> views)
         {
             var removed = new List<IView>();
@@ -110,6 +130,8 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 
             foreach (var view in removed)
             {
+                if (_adapters[view] != null)
+                    _adapters[view].RequestedOrderChanged -= Refresh;
                 _adapters[view]?.Release();
                 _adapters.Remove(view);
             }
@@ -125,17 +147,30 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             return false;
         }
 
-        private static IView LastInteractive(IReadOnlyList<IView> views)
+        private IView LastInteractive(IReadOnlyList<IView> views, out int highestOrder, out int topOrderCount)
         {
-            for (var index = views.Count - 1; index >= 0; index--)
+            IView top = null;
+            highestOrder = int.MinValue;
+            topOrderCount = 0;
+            for (var index = 0; index < views.Count; index++)
             {
                 var view = views[index];
                 if (view != null && view.GameObject != null && AcceptsInput(view) &&
                     view.Status.CurrentValue is ViewStatus.Showing or ViewStatus.Shown)
-                    return view;
+                {
+                    var order = _adapters[view].CalculateSortingOrder(index, _layout.LayerType);
+                    if (order < highestOrder) continue;
+                    topOrderCount = order == highestOrder ? topOrderCount + 1 : 1;
+                    highestOrder = order;
+                    top = view;
+                }
             }
-            return null;
+            return top;
         }
+
+        private bool IsInteractiveAtOrder(IView view, UiToolkitMixedOrderAdapter adapter, int index, int order) =>
+            view.Status.CurrentValue is ViewStatus.Showing or ViewStatus.Shown &&
+            adapter.CalculateSortingOrder(index, _layout.LayerType) == order;
 
         private static bool AcceptsInput(IView view)
         {

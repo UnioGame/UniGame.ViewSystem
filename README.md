@@ -625,6 +625,18 @@ UI Toolkit tree is replaced or its view is disabled; other views use their
 `LifeTime` instead. A UI Toolkit prefab needs a `PanelRenderer` and one
 `UiToolkitView<T>`; `acceptInput` is configured on the view.
 
+The built-in `Screen`, `Window`, and `Overlay` layouts reserve sorting orders
+100-199, 200-299, and 300-399. A view's position within its own layout selects
+the order inside that range. Their layout Canvases must start at orders 100,
+200, and 300 and use the Default sorting layer. Each range supports 100 views.
+The mixed order adapter applies these values to `PanelSettings`, `PanelRenderer`,
+and a Canvas on the view root when present, then restores their original values
+when the view leaves the stack. Custom layouts retain the `orderStep` behavior.
+An explicit `ViewRequest.Order` overrides the stack position within a built-in
+range and remains in effect when the stack changes. Views without an explicit
+order continue to use their stack position. The top interactive view follows
+the effective sorting order.
+
 #### Zero-Allocation Binding (Performance Optimization)
 
 Bind extensions support **static lambda expressions** to eliminate closure allocations. This is especially important in performance-critical scenarios like frequent updates or animations.

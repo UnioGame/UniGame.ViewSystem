@@ -15,6 +15,7 @@ namespace UniGame.UiSystem.Runtime
     using UnityEngine.Pool;
     using UnityEngine.UIElements;
     using UniGame.UiSystem.Runtime.UiToolkit;
+    using UniModules.UniGame.UiSystem.Runtime;
 
     [Serializable]
     public class ViewLayout : IViewLayout
@@ -40,6 +41,9 @@ namespace UniGame.UiSystem.Runtime
         public event Action<IReadOnlyList<IView>> OrderChanged;
 
         public Transform Layout { get; protected set; }
+
+        /// <summary>Built-in ViewSystem layer of this layout.</summary>
+        public ViewType LayerType { get; set; } = ViewType.None;
 
         public ILifeTime LifeTime => _lifeTime;
         
@@ -119,6 +123,11 @@ namespace UniGame.UiSystem.Runtime
             {
                 return;
             }
+
+            if (UiToolkitMixedOrderAdapter.HasLayerRange(LayerType) &&
+                _views.Count >= UiToolkitMixedOrderAdapter.LayerCapacity)
+                throw new InvalidOperationException(
+                    $"The {LayerType} layout cannot contain more than {UiToolkitMixedOrderAdapter.LayerCapacity} views.");
 
             AddView(view);
 
