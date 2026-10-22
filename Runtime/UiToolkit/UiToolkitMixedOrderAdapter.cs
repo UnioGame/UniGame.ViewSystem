@@ -38,7 +38,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         {
             if (_panelRenderer != null && _runtimePanel != null && _panelRenderer.panelSettings == _runtimePanel)
             {
-                GetComponent<UiToolkitViewPresentation>()?.PrepareForPanelReload();
+                GetComponent<IUiToolkitView>()?.PrepareForPanelReload();
                 _panelRenderer.panelSettings = _sourcePanel;
             }
             if (_runtimePanel != null)
@@ -68,7 +68,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             _canvas = null;
             _canvasGroup = null;
             _addedCanvasGroup = false;
-            GetComponent<UiToolkitViewPresentation>()?.SetStackInputAllowed(true);
+            GetComponent<IUiToolkitView>()?.SetStackInputAllowed(true);
             CurrentStackIndex = -1;
         }
 
@@ -83,11 +83,11 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
                     throw new System.InvalidOperationException($"Mixed UI adapter on '{name}' requires PanelSettings.");
                 _runtimePanel = Instantiate(_sourcePanel);
                 _runtimePanel.name = $"{_sourcePanel.name} ({name} runtime)";
-                GetComponent<UiToolkitViewPresentation>()?.PrepareForPanelReload();
+                GetComponent<IUiToolkitView>()?.PrepareForPanelReload();
                 _panelRenderer.panelSettings = _runtimePanel;
             }
             _runtimePanel.sortingOrder = sortingOrder;
-            GetComponent<UiToolkitViewPresentation>()?.SetStackInputAllowed(acceptsInput);
+            GetComponent<IUiToolkitView>()?.SetStackInputAllowed(acceptsInput);
         }
 
         private void ApplyCanvasOrder(int sortingOrder, bool acceptsInput)

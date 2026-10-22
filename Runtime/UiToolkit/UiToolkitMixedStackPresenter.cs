@@ -86,7 +86,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             RemoveAdaptersOutsideStack(views);
 
             if (top?.GameObject == null) return;
-            var toolkit = top.GameObject.GetComponent<UiToolkitViewPresentation>();
+            var toolkit = top as IUiToolkitView;
             if (toolkit != null)
             {
                 toolkit.FocusFirstFocusable();
@@ -139,8 +139,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 
         private static bool AcceptsInput(IView view)
         {
-            var presentation = view?.GameObject?.GetComponent<UiToolkitViewPresentation>();
-            return presentation == null || presentation.acceptInput;
+            return view is not IUiToolkitView toolkit || toolkit.AcceptInput;
         }
 
         private static bool SharesInputGroup(IView view, IView top) =>

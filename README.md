@@ -621,8 +621,9 @@ render callbacks, button signals, and text field input. A boolean value bound
 to a `VisualElement` controls visibility by default. Pass
 `UiToolkitBindingMode.Enabled` to control whether the element is enabled, or a
 USS class name to toggle that class. These bindings are released when the
-presentation tree is replaced; views without `UiToolkitViewPresentation` use
-their `LifeTime` instead.
+UI Toolkit tree is replaced or its view is disabled; other views use their
+`LifeTime` instead. A UI Toolkit prefab needs a `PanelRenderer` and one
+`UiToolkitView<T>`; `acceptInput` is configured on the view.
 
 #### Zero-Allocation Binding (Performance Optimization)
 

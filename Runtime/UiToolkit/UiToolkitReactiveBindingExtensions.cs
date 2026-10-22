@@ -140,10 +140,9 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         private static void RegisterBinding<TView>(TView view, IDisposable binding)
             where TView : ILifeTimeContext
         {
-            if (view is Component component &&
-                component.TryGetComponent<UiToolkitViewPresentation>(out var presentation))
+            if (view is IUiToolkitView toolkit)
             {
-                presentation.AddUnbind(binding.Dispose);
+                toolkit.AddUnbind(binding.Dispose);
                 return;
             }
 

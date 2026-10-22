@@ -25,6 +25,10 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
             RebindsAfterDisable().ToCoroutine();
 
         [UnityTest]
+        public IEnumerator ComponentDisableRestoresInputWhenPanelRendererStaysActive() =>
+            RestoresInputAfterComponentDisable().ToCoroutine();
+
+        [UnityTest]
         public IEnumerator LayoutOrdersMixedViewsAndRestoresTheirOriginalSettingsOnRemoval() =>
             LayoutsMixedStack().ToCoroutine();
 
@@ -42,7 +46,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
                 view.OnBind = () =>
                 {
                     bound++;
-                    view.Presentation.AddUnbind(() => unbound++);
+                    view.AddUnbind(() => unbound++);
                 };
 
                 await view.Initialize(new EmptyViewModel());
@@ -53,8 +57,53 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
                 gameObject.SetActive(true);
                 Assert.That(bound, Is.EqualTo(2));
 
-                view.Destroy();
+                var adapter = gameObject.AddComponent<UiToolkitMixedOrderAdapter>();
+                adapter.Apply(1, true);
+                for (var frame = 0; frame < 120 && bound < 3; frame++)
+                    await UniTask.Yield();
+                Assert.That(bound, Is.EqualTo(3));
                 Assert.That(unbound, Is.EqualTo(2));
+
+                adapter.Release();
+                for (var frame = 0; frame < 120 && bound < 4; frame++)
+                    await UniTask.Yield();
+                Assert.That(bound, Is.EqualTo(4));
+                Assert.That(unbound, Is.EqualTo(3));
+
+                view.Destroy();
+                Assert.That(unbound, Is.EqualTo(4));
+            }
+            finally
+            {
+                Object.Destroy(gameObject);
+                Object.Destroy(panelSettings);
+            }
+        }
+
+        private static async UniTask RestoresInputAfterComponentDisable()
+        {
+            var gameObject = CreateToolkitView("UITK component toggle test", out var view, out var panelSettings);
+            try
+            {
+                var bindings = 0;
+                view.OnBind = () => bindings++;
+                await view.Initialize(new EmptyViewModel());
+                view.SetVisible(true);
+                var root = view.Root;
+                var originalMode = root.pickingMode;
+                Assert.That(originalMode, Is.Not.EqualTo(PickingMode.Ignore));
+
+                view.enabled = false;
+                Assert.That(view.IsToolkitReady, Is.False);
+                Assert.That(gameObject.GetComponent<PanelRenderer>().enabled, Is.True);
+                Assert.That(root.pickingMode, Is.EqualTo(PickingMode.Ignore));
+                view.enabled = true;
+                for (var frame = 0; frame < 120 && bindings < 2; frame++)
+                    await UniTask.Yield();
+
+                Assert.That(bindings, Is.EqualTo(2));
+                Assert.That(view.Root.pickingMode, Is.EqualTo(originalMode));
+                view.Destroy();
             }
             finally
             {
@@ -78,7 +127,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
             canvasGroup.blocksRaycasts = false;
             var eventSystemObject = new GameObject("UITK stack EventSystem");
             var eventSystem = eventSystemObject.AddComponent<EventSystem>();
-            var sourcePanel = toolkitView.Presentation.PanelRenderer.panelSettings;
+            var sourcePanel = toolkitView.PanelRenderer.panelSettings;
             var layout = new ViewLayout();
 
             try
@@ -99,8 +148,8 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
                 Assert.That(canvas.sortingOrder, Is.EqualTo(0));
                 Assert.That(canvasGroup.interactable, Is.False);
                 Assert.That(canvasGroup.blocksRaycasts, Is.False);
-                Assert.That(toolkitView.Presentation.PanelRenderer.panelSettings, Is.Not.SameAs(sourcePanel));
-                Assert.That(toolkitView.Presentation.PanelRenderer.panelSettings.sortingOrder, Is.EqualTo(10));
+                Assert.That(toolkitView.PanelRenderer.panelSettings, Is.Not.SameAs(sourcePanel));
+                Assert.That(toolkitView.PanelRenderer.panelSettings.sortingOrder, Is.EqualTo(10));
                 Assert.That(eventSystem.currentSelectedGameObject, Is.Null);
 
                 layout.Close(toolkitView);
@@ -110,7 +159,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
                 Assert.That(canvasGroup.interactable, Is.True);
                 Assert.That(canvasGroup.blocksRaycasts, Is.True);
                 Assert.That(eventSystem.currentSelectedGameObject, Is.SameAs(button.gameObject));
-                Assert.That(toolkitView.Presentation.PanelRenderer.panelSettings, Is.SameAs(sourcePanel));
+                Assert.That(toolkitView.PanelRenderer.panelSettings, Is.SameAs(sourcePanel));
                 Assert.That(canvasOrder.CurrentStackIndex, Is.EqualTo(0));
 
                 layout.Dispose();
@@ -121,7 +170,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
                 Assert.That(canvas.sortingOrder, Is.EqualTo(17));
                 Assert.That(canvasGroup.interactable, Is.False);
                 Assert.That(canvasGroup.blocksRaycasts, Is.False);
-                Assert.That(toolkitView.Presentation.PanelRenderer.panelSettings, Is.SameAs(sourcePanel));
+                Assert.That(toolkitView.PanelRenderer.panelSettings, Is.SameAs(sourcePanel));
                 Assert.That(toolkitObject.GetComponent<UiToolkitMixedOrderAdapter>().CurrentStackIndex, Is.EqualTo(-1));
             }
             finally
@@ -177,7 +226,6 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
             renderer.panelSettings = panelSettings;
             renderer.visualTreeAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(VisualTreePath);
             Assert.That(renderer.visualTreeAsset, Is.Not.Null, $"Missing UITK test VisualTreeAsset at '{VisualTreePath}'.");
-            gameObject.AddComponent<UiToolkitViewPresentation>();
             view = gameObject.AddComponent<UiToolkitStackPlayModeTestView>();
             view.viewAnimation = new UniGame.ViewSystem.Runtime.Animations.SimpleFadeViewAnimation();
             gameObject.SetActive(true);

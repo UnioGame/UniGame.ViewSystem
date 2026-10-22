@@ -16,8 +16,8 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 
         public UniTask PlayAnimation(IView view, ViewStatus status, ILifeTime lifeTime)
         {
-            var presentation = view?.GameObject?.GetComponent<UiToolkitViewPresentation>();
-            presentation?.SetVisible(status is ViewStatus.Showing or ViewStatus.Shown);
+            if (view is IUiToolkitView toolkit)
+                toolkit.SetVisible(status is ViewStatus.Showing or ViewStatus.Shown);
             return UniTask.CompletedTask;
         }
     }
