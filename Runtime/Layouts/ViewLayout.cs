@@ -15,6 +15,11 @@ namespace UniGame.UiSystem.Runtime
     using UnityEngine.Pool;
     using UnityEngine.UIElements;
     using UniGame.UiSystem.Runtime.UiToolkit;
+#if UNITY_6000_5_OR_NEWER
+    using PanelHost = UnityEngine.UIElements.PanelRenderer;
+#else
+    using PanelHost = UnityEngine.UIElements.UIDocument;
+#endif
     using UniModules.UniGame.UiSystem.Runtime;
 
     [Serializable]
@@ -133,7 +138,7 @@ namespace UniGame.UiSystem.Runtime
 
             if (_uiToolkitMixedStackPresenter == null &&
                 view?.GameObject != null &&
-                view.GameObject.GetComponent<PanelRenderer>() != null)
+                view.GameObject.GetComponent<PanelHost>() != null)
             {
                 _uiToolkitMixedStackPresenter = new UiToolkitMixedStackPresenter(this);
                 _lifeTime.AddDispose(_uiToolkitMixedStackPresenter);

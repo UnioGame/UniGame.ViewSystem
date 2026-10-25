@@ -12,7 +12,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         string SharedInputGroup { get; }
     }
 
-    /// <summary>Maps the ordered ViewSystem stack to Canvas and PanelRenderer ordering.</summary>
+    /// <summary>Maps the ordered ViewSystem stack to Canvas and UI Toolkit ordering.</summary>
     public sealed class UiToolkitMixedStackPresenter : IDisposable
     {
         private readonly ViewLayout _layout;

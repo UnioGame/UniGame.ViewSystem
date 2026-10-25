@@ -1,3 +1,4 @@
+#if UNITY_6000_5_OR_NEWER
 namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
 {
     using System.Collections;
@@ -265,3 +266,87 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
         }
     }
 }
+#else
+namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
+{
+    using System.Collections;
+    using Cysharp.Threading.Tasks;
+    using NUnit.Framework;
+    using UniGame.UiSystem.Runtime;
+    using UniGame.ViewSystem.Runtime;
+    using UniModules.UniGame.UiSystem.Runtime;
+    using UnityEditor;
+    using UnityEngine;
+    using UnityEngine.TestTools;
+    using UnityEngine.UIElements;
+
+    public sealed class UiToolkitDocumentTests
+    {
+        private const string VisualTreePath = "Assets/Game.Content/Ui/WorldspaceUIToolkit/BarkView.uxml";
+        private const string PanelSettingsPath = "Assets/Game.Content/Ui/_Settings/UIDefaultPanelSettings-Worldspace.asset";
+
+        [UnityTest]
+        [Timeout(5000)]
+        public IEnumerator UiDocumentRebindsAndRestoresPanelSettings() => VerifyLifecycle().ToCoroutine();
+
+        private static async UniTask VerifyLifecycle()
+        {
+            var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(VisualTreePath);
+            var panelSettings = AssetDatabase.LoadAssetAtPath<PanelSettings>(PanelSettingsPath);
+            Assert.That(tree, Is.Not.Null);
+            Assert.That(panelSettings, Is.Not.Null);
+
+            var gameObject = new GameObject("UITK UIDocument view test");
+            gameObject.SetActive(false);
+            var document = gameObject.AddComponent<UIDocument>();
+            document.visualTreeAsset = tree;
+            document.panelSettings = panelSettings;
+            var view = gameObject.AddComponent<UiToolkitDocumentTestView>();
+            try
+            {
+                gameObject.SetActive(true);
+                await view.Initialize(new EmptyViewModel());
+                Assert.That(view.Root, Is.SameAs(document.rootVisualElement));
+                Assert.That(view.BindCount, Is.EqualTo(1));
+                Assert.That(view.UnbindCount, Is.Zero);
+
+                var adapter = gameObject.AddComponent<UiToolkitMixedOrderAdapter>();
+                adapter.Apply(0, false, ViewType.Screen);
+                await UniTask.WaitUntil(() => view.Root == document.rootVisualElement && view.BindCount >= 2);
+                Assert.That(document.panelSettings, Is.Not.SameAs(panelSettings));
+                Assert.That(document.sortingOrder, Is.EqualTo(100f));
+                Assert.That(view.UnbindCount, Is.GreaterThanOrEqualTo(1));
+                adapter.Release();
+                await UniTask.WaitUntil(() => view.Root == document.rootVisualElement && view.BindCount >= 3);
+                Assert.That(document.panelSettings, Is.SameAs(panelSettings));
+                Assert.That(view.UnbindCount, Is.GreaterThanOrEqualTo(2));
+
+                document.enabled = false;
+                await UniTask.WaitUntil(() => view.Root == null);
+                Assert.That(view.UnbindCount, Is.GreaterThanOrEqualTo(3));
+                document.enabled = true;
+                await UniTask.WaitUntil(() => view.Root != null && view.BindCount >= 4);
+                Assert.That(view.Root, Is.SameAs(document.rootVisualElement));
+            }
+            finally
+            {
+                view.Destroy();
+                Object.DestroyImmediate(gameObject);
+            }
+        }
+    }
+
+    public sealed class UiToolkitDocumentTestView : UiToolkitView<EmptyViewModel>
+    {
+        public int BindCount;
+        public int UnbindCount;
+
+        protected override UniTask OnInitializeToolkit(EmptyViewModel model, VisualElement root)
+        {
+            BindCount++;
+            AddUnbind(() => UnbindCount++);
+            return UniTask.CompletedTask;
+        }
+    }
+}
+#endif

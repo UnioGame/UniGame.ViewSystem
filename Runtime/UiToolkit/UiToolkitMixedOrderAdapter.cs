@@ -3,9 +3,14 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
     using UnityEngine;
     using UnityEngine.UIElements;
     using UniModules.UniGame.UiSystem.Runtime;
+#if UNITY_6000_5_OR_NEWER
+    using PanelHost = UnityEngine.UIElements.PanelRenderer;
+#else
+    using PanelHost = UnityEngine.UIElements.UIDocument;
+#endif
 
     /// <summary>
-    /// Applies one ViewSystem stack position to a PanelRenderer. Each renderer
+    /// Applies one ViewSystem stack position to a UI Toolkit host. Each host
     /// receives a runtime PanelSettings instance,
     /// while the configured source asset is restored when the adapter is released.
     /// </summary>
@@ -16,7 +21,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 
         [SerializeField] private int orderStep = 10;
 
-        private PanelRenderer _panelRenderer;
+        private PanelHost _panelHost;
         private PanelSettings _sourcePanel;
         private PanelSettings _runtimePanel;
         private Canvas _canvas;
@@ -26,7 +31,11 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         private bool _sourceCanvasGroupBlocksRaycasts;
         private int _sourceCanvasOrder;
         private bool _sourceOverrideSorting;
+#if UNITY_6000_5_OR_NEWER
         private int _sourceRendererOrder;
+#else
+        private float _sourceRendererOrder;
+#endif
         private bool _sourceRendererSortingCaptured;
         private int? _requestedOrder;
         private bool _hasExternalPlacement;
@@ -128,10 +137,13 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 
         public void Release()
         {
-            if (_panelRenderer != null && _runtimePanel != null && _panelRenderer.panelSettings == _runtimePanel)
+            if (_panelHost != null && _runtimePanel != null && _panelHost.panelSettings == _runtimePanel)
             {
                 GetComponent<IUiToolkitView>()?.PrepareForPanelReload();
-                _panelRenderer.panelSettings = _sourcePanel;
+                _panelHost.panelSettings = _sourcePanel;
+#if !UNITY_6000_5_OR_NEWER
+                GetComponent<IUiToolkitView>()?.RefreshHost();
+#endif
             }
             if (_runtimePanel != null)
             {
@@ -141,7 +153,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             RestoreRendererSorting();
             _runtimePanel = null;
             _sourcePanel = null;
-            _panelRenderer = null;
+            _panelHost = null;
 
             if (_canvas != null)
             {
@@ -171,27 +183,30 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 
         private void ApplyToolkitOrder(int sortingOrder, bool acceptsInput, bool layered)
         {
-            _panelRenderer ??= GetComponent<PanelRenderer>();
-            if (_panelRenderer == null) return;
+            _panelHost ??= GetComponent<PanelHost>();
+            if (_panelHost == null) return;
             if (_runtimePanel == null)
             {
-                _sourcePanel = _panelRenderer.panelSettings;
+                _sourcePanel = _panelHost.panelSettings;
                 if (_sourcePanel == null)
                     throw new System.InvalidOperationException($"Mixed UI adapter on '{name}' requires PanelSettings.");
                 _runtimePanel = Instantiate(_sourcePanel);
                 _runtimePanel.name = $"{_sourcePanel.name} ({name} runtime)";
                 GetComponent<IUiToolkitView>()?.PrepareForPanelReload();
-                _panelRenderer.panelSettings = _runtimePanel;
+                _panelHost.panelSettings = _runtimePanel;
+#if !UNITY_6000_5_OR_NEWER
+                GetComponent<IUiToolkitView>()?.RefreshHost();
+#endif
             }
             _runtimePanel.sortingOrder = sortingOrder;
             if (layered || _requestedOrder.HasValue)
             {
                 if (!_sourceRendererSortingCaptured)
                 {
-                    _sourceRendererOrder = _panelRenderer.sortingOrder;
+                    _sourceRendererOrder = _panelHost.sortingOrder;
                     _sourceRendererSortingCaptured = true;
                 }
-                _panelRenderer.sortingOrder = sortingOrder;
+                _panelHost.sortingOrder = sortingOrder;
             }
             else
             {
@@ -202,8 +217,8 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 
         private void RestoreRendererSorting()
         {
-            if (_panelRenderer != null && _sourceRendererSortingCaptured)
-                _panelRenderer.sortingOrder = _sourceRendererOrder;
+            if (_panelHost != null && _sourceRendererSortingCaptured)
+                _panelHost.sortingOrder = _sourceRendererOrder;
             _sourceRendererSortingCaptured = false;
         }
 

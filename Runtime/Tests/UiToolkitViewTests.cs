@@ -1,3 +1,4 @@
+#if UNITY_6000_5_OR_NEWER
 namespace UniGame.UiSystem.Runtime.UiToolkit.Tests
 {
     using System.Collections;
@@ -223,3 +224,4 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.Tests
     public sealed class UiToolkitEditModeTestView : UiToolkitView<EmptyViewModel> { }
     public sealed class CanvasEditModeTestView : View<EmptyViewModel> { }
 }
+#endif
