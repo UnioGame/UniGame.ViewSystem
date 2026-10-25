@@ -6,6 +6,7 @@ namespace UniGame.ViewSystem.Runtime.Extensions
     using UniGame.Runtime.Rx;
     using UnityEngine;
     using UnityEngine.UI;
+    using UIToolkitButton = UnityEngine.UIElements.Button;
 
     /// <summary>Exposes dependency-focused bindings for common View components.</summary>
     public static class ViewComponentBindingExtensions
@@ -26,6 +27,13 @@ namespace UniGame.ViewSystem.Runtime.Extensions
 
         /// <summary>Binds a button click to a one-update boolean signal.</summary>
         public static TView Bind<TView>(this TView view, Button source, ISignalValueProperty<bool> target)
+            where TView : ILifeTimeContext
+        {
+            return UniGame.Runtime.Rx.Runtime.Extensions.ViewBindingExtension.Bind(view, source, target);
+        }
+
+        /// <summary>Binds a UI Toolkit button click to a one-update boolean signal.</summary>
+        public static TView Bind<TView>(this TView view, UIToolkitButton source, ISignalValueProperty<bool> target)
             where TView : ILifeTimeContext
         {
             return UniGame.Runtime.Rx.Runtime.Extensions.ViewBindingExtension.Bind(view, source, target);

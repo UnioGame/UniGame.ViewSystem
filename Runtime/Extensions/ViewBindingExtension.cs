@@ -24,6 +24,7 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
     using UnityEngine.Localization;
     using UnityEngine.Localization.Components;
     using Object = UnityEngine.Object;
+    using UIToolkitButton = UnityEngine.UIElements.Button;
 
     public static class ViewBindingExtension
     {
@@ -1163,8 +1164,23 @@ namespace UniGame.Runtime.Rx.Runtime.Extensions
                 ? sender
                 : sender.Bind(value, source.OnClickAsObservable(), static (_, target) => target.SetValue(true));
         }
+
+        public static TView Bind<TView>(this TView sender,
+            UIToolkitButton source,
+            ISignalValueProperty<bool> value)
+            where TView : ILifeTimeContext
+        {
+            if (sender == null || source == null || value == null || sender.LifeTime.IsTerminated)
+                return sender;
+
+            void OnClick() => value.SetValue(true);
+
+            source.clicked += OnClick;
+            sender.LifeTime.AddCleanUpAction(() => source.clicked -= OnClick);
+
+            return sender;
+        }
         
-                
         public static T Bind<T>(this T sender,
             Observable<bool> source,Image image, Sprite on, Sprite off)
             where T : ILifeTimeContext
