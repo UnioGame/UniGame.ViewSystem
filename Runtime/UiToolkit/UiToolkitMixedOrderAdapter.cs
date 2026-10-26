@@ -6,6 +6,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
     using UnityEngine;
     using UnityEngine.UIElements;
     using UniModules.UniGame.UiSystem.Runtime;
+    using UniGame.UiSystem.Runtime.WindowStackControllers;
 #if UNITY_6000_5_OR_NEWER
     using PanelHost = UnityEngine.UIElements.PanelRenderer;
 #else
@@ -44,6 +45,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         private bool _hasExternalPlacement;
         private bool _acceptsInput;
         private ViewType _layerType;
+        private int? _layerBaseOrder;
 #if !UNITY_6000_5_OR_NEWER
         private readonly Dictionary<UIDocument, PanelSettings> _nestedPanelSources = new();
 #endif
@@ -84,9 +86,9 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             RequestedOrderChanged?.Invoke();
         }
 
-        internal int CalculateSortingOrder(int stackIndex, ViewType layerType)
+        internal int CalculateSortingOrder(int stackIndex, ViewType layerType, int? layerBaseOrder = null)
         {
-            var layered = TryGetLayerBase(layerType, out var baseOrder);
+            var layered = HasLayerRange(layerType);
             if (layered && (stackIndex < 0 || stackIndex >= LayerCapacity))
                 throw new System.ArgumentOutOfRangeException(nameof(stackIndex), stackIndex,
                     $"{layerType} supports stack indices from 0 to {LayerCapacity - 1}.");
@@ -95,7 +97,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
                     $"The requested {layerType} order must be between 0 and {LayerCapacity - 1}.");
 
             var sortingOrder = layered
-                ? (long)baseOrder + (_requestedOrder ?? stackIndex)
+                ? (long)ResolveLayerBaseOrder(layerType, layerBaseOrder) + (_requestedOrder ?? stackIndex)
                 : _requestedOrder ?? (long)stackIndex * Mathf.Max(1, orderStep);
             if (sortingOrder < short.MinValue || sortingOrder > short.MaxValue)
                 throw new System.ArgumentOutOfRangeException(
@@ -111,34 +113,45 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 
         public void Apply(int stackIndex, bool acceptsInput, ViewType layerType)
         {
-            ApplyCurrent(stackIndex, acceptsInput, layerType);
+            Apply(stackIndex, acceptsInput, layerType, null);
+        }
+
+        public void Apply(int stackIndex, bool acceptsInput, ViewType layerType, int? layerBaseOrder)
+        {
+            ApplyCurrent(stackIndex, acceptsInput, layerType, layerBaseOrder);
             _hasExternalPlacement = true;
         }
 
-        private void ApplyCurrent(int stackIndex, bool acceptsInput, ViewType layerType)
+        private void ApplyCurrent(int stackIndex, bool acceptsInput, ViewType layerType, int? layerBaseOrder = null)
         {
-            var layered = TryGetLayerBase(layerType, out _);
-            var sortingOrder = CalculateSortingOrder(stackIndex, layerType);
+            var layered = HasLayerRange(layerType);
+            var resolvedBaseOrder = layered ? ResolveLayerBaseOrder(layerType, layerBaseOrder) : (int?)null;
+            var sortingOrder = CalculateSortingOrder(stackIndex, layerType, resolvedBaseOrder);
 
             CurrentStackIndex = stackIndex;
             _acceptsInput = acceptsInput;
             _layerType = layerType;
+            _layerBaseOrder = resolvedBaseOrder;
             ApplyToolkitOrder(sortingOrder, acceptsInput, layered);
             ApplyCanvasOrder(sortingOrder, acceptsInput);
         }
 
-        internal static bool HasLayerRange(ViewType layerType) => TryGetLayerBase(layerType, out _);
+        internal static bool HasLayerRange(ViewType layerType) =>
+            layerType is ViewType.Screen or ViewType.Window or ViewType.Overlay;
 
-        internal static bool TryGetLayerBase(ViewType layerType, out int baseOrder)
+        private int ResolveLayerBaseOrder(ViewType layerType, int? layerBaseOrder)
         {
-            baseOrder = layerType switch
-            {
-                ViewType.Screen => 100,
-                ViewType.Window => 200,
-                ViewType.Overlay => 300,
-                _ => 0
-            };
-            return layerType is ViewType.Screen or ViewType.Window or ViewType.Overlay;
+            if (layerBaseOrder.HasValue)
+                return layerBaseOrder.Value;
+            if (_layerBaseOrder.HasValue && _layerType == layerType)
+                return _layerBaseOrder.Value;
+
+            var layoutCanvas = GetComponentInParent<ViewSystemLayoutComponent>()?.layoutCanvas;
+            if (layoutCanvas != null)
+                return layoutCanvas.sortingOrder;
+
+            throw new System.InvalidOperationException(
+                $"The {layerType} view requires its layout Canvas sorting order.");
         }
 
         public void Release()
@@ -189,6 +202,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             _hasExternalPlacement = false;
             _acceptsInput = false;
             _layerType = ViewType.None;
+            _layerBaseOrder = null;
             GetComponent<IUiToolkitView>()?.SetStackInputAllowed(true);
             CurrentStackIndex = -1;
         }

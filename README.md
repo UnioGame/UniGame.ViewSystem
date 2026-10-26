@@ -634,10 +634,10 @@ its own `PanelSettings` unset. The mixed order adapter moves nested documents
 to the parent's runtime panel before switching panels, then restores their
 original settings when released.
 
-The built-in `Screen`, `Window`, and `Overlay` layouts reserve sorting orders
-100-199, 200-299, and 300-399. A view's position within its own layout selects
-the order inside that range. Their layout Canvases must start at orders 100,
-200, and 300 and use the Default sorting layer. Each range supports 100 views.
+The built-in `Screen`, `Window`, and `Overlay` layouts take the base sorting order
+from their assigned layout Canvas. A view's position within its own layout selects
+the order inside a range of 100 values starting at that base. These ranges must
+not overlap.
 The mixed order adapter applies these values to `PanelSettings`, the UI Toolkit host,
 and a Canvas on the view root when present, then restores their original values
 when the view leaves the stack. Custom layouts retain the `orderStep` behavior.

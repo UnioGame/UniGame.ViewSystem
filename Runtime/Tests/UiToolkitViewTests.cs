@@ -54,37 +54,39 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.Tests
             try
             {
                 var layers = new[] { ViewType.Screen, ViewType.Window, ViewType.Overlay };
-                var bases = new[] { 100, 200, 300 };
+                var bases = new[] { 125, 350, 575 };
                 for (var index = 0; index < layers.Length; index++)
                 {
-                    toolkitAdapter.Apply(0, true, layers[index]);
-                    canvasAdapter.Apply(99, true, layers[index]);
+                    toolkitAdapter.Apply(0, true, layers[index], bases[index]);
+                    canvasAdapter.Apply(99, true, layers[index], bases[index]);
                     Assert.That(renderer.panelSettings.sortingOrder, Is.EqualTo(bases[index]));
                     Assert.That(renderer.sortingOrder, Is.EqualTo(bases[index]));
-                    Assert.That(renderer.sortingLayerID, Is.EqualTo(0));
                     Assert.That(canvas.sortingOrder, Is.EqualTo(bases[index] + 99));
-                    Assert.That(canvas.sortingLayerID, Is.EqualTo(0));
                 }
 
                 Assert.Throws<System.ArgumentOutOfRangeException>(() =>
-                    toolkitAdapter.Apply(100, true, ViewType.Screen));
-                Assert.That(renderer.sortingOrder, Is.EqualTo(300));
+                    toolkitAdapter.Apply(100, true, ViewType.Screen, bases[0]));
+                Assert.That(renderer.sortingOrder, Is.EqualTo(575));
 
-                toolkitAdapter.Apply(1, true, ViewType.Window);
+                toolkitAdapter.Apply(1, true, ViewType.Window, bases[1]);
                 toolkitAdapter.SetRequestedOrder(10);
-                Assert.That(renderer.panelSettings.sortingOrder, Is.EqualTo(210));
-                Assert.That(renderer.sortingOrder, Is.EqualTo(210));
-                toolkitAdapter.Apply(2, true, ViewType.Window);
-                Assert.That(renderer.panelSettings.sortingOrder, Is.EqualTo(210));
+                Assert.That(renderer.panelSettings.sortingOrder, Is.EqualTo(360));
+                Assert.That(renderer.sortingOrder, Is.EqualTo(360));
+                toolkitAdapter.Apply(2, true, ViewType.Window, bases[1]);
+                Assert.That(renderer.panelSettings.sortingOrder, Is.EqualTo(360));
                 toolkitAdapter.SetRequestedOrder(0);
-                Assert.That(renderer.panelSettings.sortingOrder, Is.EqualTo(200));
+                Assert.That(renderer.panelSettings.sortingOrder, Is.EqualTo(350));
                 Assert.Throws<System.ArgumentOutOfRangeException>(() =>
                     toolkitAdapter.SetRequestedOrder(100));
-                Assert.That(renderer.panelSettings.sortingOrder, Is.EqualTo(200));
+                Assert.That(renderer.panelSettings.sortingOrder, Is.EqualTo(350));
                 toolkitAdapter.ClearRequestedOrder();
-                Assert.That(renderer.panelSettings.sortingOrder, Is.EqualTo(202));
-                Assert.That(renderer.sortingOrder, Is.EqualTo(202));
+                Assert.That(renderer.panelSettings.sortingOrder, Is.EqualTo(352));
+                Assert.That(renderer.sortingOrder, Is.EqualTo(352));
                 Assert.That(toolkitAdapter.CurrentStackIndex, Is.EqualTo(2));
+
+                toolkitAdapter.Apply(2, true, ViewType.Window, 400);
+                Assert.That(renderer.panelSettings.sortingOrder, Is.EqualTo(402));
+                Assert.That(renderer.sortingOrder, Is.EqualTo(402));
 
                 toolkitAdapter.Release();
                 canvasAdapter.Release();
@@ -120,16 +122,19 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.Tests
             var sourcePanel = AssetDatabase.LoadAssetAtPath<PanelSettings>(PanelSettingsPath);
             Assert.That(sourcePanel, Is.Not.Null);
             var gameObject = new GameObject("Layered ViewLayout test", typeof(RectTransform));
+            var layoutObject = new GameObject("Layout Canvas test", typeof(RectTransform));
+            var layoutCanvas = layoutObject.AddComponent<Canvas>();
+            layoutCanvas.sortingOrder = 575;
             var renderer = gameObject.AddComponent<PanelRenderer>();
             renderer.panelSettings = sourcePanel;
             var view = gameObject.AddComponent<UiToolkitEditModeTestView>();
-            var layout = new ViewLayout { LayerType = ViewType.Overlay };
+            var layout = new ViewLayout { LayerType = ViewType.Overlay, LayoutCanvas = layoutCanvas };
 
             try
             {
                 layout.Push(view);
-                Assert.That(renderer.panelSettings.sortingOrder, Is.EqualTo(300));
-                Assert.That(renderer.sortingOrder, Is.EqualTo(300));
+                Assert.That(renderer.panelSettings.sortingOrder, Is.EqualTo(575));
+                Assert.That(renderer.sortingOrder, Is.EqualTo(575));
                 layout.Dispose();
                 Assert.That(renderer.panelSettings, Is.SameAs(sourcePanel));
             }
@@ -137,6 +142,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.Tests
             {
                 layout.Dispose();
                 Object.DestroyImmediate(gameObject);
+                Object.DestroyImmediate(layoutObject);
             }
         }
 
@@ -155,7 +161,10 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.Tests
             var secondCanvas = secondObject.AddComponent<Canvas>();
             var first = firstObject.AddComponent<CanvasEditModeTestView>();
             var second = secondObject.AddComponent<CanvasEditModeTestView>();
-            var layout = new ViewLayout { LayerType = ViewType.Window };
+            var layoutObject = new GameObject("Window Layout Canvas test", typeof(RectTransform));
+            var layoutCanvas = layoutObject.AddComponent<Canvas>();
+            layoutCanvas.sortingOrder = 350;
+            var layout = new ViewLayout { LayerType = ViewType.Window, LayoutCanvas = layoutCanvas };
 
             try
             {
@@ -168,8 +177,8 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.Tests
                 yield return second.ShowAsync().ToCoroutine();
                 firstObject.GetComponent<UiToolkitMixedOrderAdapter>().SetRequestedOrder(2);
 
-                Assert.That(firstCanvas.sortingOrder, Is.EqualTo(202));
-                Assert.That(secondCanvas.sortingOrder, Is.EqualTo(202));
+                Assert.That(firstCanvas.sortingOrder, Is.EqualTo(352));
+                Assert.That(secondCanvas.sortingOrder, Is.EqualTo(352));
                 Assert.That(firstObject.GetComponent<CanvasGroup>().blocksRaycasts, Is.True);
                 Assert.That(secondObject.GetComponent<CanvasGroup>().blocksRaycasts, Is.True);
             }
@@ -179,6 +188,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.Tests
                 Object.DestroyImmediate(hostObject);
                 Object.DestroyImmediate(firstObject);
                 Object.DestroyImmediate(secondObject);
+                Object.DestroyImmediate(layoutObject);
             }
         }
 

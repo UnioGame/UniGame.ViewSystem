@@ -24,8 +24,6 @@ namespace UniGame.UiSystem.Runtime
 #endif
     public class GameViewSystemAsset : MonoBehaviour, IGameViewSystem
     {
-        private const string ScreensLayoutName = "Screens";
-
         #region inspector data
         
 #if ODIN_INSPECTOR
@@ -211,20 +209,23 @@ namespace UniGame.UiSystem.Runtime
         public bool TrySetScreensSortingOrder(int sortingOrder)
         {
             var canvas = GetScreensCanvas();
-            if (canvas == null)
+            if (canvas == null || !IsLayoutOrderAvailable(ViewType.Screen, sortingOrder))
                 return false;
 
             canvas.sortingOrder = sortingOrder;
+            RefreshScreensPresentation();
             return true;
         }
 
         public bool TryRestoreScreensSortingOrder()
         {
             var canvas = GetScreensCanvas();
-            if (canvas == null || !_screensSortingOrderCached)
+            if (canvas == null || !_screensSortingOrderCached ||
+                !IsLayoutOrderAvailable(ViewType.Screen, _screensDefaultSortingOrder))
                 return false;
 
             canvas.sortingOrder = _screensDefaultSortingOrder;
+            RefreshScreensPresentation();
             return true;
         }
 
@@ -264,7 +265,10 @@ namespace UniGame.UiSystem.Runtime
             foreach (var item in layoutMap)
             {
                 if (item.Value != null && item.Value.LayoutController is ViewLayout layout)
+                {
                     layout.LayerType = item.Key;
+                    layout.LayoutCanvas = item.Value.layoutCanvas;
+                }
 
                 stackMap[item.Key.ToStringFromCache()] = item.Value;
             }
@@ -292,17 +296,53 @@ namespace UniGame.UiSystem.Runtime
         {
             foreach (var item in layoutMap)
             {
-                if (!UiToolkitMixedOrderAdapter.TryGetLayerBase(item.Key, out var expectedOrder))
+                if (!UiToolkitMixedOrderAdapter.HasLayerRange(item.Key))
                     continue;
 
                 var canvas = item.Value != null ? item.Value.layoutCanvas : null;
-                if (canvas == null || canvas.sortingOrder != expectedOrder)
+                if (canvas == null)
                     throw new InvalidOperationException(
-                        $"The {item.Key} layout requires a Canvas with sortingOrder {expectedOrder}.");
+                        $"The {item.Key} layout requires a Canvas.");
 
-                if (canvas.sortingLayerID != 0)
+                if (!IsLayoutOrderAvailable(item.Key, canvas.sortingOrder))
                     throw new InvalidOperationException(
-                        $"The {item.Key} layout Canvas must use the Default sorting layer.");
+                        $"The {item.Key} layout Canvas sorting order must fit {UiToolkitMixedOrderAdapter.LayerCapacity} views without overlapping another built-in layout.");
+            }
+        }
+
+        private bool IsLayoutOrderAvailable(ViewType layerType, int sortingOrder)
+        {
+            if (sortingOrder < short.MinValue ||
+                (long)sortingOrder + UiToolkitMixedOrderAdapter.LayerCapacity - 1 > short.MaxValue)
+                return false;
+
+            foreach (var item in layoutMap)
+            {
+                if (item.Key == layerType || !UiToolkitMixedOrderAdapter.HasLayerRange(item.Key))
+                    continue;
+
+                var otherCanvas = item.Value != null ? item.Value.layoutCanvas : null;
+                if (otherCanvas != null &&
+                    Math.Abs((long)sortingOrder - otherCanvas.sortingOrder) < UiToolkitMixedOrderAdapter.LayerCapacity)
+                    return false;
+            }
+
+            return true;
+        }
+
+        private void RefreshScreensPresentation()
+        {
+            if (_gameViewSystem == null)
+                return;
+
+            foreach (var item in layoutMap)
+            {
+                if (item.Key == ViewType.Screen && item.Value != null &&
+                    item.Value.LayoutController is ViewLayout layout)
+                {
+                    layout.RefreshMixedOrder();
+                    return;
+                }
             }
         }
 
@@ -311,11 +351,13 @@ namespace UniGame.UiSystem.Runtime
             if (_screensCanvas != null)
                 return _screensCanvas;
 
-            var screenTransform = transform.Find(ScreensLayoutName);
-            if (screenTransform == null)
-                return null;
-
-            _screensCanvas = screenTransform.GetComponent<Canvas>();
+            foreach (var item in layoutMap)
+            {
+                if (item.Key != ViewType.Screen || item.Value == null)
+                    continue;
+                _screensCanvas = item.Value.layoutCanvas;
+                break;
+            }
             if (_screensCanvas != null && !_screensSortingOrderCached)
             {
                 _screensDefaultSortingOrder = _screensCanvas.sortingOrder;

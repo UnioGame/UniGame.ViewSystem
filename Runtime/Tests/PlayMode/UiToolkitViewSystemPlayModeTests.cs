@@ -310,6 +310,9 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
             document.visualTreeAsset = tree;
             document.panelSettings = panelSettings;
             var view = gameObject.AddComponent<UiToolkitDocumentTestView>();
+            var layoutObject = new GameObject("UITK test layout", typeof(RectTransform));
+            var layoutCanvas = layoutObject.AddComponent<Canvas>();
+            layoutCanvas.sortingOrder = 125;
             try
             {
                 gameObject.SetActive(true);
@@ -321,10 +324,10 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
                 Assert.That(view.Root.pickingMode, Is.EqualTo(PickingMode.Position));
 
                 var adapter = gameObject.AddComponent<UiToolkitMixedOrderAdapter>();
-                adapter.Apply(0, false, ViewType.Screen);
+                adapter.Apply(0, false, ViewType.Screen, layoutCanvas.sortingOrder);
                 await UniTask.WaitUntil(() => view.Root == document.rootVisualElement && view.BindCount >= 2);
                 Assert.That(document.panelSettings, Is.Not.SameAs(panelSettings));
-                Assert.That(document.sortingOrder, Is.EqualTo(100f));
+                Assert.That(document.sortingOrder, Is.EqualTo(125f));
                 Assert.That(view.Root.pickingMode, Is.EqualTo(PickingMode.Ignore));
                 Assert.That(view.UnbindCount, Is.GreaterThanOrEqualTo(1));
                 adapter.Release();
@@ -344,6 +347,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
             {
                 view.Destroy();
                 Object.DestroyImmediate(gameObject);
+                Object.DestroyImmediate(layoutObject);
             }
         }
 
@@ -366,6 +370,9 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
             var parentView = parentObject.AddComponent<UiToolkitDocumentTestView>();
             var childView = childObject.AddComponent<UiToolkitDocumentTestView>();
             var childSourcePanel = childDocument.panelSettings;
+            var layoutObject = new GameObject("UITK nested test layout", typeof(RectTransform));
+            var layoutCanvas = layoutObject.AddComponent<Canvas>();
+            layoutCanvas.sortingOrder = 125;
             try
             {
                 parentObject.SetActive(true);
@@ -376,11 +383,11 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
                 Assert.That(childView.BindCount, Is.EqualTo(1));
 
                 var childAdapter = childObject.AddComponent<UiToolkitMixedOrderAdapter>();
-                childAdapter.Apply(0, true, ViewType.Screen);
+                childAdapter.Apply(0, true, ViewType.Screen, layoutCanvas.sortingOrder);
                 Assert.That(childDocument.panelSettings, Is.SameAs(childSourcePanel));
 
                 var adapter = parentObject.AddComponent<UiToolkitMixedOrderAdapter>();
-                adapter.Apply(0, true, ViewType.Screen);
+                adapter.Apply(0, true, ViewType.Screen, layoutCanvas.sortingOrder);
                 await UniTask.WaitUntil(() => parentView.BindCount >= 2 && childView.BindCount >= 2);
                 Assert.That(childDocument.panelSettings, Is.SameAs(parentDocument.panelSettings));
                 Assert.That(childView.Root, Is.SameAs(childDocument.rootVisualElement));
@@ -396,6 +403,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests
                 childView.Destroy();
                 parentView.Destroy();
                 Object.DestroyImmediate(parentObject);
+                Object.DestroyImmediate(layoutObject);
             }
         }
 

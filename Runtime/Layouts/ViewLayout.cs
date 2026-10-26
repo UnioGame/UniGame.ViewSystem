@@ -50,6 +50,11 @@ namespace UniGame.UiSystem.Runtime
         /// <summary>Built-in ViewSystem layer of this layout.</summary>
         public ViewType LayerType { get; set; } = ViewType.None;
 
+        /// <summary>Canvas whose sorting order is the base for this layout's views.</summary>
+        public Canvas LayoutCanvas { get; set; }
+
+        internal void RefreshMixedOrder() => _uiToolkitMixedStackPresenter?.Refresh();
+
         public ILifeTime LifeTime => _lifeTime;
         
         #region IViewStatus
