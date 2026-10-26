@@ -629,6 +629,10 @@ UI Toolkit tree is replaced or its view is disabled; other views use their
 `LifeTime` instead. A UI Toolkit prefab needs a `PanelRenderer` (6.5+) or
 `UIDocument` (before 6.5) and one
 `UiToolkitView<T>`; `acceptInput` is configured on the view.
+Before Unity 6.5, a nested `UIDocument` uses its parent's panel and may leave
+its own `PanelSettings` unset. The mixed order adapter moves nested documents
+to the parent's runtime panel before switching panels, then restores their
+original settings when released.
 
 The built-in `Screen`, `Window`, and `Overlay` layouts reserve sorting orders
 100-199, 200-299, and 300-399. A view's position within its own layout selects

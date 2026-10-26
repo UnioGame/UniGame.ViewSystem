@@ -74,6 +74,11 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         public VisualElement Root => _root;
         public bool IsToolkitReady => !_suspended && _root != null && _content != null;
         public bool HasActiveHost => Host != null && Host.enabled && Host.gameObject.activeInHierarchy;
+#if UNITY_6000_5_OR_NEWER
+        private bool IsNestedHost => false;
+#else
+        private bool IsNestedHost => Host != null && Host.parentUI != null;
+#endif
 
         protected override IViewAnimation SelectAnimation() => _toolkitAnimation;
 
@@ -139,6 +144,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         public void PrepareForPanelReload()
         {
             ClearBindings();
+            RestorePickingModes();
             _root = null;
             _content = null;
 #if UNITY_6000_5_OR_NEWER
@@ -149,13 +155,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 #if !UNITY_6000_5_OR_NEWER
         public void RefreshHost()
         {
-            if (HasActiveHost && Host.runtimePanel != null)
-                SetRoot(Host.rootVisualElement);
-        }
-
-        private void Update()
-        {
-            if (!HasActiveHost || Host.runtimePanel == null)
+            if (!HasActiveHost)
             {
                 if (_root != null)
                     PrepareForPanelReload();
@@ -163,12 +163,21 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             }
 
             var root = Host.rootVisualElement;
-            if (!ReferenceEquals(_root, root))
+            if (root == null || root.childCount == 0 || root.panel == null)
             {
-                PrepareForPanelReload();
-                SetRoot(root);
+                if (_root != null)
+                    PrepareForPanelReload();
+                return;
             }
+
+            if (ReferenceEquals(_root, root) && _content != null && _content.panel != null)
+                return;
+
+            PrepareForPanelReload();
+            SetRoot(root);
         }
+
+        private void LateUpdate() => RefreshHost();
 #endif
 
         public void SetVisible(bool visible)
@@ -209,11 +218,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             Root?.Blur();
             Root?.ReleasePointer(0);
             DetachHost();
-#if UNITY_6000_5_OR_NEWER
             ClearBindings();
-#else
-            PrepareForPanelReload();
-#endif
 #if UNITY_6000_5_OR_NEWER
             _lastPanelVersion = -1;
 #endif
@@ -243,7 +248,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         {
             if (Host == null)
                 throw Error("UI Toolkit host component is missing");
-            if (Host.panelSettings == null)
+            if (Host.panelSettings == null && !IsNestedHost)
                 throw Error("UI Toolkit host PanelSettings is missing");
             if (Host.visualTreeAsset == null)
                 throw Error("UI Toolkit host VisualTreeAsset is missing");
@@ -295,9 +300,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             if (!ReferenceEquals(_pickingRoot, root) ||
                 (ReferenceEquals(_root, root) && !ReferenceEquals(_content, content)))
             {
-                foreach (var source in _sourcePickingModes)
-                    source.Key.pickingMode = source.Value;
-                _sourcePickingModes.Clear();
+                RestorePickingModes();
                 _pickingRoot = root;
             }
             var changed = !ReferenceEquals(_root, root) || !ReferenceEquals(_content, content);
@@ -307,7 +310,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
                 _root = root;
                 _content = content;
             }
-            _suspended = false;
+            _suspended = !isActiveAndEnabled;
             ApplyVisibility();
             if (changed && !_initializing && Model != null && isActiveAndEnabled)
                 BindCurrentTree(Model).Forget();
@@ -332,6 +335,17 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             element.pickingMode = acceptsInput ? sourceMode : PickingMode.Ignore;
             for (var index = 0; index < element.hierarchy.childCount; index++)
                 ApplyPickingMode(element.hierarchy.ElementAt(index), acceptsInput);
+        }
+
+        private void RestorePickingModes()
+        {
+            foreach (var source in _sourcePickingModes)
+            {
+                if (source.Key != null)
+                    source.Key.pickingMode = source.Value;
+            }
+            _sourcePickingModes.Clear();
+            _pickingRoot = null;
         }
 
         private InvalidOperationException Error(string reason) =>

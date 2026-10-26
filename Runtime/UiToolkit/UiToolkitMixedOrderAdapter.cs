@@ -1,5 +1,8 @@
 namespace UniGame.UiSystem.Runtime.UiToolkit
 {
+#if !UNITY_6000_5_OR_NEWER
+    using System.Collections.Generic;
+#endif
     using UnityEngine;
     using UnityEngine.UIElements;
     using UniModules.UniGame.UiSystem.Runtime;
@@ -41,6 +44,9 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         private bool _hasExternalPlacement;
         private bool _acceptsInput;
         private ViewType _layerType;
+#if !UNITY_6000_5_OR_NEWER
+        private readonly Dictionary<UIDocument, PanelSettings> _nestedPanelSources = new();
+#endif
 
         public int CurrentStackIndex { get; private set; } = -1;
 
@@ -140,11 +146,17 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             if (_panelHost != null && _runtimePanel != null && _panelHost.panelSettings == _runtimePanel)
             {
                 GetComponent<IUiToolkitView>()?.PrepareForPanelReload();
+#if !UNITY_6000_5_OR_NEWER
+                SetNestedPanels(_sourcePanel, false);
+#endif
                 _panelHost.panelSettings = _sourcePanel;
 #if !UNITY_6000_5_OR_NEWER
                 GetComponent<IUiToolkitView>()?.RefreshHost();
 #endif
             }
+#if !UNITY_6000_5_OR_NEWER
+            RestoreNestedPanels();
+#endif
             if (_runtimePanel != null)
             {
                 if (Application.isPlaying) Destroy(_runtimePanel);
@@ -185,6 +197,13 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         {
             _panelHost ??= GetComponent<PanelHost>();
             if (_panelHost == null) return;
+#if !UNITY_6000_5_OR_NEWER
+            if (_panelHost.parentUI != null)
+            {
+                GetComponent<IUiToolkitView>()?.SetStackInputAllowed(acceptsInput);
+                return;
+            }
+#endif
             if (_runtimePanel == null)
             {
                 _sourcePanel = _panelHost.panelSettings;
@@ -193,6 +212,9 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
                 _runtimePanel = Instantiate(_sourcePanel);
                 _runtimePanel.name = $"{_sourcePanel.name} ({name} runtime)";
                 GetComponent<IUiToolkitView>()?.PrepareForPanelReload();
+#if !UNITY_6000_5_OR_NEWER
+                SetNestedPanels(_runtimePanel, true);
+#endif
                 _panelHost.panelSettings = _runtimePanel;
 #if !UNITY_6000_5_OR_NEWER
                 GetComponent<IUiToolkitView>()?.RefreshHost();
@@ -214,6 +236,32 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             }
             GetComponent<IUiToolkitView>()?.SetStackInputAllowed(acceptsInput);
         }
+
+#if !UNITY_6000_5_OR_NEWER
+        // Nested UIDocuments must share the parent's panel during a PanelSettings switch.
+        private void SetNestedPanels(PanelSettings panel, bool rememberSources)
+        {
+            foreach (var nested in GetComponentsInChildren<UIDocument>(true))
+            {
+                if (nested == _panelHost)
+                    continue;
+                if (rememberSources && !_nestedPanelSources.ContainsKey(nested))
+                    _nestedPanelSources.Add(nested, nested.panelSettings);
+                if (nested.panelSettings != panel)
+                    nested.panelSettings = panel;
+            }
+        }
+
+        private void RestoreNestedPanels()
+        {
+            foreach (var source in _nestedPanelSources)
+            {
+                if (source.Key != null && source.Key.panelSettings != source.Value)
+                    source.Key.panelSettings = source.Value;
+            }
+            _nestedPanelSources.Clear();
+        }
+#endif
 
         private void RestoreRendererSorting()
         {
