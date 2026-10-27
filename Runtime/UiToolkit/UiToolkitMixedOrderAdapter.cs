@@ -1,11 +1,20 @@
 namespace UniGame.UiSystem.Runtime.UiToolkit
 {
+#if !UNITY_6000_5_OR_NEWER
+    using System.Collections.Generic;
+#endif
     using UnityEngine;
     using UnityEngine.UIElements;
     using UniModules.UniGame.UiSystem.Runtime;
+    using UniGame.UiSystem.Runtime.WindowStackControllers;
+#if UNITY_6000_5_OR_NEWER
+    using PanelHost = UnityEngine.UIElements.PanelRenderer;
+#else
+    using PanelHost = UnityEngine.UIElements.UIDocument;
+#endif
 
     /// <summary>
-    /// Applies one ViewSystem stack position to a PanelRenderer. Each renderer
+    /// Applies one ViewSystem stack position to a UI Toolkit host. Each host
     /// receives a runtime PanelSettings instance,
     /// while the configured source asset is restored when the adapter is released.
     /// </summary>
@@ -16,7 +25,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 
         [SerializeField] private int orderStep = 10;
 
-        private PanelRenderer _panelRenderer;
+        private PanelHost _panelHost;
         private PanelSettings _sourcePanel;
         private PanelSettings _runtimePanel;
         private Canvas _canvas;
@@ -26,12 +35,20 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         private bool _sourceCanvasGroupBlocksRaycasts;
         private int _sourceCanvasOrder;
         private bool _sourceOverrideSorting;
+#if UNITY_6000_5_OR_NEWER
         private int _sourceRendererOrder;
+#else
+        private float _sourceRendererOrder;
+#endif
         private bool _sourceRendererSortingCaptured;
         private int? _requestedOrder;
         private bool _hasExternalPlacement;
         private bool _acceptsInput;
         private ViewType _layerType;
+        private int? _layerBaseOrder;
+#if !UNITY_6000_5_OR_NEWER
+        private readonly Dictionary<UIDocument, PanelSettings> _nestedPanelSources = new();
+#endif
 
         public int CurrentStackIndex { get; private set; } = -1;
 
@@ -69,9 +86,9 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             RequestedOrderChanged?.Invoke();
         }
 
-        internal int CalculateSortingOrder(int stackIndex, ViewType layerType)
+        internal int CalculateSortingOrder(int stackIndex, ViewType layerType, int? layerBaseOrder = null)
         {
-            var layered = TryGetLayerBase(layerType, out var baseOrder);
+            var layered = HasLayerRange(layerType);
             if (layered && (stackIndex < 0 || stackIndex >= LayerCapacity))
                 throw new System.ArgumentOutOfRangeException(nameof(stackIndex), stackIndex,
                     $"{layerType} supports stack indices from 0 to {LayerCapacity - 1}.");
@@ -80,7 +97,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
                     $"The requested {layerType} order must be between 0 and {LayerCapacity - 1}.");
 
             var sortingOrder = layered
-                ? (long)baseOrder + (_requestedOrder ?? stackIndex)
+                ? (long)ResolveLayerBaseOrder(layerType, layerBaseOrder) + (_requestedOrder ?? stackIndex)
                 : _requestedOrder ?? (long)stackIndex * Mathf.Max(1, orderStep);
             if (sortingOrder < short.MinValue || sortingOrder > short.MaxValue)
                 throw new System.ArgumentOutOfRangeException(
@@ -96,43 +113,63 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 
         public void Apply(int stackIndex, bool acceptsInput, ViewType layerType)
         {
-            ApplyCurrent(stackIndex, acceptsInput, layerType);
+            Apply(stackIndex, acceptsInput, layerType, null);
+        }
+
+        public void Apply(int stackIndex, bool acceptsInput, ViewType layerType, int? layerBaseOrder)
+        {
+            ApplyCurrent(stackIndex, acceptsInput, layerType, layerBaseOrder);
             _hasExternalPlacement = true;
         }
 
-        private void ApplyCurrent(int stackIndex, bool acceptsInput, ViewType layerType)
+        private void ApplyCurrent(int stackIndex, bool acceptsInput, ViewType layerType, int? layerBaseOrder = null)
         {
-            var layered = TryGetLayerBase(layerType, out _);
-            var sortingOrder = CalculateSortingOrder(stackIndex, layerType);
+            var layered = HasLayerRange(layerType);
+            var resolvedBaseOrder = layered ? ResolveLayerBaseOrder(layerType, layerBaseOrder) : (int?)null;
+            var sortingOrder = CalculateSortingOrder(stackIndex, layerType, resolvedBaseOrder);
 
             CurrentStackIndex = stackIndex;
             _acceptsInput = acceptsInput;
             _layerType = layerType;
+            _layerBaseOrder = resolvedBaseOrder;
             ApplyToolkitOrder(sortingOrder, acceptsInput, layered);
             ApplyCanvasOrder(sortingOrder, acceptsInput);
         }
 
-        internal static bool HasLayerRange(ViewType layerType) => TryGetLayerBase(layerType, out _);
+        internal static bool HasLayerRange(ViewType layerType) =>
+            layerType is ViewType.Screen or ViewType.Window or ViewType.Overlay;
 
-        internal static bool TryGetLayerBase(ViewType layerType, out int baseOrder)
+        private int ResolveLayerBaseOrder(ViewType layerType, int? layerBaseOrder)
         {
-            baseOrder = layerType switch
-            {
-                ViewType.Screen => 100,
-                ViewType.Window => 200,
-                ViewType.Overlay => 300,
-                _ => 0
-            };
-            return layerType is ViewType.Screen or ViewType.Window or ViewType.Overlay;
+            if (layerBaseOrder.HasValue)
+                return layerBaseOrder.Value;
+            if (_layerBaseOrder.HasValue && _layerType == layerType)
+                return _layerBaseOrder.Value;
+
+            var layoutCanvas = GetComponentInParent<ViewSystemLayoutComponent>()?.layoutCanvas;
+            if (layoutCanvas != null)
+                return layoutCanvas.sortingOrder;
+
+            throw new System.InvalidOperationException(
+                $"The {layerType} view requires its layout Canvas sorting order.");
         }
 
         public void Release()
         {
-            if (_panelRenderer != null && _runtimePanel != null && _panelRenderer.panelSettings == _runtimePanel)
+            if (_panelHost != null && _runtimePanel != null && _panelHost.panelSettings == _runtimePanel)
             {
                 GetComponent<IUiToolkitView>()?.PrepareForPanelReload();
-                _panelRenderer.panelSettings = _sourcePanel;
+#if !UNITY_6000_5_OR_NEWER
+                SetNestedPanels(_sourcePanel, false);
+#endif
+                _panelHost.panelSettings = _sourcePanel;
+#if !UNITY_6000_5_OR_NEWER
+                GetComponent<IUiToolkitView>()?.RefreshHost();
+#endif
             }
+#if !UNITY_6000_5_OR_NEWER
+            RestoreNestedPanels();
+#endif
             if (_runtimePanel != null)
             {
                 if (Application.isPlaying) Destroy(_runtimePanel);
@@ -141,7 +178,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             RestoreRendererSorting();
             _runtimePanel = null;
             _sourcePanel = null;
-            _panelRenderer = null;
+            _panelHost = null;
 
             if (_canvas != null)
             {
@@ -165,33 +202,47 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             _hasExternalPlacement = false;
             _acceptsInput = false;
             _layerType = ViewType.None;
+            _layerBaseOrder = null;
             GetComponent<IUiToolkitView>()?.SetStackInputAllowed(true);
             CurrentStackIndex = -1;
         }
 
         private void ApplyToolkitOrder(int sortingOrder, bool acceptsInput, bool layered)
         {
-            _panelRenderer ??= GetComponent<PanelRenderer>();
-            if (_panelRenderer == null) return;
+            _panelHost ??= GetComponent<PanelHost>();
+            if (_panelHost == null) return;
+#if !UNITY_6000_5_OR_NEWER
+            if (_panelHost.parentUI != null)
+            {
+                GetComponent<IUiToolkitView>()?.SetStackInputAllowed(acceptsInput);
+                return;
+            }
+#endif
             if (_runtimePanel == null)
             {
-                _sourcePanel = _panelRenderer.panelSettings;
+                _sourcePanel = _panelHost.panelSettings;
                 if (_sourcePanel == null)
                     throw new System.InvalidOperationException($"Mixed UI adapter on '{name}' requires PanelSettings.");
                 _runtimePanel = Instantiate(_sourcePanel);
                 _runtimePanel.name = $"{_sourcePanel.name} ({name} runtime)";
                 GetComponent<IUiToolkitView>()?.PrepareForPanelReload();
-                _panelRenderer.panelSettings = _runtimePanel;
+#if !UNITY_6000_5_OR_NEWER
+                SetNestedPanels(_runtimePanel, true);
+#endif
+                _panelHost.panelSettings = _runtimePanel;
+#if !UNITY_6000_5_OR_NEWER
+                GetComponent<IUiToolkitView>()?.RefreshHost();
+#endif
             }
             _runtimePanel.sortingOrder = sortingOrder;
             if (layered || _requestedOrder.HasValue)
             {
                 if (!_sourceRendererSortingCaptured)
                 {
-                    _sourceRendererOrder = _panelRenderer.sortingOrder;
+                    _sourceRendererOrder = _panelHost.sortingOrder;
                     _sourceRendererSortingCaptured = true;
                 }
-                _panelRenderer.sortingOrder = sortingOrder;
+                _panelHost.sortingOrder = sortingOrder;
             }
             else
             {
@@ -200,10 +251,36 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             GetComponent<IUiToolkitView>()?.SetStackInputAllowed(acceptsInput);
         }
 
+#if !UNITY_6000_5_OR_NEWER
+        // Nested UIDocuments must share the parent's panel during a PanelSettings switch.
+        private void SetNestedPanels(PanelSettings panel, bool rememberSources)
+        {
+            foreach (var nested in GetComponentsInChildren<UIDocument>(true))
+            {
+                if (nested == _panelHost)
+                    continue;
+                if (rememberSources && !_nestedPanelSources.ContainsKey(nested))
+                    _nestedPanelSources.Add(nested, nested.panelSettings);
+                if (nested.panelSettings != panel)
+                    nested.panelSettings = panel;
+            }
+        }
+
+        private void RestoreNestedPanels()
+        {
+            foreach (var source in _nestedPanelSources)
+            {
+                if (source.Key != null && source.Key.panelSettings != source.Value)
+                    source.Key.panelSettings = source.Value;
+            }
+            _nestedPanelSources.Clear();
+        }
+#endif
+
         private void RestoreRendererSorting()
         {
-            if (_panelRenderer != null && _sourceRendererSortingCaptured)
-                _panelRenderer.sortingOrder = _sourceRendererOrder;
+            if (_panelHost != null && _sourceRendererSortingCaptured)
+                _panelHost.sortingOrder = _sourceRendererOrder;
             _sourceRendererSortingCaptured = false;
         }
 

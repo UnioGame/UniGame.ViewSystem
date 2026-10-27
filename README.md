@@ -615,6 +615,10 @@ All base Bind extensions use ViewModelLifetime that allows auto disconnect from 
 
 Binding extensions allow you to easily connect your view and data sources with a rich flow syntax and support Rx methods and async/await semantics.
 
+The UI Toolkit integration uses `PanelRenderer` on Unity 6.5 or newer and
+`UIDocument` on earlier Unity versions supported by this package. Prefabs must
+contain the host component for their Unity version.
+
 UI Toolkit views use `UniGame.UiSystem.Runtime.UiToolkit.UiToolkitReactiveBindingExtensions.Bind`
 for labels, buttons, progress bars, toggles, colors, visibility, USS classes,
 render callbacks, button signals, and text field input. A boolean value bound
@@ -622,14 +626,19 @@ to a `VisualElement` controls visibility by default. Pass
 `UiToolkitBindingMode.Enabled` to control whether the element is enabled, or a
 USS class name to toggle that class. These bindings are released when the
 UI Toolkit tree is replaced or its view is disabled; other views use their
-`LifeTime` instead. A UI Toolkit prefab needs a `PanelRenderer` and one
+`LifeTime` instead. A UI Toolkit prefab needs a `PanelRenderer` (6.5+) or
+`UIDocument` (before 6.5) and one
 `UiToolkitView<T>`; `acceptInput` is configured on the view.
+Before Unity 6.5, a nested `UIDocument` uses its parent's panel and may leave
+its own `PanelSettings` unset. The mixed order adapter moves nested documents
+to the parent's runtime panel before switching panels, then restores their
+original settings when released.
 
-The built-in `Screen`, `Window`, and `Overlay` layouts reserve sorting orders
-100-199, 200-299, and 300-399. A view's position within its own layout selects
-the order inside that range. Their layout Canvases must start at orders 100,
-200, and 300 and use the Default sorting layer. Each range supports 100 views.
-The mixed order adapter applies these values to `PanelSettings`, `PanelRenderer`,
+The built-in `Screen`, `Window`, and `Overlay` layouts take the base sorting order
+from their assigned layout Canvas. A view's position within its own layout selects
+the order inside a range of 100 values starting at that base. These ranges must
+not overlap.
+The mixed order adapter applies these values to `PanelSettings`, the UI Toolkit host,
 and a Canvas on the view root when present, then restores their original values
 when the view leaves the stack. Custom layouts retain the `orderStep` behavior.
 An explicit `ViewRequest.Order` overrides the stack position within a built-in

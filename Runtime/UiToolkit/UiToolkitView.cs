@@ -7,12 +7,22 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
     using UniGame.ViewSystem.Runtime.Views.Abstract;
     using UnityEngine;
     using UnityEngine.UIElements;
+#if UNITY_6000_5_OR_NEWER
+    using PanelHost = UnityEngine.UIElements.PanelRenderer;
+#else
+    using PanelHost = UnityEngine.UIElements.UIDocument;
+#endif
 
     /// <summary>Exposes a non-generic UI Toolkit host to ViewSystem adapters and bindings.</summary>
     public interface IUiToolkitView
     {
         bool AcceptInput { get; set; }
+#if UNITY_6000_5_OR_NEWER
         PanelRenderer PanelRenderer { get; }
+#else
+        UIDocument UiDocument { get; }
+        void RefreshHost();
+#endif
         VisualElement Root { get; }
         void AddUnbind(Action unbind);
         void SetVisible(bool visible);
@@ -21,7 +31,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         void FocusFirstFocusable();
     }
 
-    /// <summary>Hosts a PanelRenderer tree and binds it to a ViewSystem model.</summary>
+    /// <summary>Hosts a UI Toolkit tree and binds it to a ViewSystem model.</summary>
     public abstract class UiToolkitView<TViewModel> : View<TViewModel>, IUiToolkitView
         where TViewModel : class, IViewModel
     {
@@ -33,7 +43,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         private readonly UiToolkitViewAnimation _toolkitAnimation = new();
         private readonly List<Action> _unbindActions = new();
         private readonly Dictionary<VisualElement, PickingMode> _sourcePickingModes = new();
-        private PanelRenderer _panelRenderer;
+        private PanelHost _panelHost;
         private VisualElement _root;
         private VisualElement _content;
         private VisualElement _boundRoot;
@@ -42,7 +52,9 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         private bool _requestedVisible;
         private bool _stackAllowsInput = true;
         private bool _initializing;
+#if UNITY_6000_5_OR_NEWER
         private int _lastPanelVersion = -1;
+#endif
 
         public bool AcceptInput
         {
@@ -53,10 +65,20 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
                 ApplyVisibility();
             }
         }
-        public PanelRenderer PanelRenderer => _panelRenderer != null ? _panelRenderer : _panelRenderer = GetComponent<PanelRenderer>();
+        private PanelHost Host => _panelHost != null ? _panelHost : _panelHost = GetComponent<PanelHost>();
+#if UNITY_6000_5_OR_NEWER
+        public PanelRenderer PanelRenderer => Host;
+#else
+        public UIDocument UiDocument => Host;
+#endif
         public VisualElement Root => _root;
         public bool IsToolkitReady => !_suspended && _root != null && _content != null;
-        public bool HasActiveHost => PanelRenderer != null && PanelRenderer.enabled && PanelRenderer.gameObject.activeInHierarchy;
+        public bool HasActiveHost => Host != null && Host.enabled && Host.gameObject.activeInHierarchy;
+#if UNITY_6000_5_OR_NEWER
+        private bool IsNestedHost => false;
+#else
+        private bool IsNestedHost => Host != null && Host.parentUI != null;
+#endif
 
         protected override IViewAnimation SelectAnimation() => _toolkitAnimation;
 
@@ -122,10 +144,41 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
         public void PrepareForPanelReload()
         {
             ClearBindings();
+            RestorePickingModes();
             _root = null;
             _content = null;
+#if UNITY_6000_5_OR_NEWER
             _lastPanelVersion = -1;
+#endif
         }
+
+#if !UNITY_6000_5_OR_NEWER
+        public void RefreshHost()
+        {
+            if (!HasActiveHost)
+            {
+                if (_root != null)
+                    PrepareForPanelReload();
+                return;
+            }
+
+            var root = Host.rootVisualElement;
+            if (root == null || root.childCount == 0 || root.panel == null)
+            {
+                if (_root != null)
+                    PrepareForPanelReload();
+                return;
+            }
+
+            if (ReferenceEquals(_root, root) && _content != null && _content.panel != null)
+                return;
+
+            PrepareForPanelReload();
+            SetRoot(root);
+        }
+
+        private void LateUpdate() => RefreshHost();
+#endif
 
         public void SetVisible(bool visible)
         {
@@ -166,7 +219,9 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             Root?.ReleasePointer(0);
             DetachHost();
             ClearBindings();
+#if UNITY_6000_5_OR_NEWER
             _lastPanelVersion = -1;
+#endif
             _stackAllowsInput = true;
             base.OnViewDisable();
         }
@@ -191,30 +246,40 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 
         private void RefreshTree()
         {
-            if (PanelRenderer == null)
-                throw Error("PanelRenderer component is missing");
-            if (PanelRenderer.panelSettings == null)
-                throw Error("PanelRenderer.panelSettings is missing");
-            if (PanelRenderer.visualTreeAsset == null)
-                throw Error("PanelRenderer.visualTreeAsset is missing");
+            if (Host == null)
+                throw Error("UI Toolkit host component is missing");
+            if (Host.panelSettings == null && !IsNestedHost)
+                throw Error("UI Toolkit host PanelSettings is missing");
+            if (Host.visualTreeAsset == null)
+                throw Error("UI Toolkit host VisualTreeAsset is missing");
+#if !UNITY_6000_5_OR_NEWER
+            RefreshHost();
+#endif
             ApplyVisibility();
         }
 
         private void AttachHost()
         {
-            var renderer = PanelRenderer;
-            if (renderer == null || !renderer.enabled || !renderer.gameObject.activeInHierarchy)
+            var host = Host;
+            if (host == null || !host.enabled || !host.gameObject.activeInHierarchy)
                 return;
-            renderer.UnregisterUIReloadCallback(OnPanelRendererReload);
-            renderer.RegisterUIReloadCallback(OnPanelRendererReload);
+#if UNITY_6000_5_OR_NEWER
+            host.UnregisterUIReloadCallback(OnPanelRendererReload);
+            host.RegisterUIReloadCallback(OnPanelRendererReload);
+#else
+            RefreshHost();
+#endif
         }
 
         private void DetachHost()
         {
-            if (PanelRenderer != null)
-                PanelRenderer.UnregisterUIReloadCallback(OnPanelRendererReload);
+#if UNITY_6000_5_OR_NEWER
+            if (Host != null)
+                Host.UnregisterUIReloadCallback(OnPanelRendererReload);
+#endif
         }
 
+#if UNITY_6000_5_OR_NEWER
         private void OnPanelRendererReload(PanelRenderer renderer, VisualElement root, int version)
         {
             if (version == _lastPanelVersion && ReferenceEquals(root, _root))
@@ -222,6 +287,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             _lastPanelVersion = version;
             SetRoot(root);
         }
+#endif
 
         private void SetRoot(VisualElement root)
         {
@@ -234,9 +300,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             if (!ReferenceEquals(_pickingRoot, root) ||
                 (ReferenceEquals(_root, root) && !ReferenceEquals(_content, content)))
             {
-                foreach (var source in _sourcePickingModes)
-                    source.Key.pickingMode = source.Value;
-                _sourcePickingModes.Clear();
+                RestorePickingModes();
                 _pickingRoot = root;
             }
             var changed = !ReferenceEquals(_root, root) || !ReferenceEquals(_content, content);
@@ -246,7 +310,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
                 _root = root;
                 _content = content;
             }
-            _suspended = false;
+            _suspended = !isActiveAndEnabled;
             ApplyVisibility();
             if (changed && !_initializing && Model != null && isActiveAndEnabled)
                 BindCurrentTree(Model).Forget();
@@ -271,6 +335,17 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             element.pickingMode = acceptsInput ? sourceMode : PickingMode.Ignore;
             for (var index = 0; index < element.hierarchy.childCount; index++)
                 ApplyPickingMode(element.hierarchy.ElementAt(index), acceptsInput);
+        }
+
+        private void RestorePickingModes()
+        {
+            foreach (var source in _sourcePickingModes)
+            {
+                if (source.Key != null)
+                    source.Key.pickingMode = source.Value;
+            }
+            _sourcePickingModes.Clear();
+            _pickingRoot = null;
         }
 
         private InvalidOperationException Error(string reason) =>
