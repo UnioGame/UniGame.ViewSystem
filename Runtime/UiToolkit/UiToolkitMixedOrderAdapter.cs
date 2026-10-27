@@ -2,69 +2,209 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 {
     using UnityEngine;
     using UnityEngine.UIElements;
+    using UniModules.UniGame.UiSystem.Runtime;
 
     /// <summary>
-    /// Applies one ViewSystem stack position to either presentation type. Each
-    /// UIDocument receives a runtime PanelSettings instance, while the configured
-    /// source asset is restored when the adapter is released.
+    /// Applies one ViewSystem stack position to a PanelRenderer. Each renderer
+    /// receives a runtime PanelSettings instance,
+    /// while the configured source asset is restored when the adapter is released.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class UiToolkitMixedOrderAdapter : MonoBehaviour
     {
+        internal const int LayerCapacity = 100;
+
         [SerializeField] private int orderStep = 10;
 
-        private UIDocument _document;
+        private PanelRenderer _panelRenderer;
         private PanelSettings _sourcePanel;
         private PanelSettings _runtimePanel;
         private Canvas _canvas;
+        private CanvasGroup _canvasGroup;
+        private bool _addedCanvasGroup;
+        private bool _sourceCanvasGroupInteractable;
+        private bool _sourceCanvasGroupBlocksRaycasts;
         private int _sourceCanvasOrder;
         private bool _sourceOverrideSorting;
+        private int _sourceRendererOrder;
+        private bool _sourceRendererSortingCaptured;
+        private int? _requestedOrder;
+        private bool _hasExternalPlacement;
+        private bool _acceptsInput;
+        private ViewType _layerType;
 
         public int CurrentStackIndex { get; private set; } = -1;
 
+        public event System.Action RequestedOrderChanged;
+
+        /// <summary>Overrides the stack order with an explicit request order.</summary>
+        public void SetRequestedOrder(int order, ViewType layerType = ViewType.None)
+        {
+            if (_requestedOrder == order) return;
+            var previousOrder = _requestedOrder;
+            _requestedOrder = order;
+            try
+            {
+                ApplyCurrent(CurrentStackIndex < 0 ? 0 : CurrentStackIndex,
+                    CurrentStackIndex < 0 || _acceptsInput,
+                    CurrentStackIndex < 0 ? layerType : _layerType);
+            }
+            catch
+            {
+                _requestedOrder = previousOrder;
+                throw;
+            }
+            RequestedOrderChanged?.Invoke();
+        }
+
+        /// <summary>Removes the request override while preserving an active stack placement.</summary>
+        public void ClearRequestedOrder()
+        {
+            if (!_requestedOrder.HasValue) return;
+            _requestedOrder = null;
+            if (_hasExternalPlacement)
+                ApplyCurrent(CurrentStackIndex, _acceptsInput, _layerType);
+            else
+                Release();
+            RequestedOrderChanged?.Invoke();
+        }
+
+        internal int CalculateSortingOrder(int stackIndex, ViewType layerType)
+        {
+            var layered = TryGetLayerBase(layerType, out var baseOrder);
+            if (layered && (stackIndex < 0 || stackIndex >= LayerCapacity))
+                throw new System.ArgumentOutOfRangeException(nameof(stackIndex), stackIndex,
+                    $"{layerType} supports stack indices from 0 to {LayerCapacity - 1}.");
+            if (layered && _requestedOrder is < 0 or >= LayerCapacity)
+                throw new System.ArgumentOutOfRangeException(nameof(_requestedOrder), _requestedOrder,
+                    $"The requested {layerType} order must be between 0 and {LayerCapacity - 1}.");
+
+            var sortingOrder = layered
+                ? (long)baseOrder + (_requestedOrder ?? stackIndex)
+                : _requestedOrder ?? (long)stackIndex * Mathf.Max(1, orderStep);
+            if (sortingOrder < short.MinValue || sortingOrder > short.MaxValue)
+                throw new System.ArgumentOutOfRangeException(
+                    _requestedOrder.HasValue ? nameof(_requestedOrder) : nameof(stackIndex), sortingOrder,
+                    $"The sorting order must be between {short.MinValue} and {short.MaxValue}.");
+            return (int)sortingOrder;
+        }
+
         public void Apply(int stackIndex, bool acceptsInput)
         {
+            Apply(stackIndex, acceptsInput, ViewType.None);
+        }
+
+        public void Apply(int stackIndex, bool acceptsInput, ViewType layerType)
+        {
+            ApplyCurrent(stackIndex, acceptsInput, layerType);
+            _hasExternalPlacement = true;
+        }
+
+        private void ApplyCurrent(int stackIndex, bool acceptsInput, ViewType layerType)
+        {
+            var layered = TryGetLayerBase(layerType, out _);
+            var sortingOrder = CalculateSortingOrder(stackIndex, layerType);
+
             CurrentStackIndex = stackIndex;
-            var sortingOrder = stackIndex * Mathf.Max(1, orderStep);
-            ApplyToolkitOrder(sortingOrder, acceptsInput);
+            _acceptsInput = acceptsInput;
+            _layerType = layerType;
+            ApplyToolkitOrder(sortingOrder, acceptsInput, layered);
             ApplyCanvasOrder(sortingOrder, acceptsInput);
+        }
+
+        internal static bool HasLayerRange(ViewType layerType) => TryGetLayerBase(layerType, out _);
+
+        internal static bool TryGetLayerBase(ViewType layerType, out int baseOrder)
+        {
+            baseOrder = layerType switch
+            {
+                ViewType.Screen => 100,
+                ViewType.Window => 200,
+                ViewType.Overlay => 300,
+                _ => 0
+            };
+            return layerType is ViewType.Screen or ViewType.Window or ViewType.Overlay;
         }
 
         public void Release()
         {
-            if (_document != null && _runtimePanel != null && _document.panelSettings == _runtimePanel)
-                _document.panelSettings = _sourcePanel;
+            if (_panelRenderer != null && _runtimePanel != null && _panelRenderer.panelSettings == _runtimePanel)
+            {
+                GetComponent<IUiToolkitView>()?.PrepareForPanelReload();
+                _panelRenderer.panelSettings = _sourcePanel;
+            }
             if (_runtimePanel != null)
-                Destroy(_runtimePanel);
+            {
+                if (Application.isPlaying) Destroy(_runtimePanel);
+                else DestroyImmediate(_runtimePanel);
+            }
+            RestoreRendererSorting();
             _runtimePanel = null;
+            _sourcePanel = null;
+            _panelRenderer = null;
 
             if (_canvas != null)
             {
                 _canvas.overrideSorting = _sourceOverrideSorting;
                 _canvas.sortingOrder = _sourceCanvasOrder;
-                var group = _canvas.GetComponent<CanvasGroup>();
-                if (group != null) { group.interactable = true; group.blocksRaycasts = true; }
             }
+            if (_canvasGroup != null)
+            {
+                _canvasGroup.interactable = _sourceCanvasGroupInteractable;
+                _canvasGroup.blocksRaycasts = _sourceCanvasGroupBlocksRaycasts;
+                if (_addedCanvasGroup)
+                {
+                    if (Application.isPlaying) Destroy(_canvasGroup);
+                    else DestroyImmediate(_canvasGroup);
+                }
+            }
+            _canvas = null;
+            _canvasGroup = null;
+            _addedCanvasGroup = false;
+            _requestedOrder = null;
+            _hasExternalPlacement = false;
+            _acceptsInput = false;
+            _layerType = ViewType.None;
+            GetComponent<IUiToolkitView>()?.SetStackInputAllowed(true);
             CurrentStackIndex = -1;
         }
 
-        private void ApplyToolkitOrder(int sortingOrder, bool acceptsInput)
+        private void ApplyToolkitOrder(int sortingOrder, bool acceptsInput, bool layered)
         {
-            _document ??= GetComponent<UIDocument>();
-            if (_document == null) return;
+            _panelRenderer ??= GetComponent<PanelRenderer>();
+            if (_panelRenderer == null) return;
             if (_runtimePanel == null)
             {
-                _sourcePanel = _document.panelSettings;
+                _sourcePanel = _panelRenderer.panelSettings;
                 if (_sourcePanel == null)
                     throw new System.InvalidOperationException($"Mixed UI adapter on '{name}' requires PanelSettings.");
                 _runtimePanel = Instantiate(_sourcePanel);
                 _runtimePanel.name = $"{_sourcePanel.name} ({name} runtime)";
-                _document.panelSettings = _runtimePanel;
+                GetComponent<IUiToolkitView>()?.PrepareForPanelReload();
+                _panelRenderer.panelSettings = _runtimePanel;
             }
             _runtimePanel.sortingOrder = sortingOrder;
-            var root = _document.rootVisualElement;
-            if (root != null)
-                root.pickingMode = acceptsInput ? PickingMode.Position : PickingMode.Ignore;
+            if (layered || _requestedOrder.HasValue)
+            {
+                if (!_sourceRendererSortingCaptured)
+                {
+                    _sourceRendererOrder = _panelRenderer.sortingOrder;
+                    _sourceRendererSortingCaptured = true;
+                }
+                _panelRenderer.sortingOrder = sortingOrder;
+            }
+            else
+            {
+                RestoreRendererSorting();
+            }
+            GetComponent<IUiToolkitView>()?.SetStackInputAllowed(acceptsInput);
+        }
+
+        private void RestoreRendererSorting()
+        {
+            if (_panelRenderer != null && _sourceRendererSortingCaptured)
+                _panelRenderer.sortingOrder = _sourceRendererOrder;
+            _sourceRendererSortingCaptured = false;
         }
 
         private void ApplyCanvasOrder(int sortingOrder, bool acceptsInput)
@@ -78,12 +218,24 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             }
             _canvas.overrideSorting = true;
             _canvas.sortingOrder = sortingOrder;
-            var group = _canvas.GetComponent<CanvasGroup>() ?? _canvas.gameObject.AddComponent<CanvasGroup>();
-            group.interactable = acceptsInput;
-            group.blocksRaycasts = acceptsInput;
+            if (_canvasGroup == null)
+            {
+                _canvasGroup = _canvas.GetComponent<CanvasGroup>();
+                if (_canvasGroup == null)
+                {
+                    _canvasGroup = _canvas.gameObject.AddComponent<CanvasGroup>();
+                    _addedCanvasGroup = true;
+                }
+                else
+                {
+                    _sourceCanvasGroupInteractable = _canvasGroup.interactable;
+                    _sourceCanvasGroupBlocksRaycasts = _canvasGroup.blocksRaycasts;
+                }
+            }
+            _canvasGroup.interactable = acceptsInput;
+            _canvasGroup.blocksRaycasts = acceptsInput;
         }
 
-        private void OnDisable() => Release();
         private void OnDestroy() => Release();
     }
 }

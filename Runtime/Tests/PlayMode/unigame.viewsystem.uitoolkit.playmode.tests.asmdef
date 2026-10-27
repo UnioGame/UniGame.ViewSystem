@@ -1,0 +1,21 @@
+{
+  "name": "unigame.viewsystem.uitoolkit.playmode.tests",
+  "rootNamespace": "UniGame.UiSystem.Runtime.UiToolkit.PlayMode.Tests",
+  "references": [
+    "unigame.viewsystem.runtime",
+    "unigame.viewsystem.views",
+    "unigame.unicore.runtime",
+    "UniTask",
+    "Unity.Addressables"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+  "versionDefines": [],
+  "optionalUnityReferences": ["TestAssemblies"],
+  "noEngineReferences": false
+}

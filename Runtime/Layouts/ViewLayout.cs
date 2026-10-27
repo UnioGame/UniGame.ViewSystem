@@ -13,12 +13,16 @@ namespace UniGame.UiSystem.Runtime
     using ObservableCollections;
     using R3;
     using UnityEngine.Pool;
+    using UnityEngine.UIElements;
+    using UniGame.UiSystem.Runtime.UiToolkit;
+    using UniModules.UniGame.UiSystem.Runtime;
 
     [Serializable]
     public class ViewLayout : IViewLayout
     {
         private readonly ObservableList<IView> _views    = new();
         private readonly LifeTime        _lifeTime = new();
+        private UiToolkitMixedStackPresenter _uiToolkitMixedStackPresenter;
 
         private readonly Subject<IView>                _onViewHidden;
         private readonly Subject<IView>                _onViewBeginHide;
@@ -37,6 +41,9 @@ namespace UniGame.UiSystem.Runtime
         public event Action<IReadOnlyList<IView>> OrderChanged;
 
         public Transform Layout { get; protected set; }
+
+        /// <summary>Built-in ViewSystem layer of this layout.</summary>
+        public ViewType LayerType { get; set; } = ViewType.None;
 
         public ILifeTime LifeTime => _lifeTime;
         
@@ -117,7 +124,20 @@ namespace UniGame.UiSystem.Runtime
                 return;
             }
 
+            if (UiToolkitMixedOrderAdapter.HasLayerRange(LayerType) &&
+                _views.Count >= UiToolkitMixedOrderAdapter.LayerCapacity)
+                throw new InvalidOperationException(
+                    $"The {LayerType} layout cannot contain more than {UiToolkitMixedOrderAdapter.LayerCapacity} views.");
+
             AddView(view);
+
+            if (_uiToolkitMixedStackPresenter == null &&
+                view?.GameObject != null &&
+                view.GameObject.GetComponent<PanelRenderer>() != null)
+            {
+                _uiToolkitMixedStackPresenter = new UiToolkitMixedStackPresenter(this);
+                _lifeTime.AddDispose(_uiToolkitMixedStackPresenter);
+            }
 
             //custom user action on new view
             OnViewAdded(view);
@@ -256,6 +276,8 @@ namespace UniGame.UiSystem.Runtime
                     _onViewBeginHide.OnNext(view);
                     break;
             }
+
+            _uiToolkitMixedStackPresenter?.Refresh();
         }
 
         protected virtual bool IsAnyViewActive()

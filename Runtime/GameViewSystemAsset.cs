@@ -17,6 +17,7 @@ namespace UniGame.UiSystem.Runtime
     using ViewSystem.Runtime;
     using UnityEngine.AddressableAssets;
     using WindowStackControllers;
+    using UiToolkit;
 
 #if ODIN_INSPECTOR
     using Sirenix.OdinInspector;
@@ -242,6 +243,8 @@ namespace UniGame.UiSystem.Runtime
         private async UniTask<IGameViewSystem> Create()
         {
             GameLog.Log($"{nameof(IGameViewSystem)} {name} CreateSystem STARTED {DateTime.Now.ToLongTimeString()}");
+
+            ValidateBuiltInLayoutCanvases();
             
             var settingsAsset = await settings.LoadAssetTaskAsync(LifeTime);
             settingsAsset = Instantiate(settingsAsset);
@@ -259,7 +262,12 @@ namespace UniGame.UiSystem.Runtime
             var stackMap = new Dictionary<string, IViewLayout>(4);
             
             foreach (var item in layoutMap)
+            {
+                if (item.Value != null && item.Value.LayoutController is ViewLayout layout)
+                    layout.LayerType = item.Key;
+
                 stackMap[item.Key.ToStringFromCache()] = item.Value;
+            }
 
             foreach (var customLayout in customLayouts)
                 stackMap[customLayout.name] = customLayout.layout;
@@ -278,6 +286,24 @@ namespace UniGame.UiSystem.Runtime
             _gameViewSystem = gameSystem.AddTo(LifeTime);
             
             return gameSystem;
+        }
+
+        private void ValidateBuiltInLayoutCanvases()
+        {
+            foreach (var item in layoutMap)
+            {
+                if (!UiToolkitMixedOrderAdapter.TryGetLayerBase(item.Key, out var expectedOrder))
+                    continue;
+
+                var canvas = item.Value != null ? item.Value.layoutCanvas : null;
+                if (canvas == null || canvas.sortingOrder != expectedOrder)
+                    throw new InvalidOperationException(
+                        $"The {item.Key} layout requires a Canvas with sortingOrder {expectedOrder}.");
+
+                if (canvas.sortingLayerID != 0)
+                    throw new InvalidOperationException(
+                        $"The {item.Key} layout Canvas must use the Default sorting layer.");
+            }
         }
 
         private Canvas GetScreensCanvas()

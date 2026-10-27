@@ -4,7 +4,6 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
     using UniGame.Core.Runtime;
     using UniGame.UiSystem.Runtime;
     using UniGame.ViewSystem.Runtime;
-    using UnityEngine.UIElements;
     using ViewSystem.Runtime.Views.Abstract;
 
     /// <summary>
@@ -17,12 +16,8 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
 
         public UniTask PlayAnimation(IView view, ViewStatus status, ILifeTime lifeTime)
         {
-            var presentation = view?.GameObject?.GetComponent<UiToolkitViewPresentation>();
-            var root = presentation?.Root;
-            if (root == null)
-                return UniTask.CompletedTask;
-
-            root.style.opacity = status == ViewStatus.Hidden || status == ViewStatus.Closed ? 0f : 1f;
+            if (view is IUiToolkitView toolkit)
+                toolkit.SetVisible(status is ViewStatus.Showing or ViewStatus.Shown);
             return UniTask.CompletedTask;
         }
     }
