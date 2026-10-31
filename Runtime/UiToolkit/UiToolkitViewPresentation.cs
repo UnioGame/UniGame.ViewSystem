@@ -116,7 +116,7 @@ namespace UniGame.UiSystem.Runtime.UiToolkit
             if (_root == null) return;
             var active = _requestedVisible && !_suspended;
             _root.style.display = active ? DisplayStyle.Flex : DisplayStyle.None;
-            _root.pickingMode = active ? PickingMode.Position : PickingMode.Ignore;
+            _root.pickingMode = PickingMode.Ignore;
         }
 
         private InvalidOperationException Error(string reason) =>
