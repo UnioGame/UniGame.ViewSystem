@@ -378,7 +378,9 @@ namespace UniGame.UiSystem.Runtime
 
             if (failed)
             {
-                GameLog.LogError($"ViewSystem: Try Create view with type: {viewType} | skin:{skinTag} | parent: {parent}: name: {viewName} FAILED");
+                // A stop cancels the views still loading; nothing failed.
+                if (!LifeTime.IsTerminated)
+                    GameLog.LogError($"ViewSystem: Try Create view with type: {viewType} | skin:{skinTag} | parent: {parent}: name: {viewName} FAILED");
                 Destroy(view);
                 return DummyView.Create();
             }

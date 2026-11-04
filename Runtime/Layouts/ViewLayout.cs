@@ -129,6 +129,13 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         public void Push(IView view)
         {
+            // A view can finish initializing after the layout stopped; Dispose destroys its views, so this one goes too.
+            if (_lifeTime.IsTerminated)
+            {
+                view?.Destroy();
+                return;
+            }
+
             if (_views.Contains(view))
             {
                 return;
