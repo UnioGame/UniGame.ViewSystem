@@ -33,16 +33,23 @@
             if (reference == null || !reference.RuntimeKeyIsValid())
                 return false;
 
-            var (isCanceled, sprite) = await reference
-                .LoadAssetTaskAsync(lifeTime)
-                .AttachExternalCancellation(lifeTime.Token)
+            var isLoaded = reference.OperationHandle.IsValid();
+            var handle = isLoaded
+                ? reference.OperationHandle.Convert<Sprite>()
+                : reference.LoadAssetAsync();
+
+            handle.AddTo(lifeTime, incrementRefCount: isLoaded);
+
+            var isCanceled = await handle
+                .ToUniTask(cancellationToken: lifeTime.Token)
                 .SuppressCancellationThrow();
 
             if (isCanceled || lifeTime.IsTerminated)
                 return false;
 
+            var sprite = handle.Result;
             image.SetSprite(sprite);
-            return sprite;
+            return sprite != null;
         }
     }
 }
