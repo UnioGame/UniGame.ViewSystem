@@ -83,6 +83,8 @@ namespace UniGame.UiSystem.Runtime
             _modelTypeMap = modelTypeMap;
 
             _flowController.Activate(_viewLayouts);
+            //the flow controller subscribes static SceneManager events; dispose it with the view system
+            _flowController.AddTo(_lifeTime);
         }
 
         public IViewModelTypeMap ModelTypeMap => _modelTypeMap;
