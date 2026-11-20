@@ -428,6 +428,7 @@ public class HealthBarView : ViewBase<CharacterViewModel>
 
 **Use ViewLifeTime for:**
 
+- Layout membership and status subscriptions that must survive model rebinding. `ViewLayout` keeps its close subscription on `ViewLifeTime`, so restarting `ModelLifeTime` does not leave a destroyed view in the layout.
 
 **Use ModelLifeTime (LifeTime) for:**
 

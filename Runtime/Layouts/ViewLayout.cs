@@ -259,7 +259,9 @@ namespace UniGame.UiSystem.Runtime
             view.StatusChanged
                 .TakeUntil(LifeTime.Token)
                 .Subscribe(this,static (x,y) => y.ViewStatusChanged(x, x.Status.CurrentValue))
-                .AddTo(view.LifeTime);
+                // A model rebind restarts LifeTime while the view stays registered.
+                // Keep removal notifications until the view itself is destroyed.
+                .AddTo(view.ViewLifeTime);
             
             Add(view);
         }
