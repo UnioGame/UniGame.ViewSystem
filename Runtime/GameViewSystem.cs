@@ -560,6 +560,9 @@ namespace UniGame.UiSystem.Runtime
 
             await view.Initialize(viewModel);
 
+            // Async content loading can finish after a parent destroyed this nested view.
+            if (view.GameObject == null || view.IsTerminated) return view;
+
             //_viewBinderProcessor.Bind(view, viewModel);
 
             //destroy view when lifetime terminated

@@ -129,6 +129,8 @@ namespace UniGame.UiSystem.Runtime
         /// </summary>
         public void Push(IView view)
         {
+            if (view.IsTerminated || view.GameObject == null) return;
+
             if (_views.Contains(view))
             {
                 return;
@@ -256,14 +258,17 @@ namespace UniGame.UiSystem.Runtime
         protected void AddView<TView>(TView view)
             where TView : class, IView
         {
-            view.StatusChanged
+            Add(view);
+
+            // Status is available before Awake, including for hidden nested views.
+            view.Status
                 .TakeUntil(LifeTime.Token)
-                .Subscribe(this,static (x,y) => y.ViewStatusChanged(x, x.Status.CurrentValue))
+                .Subscribe((layout: this, view), static (status, state) => state.layout.ViewStatusChanged(state.view, status))
                 // A model rebind restarts LifeTime while the view stays registered.
                 // Keep removal notifications until the view itself is destroyed.
                 .AddTo(view.ViewLifeTime);
             
-            Add(view);
+            view.ViewLifeTime.AddCleanUpAction((layout: this, view), static state => state.layout.Remove(state.view));
         }
 
         protected void ViewStatusChanged<TView>(TView view, ViewStatus status)

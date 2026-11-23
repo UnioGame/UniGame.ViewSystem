@@ -353,6 +353,15 @@ The View System uses MVVM principles to manage UI with reactive data binding and
 
 #### View Lifetime Management
 
+Registered hidden children receive native destruction cleanup even if they never reach `Awake`.
+`ViewLayout` observes `Status` directly and also removes entries when `ViewLifeTime` terminates;
+neither removal path depends on `Awake` forwarding status notifications. Late async initialization
+does not register views that have already been destroyed. Native cleanup is bound once per
+GameObject and remains valid across model rebinds and pooled view lifetime restarts.
+
+When overriding the Unity `OnDestroy` message in a view, call `base.OnDestroy()` in a `finally`
+block. Use `OnViewDisable` for optional disable cleanup so the base progress lifetime is reset.
+
 View System implements a sophisticated **two-level lifetime management** system that ensures proper cleanup of subscriptions and resources. This is critical for preventing memory leaks and managing complex UI hierarchies.
 
 ##### Two-Level LifeTime System

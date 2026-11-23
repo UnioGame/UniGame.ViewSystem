@@ -123,6 +123,7 @@ namespace UniGame.UiSystem.Runtime
 
         private IViewsLayout _viewLayout;
         private bool _isModelAttached;
+        private bool _nativeLifetimeBound;
         
         protected bool IsCommandsAction => Application.isPlaying;
         
@@ -270,9 +271,11 @@ namespace UniGame.UiSystem.Runtime
 
             //initialize nested views
             await InitializeNestedViews();
+            if (this == null || IsTerminated) return this;
             
             //custom initialization
             await OnInitialize(model);
+            if (this == null || IsTerminated) return this;
 
             ViewBinderProcessor.Bind(this, model);
             
@@ -588,6 +591,14 @@ namespace UniGame.UiSystem.Runtime
             _progressLifeTime.AddTo(ViewLifeTime);
             
             ViewLifeTime.AddCleanUpAction(OnViewDestroy);
+
+            if (!_nativeLifetimeBound)
+            {
+                _nativeLifetimeBound = true;
+                // R3 also watches destruction of GameObjects that never reached Awake.
+                // Bind once per native instance so pooled/model-rebound views do not accumulate callbacks.
+                Disposable.Create(this, static view => view.Destroy()).AddTo(gameObject);
+            }
         }
 
         private void OnViewDestroy()
@@ -607,7 +618,7 @@ namespace UniGame.UiSystem.Runtime
             _progressLifeTime.Restart();
         }
 
-        protected void OnDestroy() => Destroy();
+        protected virtual void OnDestroy() => Destroy();
 
         protected void Awake()
         {
